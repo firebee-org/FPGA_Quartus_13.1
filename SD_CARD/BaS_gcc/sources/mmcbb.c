@@ -1,3 +1,7 @@
+#include <stdint.h>
+#include <bas_types.h>
+#include "sysinit.h"
+
 /*------------------------------------------------------------------------*/
 /* Firebee: MMCv3/SDv1/SDv2 (SPI mode) control module                     */
 /*------------------------------------------------------------------------*/
@@ -95,8 +99,7 @@
 #define CMD58	(58)		/* READ_OCR */
 
 
-static volatile
-DSTATUS Stat = STA_NOINIT;	/* Physical drive status */
+static volatile DSTATUS Stat = STA_NOINIT;	/* Physical drive status */
 
 static volatile
 UINT Timer1, Timer2;	/* 1kHz decrement timer stopped at zero (disk_timerproc()) */
@@ -169,7 +172,7 @@ static bool card_ready(void)
  */
 static int wait_ready (UINT wt)
 {
-	return waitfor(card_ready, wt);
+	return waitfor(wt, card_ready);
 }
 
 
@@ -177,13 +180,10 @@ static int wait_ready (UINT wt)
 /*
  * Deselect card and release SPI
  */
-
-static
-void deselect (void)
+static void deselect (void)
 {
 	CS_HIGH();		/* CS = H */
 	xchg_spi(0xFF);	/* Dummy clock (force DO hi-z for multiple slave SPI) */
-
 }
 
 
@@ -209,9 +209,10 @@ int select (void)	/* 1:OK, 0:Timeout */
  * Control SPI module (Platform dependent)
  */
 
-static
-void power_on (void)	/* Enable SSP module and attach it to I/O pads */
+static void power_on (void)	/* Enable SSP module and attach it to I/O pads */
 {
+	spi_init();
+#ifdef _NOT_USED_
 	__set_PCONP(PCSSPx, 1);		/* Enable SSP module */
 	__set_PCLKSEL(PCLKSSPx, PCLKDIV_SSP);	/* Select PCLK frequency for SSP */
 	SSPxCR0 = 0x0007;			/* Set mode: SPI mode 0, 8-bit */
@@ -228,7 +229,7 @@ void power_on (void)	/* Enable SSP module and attach it to I/O pads */
 	FIO0DIR |= _BV(9)|_BV(7)|_BV(6);	/* Set SCK1, MOSI1 and CS# as output */
 #endif
 	CS_HIGH();					/* Set CS# high */
-
+#endif /* _NOT_USED_ */
 	for (Timer1 = 10; Timer1; ) ;	/* 10ms */
 }
 
@@ -304,8 +305,7 @@ int xmit_datablock (	/* 1:OK, 0:Failed */
 /* Send a command packet to the MMC                                      */
 /*-----------------------------------------------------------------------*/
 
-static
-BYTE send_cmd (		/* Return value: R1 resp (bit7==1:Failed to send) */
+static BYTE send_cmd (		/* Return value: R1 resp (bit7==1:Failed to send) */
 	BYTE cmd,		/* Command index */
 	DWORD arg		/* Argument */
 )
