@@ -27,6 +27,7 @@
 
 #ifndef __SYSINIT_H__
 #define __SYSINIT_H__
+#include <bas_types.h>
 
 extern void wait_10us(void);
 extern inline bool waitfor(uint32_t us, int (*condition)(void));

@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <bas_types.h>
+#include <sd_card.h>
 #include "sysinit.h"
 
 /*------------------------------------------------------------------------*/
@@ -7,7 +8,6 @@
 /*------------------------------------------------------------------------*/
 /*
 /  Copyright (C) 2011, ChaN, all right reserved.
-/  Copyright (C) 2012, mfro, all rights reserved.
 /
 / * This software is a free software and there is NO WARRANTY.
 / * No restriction on use. You can use, modify and redistribute it for
@@ -15,6 +15,8 @@
 / * Redistributions of source code must retain the above copyright notice.
 /
 /-------------------------------------------------------------------------*/
+
+/* Copyright (C) 2012, mfro, all rights reserved. */
 
 #define SSP_CH	1	/* SSP channel to use (0:SSP0, 1:SSP1) */
 
@@ -180,10 +182,11 @@ static int wait_ready (UINT wt)
 /*
  * Deselect card and release SPI
  */
-static void deselect (void)
+static void deselect(void)
 {
-	CS_HIGH();		/* CS = H */
+	MCF_DSPI_DTFR = MCF_DSPI_DTFR_EOQ | ~MCF_DSPI_DTFR_CS5;
 	xchg_spi(0xFF);	/* Dummy clock (force DO hi-z for multiple slave SPI) */
+	MCF_DSPI_DSR = 0xffffffff;	/* clear status register */
 }
 
 
@@ -192,10 +195,9 @@ static void deselect (void)
  * Select card and wait for ready
  */
 
-static
-int select (void)	/* 1:OK, 0:Timeout */
+static int select(void)	/* 1:OK, 0:Timeout */
 {
-	CS_LOW();
+	MCF_DSPI_DTFR = MCF_DSPI_DTFR_EOQ | MCF_DSPI_DTFR_CS5;
 	xchg_spi(0xFF);	/* Dummy clock (force DO enabled) */
 
 	if (wait_ready(500)) return 1;	/* OK */
@@ -353,13 +355,12 @@ static BYTE send_cmd (		/* Return value: R1 resp (bit7==1:Failed to send) */
 ---------------------------------------------------------------------------*/
 
 
-/*-----------------------------------------------------------------------*/
-/* Initialize disk drive                                                 */
-/*-----------------------------------------------------------------------*/
-
-DSTATUS disk_initialize (
-	BYTE drv		/* Physical drive number (0) */
-)
+/*
+ * Initialize disk drive
+ *
+ * drv: physical drive number (0)
+ */
+DSTATUS disk_initialize(BYTE drv)
 {
 	BYTE n, cmd, ty, ocr[4];
 
@@ -367,9 +368,9 @@ DSTATUS disk_initialize (
 	if (drv) return STA_NOINIT;			/* Supports only drive 0 */
 	power_on();							/* Initialize SPI */
 
-	if (Stat & STA_NODISK) return Stat;	/* Is card existing in the soket? */
+	if (Stat & STA_NODISK) return Stat;	/* Is card existing in the socket? */
 
-	FCLK_SLOW();
+	//FCLK_SLOW();
 	for (n = 10; n; n--) xchg_spi(0xFF);	/* Send 80 dummy clocks */
 
 	ty = 0;
@@ -654,9 +655,9 @@ void disk_timerproc (void)
 		s |= STA_PROTECT;
 	else		/* Write enabled */
 		s &= ~STA_PROTECT;
-	if (INS)	/* Card is in socket */
+	//if (INS)	/* Card is in socket */
 		s &= ~STA_NODISK;
-	else		/* Socket empty */
-		s |= (STA_NODISK | STA_NOINIT);
+	//else		/* Socket empty */
+	//	s |= (STA_NODISK | STA_NOINIT);
 	Stat = s;
 }
