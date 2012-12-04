@@ -31,10 +31,10 @@
 /* Platform dependent macros and functions needed to be modified           */
 /*-------------------------------------------------------------------------*/
 
-#include <device.h>				/* Include device specific declareation file here */
+#include <sd_card.h>				/* Include device specific declareation file here */
 
 #define	INIT_PORT()	init_port()	/* Initialize MMC control port (CS=H, CLK=L, DI=H, DO=in) */
-#define DLY_US(n)	dly_us(n)	/* Delay n microseconds */
+#define DLY_US(n)	wait(n)		/* Delay n microseconds */
 
 #define	CS_H()		PORT |= 0x01	/* Set MMC CS "high" */
 #define CS_L()		PORT &= 0xFE	/* Set MMC CS "low" */
@@ -99,27 +99,8 @@ void xmit_mmc (
 	UINT bc				/* Number of bytes to send */
 )
 {
-	BYTE d;
-
-
 	do {
-		d = *buff++;	/* Get a byte to be sent */
-		if (d & 0x80) DI_H(); else DI_L();	/* bit7 */
-		CK_H(); CK_L();
-		if (d & 0x40) DI_H(); else DI_L();	/* bit6 */
-		CK_H(); CK_L();
-		if (d & 0x20) DI_H(); else DI_L();	/* bit5 */
-		CK_H(); CK_L();
-		if (d & 0x10) DI_H(); else DI_L();	/* bit4 */
-		CK_H(); CK_L();
-		if (d & 0x08) DI_H(); else DI_L();	/* bit3 */
-		CK_H(); CK_L();
-		if (d & 0x04) DI_H(); else DI_L();	/* bit2 */
-		CK_H(); CK_L();
-		if (d & 0x02) DI_H(); else DI_L();	/* bit1 */
-		CK_H(); CK_L();
-		if (d & 0x01) DI_H(); else DI_L();	/* bit0 */
-		CK_H(); CK_L();
+		spi_send_byte(*buff++);
 	} while (--bc);
 }
 
