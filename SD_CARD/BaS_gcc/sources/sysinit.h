@@ -29,11 +29,7 @@
 #define __SYSINIT_H__
 #include <bas_types.h>
 
-extern void wait_10us(void);
 extern inline bool waitfor(uint32_t us, int (*condition)(void));
-
-/* send a 16-bit word out on the serial port */
-#define uart_out_word(a)	MCF_PSC0_PSCTB_8BIT = (a)
 
 /* adresses where FPGA data lives in flash */
 #define FPGA_FLASH_DATA ((uint8_t *) 0xe0700000L)
