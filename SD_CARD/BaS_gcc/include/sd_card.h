@@ -39,4 +39,11 @@ extern uint8_t sd_card_get_status(void);
 extern uint8_t spi_send_byte(uint8_t byte);
 extern uint16_t spi_send_word(uint16_t word);
 
+/* MMC card type flags (MMC_GET_TYPE) */
+#define CT_MMC		0x01		/* MMC ver 3 */
+#define CT_SD1		0x02		/* SD ver 1 */
+#define CT_SD2		0x04		/* SD ver 2 */
+#define CT_SDC		(CT_SD1|CT_SD2)	/* SD */
+#define CT_BLOCK	0x08		/* Block addressing */
+
 #endif /* _SD_CARD_H_ */

@@ -158,7 +158,7 @@ static void xmit_spi_multi(const BYTE *buff, UINT btx)
 #endif
 
 
-static bool card_ready(void)
+static int card_ready(void)
 {
 	uint8_t d;
 
@@ -400,7 +400,7 @@ DSTATUS disk_initialize(BYTE drv)
 	deselect();
 
 	if (ty) {			/* OK */
-		FCLK_FAST();			/* Set fast clock */
+		// FCLK_FAST();			/* Set fast clock */
 		Stat &= ~STA_NOINIT;	/* Clear STA_NOINIT flag */
 	} else {			/* Failed */
 		power_off();
