@@ -735,7 +735,7 @@ void init_ac97(void) {
 			}
 		}
 	}
-	uart_out_word(' NOT');
+
 livo:
 	// AUX VOLUME ->-0dB
 	MCF_PSC2_PSCTB_AC97 = 0xE0000000;	//START SLOT1 + SLOT2, FIRST FRAME
