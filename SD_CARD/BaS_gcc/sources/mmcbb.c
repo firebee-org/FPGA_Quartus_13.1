@@ -149,8 +149,7 @@ static void rcvr_spi_multi(BYTE *buff, UINT count)
  */
 static void xmit_spi_multi(const BYTE *buff, UINT btx)
 {
-	UINT n = 512;
-	WORD d;
+	int i;
 
 	for (i = 0; i < btx; i++)
 		xchg_spi(*buff++);

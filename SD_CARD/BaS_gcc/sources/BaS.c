@@ -30,6 +30,7 @@
 #include "bas_printf.h"
 #include "bas_types.h"
 #include "sd_card.h"
+#include "ff.h"
 
 /* imported routines */
 extern int mmu_init();

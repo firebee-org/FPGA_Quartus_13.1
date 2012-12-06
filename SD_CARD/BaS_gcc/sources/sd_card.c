@@ -26,7 +26,7 @@
 #include <MCF5475.h>
 #include "bas_printf.h"
 #include "sd_card.h"
-
+#include "diskio.h"
 
 /*
  * "standard value" for DSPI module configuration register MCF_DSPC_DMCR
@@ -173,8 +173,8 @@ int spi_init(void)
 
 	wait(10000);
 
-	sd_card_idle();
-
+	//sd_card_idle();
+	disk_initialize(0);
 	xprintf("finished\r\n");
 
 	return 0;

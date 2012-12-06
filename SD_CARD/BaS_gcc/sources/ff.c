@@ -348,6 +348,20 @@ typedef struct {
 #endif
 
 
+/*---------------------------------------------------------*/
+/* User Provided Timer Function for FatFs module           */
+/*---------------------------------------------------------*/
+
+DWORD get_fattime (void)
+{
+   return     ((DWORD)(2012 - 1980) << 25)   /* Year = 2012 */
+         | ((DWORD)1 << 21)            /* Month = 1 */
+         | ((DWORD)1 << 16)            /* Day_m = 1*/
+         | ((DWORD)0 << 11)            /* Hour = 0 */
+         | ((DWORD)0 << 5)          /* Min = 0 */
+         | ((DWORD)0 >> 1);            /* Sec = 0 */
+}
+
 /* Character code support macros */
 #define IsUpper(c)	(((c)>='A')&&((c)<='Z'))
 #define IsLower(c)	(((c)>='a')&&((c)<='z'))
@@ -4134,6 +4148,9 @@ int f_printf (
 	va_end(arp);
 	return (cc == EOF) ? cc : res;
 }
+
+
+
 
 #endif /* !_FS_READONLY */
 #endif /* _USE_STRFUNC */
