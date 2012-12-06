@@ -12,6 +12,10 @@ SECTIONS
 		objs/startcf.o(.text) /* this one is the entry point so it must be the first */
 		objs/sysinit.o(.text)
 		objs/init_fpga.o(.text)
+		objs/sd_card.o(.text)
+		objs/ff.o(.text)
+		objs/mmcbb.o(.text)
+		
 #if (FORMAT == elf32-m68k)
 		*(.rodata)
 		*(.rodata.*)
@@ -32,7 +36,6 @@ SECTIONS
 		objs/bas_printf.o(.text)
 		objs/printf_helper.o(.text)
 		objs/cache.o(.text)
-		objs/sd_card.o(.text)
 		objs/mmu.o(.text)
 		objs/exceptions.o(.text)
 		objs/supervisor.o(.text)

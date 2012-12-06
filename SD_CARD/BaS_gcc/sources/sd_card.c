@@ -28,6 +28,8 @@
 #include "sd_card.h"
 #include "diskio.h"
 
+#define xprintf xprintf_before_copy
+
 /*
  * "standard value" for DSPI module configuration register MCF_DSPC_DMCR
  */
@@ -174,7 +176,6 @@ int spi_init(void)
 	wait(10000);
 
 	//sd_card_idle();
-	disk_initialize(0);
 	xprintf("finished\r\n");
 
 	return 0;
