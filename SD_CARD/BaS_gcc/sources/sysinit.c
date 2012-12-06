@@ -503,7 +503,7 @@ void test_upd720101(void)
 			MCF_PCI_PCICAR_FUNCNUM(0) +
 			MCF_PCI_PCICAR_DWORD(57);
 
-		* (uint8_t *) PCI_IO_OFFSET = 0x20;
+		//* (uint8_t *) PCI_IO_OFFSET = 0x20;
 	}
 	else
 	{
@@ -796,6 +796,8 @@ void initialize_hardware(void) {
 	if (!(DIP_SWITCH & (1 << 6))) {
 		/* Minimal hardware initialization */
 		init_gpio();
+		init_serial();
+		init_slt();
 		init_fbcs();
 		init_ddram();
 		init_fpga();
