@@ -41,6 +41,9 @@ extern void flush_and_invalidate_caches_before_copy(void);
 
 extern volatile long _VRAM;	/* start address of video ram from linker script */
 
+static const int MAJOR_VERSION = 0;
+static const int MINOR_VERSION = 1;
+
 /*
  * wait for the specified number of us on slice timer 0. Replaces the original routines that had
  * the number of useconds to wait for hardcoded in their name.
@@ -798,6 +801,10 @@ void initialize_hardware(void) {
 		init_gpio();
 		init_serial();
 		init_slt();
+
+		xprintf("\r\nBaS_gcc for FireBee v %d.%d\r\n", MAJOR_VERSION, MINOR_VERSION);
+		xprintf("initializing hardware...\r\n");
+
 		init_fbcs();
 		init_ddram();
 		init_fpga();
@@ -819,6 +826,10 @@ void initialize_hardware(void) {
 	init_gpio();
 	init_serial();
 	init_slt();
+
+	xprintf("\r\nBaS_gcc for FireBee v %d.%d\r\n", MAJOR_VERSION, MINOR_VERSION);
+	xprintf("initializing hardware...\r\n");
+
 	init_fbcs();
 	init_ddram();
 	init_PCI();
