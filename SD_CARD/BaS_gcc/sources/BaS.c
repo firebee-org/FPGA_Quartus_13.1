@@ -150,7 +150,31 @@ void nvram_init(void)
 	xprintf("finished\r\n");
 }
 
-/********************************************************************/
+void enable_coldfire_interrupts()
+{
+	xprintf("enable interrupts: ");
+	* (volatile uint32_t *) 0xf0010004 = 0L;		/* disable all interrupts */
+	MCF_EPORT_EPPAR = 0xaaa8;			/* all interrupts on falling edge */
+
+	MCF_GPT0_GMS = MCF_GPT_GMS_ICT(1) |	/* timer 0 on, video change capture on rising edge */
+			MCF_GPT_GMS_IEN |
+			MCF_GPT_GMS_TMS(1);
+	MCF_INTC_ICR62 = 0x3f;
+
+	* (volatile uint8_t *) 0xf0010004 = 0xfe;	/* enable int 1-7 */
+	MCF_EPORT_EPIER = 0xfe;				/* int 1-7 on */
+	MCF_EPORT_EPFR = 0xff;				/* clear all pending interrupts */
+	MCF_INTC_IMRL = 0xffffff00;			/* int 1-7 on */
+	MCF_INTC_IMRH = 0xbffffffe;			/* psc3 and timer 0 int on */
+
+	xprintf("finished\r\n");
+}
+
+void disable_coldfire_interrupts()
+{
+	* (volatile uint32_t *) 0xf0010004 = 0L;		/* disable all interrupts */
+}
+
 void BaS(void)
 {
 	uint8_t *src;
@@ -184,26 +208,10 @@ void BaS(void)
 	vec_init();
 	illegal_table_make();
 	xprintf("finished\r\n");
-		
-	/* interrupts */
 
-	xprintf("enable interrupts: ");
-	* (volatile uint32_t *) 0xf0010004 = 0L;		/* disable all interrupts */
-	MCF_EPORT_EPPAR = 0xaaa8;			/* all interrupts on falling edge */
-
-	MCF_GPT0_GMS = MCF_GPT_GMS_ICT(1) |	/* timer 0 on, video change capture on rising edge */
-			MCF_GPT_GMS_IEN |
-			MCF_GPT_GMS_TMS(1);
-	MCF_INTC_ICR62 = 0x3f;
-
-	* (volatile uint8_t *) 0xf0010004 = 0xfe;	/* enable int 1-7 */
-	MCF_EPORT_EPIER = 0xfe;				/* int 1-7 on */
-	MCF_EPORT_EPFR = 0xff;				/* clear all pending interrupts */
-	MCF_INTC_IMRL = 0xffffff00;			/* int 1-7 on */
-	MCF_INTC_IMRH = 0xbffffffe;			/* psc3 and timer 0 int on */
+	enable_coldfire_interrupts();
 
 	MCF_MMU_MMUCR = MCF_MMU_MMUCR_EN;	/* MMU on */
-	xprintf("finished\r\n");
 
 	xprintf("IDE reset: ");
 	/* IDE reset */
@@ -214,7 +222,6 @@ void BaS(void)
 	* (volatile uint8_t *) (0xffff8802 - 0) = 0;
 
 	xprintf("finished\r\n");
-
 	xprintf("enable video: ");
 	/*
 	 * video setup (25MHz)

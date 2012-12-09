@@ -3,18 +3,18 @@
 #include <sd_card.h>
 #include "sysinit.h"
 
-/*------------------------------------------------------------------------*/
-/* Firebee: MMCv3/SDv1/SDv2 (SPI mode) control module                     */
-/*------------------------------------------------------------------------*/
 /*
-/  Copyright (C) 2011, ChaN, all right reserved.
-/
-/ * This software is a free software and there is NO WARRANTY.
-/ * No restriction on use. You can use, modify and redistribute it for
-/   personal, non-profit or commercial products UNDER YOUR RESPONSIBILITY.
-/ * Redistributions of source code must retain the above copyright notice.
-/
-/-------------------------------------------------------------------------*/
+ * Firebee: MMCv3/SDv1/SDv2 (SPI mode) control module
+ *
+ *
+ * Copyright (C) 2011, ChaN, all right reserved.
+ *
+ * This software is a free software and there is NO WARRANTY.
+ * No restriction on use. You can use, modify and redistribute it for
+ * personal, non-profit or commercial products UNDER YOUR RESPONSIBILITY.
+ * Redistributions of source code must retain the above copyright notice.
+ *
+ */
 
 /* Copyright (C) 2012, mfro, all rights reserved. */
 
@@ -622,6 +622,7 @@ DRESULT disk_ioctl (
 
 	default:
 		res = RES_PARERR;
+		break;
 	}
 
 	deselect();
