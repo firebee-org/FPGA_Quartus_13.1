@@ -922,6 +922,7 @@ FRESULT put_fat (
 
 		default :
 			res = FR_INT_ERR;
+			break;
 		}
 		fs->wflag = 1;
 	}
@@ -1135,7 +1136,7 @@ FRESULT dir_next (	/* FR_OK:Succeeded, FR_NO_FILE:End of table, FR_DENIED:EOT an
 	WORD i;
 
 
-	stretch = stretch;		/* To suppress warning on read-only cfg. */
+	//stretch = stretch;		/* To suppress warning on read-only cfg. */
 	i = dj->index + 1;
 	if (!i || !dj->sect)	/* Report EOT when index has reached 65535 */
 		return FR_NO_FILE;
