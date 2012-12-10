@@ -104,10 +104,10 @@
 static volatile DSTATUS Stat = STA_NOINIT;	/* Physical drive status */
 
 static volatile
-UINT Timer1, Timer2;	/* 1kHz decrement timer stopped at zero (disk_timerproc()) */
+uint32_t Timer1, Timer2;	/* 1kHz decrement timer stopped at zero (disk_timerproc()) */
 
 static
-BYTE CardType;			/* Card type flags */
+uint8_t CardType;			/* Card type flags */
 
 
 
@@ -116,7 +116,7 @@ BYTE CardType;			/* Card type flags */
 /*-----------------------------------------------------------------------*/
 
 /* Exchange a byte */
-static BYTE xchg_spi(BYTE byte)
+static uint8_t xchg_spi(uint8_t byte)
 {
 	* (volatile uint8_t *) (&MCF_DSPI_DTFR + 3) = byte;
 
@@ -132,7 +132,7 @@ static BYTE xchg_spi(BYTE byte)
  * buff: pointer to data buffer
  * btr: number of bytes to receive (16, 64 or 512)
  */
-static void rcvr_spi_multi(BYTE *buff, UINT count)
+static void rcvr_spi_multi(uint8_t *buff, uint32_t count)
 {
 	int i;
 
@@ -147,7 +147,7 @@ static void rcvr_spi_multi(BYTE *buff, UINT count)
  * buff: pointer to data
  * btx: number of bytes to send
  */
-static void xmit_spi_multi(const BYTE *buff, UINT btx)
+static void xmit_spi_multi(const uint8_t *buff, uint32_t btx)
 {
 	int i;
 
@@ -171,7 +171,7 @@ static int card_ready(void)
  * wt: timeout in ms
  * returns 1: ready, 0: timeout
  */
-static int wait_ready (UINT wt)
+static int wait_ready (uint32_t wt)
 {
 	return waitfor(wt, card_ready);
 }
@@ -250,11 +250,11 @@ void power_off (void)		/* Disable SPI function */
 
 static
 int rcvr_datablock (	/* 1:OK, 0:Error */
-	BYTE *buff,			/* Data buffer */
-	UINT btr			/* Data block length (byte) */
+	uint8_t *buff,			/* Data buffer */
+	uint32_t btr			/* Data block length (byte) */
 )
 {
-	BYTE token;
+	uint8_t token;
 
 
 	Timer1 = 200;
@@ -279,11 +279,11 @@ int rcvr_datablock (	/* 1:OK, 0:Error */
 #if _USE_WRITE
 static
 int xmit_datablock (	/* 1:OK, 0:Failed */
-	const BYTE *buff,	/* Ponter to 512 byte data to be sent */
-	BYTE token			/* Token */
+	const uint8_t *buff,	/* Ponter to 512 byte data to be sent */
+	uint8_t token			/* Token */
 )
 {
-	BYTE resp;
+	uint8_t resp;
 
 
 	if (!wait_ready(500)) return 0;		/* Wait for card ready */
@@ -306,12 +306,12 @@ int xmit_datablock (	/* 1:OK, 0:Failed */
 /* Send a command packet to the MMC                                      */
 /*-----------------------------------------------------------------------*/
 
-static BYTE send_cmd (		/* Return value: R1 resp (bit7==1:Failed to send) */
-	BYTE cmd,		/* Command index */
-	DWORD arg		/* Argument */
+static uint8_t send_cmd (		/* Return value: R1 resp (bit7==1:Failed to send) */
+	uint8_t cmd,		/* Command index */
+	uint32_t arg		/* Argument */
 )
 {
-	BYTE n, res;
+	uint8_t n, res;
 
 
 	if (cmd & 0x80) {	/* Send a CMD55 prior to ACMD<n> */
@@ -326,10 +326,10 @@ static BYTE send_cmd (		/* Return value: R1 resp (bit7==1:Failed to send) */
 
 	/* Send command packet */
 	xchg_spi(0x40 | cmd);				/* Start + command index */
-	xchg_spi((BYTE)(arg >> 24));		/* Argument[31..24] */
-	xchg_spi((BYTE)(arg >> 16));		/* Argument[23..16] */
-	xchg_spi((BYTE)(arg >> 8));			/* Argument[15..8] */
-	xchg_spi((BYTE)arg);				/* Argument[7..0] */
+	xchg_spi((uint8_t)(arg >> 24));		/* Argument[31..24] */
+	xchg_spi((uint8_t)(arg >> 16));		/* Argument[23..16] */
+	xchg_spi((uint8_t)(arg >> 8));			/* Argument[15..8] */
+	xchg_spi((uint8_t)arg);				/* Argument[7..0] */
 	n = 0x01;							/* Dummy CRC + Stop */
 	if (cmd == CMD0) n = 0x95;			/* Valid CRC for CMD0(0) */
 	if (cmd == CMD8) n = 0x87;			/* Valid CRC for CMD8(0x1AA) */
@@ -359,9 +359,9 @@ static BYTE send_cmd (		/* Return value: R1 resp (bit7==1:Failed to send) */
  *
  * drv: physical drive number (0)
  */
-DSTATUS disk_initialize(BYTE drv)
+DSTATUS disk_initialize(uint8_t drv)
 {
-	BYTE n, cmd, ty, ocr[4];
+	uint8_t n, cmd, ty, ocr[4];
 
 
 	if (drv) return STA_NOINIT;			/* Supports only drive 0 */
@@ -416,7 +416,7 @@ DSTATUS disk_initialize(BYTE drv)
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_status (
-	BYTE drv		/* Physical drive number (0) */
+	uint8_t drv		/* Physical drive number (0) */
 )
 {
 	if (drv) return STA_NOINIT;		/* Supports only drive 0 */
@@ -431,10 +431,10 @@ DSTATUS disk_status (
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_read (
-	BYTE drv,		/* Physical drive number (0) */
-	BYTE *buff,		/* Pointer to the data buffer to store read data */
-	DWORD sector,	/* Start sector number (LBA) */
-	BYTE count		/* Number of sectors to read (1..128) */
+	uint8_t drv,		/* Physical drive number (0) */
+	uint8_t *buff,		/* Pointer to the data buffer to store read data */
+	uint32_t sector,	/* Start sector number (LBA) */
+	uint8_t count		/* Number of sectors to read (1..128) */
 )
 {
 	if (drv || !count) return RES_PARERR;		/* Check parameter */
@@ -469,10 +469,10 @@ DRESULT disk_read (
 
 #if _USE_WRITE
 DRESULT disk_write (
-	BYTE drv,			/* Physical drive number (0) */
-	const BYTE *buff,	/* Ponter to the data to write */
-	DWORD sector,		/* Start sector number (LBA) */
-	BYTE count			/* Number of sectors to write (1..128) */
+	uint8_t drv,			/* Physical drive number (0) */
+	const uint8_t *buff,	/* Ponter to the data to write */
+	uint32_t sector,		/* Start sector number (LBA) */
+	uint8_t count			/* Number of sectors to write (1..128) */
 )
 {
 	if (drv || !count) return RES_PARERR;		/* Check parameter */
@@ -510,14 +510,14 @@ DRESULT disk_write (
 
 #if _USE_IOCTL
 DRESULT disk_ioctl (
-	BYTE drv,		/* Physical drive number (0) */
-	BYTE ctrl,		/* Control command code */
+	uint8_t drv,		/* Physical drive number (0) */
+	uint8_t ctrl,		/* Control command code */
 	void *buff		/* Pointer to the conrtol data */
 )
 {
 	DRESULT res;
-	BYTE n, csd[16], *ptr = buff;
-	DWORD *dp, st, ed, csize;
+	uint8_t n, csd[16], *ptr = buff;
+	uint32_t *dp, st, ed, csize;
 
 
 	if (drv) return RES_PARERR;					/* Check parameter */
@@ -536,19 +536,19 @@ DRESULT disk_ioctl (
 	case GET_SECTOR_COUNT :	/* Get drive capacity in unit of sector (DWORD) */
 		if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {
 			if ((csd[0] >> 6) == 1) {	/* SDC ver 2.00 */
-				csize = csd[9] + ((WORD)csd[8] << 8) + ((DWORD)(csd[7] & 63) << 16) + 1;
-				*(DWORD*)buff = csize << 10;
+				csize = csd[9] + ((uint16_t)csd[8] << 8) + ((uint32_t)(csd[7] & 63) << 16) + 1;
+				*(uint32_t*)buff = csize << 10;
 			} else {					/* SDC ver 1.XX or MMC ver 3 */
 				n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
-				csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
-				*(DWORD*)buff = csize << (n - 9);
+				csize = (csd[8] >> 6) + ((uint16_t)csd[7] << 2) + ((uint16_t)(csd[6] & 3) << 10) + 1;
+				*(uint32_t*)buff = csize << (n - 9);
 			}
 			res = RES_OK;
 		}
 		break;
 
 	case GET_SECTOR_SIZE :	/* Get sector size in unit of byte (WORD) */
-		*(WORD*)buff = 512;
+		*(uint16_t*)buff = 512;
 		res = RES_OK;
 		break;
 
@@ -558,16 +558,16 @@ DRESULT disk_ioctl (
 				xchg_spi(0xFF);
 				if (rcvr_datablock(csd, 16)) {				/* Read partial block */
 					for (n = 64 - 16; n; n--) xchg_spi(0xFF);	/* Purge trailing data */
-					*(DWORD*)buff = 16UL << (csd[10] >> 4);
+					*(uint32_t*)buff = 16UL << (csd[10] >> 4);
 					res = RES_OK;
 				}
 			}
 		} else {					/* SDC ver 1.XX or MMC */
 			if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {	/* Read CSD */
 				if (CardType & CT_SD1) {	/* SDC ver 1.XX */
-					*(DWORD*)buff = (((csd[10] & 63) << 1) + ((WORD)(csd[11] & 128) >> 7) + 1) << ((csd[13] >> 6) - 1);
+					*(uint32_t*)buff = (((csd[10] & 63) << 1) + ((uint16_t)(csd[11] & 128) >> 7) + 1) << ((csd[13] >> 6) - 1);
 				} else {					/* MMC */
-					*(DWORD*)buff = ((WORD)((csd[10] & 124) >> 2) + 1) * (((csd[11] & 3) << 3) + ((csd[11] & 224) >> 5) + 1);
+					*(uint32_t*)buff = ((uint16_t)((csd[10] & 124) >> 2) + 1) * (((csd[11] & 3) << 3) + ((csd[11] & 224) >> 5) + 1);
 				}
 				res = RES_OK;
 			}
@@ -641,8 +641,8 @@ DRESULT disk_ioctl (
 
 void disk_timerproc (void)
 {
-	WORD n;
-	BYTE s;
+	uint16_t n;
+	uint8_t s;
 
 
 	n = Timer1;						/* 1kHz decrement timer stopped at 0 */

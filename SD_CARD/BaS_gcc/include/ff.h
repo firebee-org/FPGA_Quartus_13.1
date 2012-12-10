@@ -34,15 +34,15 @@ extern "C" {
 
 #if _MULTI_PARTITION		/* Multiple partition configuration */
 typedef struct {
-	BYTE pd;	/* Physical drive number */
-	BYTE pt;	/* Partition: 0:Auto detect, 1-4:Forced partition) */
+	uint8_t pd;	/* Physical drive number */
+	uint8_t pt;	/* Partition: 0:Auto detect, 1-4:Forced partition) */
 } PARTITION;
 extern PARTITION VolToPart[];	/* Volume - Partition resolution table */
 #define LD2PD(vol) (VolToPart[vol].pd)	/* Get physical drive number */
 #define LD2PT(vol) (VolToPart[vol].pt)	/* Get partition index */
 
 #else							/* Single partition configuration */
-#define LD2PD(vol) (BYTE)(vol)	/* Each logical drive is bound to the same physical drive number */
+#define LD2PD(vol) (uint8_t)(vol)	/* Each logical drive is bound to the same physical drive number */
 #define LD2PT(vol) 0			/* Always mounts the 1st partition or in SFD */
 
 #endif
@@ -56,7 +56,7 @@ extern PARTITION VolToPart[];	/* Volume - Partition resolution table */
 #error _LFN_UNICODE must be 0 in non-LFN cfg.
 #endif
 #ifndef _INC_TCHAR
-typedef WCHAR TCHAR;
+typedef uint16_t TCHAR;
 #define _T(x) L ## x
 #define _TEXT(x) L ## x
 #endif
@@ -75,35 +75,35 @@ typedef char TCHAR;
 /* File system object structure (FATFS) */
 
 typedef struct {
-	BYTE	fs_type;		/* FAT sub-type (0:Not mounted) */
-	BYTE	drv;			/* Physical drive number */
-	BYTE	csize;			/* Sectors per cluster (1,2,4...128) */
-	BYTE	n_fats;			/* Number of FAT copies (1,2) */
-	BYTE	wflag;			/* win[] dirty flag (1:must be written back) */
-	BYTE	fsi_flag;		/* fsinfo dirty flag (1:must be written back) */
-	WORD	id;				/* File system mount ID */
-	WORD	n_rootdir;		/* Number of root directory entries (FAT12/16) */
+	uint8_t	fs_type;		/* FAT sub-type (0:Not mounted) */
+	uint8_t	drv;			/* Physical drive number */
+	uint8_t	csize;			/* Sectors per cluster (1,2,4...128) */
+	uint8_t	n_fats;			/* Number of FAT copies (1,2) */
+	uint8_t	wflag;			/* win[] dirty flag (1:must be written back) */
+	uint8_t	fsi_flag;		/* fsinfo dirty flag (1:must be written back) */
+	uint16_t	id;				/* File system mount ID */
+	uint16_t	n_rootdir;		/* Number of root directory entries (FAT12/16) */
 #if _MAX_SS != 512
-	WORD	ssize;			/* Bytes per sector (512, 1024, 2048 or 4096) */
+	uint16_t	ssize;			/* Bytes per sector (512, 1024, 2048 or 4096) */
 #endif
 #if _FS_REENTRANT
 	_SYNC_t	sobj;			/* Identifier of sync object */
 #endif
 #if !_FS_READONLY
-	DWORD	last_clust;		/* Last allocated cluster */
-	DWORD	free_clust;		/* Number of free clusters */
-	DWORD	fsi_sector;		/* fsinfo sector (FAT32) */
+	uint32_t	last_clust;		/* Last allocated cluster */
+	uint32_t	free_clust;		/* Number of free clusters */
+	uint32_t	fsi_sector;		/* fsinfo sector (FAT32) */
 #endif
 #if _FS_RPATH
-	DWORD	cdir;			/* Current directory start cluster (0:root) */
+	uint32_t	cdir;			/* Current directory start cluster (0:root) */
 #endif
-	DWORD	n_fatent;		/* Number of FAT entries (= number of clusters + 2) */
-	DWORD	fsize;			/* Sectors per FAT */
-	DWORD	fatbase;		/* FAT start sector */
-	DWORD	dirbase;		/* Root directory start sector (FAT32:Cluster#) */
-	DWORD	database;		/* Data start sector */
-	DWORD	winsect;		/* Current sector appearing in the win[] */
-	BYTE	win[_MAX_SS];	/* Disk access window for Directory, FAT (and Data on tiny cfg) */
+	uint32_t	n_fatent;		/* Number of FAT entries (= number of clusters + 2) */
+	uint32_t	fsize;			/* Sectors per FAT */
+	uint32_t	fatbase;		/* FAT start sector */
+	uint32_t	dirbase;		/* Root directory start sector (FAT32:Cluster#) */
+	uint32_t	database;		/* Data start sector */
+	uint32_t	winsect;		/* Current sector appearing in the win[] */
+	uint8_t	win[_MAX_SS];	/* Disk access window for Directory, FAT (and Data on tiny cfg) */
 } FATFS;
 
 
@@ -112,26 +112,26 @@ typedef struct {
 
 typedef struct {
 	FATFS*	fs;				/* Pointer to the related file system object */
-	WORD	id;				/* File system mount ID of the related file system object */
-	BYTE	flag;			/* File status flags */
-	BYTE	pad1;
-	DWORD	fptr;			/* File read/write pointer (0ed on file open) */
-	DWORD	fsize;			/* File size */
-	DWORD	sclust;			/* File data start cluster (0:no data cluster, always 0 when fsize is 0) */
-	DWORD	clust;			/* Current cluster of fpter */
-	DWORD	dsect;			/* Current data sector of fpter */
+	uint16_t	id;				/* File system mount ID of the related file system object */
+	uint8_t	flag;			/* File status flags */
+	uint8_t	pad1;
+	uint32_t	fptr;			/* File read/write pointer (0ed on file open) */
+	uint32_t	fsize;			/* File size */
+	uint32_t	sclust;			/* File data start cluster (0:no data cluster, always 0 when fsize is 0) */
+	uint32_t	clust;			/* Current cluster of fpter */
+	uint32_t	dsect;			/* Current data sector of fpter */
 #if !_FS_READONLY
-	DWORD	dir_sect;		/* Sector containing the directory entry */
-	BYTE*	dir_ptr;		/* Pointer to the directory entry in the window */
+	uint32_t	dir_sect;		/* Sector containing the directory entry */
+	uint8_t*	dir_ptr;		/* Pointer to the directory entry in the window */
 #endif
 #if _USE_FASTSEEK
-	DWORD*	cltbl;			/* Pointer to the cluster link map table (null on file open) */
+	uint32_t*	cltbl;			/* Pointer to the cluster link map table (null on file open) */
 #endif
 #if _FS_LOCK
-	UINT	lockid;			/* File lock ID (index of file semaphore table Files[]) */
+	uint32_t	lockid;			/* File lock ID (index of file semaphore table Files[]) */
 #endif
 #if !_FS_TINY
-	BYTE	buf[_MAX_SS];	/* File data read/write buffer */
+	uint8_t	buf[_MAX_SS];	/* File data read/write buffer */
 #endif
 } FIL;
 
@@ -141,16 +141,16 @@ typedef struct {
 
 typedef struct {
 	FATFS*	fs;				/* Pointer to the owner file system object */
-	WORD	id;				/* Owner file system mount ID */
-	WORD	index;			/* Current read/write index number */
-	DWORD	sclust;			/* Table start cluster (0:Root dir) */
-	DWORD	clust;			/* Current cluster */
-	DWORD	sect;			/* Current sector */
-	BYTE*	dir;			/* Pointer to the current SFN entry in the win[] */
-	BYTE*	fn;				/* Pointer to the SFN (in/out) {file[8],ext[3],status[1]} */
+	uint16_t	id;				/* Owner file system mount ID */
+	uint16_t	index;			/* Current read/write index number */
+	uint32_t	sclust;			/* Table start cluster (0:Root dir) */
+	uint32_t	clust;			/* Current cluster */
+	uint32_t	sect;			/* Current sector */
+	uint8_t*	dir;			/* Pointer to the current SFN entry in the win[] */
+	uint8_t*	fn;				/* Pointer to the SFN (in/out) {file[8],ext[3],status[1]} */
 #if _USE_LFN
-	WCHAR*	lfn;			/* Pointer to the LFN working buffer */
-	WORD	lfn_idx;		/* Last matched LFN index number (0xFFFF:No LFN) */
+	uint16_t*	lfn;			/* Pointer to the LFN working buffer */
+	uint16_t	lfn_idx;		/* Last matched LFN index number (0xFFFF:No LFN) */
 #endif
 } DIR;
 
@@ -159,14 +159,14 @@ typedef struct {
 /* File status structure (FILINFO) */
 
 typedef struct {
-	DWORD	fsize;			/* File size */
-	WORD	fdate;			/* Last modified date */
-	WORD	ftime;			/* Last modified time */
-	BYTE	fattrib;		/* Attribute */
+	uint32_t	fsize;			/* File size */
+	uint16_t	fdate;			/* Last modified date */
+	uint16_t	ftime;			/* Last modified time */
+	uint8_t	fattrib;		/* Attribute */
 	TCHAR	fname[13];		/* Short file name (8.3 format) */
 #if _USE_LFN
 	TCHAR*	lfname;			/* Pointer to the LFN buffer */
-	UINT 	lfsize;			/* Size of LFN buffer in TCHAR */
+	uint32_t 	lfsize;			/* Size of LFN buffer in TCHAR */
 #endif
 } FILINFO;
 
@@ -202,29 +202,29 @@ typedef enum {
 /*--------------------------------------------------------------*/
 /* FatFs module application interface                           */
 
-FRESULT f_mount (BYTE, FATFS*);						/* Mount/Unmount a logical drive */
-FRESULT f_open (FIL*, const TCHAR*, BYTE);			/* Open or create a file */
-FRESULT f_read (FIL*, void*, UINT, UINT*);			/* Read data from a file */
-FRESULT f_lseek (FIL*, DWORD);						/* Move file pointer of a file object */
+FRESULT f_mount (uint8_t, FATFS*);						/* Mount/Unmount a logical drive */
+FRESULT f_open (FIL*, const TCHAR*, uint8_t);			/* Open or create a file */
+FRESULT f_read (FIL*, void*, uint32_t, uint32_t*);			/* Read data from a file */
+FRESULT f_lseek (FIL*, uint32_t);						/* Move file pointer of a file object */
 FRESULT f_close (FIL*);								/* Close an open file object */
 FRESULT f_opendir (DIR*, const TCHAR*);				/* Open an existing directory */
 FRESULT f_readdir (DIR*, FILINFO*);					/* Read a directory item */
 FRESULT f_stat (const TCHAR*, FILINFO*);			/* Get file status */
-FRESULT f_write (FIL*, const void*, UINT, UINT*);	/* Write data to a file */
-FRESULT f_getfree (const TCHAR*, DWORD*, FATFS**);	/* Get number of free clusters on the drive */
+FRESULT f_write (FIL*, const void*, uint32_t, uint32_t*);	/* Write data to a file */
+FRESULT f_getfree (const TCHAR*, uint32_t*, FATFS**);	/* Get number of free clusters on the drive */
 FRESULT f_truncate (FIL*);							/* Truncate file */
 FRESULT f_sync (FIL*);								/* Flush cached data of a writing file */
 FRESULT f_unlink (const TCHAR*);					/* Delete an existing file or directory */
 FRESULT	f_mkdir (const TCHAR*);						/* Create a new directory */
-FRESULT f_chmod (const TCHAR*, BYTE, BYTE);			/* Change attribute of the file/dir */
+FRESULT f_chmod (const TCHAR*, uint8_t, uint8_t);			/* Change attribute of the file/dir */
 FRESULT f_utime (const TCHAR*, const FILINFO*);		/* Change times-tamp of the file/dir */
 FRESULT f_rename (const TCHAR*, const TCHAR*);		/* Rename/Move a file or directory */
-FRESULT f_chdrive (BYTE);							/* Change current drive */
+FRESULT f_chdrive (uint8_t);							/* Change current drive */
 FRESULT f_chdir (const TCHAR*);						/* Change current directory */
-FRESULT f_getcwd (TCHAR*, UINT);					/* Get current directory */
-FRESULT f_forward (FIL*, UINT(*)(const BYTE*,UINT), UINT, UINT*);	/* Forward data to the stream */
-FRESULT f_mkfs (BYTE, BYTE, UINT);					/* Create a file system on the drive */
-FRESULT	f_fdisk (BYTE, const DWORD[], void*);		/* Divide a physical drive into some partitions */
+FRESULT f_getcwd (TCHAR*, uint32_t);					/* Get current directory */
+FRESULT f_forward (FIL*, uint32_t(*)(const uint8_t*,uint32_t), uint32_t, uint32_t*);	/* Forward data to the stream */
+FRESULT f_mkfs (uint8_t, uint8_t, uint32_t);					/* Create a file system on the drive */
+FRESULT	f_fdisk (uint8_t, const uint32_t[], void*);		/* Divide a physical drive into some partitions */
 int f_putc (TCHAR, FIL*);							/* Put a character to the file */
 int f_puts (const TCHAR*, FIL*);					/* Put a string to the file */
 int f_printf (FIL*, const TCHAR*, ...);				/* Put a formatted string to the file */
@@ -247,22 +247,22 @@ TCHAR* f_gets (TCHAR*, int, FIL*);					/* Get a string from the file */
 
 /* RTC function */
 #if !_FS_READONLY
-DWORD get_fattime (void);
+uint32_t get_fattime (void);
 #endif
 
 /* Unicode support functions */
 #if _USE_LFN						/* Unicode - OEM code conversion */
-WCHAR ff_convert (WCHAR, UINT);		/* OEM-Unicode bidirectional conversion */
-WCHAR ff_wtoupper (WCHAR);			/* Unicode upper-case conversion */
+uint16_t ff_convert (uint16_t, uint32_t);		/* OEM-Unicode bidirectional conversion */
+uint16_t ff_wtoupper (uint16_t);			/* Unicode upper-case conversion */
 #if _USE_LFN == 3					/* Memory functions */
-void* ff_memalloc (UINT);			/* Allocate memory block */
+void* ff_memalloc (uint32_t);			/* Allocate memory block */
 void ff_memfree (void*);			/* Free memory block */
 #endif
 #endif
 
 /* Sync functions */
 #if _FS_REENTRANT
-int ff_cre_syncobj (BYTE, _SYNC_t*);/* Create a sync object */
+int ff_cre_syncobj (uint8_t, _SYNC_t*);/* Create a sync object */
 int ff_req_grant (_SYNC_t);			/* Lock sync object */
 void ff_rel_grant (_SYNC_t);		/* Unlock sync object */
 int ff_del_syncobj (_SYNC_t);		/* Delete a sync object */
@@ -319,15 +319,15 @@ int ff_del_syncobj (_SYNC_t);		/* Delete a sync object */
 /* Multi-byte word access macros  */
 
 #if _WORD_ACCESS == 1	/* Enable word access to the FAT structure */
-#define	LD_WORD(ptr)		(WORD)(*(WORD*)(BYTE*)(ptr))
-#define	LD_DWORD(ptr)		(DWORD)(*(DWORD*)(BYTE*)(ptr))
-#define	ST_WORD(ptr,val)	*(WORD*)(BYTE*)(ptr)=(WORD)(val)
-#define	ST_DWORD(ptr,val)	*(DWORD*)(BYTE*)(ptr)=(DWORD)(val)
+#define	LD_WORD(ptr)		(uint16_t)(* (uint16_t *)(uint8_t *)(ptr))
+#define	LD_DWORD(ptr)		(uint32_t)(* (uint32_t *)(uint8_t *)(ptr))
+#define	ST_WORD(ptr,val)	*(uint16_t *)(uint8_t *)(ptr) = (uint16_t)(val)
+#define	ST_DWORD(ptr,val)	*(uint32_t *)(uint8_t *)(ptr) = (uint32_t)(val)
 #else					/* Use byte-by-byte access to the FAT structure */
-#define	LD_WORD(ptr)		(WORD)(((WORD)*((BYTE*)(ptr)+1)<<8)|(WORD)*(BYTE*)(ptr))
-#define	LD_DWORD(ptr)		(DWORD)(((DWORD)*((BYTE*)(ptr)+3)<<24)|((DWORD)*((BYTE*)(ptr)+2)<<16)|((WORD)*((BYTE*)(ptr)+1)<<8)|*(BYTE*)(ptr))
-#define	ST_WORD(ptr,val)	*(BYTE*)(ptr)=(BYTE)(val); *((BYTE*)(ptr)+1)=(BYTE)((WORD)(val)>>8)
-#define	ST_DWORD(ptr,val)	*(BYTE*)(ptr)=(BYTE)(val); *((BYTE*)(ptr)+1)=(BYTE)((WORD)(val)>>8); *((BYTE*)(ptr)+2)=(BYTE)((DWORD)(val)>>16); *((BYTE*)(ptr)+3)=(BYTE)((DWORD)(val)>>24)
+#define	LD_WORD(ptr)		(uint16_t)(((uint16_t)*((uint8_t *)(ptr) + 1) << 8)| (uint16_t) *(uint8_t *)(ptr))
+#define	LD_DWORD(ptr)		(uint32_t)(((uint32_t)*((uint8_t *)(ptr) + 3) << 24) | ((uint32_t)*((uint8_t*)(ptr) + 2) << 16) | ((uint16_t) *((uint8_t*)(ptr) + 1) << 8) | *(uint8_t*)(ptr))
+#define	ST_WORD(ptr,val)	*(uint8_t *)(ptr) = (uint8_t)(val); *((uint8_t *)(ptr)+1) = (uint8_t)((uint16_t)(val) >> 8)
+#define	ST_DWORD(ptr,val)	*(uint8_t *)(ptr) = (uint8_t)(val); *((uint8_t *)(ptr) + 1) = (uint8_t)((uint16_t)(val) >> 8); *((uint8_t*)(ptr) + 2) = (uint8_t)((uint32_t)(val) >> 16); *((uint8_t *)(ptr) + 3) = (uint8_t)((uint32_t)(val) >> 24)
 #endif
 
 #ifdef __cplusplus

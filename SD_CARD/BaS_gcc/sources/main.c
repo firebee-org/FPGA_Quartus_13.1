@@ -8,7 +8,7 @@
 
 FATFS Fatfs;		/* File system object */
 FIL Fil;			/* File object */
-BYTE Buff[128];		/* File read buffer */
+uint8_t Buff[128];		/* File read buffer */
 
 
 void die (		/* Stop with dying message */
@@ -29,7 +29,7 @@ int main (void)
 	FRESULT rc;				/* Result code */
 	DIR dir;				/* Directory object */
 	FILINFO fno;			/* File information object */
-	UINT bw, br, i;
+	uint32_t bw, br, i;
 
 
 	f_mount(0, &Fatfs);		/* Register volume work area (never fails) */
@@ -89,12 +89,12 @@ int main (void)
 /* User Provided Timer Function for FatFs module           */
 /*---------------------------------------------------------*/
 
-DWORD get_fattime (void)
+uint32_t get_fattime (void)
 {
-	return	  ((DWORD)(2012 - 1980) << 25)	/* Year = 2012 */
-			| ((DWORD)1 << 21)				/* Month = 1 */
-			| ((DWORD)1 << 16)				/* Day_m = 1*/
-			| ((DWORD)0 << 11)				/* Hour = 0 */
-			| ((DWORD)0 << 5)				/* Min = 0 */
-			| ((DWORD)0 >> 1);				/* Sec = 0 */
+	return	  ((uint32_t)(2012 - 1980) << 25)	/* Year = 2012 */
+			| ((uint32_t)1 << 21)				/* Month = 1 */
+			| ((uint32_t)1 << 16)				/* Day_m = 1*/
+			| ((uint32_t)0 << 11)				/* Hour = 0 */
+			| ((uint32_t)0 << 5)				/* Min = 0 */
+			| ((uint32_t)0 >> 1);				/* Sec = 0 */
 }
