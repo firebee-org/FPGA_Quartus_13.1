@@ -68,8 +68,8 @@ write 0xFF000240 0x80000000 4	# disable watchdog arbiter
 
 # notify flashlib that we have flash at address 0xE0000000, length 0x7FFFFF, plugin is flash29
 flash 0xE0000000
-# do not flash yet. First check if board can be initialized correctly
 
+# flash-plugin (target-based flashing) does not work yet 
 #flash-plugin 0x10000000 0x4000 flash29.plugin
 
 # contrary to documentation, it seems we need to erase-wait after each sector
