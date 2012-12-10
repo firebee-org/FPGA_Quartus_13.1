@@ -1,8 +1,8 @@
-#ifndef _CACHE_H_
-#define _CACHE_H_
-
 /*
- * cache.h
+ * wait.c
+ *
+ *  Created on: 10.12.2012
+ *      Author: mfro
  *
  * This file is part of BaS_gcc.
  *
@@ -26,7 +26,33 @@
  */
 
 #include <stdint.h>
+#include <MCF5475.h>
 
-extern void flush_and_invalidate_caches(void);
+#include <wait.h>
 
-#endif /* _CACHE_H_ */
+/*
+ * wait for the specified number of us on slice timer 0. Replaces the original routines that had
+ * the number of useconds to wait for hardcoded in their name.
+ */
+inline void wait(uint32_t us)
+{
+	uint32_t target = MCF_SLT_SCNT(0) - (us * 132);
+
+	while (MCF_SLT_SCNT(0) > target);
+}
+
+/*
+ * the same as above, with a checker function which gets called while
+ * busy waiting and allows for an early return if it returns true
+ */
+inline bool waitfor(uint32_t us, int (*condition)(void))
+{
+	uint32_t target = MCF_SLT_SCNT(0) - (us * 132);
+
+	do
+	{
+		if ((*condition)())
+			return TRUE;
+	} while (MCF_SLT_SCNT(0) > target);
+	return FALSE;
+}

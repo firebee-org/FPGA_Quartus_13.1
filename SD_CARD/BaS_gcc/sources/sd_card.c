@@ -24,11 +24,10 @@
 
 #include <stdint.h>
 #include <MCF5475.h>
-#include "bas_printf.h"
-#include "sd_card.h"
+#include <bas_printf.h>
+#include <sd_card.h>
+#include <wait.h>
 #include "diskio.h"
-
-#define xprintf xprintf_before_copy
 
 /*
  * "standard value" for DSPI module configuration register MCF_DSPC_DMCR
@@ -41,8 +40,6 @@ const uint32_t DSPI_DMCR_CONF = MCF_DSPI_DMCR_MSTR |	/* FireBee is DSPI master*/
 			MCF_DSPI_DMCR_CTXF |	/* clear transmit FIFO */
 			MCF_DSPI_DMCR_CRXF;		/* clear receive FIFO */
 			/* 0x800d3c00 */
-
-extern void wait(volatile uint32_t value);
 
 #ifdef _NOT_USED_	/* disabled assembler routines */
 
