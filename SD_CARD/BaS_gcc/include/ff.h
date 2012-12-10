@@ -41,9 +41,9 @@ extern PARTITION VolToPart[];	/* Volume - Partition resolution table */
 #define LD2PD(vol) (VolToPart[vol].pd)	/* Get physical drive number */
 #define LD2PT(vol) (VolToPart[vol].pt)	/* Get partition index */
 
-#else							/* Single partition configuration */
+#else								/* Single partition configuration */
 #define LD2PD(vol) (uint8_t)(vol)	/* Each logical drive is bound to the same physical drive number */
-#define LD2PT(vol) 0			/* Always mounts the 1st partition or in SFD */
+#define LD2PT(vol) 0				/* Always mounts the 1st partition or in SFD */
 
 #endif
 
@@ -321,12 +321,12 @@ int ff_del_syncobj (_SYNC_t);		/* Delete a sync object */
 #if _WORD_ACCESS == 1	/* Enable word access to the FAT structure */
 #define	LD_WORD(ptr)		(uint16_t)(* (uint16_t *)(uint8_t *)(ptr))
 #define	LD_DWORD(ptr)		(uint32_t)(* (uint32_t *)(uint8_t *)(ptr))
-#define	ST_WORD(ptr,val)	*(uint16_t *)(uint8_t *)(ptr) = (uint16_t)(val)
-#define	ST_DWORD(ptr,val)	*(uint32_t *)(uint8_t *)(ptr) = (uint32_t)(val)
+#define	ST_WORD(ptr,val)	*(uint16_t *) (uint8_t *)(ptr) = (uint16_t)(val)
+#define	ST_DWORD(ptr,val)	*(uint32_t *) (uint8_t *)(ptr) = (uint32_t)(val)
 #else					/* Use byte-by-byte access to the FAT structure */
-#define	LD_WORD(ptr)		(uint16_t)(((uint16_t)*((uint8_t *)(ptr) + 1) << 8)| (uint16_t) *(uint8_t *)(ptr))
+#define	LD_WORD(ptr)		(uint16_t)(((uint16_t)*((uint8_t *)(ptr) + 1) << 8) | (uint16_t) *(uint8_t *)(ptr))
 #define	LD_DWORD(ptr)		(uint32_t)(((uint32_t)*((uint8_t *)(ptr) + 3) << 24) | ((uint32_t)*((uint8_t*)(ptr) + 2) << 16) | ((uint16_t) *((uint8_t*)(ptr) + 1) << 8) | *(uint8_t*)(ptr))
-#define	ST_WORD(ptr,val)	*(uint8_t *)(ptr) = (uint8_t)(val); *((uint8_t *)(ptr)+1) = (uint8_t)((uint16_t)(val) >> 8)
+#define	ST_WORD(ptr,val)	*(uint8_t *)(ptr) = (uint8_t)(val); *((uint8_t *)(ptr) + 1) = (uint8_t)((uint16_t)(val) >> 8)
 #define	ST_DWORD(ptr,val)	*(uint8_t *)(ptr) = (uint8_t)(val); *((uint8_t *)(ptr) + 1) = (uint8_t)((uint16_t)(val) >> 8); *((uint8_t*)(ptr) + 2) = (uint8_t)((uint32_t)(val) >> 16); *((uint8_t *)(ptr) + 3) = (uint8_t)((uint32_t)(val) >> 24)
 #endif
 
