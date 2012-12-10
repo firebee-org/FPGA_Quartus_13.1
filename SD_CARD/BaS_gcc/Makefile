@@ -60,8 +60,9 @@ CSRCS= \
 	$(SRCDIR)/BaS.c \
 	$(SRCDIR)/cache.c \
 	$(SRCDIR)/sd_card.c \
+	$(SRCDIR)/mmcbb.c \
 	$(SRCDIR)/ff.c \
-	$(SRCDIR)/mmcbb.c
+	$(SRCDIR)/wait.c
 
 ASRCS= \
 	$(SRCDIR)/startcf.S \
