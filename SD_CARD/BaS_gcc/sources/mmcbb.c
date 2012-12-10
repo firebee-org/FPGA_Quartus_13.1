@@ -157,7 +157,7 @@ static void xmit_spi_multi(const uint8_t *buff, uint32_t btx)
 #endif
 
 
-static int card_ready(void)
+static uint32_t card_ready(void)
 {
 	uint8_t d;
 
@@ -231,7 +231,7 @@ static void power_on (void)	/* Enable SSP module and attach it to I/O pads */
 #endif
 	CS_HIGH();					/* Set CS# high */
 #endif /* _NOT_USED_ */
-	for (Timer1 = 10; Timer1; ) ;	/* 10ms */
+	wait(10 * 1000);	/* 10ms */
 }
 
 

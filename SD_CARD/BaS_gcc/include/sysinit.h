@@ -28,8 +28,7 @@
 #ifndef __SYSINIT_H__
 #define __SYSINIT_H__
 #include <bas_types.h>
-
-extern inline bool waitfor(uint32_t us, int (*condition)(void));
+#include <wait.h>
 
 /* adresses where FPGA data lives in flash */
 #define FPGA_FLASH_DATA ((uint8_t *) 0xe0700000L)

@@ -45,14 +45,15 @@ inline void wait(uint32_t us)
  * the same as above, with a checker function which gets called while
  * busy waiting and allows for an early return if it returns true
  */
-inline bool waitfor(uint32_t us, int (*condition)(void))
+inline uint32_t waitfor(uint32_t us, uint32_t (*condition)(void))
 {
 	uint32_t target = MCF_SLT_SCNT(0) - (us * 132);
+	uint32_t res;
 
 	do
 	{
-		if ((*condition)())
-			return TRUE;
+		if ((res = (*condition)()))
+			return res;
 	} while (MCF_SLT_SCNT(0) > target);
-	return FALSE;
+	return 0;
 }

@@ -30,7 +30,7 @@
 #include <bas_types.h>
 
 extern inline void wait(uint32_t us);
-extern inline bool waitfor(uint32_t us, int (*condition)(void));
+extern inline uint32_t waitfor(uint32_t us, uint32_t (*condition)(void));
 
 
 #endif /* _WAIT_H_ */

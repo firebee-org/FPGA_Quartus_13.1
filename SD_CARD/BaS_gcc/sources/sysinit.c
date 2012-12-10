@@ -495,7 +495,7 @@ void test_upd720101(void)
 	xprintf("finished\r\n");
 }
 
-static bool i2c_transfer_finished(void)
+static uint32_t i2c_transfer_finished(void)
 {
 	if (MCF_I2C_I2SR & MCF_I2C_I2SR_IIF)
 		return TRUE;
@@ -509,7 +509,7 @@ static void wait_i2c_transfer_finished(void)
 	MCF_I2C_I2SR &= ~MCF_I2C_I2SR_IIF; 			/* clear interrupt bit (byte transfer finished */
 }
 
-static bool i2c_bus_free(void)
+static uint32_t i2c_bus_free(void)
 {
 	return (MCF_I2C_I2SR & MCF_I2C_I2SR_IBB);
 }
