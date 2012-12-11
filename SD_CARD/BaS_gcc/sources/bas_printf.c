@@ -54,7 +54,6 @@
 
 #define INF	32766		/* should be bigger than any field to print */
 
-static char buf[128];
 static char snil[] = "(nil)";
 
 static void xputchar(int c)
@@ -101,6 +100,7 @@ size_t strlen(const char *s)
 
 static void doprnt(void (*addchar)(int), const char *sfmt, va_list ap)
 {
+	static char buf[128];
 	char *bp;
 	const char *f;
 	long l;
