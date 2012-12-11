@@ -16,7 +16,44 @@ flash 0xe0000000
 # flash-plugin (target-based flashing) does not work yet 
 # flash-plugin 0x10000000 0x4000 flash29.plugin
 
+# Erase flash from 0xE0400000 to 0xE04FFFFF (reserved space for FireTOS)
+#
+# Caution: sector offset numbers need to be the ones from the x16 address range
+# column and they vary in size - needs to be exactly as in the data sheet (p. 9)
+#
 # contrary to documentation, it seems we need to erase-wait after each sector
-#erase 0xe0000000 -1
-#erase-wait 0xe0000000
+
+erase 0xe0000000 0x200000
+erase-wait 0xe0000000
+erase 0xe0000000 0x208000
+erase-wait 0xe0000000
+erase 0xe0000000 0x210000
+erase-wait 0xe0000000
+erase 0xe0000000 0x218000
+erase-wait 0xe0000000
+erase 0xe0000000 0x220000
+erase-wait 0xe0000000
+erase 0xe0000000 0x228000
+erase-wait 0xe0000000
+erase 0xe0000000 0x230000
+erase-wait 0xe0000000
+erase 0xe0000000 0x238000
+erase-wait 0xe0000000
+erase 0xe0000000 0x240000
+erase-wait 0xe0000000
+erase 0xe0000000 0x248000
+erase-wait 0xe0000000
+erase 0xe0000000 0x250000
+erase-wait 0xe0000000
+erase 0xe0000000 0x258000
+erase-wait 0xe0000000
+erase 0xe0000000 0x260000
+erase-wait 0xe0000000
+erase 0xe0000000 0x268000
+erase-wait 0xe0000000
+erase 0xe0000000 0x270000
+erase-wait 0xe0000000
+erase 0xe0000000 0x278000
+erase-wait 0xe0000000
+
 load -v firetos.elf

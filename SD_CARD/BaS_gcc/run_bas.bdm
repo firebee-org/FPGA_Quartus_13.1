@@ -66,29 +66,7 @@ write 0xFF000104 0x710D0F00 4	# SDCR (lock SDMR and enable refresh)
 
 write 0xFF000240 0x80000000 4	# disable watchdog arbiter
 
-# notify flashlib that we have flash at address 0xE0000000, length 0x7FFFFF, plugin is flash29
-flash 0xE0000000
-
-# flash-plugin (target-based flashing) does not work yet 
-#flash-plugin 0x10000000 0x4000 flash29.plugin
-
-# Erase flash from 0xE0000000 to 0xE00FFFFF (reserved space for BaS)
-#
-# Caution: sector offset numbers need to be the ones from the x16 address range
-# column and they vary in size - needs to be exactly as in the data sheet (p. 9)
-#
-# contrary to documentation, it seems we need to erase-wait after each sector
-
-erase 0xE0000000 0x00000
-erase-wait 0xE0000000
-erase 0xE0000000 0x08000
-erase-wait 0xE0000000
-erase 0xE0000000 0x10000
-erase-wait 0xE0000000
-erase 0xE0000000 0x18000
-erase-wait 0xE0000000
-
-load -v bas.elf
+load -v ram.elf
 wait
 sleep 100
 execute
