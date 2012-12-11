@@ -1,6 +1,6 @@
 #!/usr/local/bin/bdmctrl -D2
 #
-# firebee board initialization for bdmctrl 
+# flash EmuTOS using bdmctrl
 #
 open $1
 reset
@@ -16,7 +16,21 @@ flash 0xe0000000
 # flash-plugin (target-based flashing) does not work yet 
 # flash-plugin 0x10000000 0x4000 flash29.plugin
 
-# contrary to documentation, it seems we need to erase-wait after each sector
-erase 0xe0000000 -1
+erase 0xe0000000 0x600000
+erase 0xe0000000 0x610000
+erase 0xe0000000 0x620000
+erase 0xe0000000 0x630000
+erase 0xe0000000 0x640000
+erase 0xe0000000 0x650000
+erase 0xe0000000 0x660000
+erase 0xe0000000 0x670000
+erase 0xe0000000 0x680000
+erase 0xe0000000 0x690000
+erase 0xe0000000 0x6a0000
+erase 0xe0000000 0x6b0000
+erase 0xe0000000 0x6c0000
+erase 0xe0000000 0x6d0000
+erase 0xe0000000 0x6e0000
+erase 0xe0000000 0x6f0000
 erase-wait 0xe0000000
 load -v emutosfb.elf
