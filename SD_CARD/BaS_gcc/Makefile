@@ -32,6 +32,7 @@ CFLAGS=-mcpu=5474\
 	   -Wall\
 	   -g\
 	   -Wno-multichar\
+	   -Winline\
 	   -Os\
 	   -fomit-frame-pointer\
 	   -fno-strict-aliasing\

@@ -29,8 +29,31 @@
 
 #include <bas_types.h>
 
-extern inline void wait(uint32_t us);
-extern inline uint32_t waitfor(uint32_t us, uint32_t (*condition)(void));
+/*
+ * wait for the specified number of us on slice timer 0. Replaces the original routines that had
+ * the number of useconds to wait for hardcoded in their name.
+ */
+extern __inline__ void wait(uint32_t us)
+{
+	uint32_t target = MCF_SLT_SCNT(0) - (us * 132);
 
+	while (MCF_SLT_SCNT(0) > target);
+}
 
+/*
+ * the same as above, with a checker function which gets called while
+ * busy waiting and allows for an early return if it returns true
+ */
+extern __inline__ uint32_t waitfor(uint32_t us, uint32_t (*condition)(void))
+{
+	uint32_t target = MCF_SLT_SCNT(0) - (us * 132);
+	uint32_t res;
+
+	do
+	{
+		if ((res = (*condition)()))
+			return res;
+	} while (MCF_SLT_SCNT(0) > target);
+	return 0;
+}
 #endif /* _WAIT_H_ */
