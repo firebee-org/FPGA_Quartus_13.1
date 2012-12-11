@@ -1,0 +1,22 @@
+#!/usr/local/bin/bdmctrl -D2
+#
+# firebee board initialization for bdmctrl 
+#
+open $1
+reset
+
+# Init CS0 (BootFLASH @ E000_0000 - E07F_FFFF 8Mbytes)
+write 0xFF000500 0xE0000000 4
+write 0xFF000508 0x00001180 4
+write 0xFF000504 0x007F0001 4
+
+# notify flashlib that we have flash at address 0xE0000000, length 0x7FFFFF, plugin is flash29
+flash 0xe0000000
+
+# flash-plugin (target-based flashing) does not work yet 
+# flash-plugin 0x10000000 0x4000 flash29.plugin
+
+# contrary to documentation, it seems we need to erase-wait after each sector
+#erase 0xe0000000 -1
+#erase-wait 0xe0000000
+load -v FPGA.elf

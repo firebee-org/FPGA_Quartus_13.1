@@ -115,7 +115,7 @@ static uint8_t xchg_spi(uint8_t byte)
 {
 	* (volatile uint8_t *) (&MCF_DSPI_DTFR + 3) = byte;
 
-	while (! (MCF_DSPI_DSR & MCF_DSPI_DSR_TCF));	/* wait until DSPI transfer complete */
+	//while (! (MCF_DSPI_DSR & MCF_DSPI_DSR_TCF));	/* wait until DSPI transfer complete */
 	MCF_DSPI_DSR = 0xffffffff;						/* clear DSPI status register */
 
 	return * (volatile uint8_t *) (&MCF_DSPI_DRFR + 3);
