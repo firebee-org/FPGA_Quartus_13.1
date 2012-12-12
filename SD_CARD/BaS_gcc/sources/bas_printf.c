@@ -100,7 +100,7 @@ size_t strlen(const char *s)
 
 static void doprnt(void (*addchar)(int), const char *sfmt, va_list ap)
 {
-	char buf[128];
+	char buf[128]; /* FIXME: this gets allocated in BSS which is not reachable in -mpcrel code */
 	char *bp;
 	const char *f;
 	long l;
