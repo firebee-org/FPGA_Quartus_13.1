@@ -100,7 +100,7 @@ size_t strlen(const char *s)
 
 static void doprnt(void (*addchar)(int), const char *sfmt, va_list ap)
 {
-	static char buf[128];
+	char buf[128];
 	char *bp;
 	const char *f;
 	long l;
