@@ -328,10 +328,11 @@ void wait_pll(void)
 	} while ((* (volatile int16_t *) 0xf0000800 < 0) && MCF_SLT0_SCNT > trgt);
 }
 
-static volatile uint8_t *pll_base = (volatile uint8_t *) 0xf0000600;
 
 void init_pll(void)
 {
+	static volatile uint8_t *pll_base = (volatile uint8_t *) 0xf0000600;
+
 	xprintf("FPGA PLL initialization: ");
 
 	wait_pll();
