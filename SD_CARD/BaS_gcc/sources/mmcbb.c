@@ -101,7 +101,7 @@
 #define CMD58	(58)		/* READ_OCR */
 
 
-static volatile DSTATUS Stat = STA_NOINIT;	/* Physical drive status */
+static volatile DSTATUS Stat = 0 /* STA_NOINIT */;	/* Physical drive status */
 static uint8_t CardType;			/* Card type flags */
 
 

@@ -751,9 +751,6 @@ livo:
 
 /* Symbols from the linker script */
 
-extern uint8_t _STRAM_END[];
-#define STRAM_END ((uint32_t)_STRAM_END)
-
 extern uint8_t _FIRETOS[];
 #define FIRETOS ((uint32_t)_FIRETOS) /* where FireTOS is stored in flash */
 

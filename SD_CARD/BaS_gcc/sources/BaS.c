@@ -32,6 +32,8 @@
 #include "sd_card.h"
 #include <wait.h>
 
+#include <diskio.h>
+#include <ff.h>
 /* imported routines */
 extern int mmu_init();
 extern int vec_init();
@@ -175,12 +177,25 @@ void BaS(void)
 	uint8_t *src;
 	uint8_t *dst = (uint8_t *)TOS;
 	uint32_t *adr;
+	DRESULT res;
+	FATFS fs;
+	FRESULT fres;
 
-
-	disk_initialize(0);
 	pic_init();
 	nvram_init();
 
+	disk_initialize(0);
+	res = disk_status(0);
+	xprintf("disk status of SD card is %d\r\n", res);
+	if (res == RES_OK)
+	{
+		fres = f_mount(0, &fs);
+		xprintf("mount status of SD card fs is %d\r\n", fres);
+		if (fres == FR_OK)
+		{
+			;
+		}
+	}
 	xprintf("copy EmuTOS: ");
 
 	/* copy EMUTOS */
