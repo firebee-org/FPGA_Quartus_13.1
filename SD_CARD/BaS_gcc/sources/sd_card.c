@@ -41,38 +41,6 @@ const uint32_t DSPI_DMCR_CONF = MCF_DSPI_DMCR_MSTR |	/* FireBee is DSPI master*/
 			MCF_DSPI_DMCR_CRXF;		/* clear receive FIFO */
 			/* 0x800d3c00 */
 
-#ifdef _NOT_USED_	/* disabled assembler routines */
-
-void sd_card_idle(void)
-{
-	__asm__ __volatile__ (
-			".extern	sd_idle\n\t"
-			"bsr		sd_idle\n\t"
-			/* output */:
-			/* input */ :
-			/* clobber */: "a0","a1","a2","a3","a4","a5",
-			              "d0","d1","d2","d3","d4","d5","d6","d7","memory"
-	);
-}
-
-
-
-int spi_init(void)
-{
-	register int ret __asm__("d0");
-
-	__asm__ __volatile__ (
-		".extern		sd_init\n\t"
-		"bsr.l			sd_init\n\t"
-		/* output */: "=r" (ret)
-		/* input */ :
-		/* clobber */: "a0","a1","a2","a3","a4","a5",
-		              "d1","d2","d3","d4","d5","d6","d7","memory"
-	);
-
-	return ret;
-}
-#endif /* _NOT_USED_ */
 
 /*
  * Write data to the DSPI TX FIFO register
@@ -101,20 +69,31 @@ uint32_t spi_command(uint32_t data)
 #define MCF_DSPI_DTFR_BYTE _MBAR[0x8a37]
 inline uint8_t spi_send_byte(uint8_t byte)
 {
+	uint8_t ret;
+
 	MCF_DSPI_DTFR_BYTE = byte;
 
-	return MCF_DSPI_DTFR_BYTE;
+	while (! (MCF_DSPI_DSR & MCF_DSPI_DSR_TCF));	/* wait until DSPI transfer complete */
+	ret = MCF_DSPI_DTFR_BYTE;
+	MCF_DSPI_DSR = 0xffffffff;
+
+	return ret;
 }
 
 /*
  * as above, but word sized
  */
-#define MCF_DSPI_DTFR_WORD _MBAR[0x8ad6]
+#define MCF_DSPI_DTFR_WORD * (uint16_t *) &_MBAR[0x8ad6]
 inline uint16_t spi_send_word(uint16_t word)
 {
+	uint16_t ret;
+
 	MCF_DSPI_DTFR_WORD = word;
 
-	return MCF_DSPI_DTFR_WORD;
+	ret = MCF_DSPI_DTFR_WORD;
+	MCF_DSPI_DSR = 0xffffffff;
+
+	return ret;
 }
 
 int spi_init(void)
@@ -125,7 +104,7 @@ int spi_init(void)
 
 	xprintf("SD-Card initialization: ");
 
-	MCF_PAD_PAR_DSPI = 0x1fff;	/* configure all DSPI GPIO pins for DSPI usage */
+	MCF_PAD_PAR_DSPI = 0x1fff;			/* configure all DSPI GPIO pins for DSPI usage */
 	MCF_PAD_PAR_TIMER = 0xff;			/*
 										 * FIXME: really necessary or just an oversight
 										 * that PAD_PAR_DSPI is only 16 bit?

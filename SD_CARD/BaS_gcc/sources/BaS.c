@@ -183,7 +183,6 @@ void BaS(void)
 
 	pic_init();
 	nvram_init();
-
 	disk_initialize(0);
 	res = disk_status(0);
 	xprintf("disk status of SD card is %d\r\n", res);

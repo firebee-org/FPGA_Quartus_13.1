@@ -31,6 +31,7 @@
 #define _SD_CARD_H_
 
 #include <MCF5475.h>
+#include <stdint.h>
 
 extern int spi_init(void);
 extern uint32_t sd_com(uint32_t data);
