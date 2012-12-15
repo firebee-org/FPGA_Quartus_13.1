@@ -202,7 +202,7 @@ void BaS(void)
 
 				while (((fres = f_readdir(&directory, &fi)) == FR_OK) && fi.fname[0])
 				{
-					xprintf("%13.13s %s %d\r\n", fi.fname, fi.lfname, fi.fsize);
+					xprintf("%13.13s %d\r\n", fi.fname, fi.fsize);
 				}
 			}
 			else
