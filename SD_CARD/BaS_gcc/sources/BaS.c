@@ -193,6 +193,7 @@ void BaS(void)
 		if (fres == FR_OK)
 		{
 			DIR directory;
+			FIL file;
 
 			fres = f_opendir(&directory, "\\");
 			if (fres == FR_OK)
@@ -208,6 +209,18 @@ void BaS(void)
 			{
 				xprintf("could not open directory \"\\\" on SD-card! Error code: %d\r\n", fres);
 			}
+
+			fres = f_open(&file, "WELCOME.MSG", FA_READ);
+			if (fres == FR_OK)
+			{
+				char line[128];
+
+				while (f_gets(line, sizeof(line), &file))
+				{
+					xprintf("%s", line);
+				}
+			}
+			f_close(&file);
 		}
 	}
 	xprintf("copy EmuTOS: ");
