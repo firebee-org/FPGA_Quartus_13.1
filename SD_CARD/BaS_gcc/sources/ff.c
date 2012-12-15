@@ -506,17 +506,17 @@ FILESEM	Files[_FS_LOCK];	/* File lock semaphores */
 
 #elif _USE_LFN == 1			/* LFN feature with static working buffer */
 static uint16_t LfnBuf[_MAX_LFN+1];
-#define	DEF_NAMEBUF			BYTE sfn[12]
+#define	DEF_NAMEBUF			uint8_t sfn[12]
 #define INIT_BUF(dobj)		{ (dobj).fn = sfn; (dobj).lfn = LfnBuf; }
 #define	FREE_BUF()
 
 #elif _USE_LFN == 2 		/* LFN feature with dynamic working buffer on the stack */
-#define	DEF_NAMEBUF			BYTE sfn[12]; WCHAR lbuf[_MAX_LFN+1]
+#define	DEF_NAMEBUF			uint8_t sfn[12]; uint16_t lbuf[_MAX_LFN+1]
 #define INIT_BUF(dobj)		{ (dobj).fn = sfn; (dobj).lfn = lbuf; }
 #define	FREE_BUF()
 
 #elif _USE_LFN == 3 		/* LFN feature with dynamic working buffer on the heap */
-#define	DEF_NAMEBUF			BYTE sfn[12]; WCHAR *lfn
+#define	DEF_NAMEBUF			uint8_t sfn[12]; WCHAR *lfn
 #define INIT_BUF(dobj)		{ lfn = ff_memalloc((_MAX_LFN + 1) * 2); \
 							  if (!lfn) LEAVE_FF((dobj).fs, FR_NOT_ENOUGH_CORE); \
 							  (dobj).lfn = lfn;	(dobj).fn = sfn; }
@@ -3026,7 +3026,7 @@ FRESULT f_lseek (
 
 FRESULT f_opendir (
 	DIR *dj,			/* Pointer to directory object to create */
-	const TCHAR *path	/* Pointer to the directory path */
+	const char *path	/* Pointer to the directory path */
 )
 {
 	FRESULT res;

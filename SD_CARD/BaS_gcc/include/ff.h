@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "ffconf.h"		/* FatFs configuration options */
+#include <ffconf.h>		/* FatFs configuration options */
 
 #if _FATFS != _FFCONF
 #error Wrong configuration file (ffconf.h).
@@ -207,7 +207,7 @@ FRESULT f_open (FIL*, const TCHAR*, uint8_t);			/* Open or create a file */
 FRESULT f_read (FIL*, void*, uint32_t, uint32_t*);			/* Read data from a file */
 FRESULT f_lseek (FIL*, uint32_t);						/* Move file pointer of a file object */
 FRESULT f_close (FIL*);								/* Close an open file object */
-FRESULT f_opendir (DIR*, const TCHAR*);				/* Open an existing directory */
+FRESULT f_opendir (DIR*, const char*);				/* Open an existing directory */
 FRESULT f_readdir (DIR*, FILINFO*);					/* Read a directory item */
 FRESULT f_stat (const TCHAR*, FILINFO*);			/* Get file status */
 FRESULT f_write (FIL*, const void*, uint32_t, uint32_t*);	/* Write data to a file */

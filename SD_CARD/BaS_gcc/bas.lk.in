@@ -12,7 +12,6 @@ SECTIONS
 		objs/startcf.o(.text) /* this one is the entry point so it must be the first */
 		objs/sysinit.o(.text)
 		objs/init_fpga.o(.text)
-		objs/ff.o(.text)
 		objs/wait.o(.text)
 		objs/mmcbb.o(.text)
 		
@@ -32,6 +31,8 @@ SECTIONS
 	{
 		objs/BaS.o(.text)
 		/* put other routines into the same segment (RAM) as BaS.o */ 
+		objs/ccsbcs.o(.text)
+		objs/ff.o(.text)
 		objs/sd_card_asm.o(.text)
 		objs/bas_printf.o(.text)
 		objs/printf_helper.o(.text)

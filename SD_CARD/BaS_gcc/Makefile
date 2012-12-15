@@ -61,6 +61,7 @@ CSRCS= \
 	$(SRCDIR)/BaS.c \
 	$(SRCDIR)/cache.c \
 	$(SRCDIR)/mmcbb.c \
+	$(SRCDIR)/unicode.c \
 	$(SRCDIR)/ff.c \
 	$(SRCDIR)/wait.c
 
