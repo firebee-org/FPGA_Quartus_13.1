@@ -2,7 +2,8 @@
 #include <bas_types.h>
 #include <sd_card.h>
 #include <bas_printf.h>
-#include "sysinit.h"
+#include <sysinit.h>
+#include <MCF5475.h>
 
 /*
  * Firebee: MMCv3/SDv1/SDv2 (SPI mode) control module
@@ -51,21 +52,24 @@
 #define	PCLKSSPx	PCLK_SSP1
 #endif
 
-#if PCLK_SSP * 1 == CCLK
-#define PCLKDIV_SSP	PCLKDIV_1
-#elif PCLK_SSP * 2 == CCLK
-#define PCLKDIV_SSP	PCLKDIV_2
-#elif PCLK_SSP * 4 == CCLK
-#define PCLKDIV_SSP	PCLKDIV_4
-#elif PCLK_SSP * 8 == CCLK
-#define PCLKDIV_SSP	PCLKDIV_8
-#else
-#error Invalid clock frequency.
-#endif
 
+#define FCLK_FAST() { MCF_DSPI_DCTAR0 = MCF_DSPI_DCTAR_TRSZ(0b111) |	/* transfer size = 8 bit */ \
+					  MCF_DSPI_DCTAR_PCSSCK(0b01) |	/* 3 clock DSPICS to DSPISCK delay prescaler */ \
+					  MCF_DSPI_DCTAR_PASC_3CLK |	/* 3 clock DSPISCK to DSPICS negation prescaler */ \
+					  MCF_DSPI_DCTAR_PDT_3CLK |		/* 3 clock delay between DSPICS assertions prescaler */ \
+					  MCF_DSPI_DCTAR_PBR_3CLK |		/* 3 clock prescaler */ \
+					  MCF_DSPI_DCTAR_ASC(0b1001) |	/* 1024 */ \
+					  MCF_DSPI_DCTAR_DT(0b1001) |	/* 1024 */ \
+					  MCF_DSPI_DCTAR_BR(0b0000); }
 
-#define FCLK_FAST() { SSPxCPSR = (PCLK_SSP / SCLK_FAST) & ~1; }
-#define FCLK_SLOW() { SSPxCPSR = (PCLK_SSP / SCLK_SLOW) & ~1; }
+#define FCLK_SLOW() { MCF_DSPI_DCTAR0 = MCF_DSPI_DCTAR_TRSZ(0b111) |	/* transfer size = 8 bit */ \
+					  MCF_DSPI_DCTAR_PCSSCK(0b01) |	/* 3 clock DSPICS to DSPISCK delay prescaler */ \
+					  MCF_DSPI_DCTAR_PASC_3CLK |	/* 3 clock DSPISCK to DSPICS negation prescaler */ \
+					  MCF_DSPI_DCTAR_PDT_3CLK |		/* 3 clock delay between DSPICS assertions prescaler */ \
+					  MCF_DSPI_DCTAR_PBR_3CLK |		/* 3 clock prescaler */ \
+					  MCF_DSPI_DCTAR_ASC(0b1001) |	/* 1024 */ \
+					  MCF_DSPI_DCTAR_DT(0b1001) |	/* 1024 */ \
+					  MCF_DSPI_DCTAR_BR(0b0111); }
 
 
 
@@ -75,7 +79,6 @@
 
 ---------------------------------------------------------------------------*/
 
-#include "MCF5475.h"
 #include "diskio.h"
 
 
@@ -218,7 +221,7 @@ static int select(void)	/* 1:OK, 0:Timeout */
 /*
  * Control SPI module (Platform dependent)
  */
-static void power_on (void)	/* Enable SSP module and attach it to I/O pads */
+static void power_on (void)	/* Enable SSP module */
 {
 	MCF_PAD_PAR_DSPI = 0x1fff;			/* configure all DSPI GPIO pins for DSPI usage */
 
@@ -420,7 +423,7 @@ DSTATUS disk_initialize(uint8_t drv)
 	deselect();
 
 	if (ty) {			/* OK */
-		// FCLK_FAST();			/* Set fast clock */
+		FCLK_FAST();			/* Set fast clock */
 		Stat &= ~STA_NOINIT;	/* Clear STA_NOINIT flag */
 	} else {			/* Failed */
 		power_off();
