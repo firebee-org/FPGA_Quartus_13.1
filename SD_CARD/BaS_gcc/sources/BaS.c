@@ -222,6 +222,7 @@ void BaS(void)
 			}
 			f_close(&file);
 		}
+		f_mount(0, 0L);	/* release work area */
 	}
 	xprintf("copy EmuTOS: ");
 
