@@ -33,7 +33,7 @@
 #include <MCF5475.h>
 #include <stdint.h>
 
-extern int spi_init(void);
+extern void spi_init(void);
 extern uint32_t sd_com(uint32_t data);
 extern void sd_card_idle(void);
 extern uint8_t sd_card_get_status(void);

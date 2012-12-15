@@ -12,7 +12,6 @@ SECTIONS
 		objs/startcf.o(.text) /* this one is the entry point so it must be the first */
 		objs/sysinit.o(.text)
 		objs/init_fpga.o(.text)
-		objs/sd_card.o(.text)
 		objs/ff.o(.text)
 		objs/wait.o(.text)
 		objs/mmcbb.o(.text)

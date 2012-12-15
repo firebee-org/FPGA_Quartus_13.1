@@ -192,7 +192,18 @@ void BaS(void)
 		xprintf("mount status of SD card fs is %d\r\n", fres);
 		if (fres == FR_OK)
 		{
-			;
+			DIR directory;
+
+			fres = f_opendir(&directory, "\\");
+			if (fres == FR_OK)
+			{
+				FILINFO fi;
+
+				while (((fres = f_readdir(&directory, &fi)) == FR_OK) && fi.fname[0])
+				{
+					xprintf("%13.13s %d\r\n", fi.fname, fi.fsize);
+				}
+			}
 		}
 	}
 	xprintf("copy EmuTOS: ");

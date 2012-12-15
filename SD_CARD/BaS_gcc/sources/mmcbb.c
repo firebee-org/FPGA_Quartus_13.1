@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <bas_types.h>
 #include <sd_card.h>
+#include <bas_printf.h>
 #include "sysinit.h"
 
 /*
@@ -44,8 +45,8 @@
 #define	SSPxCR0		SSP1CR0
 #define	SSPxCR1		SSP1CR1
 #define	SSPxCPSR	SSP1CPSR
-#define	CS_LOW()	{FIO0CLR0 = _BV(6);}	/* Set P0.6 low */
-#define	CS_HIGH()	{FIO0SET0 = _BV(6);}	/* Set P0.6 high */
+#define	CS_HIGH()	{ dspi_fifo_val &= ~MCF_DSPI_DTFR_CS5; }
+#define	CS_LOW()	{ dspi_fifo_val |= MCF_DSPI_DTFR_CS5; }
 #define PCSSPx		PCSSP1
 #define	PCLKSSPx	PCLK_SSP1
 #endif
@@ -110,15 +111,25 @@ static uint8_t CardType;			/* Card type flags */
 /* Send/Receive data to the MMC  (Platform dependent)                    */
 /*-----------------------------------------------------------------------*/
 
+static uint32_t dspi_fifo_val = /* CONT disable continous chip select */
+								/* CTAS use DCTAR0 for clock and attributes */
+								MCF_DSPI_DTFR_EOQ; /* current transfer is last in queue */
+
+
 /* Exchange a byte */
 static uint8_t xchg_spi(uint8_t byte)
 {
-	* (volatile uint8_t *) (&MCF_DSPI_DTFR + 3) = byte;
+	uint32_t fifo = dspi_fifo_val | byte;
+	uint8_t res;
 
-	//while (! (MCF_DSPI_DSR & MCF_DSPI_DSR_TCF));	/* wait until DSPI transfer complete */
+	MCF_DSPI_DTFR = fifo;
+	while (! (MCF_DSPI_DSR & MCF_DSPI_DSR_TCF));	/* wait until DSPI transfer complete */
 	MCF_DSPI_DSR = 0xffffffff;						/* clear DSPI status register */
 
-	return * (volatile uint8_t *) (&MCF_DSPI_DRFR + 3);
+	fifo = MCF_DSPI_DRFR;
+	res = fifo & 0xff;
+
+	return res;
 }
 
 
@@ -154,10 +165,11 @@ static void xmit_spi_multi(const uint8_t *buff, uint32_t btx)
 
 static uint32_t card_ready(void)
 {
+	static uint32_t counter = 0;
 	uint8_t d;
 
 	d = xchg_spi(0xff);
-	return (d != 0xff);
+	return (d == 0xff);
 }
 
 /*
@@ -166,7 +178,7 @@ static uint32_t card_ready(void)
  * wt: timeout in ms
  * returns 1: ready, 0: timeout
  */
-static int wait_ready (uint32_t wt)
+static int wait_ready(uint32_t wt)
 {
 	return waitfor(wt, card_ready);
 }
@@ -178,7 +190,7 @@ static int wait_ready (uint32_t wt)
  */
 static void deselect(void)
 {
-	MCF_DSPI_DTFR = MCF_DSPI_DTFR_EOQ | ~MCF_DSPI_DTFR_CS5;
+	CS_HIGH();
 	xchg_spi(0xFF);	/* Dummy clock (force DO hi-z for multiple slave SPI) */
 	MCF_DSPI_DSR = 0xffffffff;	/* clear status register */
 }
@@ -191,10 +203,12 @@ static void deselect(void)
 
 static int select(void)	/* 1:OK, 0:Timeout */
 {
-	MCF_DSPI_DTFR = MCF_DSPI_DTFR_EOQ | MCF_DSPI_DTFR_CS5;
+	CS_LOW();
+
 	xchg_spi(0xFF);	/* Dummy clock (force DO enabled) */
 
-	if (wait_ready(500)) return 1;	/* OK */
+	if (wait_ready(5000000))
+		return 1;	/* OK */
 	deselect();
 	return 0;	/* Timeout */
 }
@@ -204,28 +218,42 @@ static int select(void)	/* 1:OK, 0:Timeout */
 /*
  * Control SPI module (Platform dependent)
  */
-
 static void power_on (void)	/* Enable SSP module and attach it to I/O pads */
 {
-	spi_init();
-#ifdef _NOT_USED_
-	__set_PCONP(PCSSPx, 1);		/* Enable SSP module */
-	__set_PCLKSEL(PCLKSSPx, PCLKDIV_SSP);	/* Select PCLK frequency for SSP */
-	SSPxCR0 = 0x0007;			/* Set mode: SPI mode 0, 8-bit */
-	SSPxCR1 = 0x2;				/* Enable SSP with Master */
-#if SSP_CH == 0
-	__set_PINSEL(0, 15, 2);		/* Attach SCK0 to I/O pad */
-	__set_PINSEL(0, 16, 2);		/* Attach MISO0 to I/O pad */
-	__set_PINSEL(0, 17, 2);		/* Attach MOSI0 to I/O pad */
-	FIO0DIR |= _BV(18)|_BV(17)|_BV(15);	/* Set SCK0, MOSI0 and CS# as output */
-#elif SSP_CH == 1
-	__set_PINSEL(0, 7, 2);		/* Attach SCK1 to I/O pad */
-	__set_PINSEL(0, 8, 2);		/* Attach MISO1 to I/O pad */
-	__set_PINSEL(0, 9, 2);		/* Attach MOSI1 to I/O pad */
-	FIO0DIR |= _BV(9)|_BV(7)|_BV(6);	/* Set SCK1, MOSI1 and CS# as output */
-#endif
+	MCF_PAD_PAR_DSPI = 0x1fff;			/* configure all DSPI GPIO pins for DSPI usage */
+
+	/*
+	 * FIXME: really necessary or just an oversight
+	 * that PAD_PAR_DSPI is only 16 bit?
+	 */
+	// MCF_PAD_PAR_TIMER = 0xff; leave off for now
+
+	/*
+	 * initialize DSPI module configuration register
+	 */
+	MCF_DSPI_DMCR = MCF_DSPI_DMCR_MSTR |	/* FireBee is DSPI master*/
+				MCF_DSPI_DMCR_CSIS5 |	/* CS5 inactive state high */
+				MCF_DSPI_DMCR_CSIS3 |	/* CS3 inactive state high */
+				MCF_DSPI_DMCR_CSIS2 |	/* CS2 inactive state high */
+				MCF_DSPI_DMCR_DTXF |	/* disable transmit FIFO */
+				MCF_DSPI_DMCR_DRXF |	/* disable receive FIFO */
+				MCF_DSPI_DMCR_CTXF |	/* clear transmit FIFO */
+				MCF_DSPI_DMCR_CRXF;		/* clear receive FIFO */
+
+	/* initialize DSPI clock and transfer attributes register 0 */
+	MCF_DSPI_DCTAR0 = MCF_DSPI_DCTAR_TRSZ(0b111) |	/* transfer size = 8 bit */
+					  MCF_DSPI_DCTAR_PCSSCK(0b01) |	/* 3 clock DSPICS to DSPISCK delay prescaler */
+					  MCF_DSPI_DCTAR_PASC_3CLK |	/* 3 clock DSPISCK to DSPICS negation prescaler */
+					  MCF_DSPI_DCTAR_PDT_3CLK |		/* 3 clock delay between DSPICS assertions prescaler */
+					  MCF_DSPI_DCTAR_PBR_3CLK |		/* 3 clock prescaler */
+					  MCF_DSPI_DCTAR_ASC(0b1001) |	/* 1024 */
+					  MCF_DSPI_DCTAR_DT(0b1001) |	/* 1024 */
+					  MCF_DSPI_DCTAR_BR(0b0111);
+
 	CS_HIGH();					/* Set CS# high */
-#endif /* _NOT_USED_ */
+
+	/* card should now be initialized as MMC */
+
 	wait(10 * 1000);	/* 10ms */
 }
 
