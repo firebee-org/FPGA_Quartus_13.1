@@ -60,7 +60,7 @@ CSRCS= \
 	$(SRCDIR)/bas_printf.c \
 	$(SRCDIR)/BaS.c \
 	$(SRCDIR)/cache.c \
-	$(SRCDIR)/mmcbb.c \
+	$(SRCDIR)/mmc.c \
 	$(SRCDIR)/unicode.c \
 	$(SRCDIR)/ff.c \
 	$(SRCDIR)/wait.c
@@ -69,7 +69,6 @@ ASRCS= \
 	$(SRCDIR)/startcf.S \
 	$(SRCDIR)/printf_helper.S \
 	$(SRCDIR)/mmu.S \
-	$(SRCDIR)/sd_card_asm.S \
 	$(SRCDIR)/exceptions.S \
 	$(SRCDIR)/supervisor.S \
 	$(SRCDIR)/ewf.S \
