@@ -626,9 +626,9 @@ acsi_dma:							// atari dma
 		move.l  d1,-(a7)
 		
 		lea	MCF_PSC0_PSCTB_8BIT,a1	// ++ vr
-		mchar move.l, 'D,'M','A,'\ ,(a1)
+                mchar move.l, 'D','M','A','\'' ,(a1)
 		//move.l	#"DMA ",(a1)
-		mchar	move.l,'I,'N,'T,'!,(a1)
+                mchar	move.l,'I','N','T','!',(a1)
 		// move.l	#'INT!',(a1)
 
 		lea 	0xf0020110,a5		// fifo daten
