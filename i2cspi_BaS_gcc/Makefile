@@ -71,7 +71,9 @@ CSRCS= \
 	$(SRCDIR)/sd_card.c \
 	$(SRCDIR)/wait.c \
 	$(SRCDIR)/s19reader.c \
-	$(SRCDIR)/flash.c
+        $(SRCDIR)/flash.c \
+        $(SRCDIR)/fifo.c \
+        $(SRCDIR)/i2c_firebee.c
 
 ASRCS= \
 	$(SRCDIR)/startcf.S \
