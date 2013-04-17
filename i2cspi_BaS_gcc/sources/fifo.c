@@ -79,7 +79,7 @@ void fifo_advance(fifo_t *f, int *ix)
 
 //This reads at most nbytes bytes from the FIFO
 //The number of bytes read is returned
-int fifo_read(fifo_t *f, char *buf, int nbytes){
+int fifo_read(fifo_t *f, unsigned char *buf, int nbytes){
      int n = 0;
 
      while( n < nbytes && !fifo_empty(f) )
@@ -95,7 +95,7 @@ int fifo_read(fifo_t *f, char *buf, int nbytes){
 //This writes up to nbytes bytes to the FIFO
 //If the head runs in to the tail, not all bytes are written
 //The number of bytes written is returned
-int fifo_write(fifo_t *f, const char *buf, int nbytes){
+int fifo_write(fifo_t *f, const unsigned char *buf, int nbytes){
      int n = 0;
 
      while( n < nbytes && !fifo_full(f) )
