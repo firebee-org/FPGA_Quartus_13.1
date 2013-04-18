@@ -8,6 +8,8 @@
 
 #include <fifo.h>
 
+int register_handler(uint8_t,uint8_t,void (*func)());
+
 static struct
 {
 	uint8_t state;
@@ -21,22 +23,6 @@ static struct
 char local_buf[BUFSIZ];
 
 #define FIFO    &i2c_param.fifo
-
-/*
- * I2Cinit: I2C initilazation as master
- *
- * Parameters: None.
- *
- * Return : None.
- */
-void I2C_Init()
-{
-	i2c_param.fifo.buf = local_buf;
-	i2c_param.fifo.size = BUFSIZ;
-	i2c_param.delay = 133 * 10L; // We can safely ignore this
-	i2c_param.len = 0;
-	I2C_ioctl(0, 0);
-}
 
 void __attribute__ ((interrupt)) I2C_InterruptHandler(void)
 {
@@ -121,6 +107,23 @@ void __attribute__ ((interrupt)) I2C_InterruptHandler(void)
 			}
 		}
 	}
+}
+
+/*
+ * I2Cinit: I2C initilazation as master
+ *
+ * Parameters: None.
+ *
+ * Return : None.
+ */
+void I2C_Init()
+{
+    i2c_param.fifo.buf = local_buf;
+    i2c_param.fifo.size = BUFSIZ;
+    i2c_param.delay = 133 * 10L; // We can safely ignore this
+    i2c_param.len = 0;
+    I2C_ioctl(0, 0);
+    register_handler(1,40,I2C_InterruptHandler);
 }
 
 void I2C_send(unsigned short device, unsigned char *buf, unsigned short len)

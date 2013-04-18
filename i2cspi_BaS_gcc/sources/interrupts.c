@@ -59,7 +59,7 @@ register_handler(uint8_t priority, uint8_t intr, void (*func)())
     // Return the saved priority level
     __asm__ volatile (
                 "move.w (%%sp)+,%%d2\n\t" \
-                "move.w %%d2,sr\n\t"
+                "move.w %%d2,%%sr\n\t"
                 : \
                 : \
                 : \
