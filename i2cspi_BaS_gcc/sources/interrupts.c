@@ -46,7 +46,7 @@ register_handler(uint8_t priority, uint8_t intr, void (*func)())
                 "move.w #0x2700,sr\n\t" \
                 : \
                 : \
-                : "d0","memory" \
+                : "sp","d0","memory" \
     );
 
     if( intr < 32 )
@@ -63,7 +63,7 @@ register_handler(uint8_t priority, uint8_t intr, void (*func)())
                 "move.w d2,sr\n\t"
                 : \
                 : \
-                : "d2","memory" \
+                : "sp","d2","memory" \
     );
 
     return 0;
