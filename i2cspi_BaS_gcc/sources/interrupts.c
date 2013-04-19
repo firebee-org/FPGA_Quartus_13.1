@@ -41,11 +41,12 @@ register_handler(uint8_t priority, uint8_t intr, void (*func)())
 
     // Make sure priority level is high, before changing registers
     __asm__ volatile (
-                "move.w %%sr,-(%%sp)\n\t"  \
-                "move.w #$2700,%%sr\n\t" \
+                "move.w sr,d0\n\t"  \
+                "move.w d0,-(sp) \n\t" \
+                "move.w #0x2700,sr\n\t" \
                 : \
                 : \
-                : \
+                : "d0","memory" \
     );
 
     if( intr < 32 )
@@ -58,11 +59,11 @@ register_handler(uint8_t priority, uint8_t intr, void (*func)())
 
     // Return the saved priority level
     __asm__ volatile (
-                "move.w (%%sp)+,%%d2\n\t" \
-                "move.w %%d2,%%sr\n\t"
+                "move.w (sp)+,d2\n\t" \
+                "move.w d2,sr\n\t"
                 : \
                 : \
-                : \
+                : "d2","memory" \
     );
 
     return 0;
