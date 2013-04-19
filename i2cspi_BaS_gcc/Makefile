@@ -10,7 +10,7 @@
 
 # can be either "Y" or "N" (without quotes). "Y" for using the m68k-elf-, "N" for using the m68k-atari-mint
 # toolchain
-COMPILE_ELF=Y
+COMPILE_ELF=N
 
 ifeq (Y,$(COMPILE_ELF))
 TCPREFIX=m68k-elf-
@@ -73,7 +73,12 @@ CSRCS= \
 	$(SRCDIR)/s19reader.c \
         $(SRCDIR)/flash.c \
         $(SRCDIR)/fifo.c \
-        $(SRCDIR)/i2c_firebee.c
+        $(SRCDIR)/i2c_firebee.c \
+	$(SRCDIR)/usb.c \
+	$(SRCDIR)/usb_kbd.c \
+	$(SRCDIR)/usb_mem.c \
+	$(SRCDIR)/usb_mouse.c \
+	$(SRCDIR)/usb_storage.c
 
 ASRCS= \
 	$(SRCDIR)/startcf.S \
@@ -82,7 +87,7 @@ ASRCS= \
 	$(SRCDIR)/exceptions.S \
 	$(SRCDIR)/supervisor.S \
 	$(SRCDIR)/illegal_instruction.S
-	
+
 COBJS=$(patsubst $(SRCDIR)/%.o,$(OBJDIR)/%.o,$(patsubst %.c,%.o,$(CSRCS)))
 AOBJS=$(patsubst $(SRCDIR)/%.o,$(OBJDIR)/%.o,$(patsubst %.S,%.o,$(ASRCS)))
 
@@ -138,7 +143,7 @@ endif
 $(LIBBAS): $(OBJS)
 	$(AR) rv $@ $(OBJS)
 	$(RANLIB) $@
-	
+
 # compile init_fpga with -mbitfield for testing purposes
 #$(OBJDIR)/init_fpga.o:	CFLAGS += -mbitfield
 
@@ -156,7 +161,7 @@ $(OBJDIR)/%.o:$(SRCDIR)/%.S
 depend: $(ASRCS) $(CSRCS)
 		$(CC) $(CFLAGS) $(INCLUDE) -M $(ASRCS) $(CSRCS) | sed -e 's/^\(.*\).o:/$(OBJDIR)\/\1.o:/' > depend
 
-	
+
 ifneq (clean,$(MAKECMDGOALS))
 -include depend
 endif

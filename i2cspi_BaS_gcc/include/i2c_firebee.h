@@ -19,9 +19,12 @@
 #define I2CTLDEV    (('i'<<8) | 5)
 
 // Set a specific bit
-#define set_bit(p,bit)          p |= bit
+#define set_bit(p,bit)          p |= (bit)
+#define set_bit_nr(p,nr)        set_bit(p,(1<<(nr)))
+
 // Clear a specific bit
-#define clear_bit(p,bit)        p &= ~bit
+#define clear_bit(p,bit)        p &= ~(bit)
+#define clear_bit_nr(p,nr)      clear_bit(p,(1<<(nr)))
 
 #define ELAPSED(t)              (t - ReadTimer())
 
