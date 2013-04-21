@@ -8,12 +8,14 @@
 #include <fifo.h>
 
 //This initializes the FIFO structure with the given buffer and size
-void fifo_init(fifo_t * f, char * buf, int size)
+void fifo_init(fifo_t * f, char * buf, int16_t size)
 {
      f->head = 0;
      f->tail = 0;
      f->size = size;
      f->buf = buf;
+     f->low = 0;
+     f->high = 0;
 }
 
 // Get one byte from the fifo buffer
@@ -21,11 +23,10 @@ uint8_t fifo_get(fifo_t *f)
 {
     uint8_t ch = 0;
 
-    if( f->tail != f->head && f->tail < f->size )
+    if( !fifo_empty(f) )
     {
-        ch = f->buf[f->tail++];
-        if( f->tail >= f->size )
-            f->tail = 0;
+	fifo_advance(f,&f->tail);
+        ch = f->buf[f->tail];
     }
 
     return ch;
@@ -34,10 +35,10 @@ uint8_t fifo_get(fifo_t *f)
 // Put one byte into the buffer
 void fifo_put(fifo_t *f, uint8_t byte)
 {
-    if( f->head == f->tail || f->head >= f->size )
+    if( fifo_unused(f) <= 0 )
         return;
-    f->buf[f->head] = byte;
     fifo_advance(f,&f->head);
+    f->buf[f->head] = byte;
 }
 
 void fifo_clear(fifo_t *f)
@@ -71,7 +72,7 @@ int fifo_empty(fifo_t *f)
     return (f->head == f->tail);
 }
 
-void fifo_advance(fifo_t *f, int *ix)
+void fifo_advance(fifo_t *f, int16_t *ix)
 {
     if( ++*ix > f->size )
         *ix=0;
@@ -79,14 +80,13 @@ void fifo_advance(fifo_t *f, int *ix)
 
 //This reads at most nbytes bytes from the FIFO
 //The number of bytes read is returned
-int fifo_read(fifo_t *f, unsigned char *buf, int nbytes){
+int fifo_read(fifo_t *f, unsigned char *buf, int16_t nbytes){
      int n = 0;
 
      while( n < nbytes && !fifo_empty(f) )
      {
          n++;
-         *buf++ = f->buf[f->tail];
-         fifo_advance(f,&f->tail);
+         *buf++ = fifo_get(f);
      }
 
      return n;
@@ -95,13 +95,12 @@ int fifo_read(fifo_t *f, unsigned char *buf, int nbytes){
 //This writes up to nbytes bytes to the FIFO
 //If the head runs in to the tail, not all bytes are written
 //The number of bytes written is returned
-int fifo_write(fifo_t *f, const unsigned char *buf, int nbytes){
+int fifo_write(fifo_t *f, const unsigned char *buf, int16_t nbytes){
      int n = 0;
 
      while( n < nbytes && !fifo_full(f) )
      {
-         f->buf[f->head] = *buf++;
-         fifo_advance(f,&f->head);
+	 fifo_put(f,*buf++);
          n++;
      }
 

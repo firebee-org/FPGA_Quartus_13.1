@@ -49,14 +49,6 @@
 #include "usb.h"
 #include "ohci.h"
 
-#if defined(COLDFIRE) && defined(NETWORK) && defined(LWIP)
-#include "../freertos/FreeRTOS.h"
-#include "../freertos/queue.h"
-extern xQueueHandle queue_poll_hub;
-#define USB_POLL_HUB
-#endif
-
-
 #undef OHCI_USE_NPS /* force NoPowerSwitching mode */
 
 #undef OHCI_VERBOSE_DEBUG	/* not always helpful */

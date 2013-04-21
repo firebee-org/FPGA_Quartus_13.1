@@ -1,6 +1,10 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+#ifndef COLDFIRE
+#define COLDFIRE
+#endif
+
 /* DEBUG */
 #define DEBUG
 

@@ -48,18 +48,6 @@
 #include "config.h"
 #include "usb.h"
 
-#if defined(COLDFIRE) && defined(NETWORK) && defined(LWIP)
-#include "../freertos/FreeRTOS.h"
-#include "../freertos/task.h"
-#include "../freertos/queue.h"
-#include "../freertos/semphr.h"
-#define USB_POLL_HUB
-#ifdef CONFIG_USB_STORAGE
-extern int usb_stor_curr_dev;
-extern unsigned long usb_1st_disk_drive;
-#endif
-#endif
-
 #if defined(CONFIG_USB_UHCI) || defined(CONFIG_USB_OHCI) || defined(CONFIG_USB_EHCI)
 
 #undef USB_DEBUG
@@ -1181,7 +1169,7 @@ void usb_scan_devices(void *priv)
 	dev = usb_alloc_new_device(bus_index, priv);
 	if (usb_new_device(dev))
 	{
-		Cconws("No USB Device found\r\n");
+		xprintf("No USB Device found\r\n");
 		USB_PRINTF("No USB Device found\r\n");
 		if (dev != NULL )
 			dev_index[bus_index]--;
@@ -1197,13 +1185,13 @@ void usb_scan_devices(void *priv)
 	if (drv_usb_kbd_init() < 0)
 		USB_PRINTF("No USB keyboard found\r\n");
 	else
-		Cconws("USB HID keyboard driver installed\r\n");
+		xprintf("USB HID keyboard driver installed\r\n");
 #endif /* CONFIG_USB_KEYBOARD */
 #ifdef CONFIG_USB_MOUSE
 	if (drv_usb_mouse_init() < 0)
 		USB_PRINTF("No USB mouse found\r\n");
 	else
-		Cconws("USB HID mouse driver installed\r\n");
+		xprintf("USB HID mouse driver installed\r\n");
 #endif /* CONFIG_USB_MOUSE */
 #endif
 	USB_PRINTF("Scan end\r\n");

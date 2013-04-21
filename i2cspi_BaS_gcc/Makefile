@@ -78,7 +78,9 @@ CSRCS= \
 	$(SRCDIR)/usb_kbd.c \
 	$(SRCDIR)/usb_mem.c \
 	$(SRCDIR)/usb_mouse.c \
-	$(SRCDIR)/usb_storage.c
+	$(SRCDIR)/usb_storage.c \
+	$(SRCDIR)/ehci-hcd.c \
+	$(SRCDIR)/ohci-hcd.c
 
 ASRCS= \
 	$(SRCDIR)/startcf.S \

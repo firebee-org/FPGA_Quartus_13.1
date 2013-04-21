@@ -28,13 +28,6 @@
 #include "usb.h"
 #include "ehci.h"
 
-#if defined(COLDFIRE) && defined(NETWORK) && defined(LWIP)
-#include "../freertos/FreeRTOS.h"
-#include "../freertos/queue.h"
-extern xQueueHandle queue_poll_hub;
-#define USB_POLL_HUB
-#endif
-
 #undef DEBUG
 #undef SHOW_INFO
 
