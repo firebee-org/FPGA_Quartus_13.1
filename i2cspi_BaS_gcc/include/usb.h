@@ -26,10 +26,10 @@
 #ifndef _USB_H_
 #define _USB_H_
 
-#include <mint/osbind.h>
-#include <mint/sysvars.h>
+
 #include <stdlib.h>
 #include <string.h>
+#include <bas_printf.h>
 #include "pcixbios.h"
 #include "mod_devicetable.h"
 #include "pci_ids.h"
@@ -231,6 +231,15 @@ struct usb_device {
 	int usbnum;
 };
 
+/* Structure returned by Iorec() */
+typedef struct {
+    char    *ibuf;
+    short   ibufsiz;
+    volatile short   ibufhd;
+    volatile short   ibuftl;
+    short   ibuflow;
+    short   ibufhi;
+} _IOREC;
 /**********************************************************************
  * this is how the lowlevel part communicate with the outer world
  */

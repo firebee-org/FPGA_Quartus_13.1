@@ -12,8 +12,6 @@
  */
 
 #include "config.h"
-#include <mint/errno.h>
-#include <mint/osbind.h> 
 #include <string.h>
 #include "usb.h"
 
@@ -181,6 +179,8 @@ static void freeit(MD *m, MPB *mp)
 		}
 	}
 }
+
+#define EFAULT	-40
 
 int usb_free(void *addr)
 {
