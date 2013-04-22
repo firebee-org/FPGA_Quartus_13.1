@@ -124,6 +124,7 @@ void I2C_Init()
     i2c_param.len = 0;
     I2C_ioctl(0, 0);
     register_handler(1,40,I2C_InterruptHandler);
+    xprintf("Registered I2C Handler ...\n\r");
 }
 
 void I2C_send(unsigned short device, unsigned char *buf, unsigned short len)
