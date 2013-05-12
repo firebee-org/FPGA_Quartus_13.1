@@ -48,6 +48,7 @@
 
 #include "usb.h"
 #include "ohci.h"
+#include "wait.h"
 
 #undef OHCI_USE_NPS /* force NoPowerSwitching mode */
 

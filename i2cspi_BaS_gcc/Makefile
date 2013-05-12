@@ -36,7 +36,7 @@ CFLAGS=-mcpu=5474\
 	   -Wno-multichar\
 	   -Winline\
 	   -O \
-	   -fno-omit-frame-pointer\
+	   -fomit-frame-pointer\
 	   -fno-strict-aliasing\
 	   -ffreestanding\
 	   -fleading-underscore\
@@ -80,7 +80,10 @@ CSRCS= \
 	$(SRCDIR)/usb_mouse.c \
 	$(SRCDIR)/usb_storage.c \
 	$(SRCDIR)/ehci-hcd.c \
-	$(SRCDIR)/ohci-hcd.c
+	$(SRCDIR)/ohci-hcd.c \
+	$(SRCDIR)/flash.c \
+	$(SRCDIR)/xhdi_sd.c \
+	$(SRCDIR)/xhdi_interface.c
 
 ASRCS= \
 	$(SRCDIR)/startcf.S \
@@ -88,7 +91,8 @@ ASRCS= \
 	$(SRCDIR)/mmu.S \
 	$(SRCDIR)/exceptions.S \
 	$(SRCDIR)/supervisor.S \
-	$(SRCDIR)/illegal_instruction.S
+	$(SRCDIR)/illegal_instruction.S \
+	$(SRCDIR)/xhdi_vec.S
 
 COBJS=$(patsubst $(SRCDIR)/%.o,$(OBJDIR)/%.o,$(patsubst %.c,%.o,$(CSRCS)))
 AOBJS=$(patsubst $(SRCDIR)/%.o,$(OBJDIR)/%.o,$(patsubst %.S,%.o,$(ASRCS)))

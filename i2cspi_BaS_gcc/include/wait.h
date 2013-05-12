@@ -28,6 +28,8 @@
 #define _WAIT_H_
 
 #include <bas_types.h>
+#include <stdint.h>
+#include "MCF5475.h"
 
 typedef bool (*checker_func)(void);
 

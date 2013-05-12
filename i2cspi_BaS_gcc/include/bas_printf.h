@@ -23,6 +23,8 @@
 #define _BAS_PRINTF_H_
 
 #include <stddef.h>
+#include <stdarg.h>
+#include <stddef.h>
 
 extern void xvsnprintf(char *str, size_t size, const char *fmt, va_list va);
 extern void xvprintf(const char *fmt, va_list va);
