@@ -56,6 +56,8 @@
 #include "firebee.h"
 #elif defined(MACHINE_M5484LITE)
 #include "m5484l.h"
+#elif defined(MACHINE_M54455)
+#include "m54455.h"
 #else
 #error "unknown machine!"
 #endif /* MACHINE_FIREBEE */
@@ -80,7 +82,7 @@ inline uint32_t set_asid(uint32_t value)
 		"movec		%[value],ASID\n\t"
 		: /* no output */
 		: [value] "r" (value)
-		: 
+		:
 	);
 
 	rt_asid = value;
@@ -88,7 +90,7 @@ inline uint32_t set_asid(uint32_t value)
 	return ret;
 }
 
-							
+
 /*
  * set ACRx register
  * saves new value to rt_acrx and returns former value
@@ -97,7 +99,7 @@ inline uint32_t set_acr0(uint32_t value)
 {
 	extern uint32_t rt_acr0;
 	uint32_t ret = rt_acr0;
-	
+
 	__asm__ __volatile__(
 		"movec		%[value],ACR0\n\t"
 		: /* not output */
@@ -117,7 +119,7 @@ inline uint32_t set_acr1(uint32_t value)
 {
 	extern uint32_t rt_acr1;
 	uint32_t ret = rt_acr1;
-	
+
 	__asm__ __volatile__(
 		"movec		%[value],ACR1\n\t"
 		: /* not output */
@@ -138,7 +140,7 @@ inline uint32_t set_acr2(uint32_t value)
 {
 	extern uint32_t rt_acr2;
 	uint32_t ret = rt_acr2;
-	
+
 	__asm__ __volatile__(
 		"movec		%[value],ACR2\n\t"
 		: /* not output */
@@ -158,7 +160,7 @@ inline uint32_t set_acr3(uint32_t value)
 {
 	extern uint32_t rt_acr3;
 	uint32_t ret = rt_acr3;
-	
+
 	__asm__ __volatile__(
 		"movec		%[value],ACR3\n\t"
 		: /* not output */
@@ -193,7 +195,7 @@ void mmu_init(void)
 	uint32_t MMUBAR = (uint32_t) &_MMUBAR[0];
 	extern uint8_t _TOS[];
 	uint32_t TOS = (uint32_t) &_TOS[0];
-	
+
 	set_asid(0);			/* do not use address extension (ASID provides virtual 48 bit addresses */
 
 	/* set data access attributes in ACR0 and ACR1 */
@@ -203,29 +205,38 @@ void mmu_init(void)
 			ACR_AMM(0) |							/* control region > 16 MB */
 			ACR_S(ACR_S_ALL) |						/* match addresses in user and supervisor mode */
 			ACR_E(1) |								/* enable ACR */
-#if MACHINE_FIREBEE
+#if defined(MACHINE_FIREBEE)
 			ACR_ADMSK(0x3f) |						/* cover 1GB area from 0xc0000000 to 0xffffffff */
 			ACR_BA(0xc0000000));					/* (equals area from 3 to 4 GB */
-#elif MACHINE_M5484LITE
+#elif defined(MACHINE_M5484LITE)
 			ACR_ADMSK(0x7f) |						/* cover 2 GB area from 0x80000000 to 0xffffffff */
 			ACR_BA(0x80000000));
+#elif defined(MACHINE_M54455)
+			ACR_ADMSK(0x7f) |
+			ACR_BA(0x80000000));					/* FIXME: not determined yet */
+#else
+#error unknown machine!
 #endif /* MACHINE_FIREBEE */
-	
+
 	// set_acr1(0x601fc000);
 	set_acr1(ACR_W(0) |
 			ACR_SP(0) |
 			ACR_CM(0) |
-#if MACHINE_FIREBEE
+#if defined(MACHINE_FIREBEE)
 			ACR_CM(ACR_CM_CACHEABLE_WT) |			/* video RAM on the Firebee */
-#elif MACHINE_M5484LITE
+#elif defined(MACHINE_M5484LITE)
 			ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* Compact Flash on the M548xLITE */
+#elif defined(MACHINE_M54455)
+			ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* FIXME: not determined yet */
+#else
+#error unknown machine!
 #endif /* MACHINE_FIREBEE */
 			ACR_AMM(0) |
 			ACR_S(ACR_S_ALL) |
 			ACR_E(1) |
 			ACR_ADMSK(0x1f) |
 			ACR_BA(0x60000000));
-	
+
 	/* set instruction access attributes in ACR2 and ACR3 */
 
 	//set_acr2(0xe007c400);
@@ -273,7 +284,7 @@ void mmu_init(void)
 	 * mapped to physical address 0x60d0'0000 (FPGA video memory)
 	 * video RAM: read write execute normal write true
 	 */
-	
+
 	MCF_MMU_MMUTR = 0x00d00000 |			/* virtual address */
 #if defined(MACHINE_FIREBEE)
 					MCF_MMU_MMUTR_ID(SCA_PAGE_ID) |
@@ -285,6 +296,10 @@ void mmu_init(void)
 	MCF_MMU_MMUDR = 0x60d00000 |			/* physical address */
 #elif defined(MACHINE_M5484LITE)
 	MCF_MMU_MMUDR = 0x00d00000 |			/* physical address */
+#elif defined(MACHINE_M54455)
+	MCF_MMU_MMUDR = 0x60d00000 |			/* FIXME: not determined yet */
+#else
+#error unknown machine!
 #endif /* MACHINE_FIREBEE */
 					MCF_MMU_MMUDR_SZ(0) |	/* 1 MB page size */
 					MCF_MMU_MMUDR_CM(0x0) |	/* cachable writethrough */
@@ -370,7 +385,7 @@ void mmu_init(void)
 	MCF_MMU_MMUOR = MCF_MMU_MMUOR_ITLB | 	/* instruction */
 					MCF_MMU_MMUOR_ACC |     /* access TLB */
 					MCF_MMU_MMUOR_UAA;      /* update allocation address field */
-					
+
 	/*
 	 * Map (locked) the very last MB of physical SDRAM (this is where the driver buffers reside) to the same
 	 * virtual address. Used uncached for drivers.

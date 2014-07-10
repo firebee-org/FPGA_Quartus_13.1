@@ -79,11 +79,11 @@
 #define	INT_SOURCE_GPT0				62	// GPT0 timer interrupt
 
 
-#define FEC0_INTC_LVL	5			/* interrupt level for FEC0 */
-#define FEC0_INTC_PRI	7			/* interrupt priority for FEC0 */
+#define FEC0_INTC_LVL	1			/* interrupt level for FEC0 */
+#define FEC0_INTC_PRI	2			/* interrupt priority for FEC0 */
 
-#define FEC1_INTC_LVL	5			/* interrupt level for FEC1 */
-#define FEC1_INTC_PRI	7			/* interrupt priority for FEC1 */
+#define FEC1_INTC_LVL	1			/* interrupt level for FEC1 */
+#define FEC1_INTC_PRI	2			/* interrupt priority for FEC1 */
 
 #define FEC_INTC_LVL(x)		((x == 0) ? FEC0_INTC_LVL : FEC1_INTC_LVL)
 #define FEC_INTC_PRI(x)		((x == 0) ? FEC0_INTC_PRI : FEC1_INTC_PRI)
@@ -101,7 +101,7 @@ extern int register_interrupt_handler(uint8_t source, uint8_t level, uint8_t pri
 #define ISR_USER_ISR 	0x02
 
 extern void isr_init(void);
-extern int isr_register_handler(int type, int vector, int (*handler)(void *, void *), void *hdev, void *harg);
-extern void isr_remove_handler(int type ,int (*handler)(void *, void *));
+extern int isr_register_handler(int vector, int (*handler)(void *, void *), void *hdev, void *harg);
+extern void isr_remove_handler(int (*handler)(void *, void *));
 extern bool isr_execute_handler(int vector);
 #endif /* _INTERRUPTS_H_ */
