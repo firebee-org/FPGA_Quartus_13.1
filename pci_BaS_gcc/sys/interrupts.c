@@ -30,16 +30,13 @@
 #include "exceptions.h"
 #include "interrupts.h"
 #include "bas_printf.h"
-#include "startcf.h"
-#include "cache.h"
-#include "util.h"
 
 extern void (*rt_vbr[])(void);
 #define VBR	rt_vbr
 
 #define IRQ_DEBUG
 #if defined(IRQ_DEBUG)
-#define dbg(format, arg...) do { xprintf("DEBUG %s(): " format, __FUNCTION__, ##arg); } while (0)
+#define dbg(format, arg...) do { xprintf("DEBUG: " format, ##arg); } while (0)
 #else
 #define dbg(format, arg...) do { ; } while (0)
 #endif
@@ -60,7 +57,7 @@ int register_interrupt_handler(uint8_t source, uint8_t level, uint8_t priority, 
 
 	if (source < 1 || source > 63)
 	{
-		dbg("interrupt source %d not defined\r\n", source);
+		dbg("%s: interrupt source %d not defined\r\n", __FUNCTION__, source);
 		return -1;
 	}
 
@@ -71,7 +68,7 @@ int register_interrupt_handler(uint8_t source, uint8_t level, uint8_t priority, 
 	{
 		if (ICR[i] == lp)
 		{
-			dbg("level %d and priority %d already used for interrupt source %d!\r\n",
+			dbg("%s: level %d and priority %d already used for interrupt source %d!\r\n", __FUNCTION__,
 					level, priority, i);
 			return -1;
 		}
@@ -91,29 +88,31 @@ int register_interrupt_handler(uint8_t source, uint8_t level, uint8_t priority, 
 	return 0;
 }
 
-#ifndef MAX_ISR_ENTRY
-#define MAX_ISR_ENTRY   (20)
+#ifndef UIF_MAX_ISR_ENTRY
+#define UIF_MAX_ISR_ENTRY   (20)
 #endif
 
 
 typedef struct
 {
 	int     vector;
+	int     type;
 	int     (*handler)(void *, void *);
 	void    *hdev;
 	void    *harg;
 } ISRENTRY;
 
-ISRENTRY isrtab[MAX_ISR_ENTRY];
+ISRENTRY isrtab[UIF_MAX_ISR_ENTRY];
 
 
 void isr_init(void)
 {
 	int index;
 
-	for (index = 0; index < MAX_ISR_ENTRY; index++)
+	for (index = 0; index < UIF_MAX_ISR_ENTRY; index++)
 	{
 		isrtab[index].vector = 0;
+		isrtab[index].type = 0;
 		isrtab[index].handler = 0;
 		isrtab[index].hdev = 0;
 		isrtab[index].harg = 0;
@@ -121,36 +120,41 @@ void isr_init(void)
 }
 
 
-int isr_register_handler(int vector, int (*handler)(void *, void *), void *hdev, void *harg)
+int isr_register_handler(int type, int vector, 
+		int (*handler)(void *, void *), void *hdev, void *harg)
 {
 	/*
 	 * This function places an interrupt handler in the ISR table,
 	 * thereby registering it so that the low-level handler may call it.
 	 *
-	 * The two parameters are intended for the first arg to be a
-	 * pointer to the device itself, and the second a pointer to a data
+	 * The two parameters are intended for the first arg to be a 
+	 * pointer to the device itself, and the second a pointer to a data 
 	 * structure used by the device driver for that particular device.
 	 */
 	int index;
 
-	if ((vector == 0) || (handler == NULL))
+	if ((vector == 0) || 
+			((type != ISR_DBUG_ISR) && (type != ISR_USER_ISR)) ||
+			(handler == NULL))
 	{
-		dbg("illegal vector or handler!\r\n");
+		dbg("%s: illegal type, vector or handler!\r\n", __FUNCTION__);
 		return false;
 	}
 
-	for (index = 0; index < MAX_ISR_ENTRY; index++)
+	for (index = 0; index < UIF_MAX_ISR_ENTRY; index++)
 	{
-		if (isrtab[index].vector == vector)
+		if ((isrtab[index].vector == vector) &&
+				(isrtab[index].type == type))
 		{
-			/* one cross each, only! */
-			dbg("already set handler with this vector (%d, %d)\r\n", vector);
+			/* only one entry of each type per vector */
+			dbg("%s: already set handler with this type and vector (%d, %d)\r\n", __FUNCTION__, type, vector);
 			return false;
 		}
 
 		if (isrtab[index].vector == 0)
 		{
 			isrtab[index].vector = vector;
+			isrtab[index].type = type;
 			isrtab[index].handler = handler;
 			isrtab[index].hdev = hdev;
 			isrtab[index].harg = harg;
@@ -158,24 +162,26 @@ int isr_register_handler(int vector, int (*handler)(void *, void *), void *hdev,
 			return true;
 		}
 	}
-	dbg("no available slots to register handler for vector %d\n\r", vector);
+	dbg("%s: no available slots to register handler for vector %d\n\r", __FUNCTION__, vector);
 
 	return false;   /* no available slots */
 }
 
-void isr_remove_handler(int (*handler)(void *, void *))
+void isr_remove_handler(int type, int (*handler)(void *, void *))
 {
 	/*
 	 * This routine removes from the ISR table all
-	 * entries that matches 'handler'.
+	 * entries that matches 'type' and 'handler'.
 	 */
 	int index;
 
-	for (index = 0; index < MAX_ISR_ENTRY; index++)
+	for (index = 0; index < UIF_MAX_ISR_ENTRY; index++)
 	{
-		if (isrtab[index].handler == handler)
+		if ((isrtab[index].handler == handler) && 
+				(isrtab[index].type == type))
 		{
 			isrtab[index].vector = 0;
+			isrtab[index].type = 0;
 			isrtab[index].handler = 0;
 			isrtab[index].hdev = 0;
 			isrtab[index].harg = 0;
@@ -183,7 +189,7 @@ void isr_remove_handler(int (*handler)(void *, void *))
 			return;
 		}
 	}
-	dbg("no such handler registered (handler=%p\r\n", handler);
+	dbg("%s: no such handler registered (type=%d, handler=%p\r\n", __FUNCTION__, type, handler);
 }
 
 
@@ -197,216 +203,22 @@ bool isr_execute_handler(int vector)
 	bool retval = false;
 
 	/*
-	 * locate a BaS Interrupt Service Routine handler.
+	 * First locate a BaS Interrupt Service Routine handler.
 	 */
-	for (index = 0; index < MAX_ISR_ENTRY; index++)
+	for (index = 0; index < UIF_MAX_ISR_ENTRY; index++)
 	{
-		if (isrtab[index].vector == vector)
+		if ((isrtab[index].vector == vector) &&
+				(isrtab[index].type == ISR_DBUG_ISR))
 		{
 			retval = true;
-
+		
 			if (isrtab[index].handler(isrtab[index].hdev, isrtab[index].harg))
 			{
 				return retval;
 			}
 		}
 	}
-	dbg("no BaS isr handler for vector %d found\r\n", vector);
-
+	dbg("%s: no BaS isr handler for vector %d found\r\n", __FUNCTION__, vector);
 	return retval;
 }
 
-/*
- * PIC interrupt handler for Firebee
- */
-void pic_interrupt_handler(void)
-{
-	uint8_t rcv_byte;
-
-	rcv_byte = MCF_PSC3_PSCRB_8BIT;
-	if (rcv_byte == 2)	// PIC requests RTC data
-	{
-		uint8_t *rtc_reg= (uint8_t *) 0xffff8961;
-		uint8_t *rtc_data = (uint8_t *) 0xffff8963;
-		int index = 0;
-
-		xprintf("PIC interrupt requesting RTC data\r\n");
-
-		MCF_PSC3_PSCTB_8BIT = 0x82;		// header byte to PIC
-		do
-		{
-			*rtc_reg = 0;
-			MCF_PSC3_PSCTB_8BIT = *rtc_data;
-		} while (index++ < 64);
-	}
-}
-
-extern int32_t video_sbt;
-extern int32_t video_tlb;
-
-void video_addr_timeout(void)
-{
-	uint32_t addr = 0x0L;
-	uint32_t *src;
-	uint32_t *dst;
-	uint32_t asid;
-
-	dbg("video address timeout\r\n");
-	flush_and_invalidate_caches();
-
-	do
-	{
-		uint32_t tlb;
-		uint32_t page_attr;
-
-		/*
-		 * search tlb entry id for addr (if not available, the MMU
-		 * will provide a new one based on its LRU algorithm)
-		 */
-		MCF_MMU_MMUAR = addr;
-		MCF_MMU_MMUOR =
-				MCF_MMU_MMUOR_STLB |
-				MCF_MMU_MMUOR_RW |
-				MCF_MMU_MMUOR_ACC;
-		NOP();
-		tlb = (MCF_MMU_MMUOR >> 16) & 0xffff;
-
-		/*
-		 * retrieve tlb entry with the found TLB entry id
-		 */
-		MCF_MMU_MMUAR = tlb;
-		MCF_MMU_MMUOR =
-				MCF_MMU_MMUOR_STLB |
-				MCF_MMU_MMUOR_ADR |
-				MCF_MMU_MMUOR_RW |
-				MCF_MMU_MMUOR_ACC;
-		NOP();
-
-		asid = (MCF_MMU_MMUTR >> 2) & 0x1fff;	/* fetch ASID of page */;
-		if (asid != sca_page_ID)                /* check if screen area */
-		{
-			addr += 0x100000;
-			continue;                           /* next page */
-		}
-
-		/* modify found TLB entry */
-		if (addr == 0x0)
-		{
-			page_attr =
-				MCF_MMU_MMUDR_LK |
-				MCF_MMU_MMUDR_SZ(0) |
-				MCF_MMU_MMUDR_CM(0) |
-				MCF_MMU_MMUDR_R |
-				MCF_MMU_MMUDR_W |
-				MCF_MMU_MMUDR_X;
-		}
-		else
-		{
-			page_attr =
-				MCF_MMU_MMUTR_SG |
-				MCF_MMU_MMUTR_V;
-		}
-
-
-		MCF_MMU_MMUTR = addr;
-		MCF_MMU_MMUDR = page_attr;
-		MCF_MMU_MMUOR =
-				MCF_MMU_MMUOR_STLB |
-				MCF_MMU_MMUOR_ADR |
-				MCF_MMU_MMUOR_ACC |
-				MCF_MMU_MMUOR_UAA;
-		NOP();
-
-		dst = (uint32_t *) 0x60000000 + addr;
-		src = (uint32_t *) addr;
-		while (dst < (uint32_t *) 0x60000000 + addr + 0x10000)
-		{
-			*dst++ = *src++;
-			*dst++ = *src++;
-			*dst++ = *src++;
-			*dst++ = *src++;
-		}
-
-
-
-		addr += 0x100000;
-	} while (addr < 0xd00000);
-	video_tlb = 0x2000;
-	video_sbt = 0;
-}
-
-
-/*
- * blink the Firebee's LED to show we are still alive
- */
-void blink_led(void)
-{
-	static uint16_t blinker = 0;
-
-	if ((blinker++ & 0x80) > 0)
-	{
-		MCF_GPIO_PODR_FEC1L |= (1 << 4);    /* LED off */
-	}
-	else
-	{
-		MCF_GPIO_PODR_FEC1L &= ~(1 << 4);   /* LED on */
-	}
-}
-
-/*
- * Atari MFP interrupt registers.
- *
- * TODO: should go into a header file
- */
-
-#define FALCON_MFP_IERA     *((volatile uint8_t *) 0xfffffa07)
-#define FALCON_MFP_IERB     *((volatile uint8_t *) 0xfffffa09)
-#define FALCON_MFP_IPRA     *((volatile uint8_t *) 0xfffffa0b)
-#define FALCON_MFP_IPRB     *((volatile uint8_t *) 0xfffffa0d)
-#define FALCON_MFP_IMRA     *((volatile uint8_t *) 0xfffffa13)
-#define FALCON_MFP_IMRB     *((volatile uint8_t *) 0xfffffa15)
-
-bool irq6_acsi_dma_interrupt(void)
-{
-	dbg("ACSI DMA interrupt\r\n");
-
-	/*
-	 * TODO: implement handler
-	 */
-
-	return false;
-}
-
-bool irq6_interrupt_handler(uint32_t sf1, uint32_t sf2)
-{
-	bool handled = false;
-
-	MCF_EPORT_EPFR |= (1 << 6);	/* clear int6 from edge port */
-
-	if (video_sbt != 0 && (video_sbt - 0x70000000) > MCF_SLT0_SCNT)
-	{
-		video_addr_timeout();
-		handled = true;
-	}
-
-	/*
-	 * check if ACSI DMA interrupt
-	 */
-
-	if (FALCON_MFP_IERA & (1 << 7))
-	{
-		/* ACSI interrupt is enabled */
-		if (FALCON_MFP_IPRA & (1 << 7))
-		{
-			irq6_acsi_dma_interrupt();
-			handled = true;
-		}
-	}
-
-	if (FALCON_MFP_IPRA || FALCON_MFP_IPRB)
-	{
-		blink_led();
-	}
-
-	return handled;
-}

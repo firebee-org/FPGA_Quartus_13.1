@@ -13,10 +13,8 @@
 #include "firebee.h"
 #elif defined(MACHINE_M5484LITE)
 #include "m5484l.h"
-#elif defined(MACHINE_M54455)
-#include "m54455.h"
 #else
-#error "unknown machine!"
+#error "unknown machine"
 #endif
 
 //#define DBG_AM79
@@ -65,7 +63,6 @@ int am79c874_init(uint8_t fec_ch, uint8_t phy_addr, uint8_t speed, uint8_t duple
 		if (!(settings & MII_AM79C874_CR_RESET))
 			break;
 	}
-
 	if (timeout >= FEC_MII_TIMEOUT)
 	{
 		dbg("%s: PHY reset failed\r\n", __FUNCTION__);
@@ -91,14 +88,11 @@ int am79c874_init(uint8_t fec_ch, uint8_t phy_addr, uint8_t speed, uint8_t duple
 
 	if (timeout >= FEC_MII_TIMEOUT)
 	{
-		dbg("%s: Auto-negotiation failed (timeout). Set default mode (100Mbps, full duplex)\r\n", __FUNCTION__);
+		dbg("%s: PHY Set the default mode\r\n", __FUNCTION__);
 
 		/* Set the default mode (Full duplex, 100 Mbps) */
 		if (!fec_mii_write(fec_ch, phy_addr, MII_AM79C874_CR, MII_AM79C874_CR_100MB | MII_AM79C874_CR_DPLX))
-		{
-			dbg("%s: forced setting 100Mbps/full failed.\r\n", __FUNCTION__);
 			return 0;
-		}
 	}
 
 #ifdef DBG_AM79

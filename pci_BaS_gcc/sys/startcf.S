@@ -1,4 +1,3 @@
-
 /*
  * This object file must be the first to be linked,
  * so it will be placed at the very beginning of the ROM.
@@ -50,8 +49,7 @@ _rom_entry:
 		lea 	__SUP_SP,a7
 		move.l	#0,(sp)
 
-		/*
-		 * Initialize the processor caches.
+		/* Initialize the processor caches.
 		 * The instruction cache is fully enabled.
 		 * The data cache is enabled, but cache-inhibited by default.
 		 * Later, the MMU will fully activate the data cache for specific areas.

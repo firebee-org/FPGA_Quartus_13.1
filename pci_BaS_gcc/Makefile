@@ -15,7 +15,7 @@ ifeq (Y,$(COMPILE_ELF))
 TCPREFIX=m68k-elf-
 EXE=elf
 FORMAT=elf32-m68k
-else
+else 
 TCPREFIX=m68k-atari-mint-
 EXE=s19
 FORMAT=srec
@@ -32,21 +32,20 @@ NATIVECC=gcc
 INCLUDE=-Iinclude
 CFLAGS=-mcpu=5474 \
 		-Wall \
-		-g3 \
+		-Os \
 		-fomit-frame-pointer \
 		-ffreestanding \
 		-fleading-underscore \
 		-Wa,--register-prefix-optional
 CFLAGS_OPTIMIZED = -mcpu=5474 \
 		-Wall \
-		-g3 \
 		-O2 \
 		-fomit-frame-pointer \
 		-ffreestanding \
 		-fleading-underscore \
 		-Wa,--register-prefix-optional
 
-TRGTDIRS= ./firebee ./m5484lite ./m54455
+TRGTDIRS= ./firebee ./m5484lite
 OBJDIRS=$(patsubst %, %/objs,$(TRGTDIRS))
 TOOLDIR=util
 
@@ -124,7 +123,6 @@ CSRCS= \
 	radeon_accel.c \
 	radeon_cursor.c \
 	radeon_monitor.c \
-	fnt_st_8x16.c \
 	\
 	x86decode.c \
 	x86sys.c \
@@ -137,7 +135,7 @@ CSRCS= \
 	x86pcibios.c \
 	\
 	basflash.c \
-	basflash_start.c
+	basflash_start.c 
 
 
 ASRCS= \
@@ -173,35 +171,32 @@ clean:
 
 # flags for targets
 m5484lite/bas.$(EXE): MACHINE=MACHINE_M5484LITE
-m54455/bas.$(EXE): MACHINE=MACHINE_M54455
 firebee/bas.$(EXE): MACHINE=MACHINE_FIREBEE
 m5484lite/ram.$(EXE): MACHINE=MACHINE_M5484LITE
-m54455/ram.$(EXE): MACHINE=MACHINE_M54455
 firebee/ram.$(EXE): MACHINE=MACHINE_FIREBEE
 m5484lite/basflash.$(EXE): MACHINE=MACHINE_M5484LITE
-m54455/basflash.$(EXE): MACHINE=MACHINE_M54455
 firebee/basflash.$(EXE): MACHINE=MACHINE_FIREBEE
 
 #
 # generate pattern rules for different object files
 #
 define CC_TEMPLATE
-#ifeq (firebee,$(1))
-	#MACHINE=MACHINE_FIREBEE
-#else
-	#MACHINE=MACHINE_M5484LITE
-#endif
+ifeq (firebee,$(1))
+	MACHINE=MACHINE_FIREBEE
+else
+	MACHINE=MACHINE_M5484LITE
+endif
 
 # always optimize x86 emulator objects
-#$(1)/objs/x86decode.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86sys.o:		CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86debug.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86prim_ops.o:CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86ops.o:		CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86ops2.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86fpu.o:		CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86biosemu.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
-#$(1)/objs/x86pcibios.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86decode.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86sys.o:		CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86debug.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86prim_ops.o:CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86ops.o:		CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86ops2.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86fpu.o:		CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86biosemu.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
+$(1)/objs/x86pcibios.o:	CFLAGS=$(CFLAGS_OPTIMIZED)
 
 $(1)/objs/%.o:%.c
 	$(CC) $$(CFLAGS) -D$$(MACHINE) $(INCLUDE) -c $$< -o $$@
@@ -263,7 +258,7 @@ endif
 $(1)_MAPFILE_RAM=$(1)/$$(basename $$(RAM_EXEC)).map
 $(1)/$$(RAM_EXEC): $(1)/$(LIBBAS) $(LDCSRC)
 	$(CPP) $(INCLUDE) -DCOMPILE_RAM -DOBJDIR=$(1)/objs -P -DFORMAT_ELF=$(FORMAT_ELF) -D$$(MACHINE) $(LDCSRC) -o $(1)/$$(LDRFILE)
-	$(LD) -g --oformat $$(FORMAT) -Map $$($(1)_MAPFILE_RAM) --cref -T $(1)/$$(LDRFILE) -o $$@
+	$(LD) --oformat $$(FORMAT) -Map $$($(1)_MAPFILE_RAM) --cref -T $(1)/$$(LDRFILE) -o $$@
 ifeq ($(COMPILE_ELF),Y)
 	$(OBJCOPY) -O srec $$@ $$(basename $$@).s19
 else
@@ -286,21 +281,21 @@ $(foreach DIR,$(TRGTDIRS),$(eval $(call EX_TEMPLATE,$(DIR))))
 
 indent: $(CSRCS)
 	indent $<
-
+	
 .PHONY: tags
 tags:
 	ctags $(patsubst %,%/*,$(VPATH))
-
+	
 .PHONY: printvars
 printvars:
 	@$(foreach V,$(.VARIABLES), $(if $(filter-out environment% default automatic, $(origin $V)),$(warning $V=$($V))))
 ifeq (MACHINE_M5484LITE,$$(MACHINE))
 	MNAME=m5484lite
 else ifeq (MACHINE_FIREBEE,$(MACHINE))
-	MNAME=firebee
+   	MNAME=firebee
 endif
 
 tools:
-	$(NATIVECC) $(INCLUDE) -c $(TOOLDIR)/s19header.c -o $(TOOLDIR)/s19header.o
+	$(NATIVECC) $(INCLUDE) -c $(TOOLDIR)/s19header.c -o $(TOOLDIR)/s19header.o 
 	$(NATIVECC) -o $(TOOLDIR)/s19header $(TOOLDIR)/s19header.o
 

@@ -340,17 +340,6 @@ static err_t verify(uint8_t *dst, uint8_t *src, uint32_t length)
 	return OK;
 }
 
-/*
- * needed to avoid missing type cast warning below
- */
-static inline err_t srec_memcpy(uint8_t *dst, uint8_t *src, size_t n)
-{
-    err_t e = OK;
-
-    memcpy((void *) dst, (void *) src, n);
-    return e;
-}
-
 void srec_execute(char *flasher_filename)
 {
 	DRESULT res;
@@ -383,7 +372,7 @@ void srec_execute(char *flasher_filename)
 				{
 					/* next pass: copy data to destination */
 					xprintf("OK.\r\ncopy/flash data: ");
-                    err = read_srecords(flasher_filename, &start_address, &length, srec_memcpy);
+					err = read_srecords(flasher_filename, &start_address, &length, memcpy);
 					if (err == OK)
 					{
 						/* next pass: verify data */

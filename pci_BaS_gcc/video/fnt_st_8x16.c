@@ -7,10 +7,11 @@
  * option any later version.  See doc/license.txt for details.
  */
 
-#include "bas_types.h"
+#include "config.h"
+#include "portab.h"
 #include "font.h"
 
-static const uint16_t off_table[] =
+static const UWORD off_table[] =
 {
     0x0000, 0x0008, 0x0010, 0x0018, 0x0020, 0x0028, 0x0030, 0x0038,
     0x0040, 0x0048, 0x0050, 0x0058, 0x0060, 0x0068, 0x0070, 0x0078,
@@ -47,7 +48,7 @@ static const uint16_t off_table[] =
     0x0800,
 };
 
-static const uint16_t dat_table[] =
+static const UWORD dat_table[] =
 {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x1104,

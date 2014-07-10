@@ -55,14 +55,14 @@ void *memset(void *s, int c, size_t n)
 }
 
 
-int memcmp(const void *s1, const void *s2, size_t max)
+int memcmp(const char *s1, const char *s2, size_t max)
 {
 	int i;
 	int cmp;
 
 	for (i = 0; i < max; i++)
 	{
-        cmp = (* (const char *) s1 - * (const char *) s2);
+		cmp = (*s1 - *s2);
 		if (cmp != 0) return cmp;
 	}
 	return cmp;
@@ -75,7 +75,7 @@ int strcmp(const char *s1, const char *s2)
 
 	for (i = 0; *s1++ && *s2++; i++)
 	{
-		cmp = (*s1 - *s2);
+		cmp * (*s1 - *s2);
 		if (cmp != 0) return cmp;
 	}
 	return cmp;

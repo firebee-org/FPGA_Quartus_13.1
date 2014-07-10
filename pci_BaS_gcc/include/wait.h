@@ -29,23 +29,55 @@
 
 #include <bas_types.h>
 
-#if defined(MACHINE_FIREBEE)
+#if MACHINE_FIREBEE
 #include "firebee.h"
-#elif defined(MACHINE_M5484LITE)
+#elif MACHINE_M5484LITE
 #include "m5484l.h"
-#elif defined(MACHINE_M54455)
-#include "m54455.h"
-#else
-#error "unknown machine"
 #endif /* MACHINE_FIREBEE */
 
 #include "MCF5475.h"
 
 typedef bool (*checker_func)(void);
 
-extern void wait(uint32_t);
-extern bool waitfor(uint32_t us, checker_func condition);
-extern uint32_t get_timer(void);
-extern void wait_ms(uint32_t ms);
+extern __inline__ void wait(uint32_t) __attribute__((always_inline));
+extern __inline__ bool waitfor(uint32_t us, checker_func condition) __attribute__((always_inline));
 
+extern __inline__ uint32_t get_timer(void)
+{
+	return MCF_SLT_SCNT(0);
+}
+/*
+ * wait for the specified number of us on slice timer 0. Replaces the original routines that had
+ * the number of useconds to wait for hardcoded in their name.
+ */
+extern __inline__ void wait(uint32_t us)
+{
+	int32_t target = MCF_SLT_SCNT(0) - (us * (SYSCLK / 1000));
+
+	while (MCF_SLT_SCNT(0) - target > 0);
+}
+
+/*
+ * same as above, but with milliseconds wait time
+ */
+extern __inline__ void wait_ms(uint32_t ms)
+{
+	wait(ms * 1000);
+}
+/*
+ * the same as above, with a checker function which gets called while
+ * busy waiting and allows for an early return if it returns true
+ */
+extern __inline__ bool waitfor(uint32_t us, checker_func condition)
+{
+	int32_t target = MCF_SLT_SCNT(0) - (us * (SYSCLK / 1000));
+	bool res;
+
+	do
+	{
+		if ((res = (*condition)()))
+			return res;
+	} while (MCF_SLT_SCNT(0) - target > 0);
+	return false;
+}
 #endif /* _WAIT_H_ */

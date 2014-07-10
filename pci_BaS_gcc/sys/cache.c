@@ -44,24 +44,24 @@ uint32_t cacr_get(void)
 
 void flush_and_invalidate_caches(void)
 {
-    __asm__ __volatile__(
-            "	clr.l		d0                  \n\t"
-            "	clr.l		d1                  \n\t"
-            "	move.l		d0,a0               \n\t"
-            "cfa_setloop:                       \n\t"
-            "	cpushl		bc,(a0)				| flush\n\t"
-            "	lea			0x10(a0),a0			| index+1\n\t"
-            "	addq.l		#1,d1				| index+1\n\t"
-            "	cmpi.w		#512,d1				| all sets?\n\t"
-            "	bne.s		cfa_setloop			| no->\n\t"
-            "	clr.l		d1                  \n\t"
-            "	addq.l		#1,d0               \n\t"
-            "	move.l		d0,a0               \n\t"
-            "	cmpi.w		#4,d0				| all ways?\n\t"
-            "	bne.s		cfa_setloop			| no->\n\t"
-            /* input */	:
-            /* output */	:
-            /* clobber */	: "d0", "d1", "a0"
+	__asm__ (
+	"	clr.l		d0\n\t"
+	"	clr.l		d1\n\t"
+	"	move.l		d0,a0\n\t"
+	"cfa_setloop:\n\t"
+	"	cpushl		bc,(a0)				| flush\n\t"
+	"	lea			0x10(a0),a0			| index+1\n\t"
+	"	addq.l		#1,d1				| index+1\n\t"
+	"	cmpi.w		#512,d1				| all sets?\n\t"
+	"	bne.s		cfa_setloop			| no->\n\t"
+	"	clr.l		d1\n\t"
+	"	addq.l		#1,d0\n\t"
+	"	move.l		d0,a0\n\t"
+	"	cmpi.w		#4,d0				| all ways?\n\t"
+	"	bne.s		cfa_setloop			| no->\n\t"
+	/* input */	:
+	/* output */	:
+	/* clobber */	: "d0", "d1", "a0"
 	);
 }
 
@@ -81,35 +81,25 @@ void flush_icache_range(void *address, size_t size)
 	if (start_set > end_set) {
 		/* from the begining to the lowest address */
 		for (set = 0; set <= end_set; set += (0x10 - 3)) {
-            __asm__ __volatile__(
-                        "       cpushl  ic,(%[set])         \n\t"
-                        "       addq.l  #1,%[set]           \n\t"
-                        "       cpushl  ic,(%[set])         \n\t"
-                        "       addq.l  #1,%[set]           \n\t"
-                        "       cpushl  ic,(%[set])         \n\t"
-                        "       addq.l  #1,%[set]           \n\t"
-                        "       cpushl  ic,(%[set])         \n\t"
-                 : /* output parameters  */
-                 : [set] "a" (set)    /* input parameters */
-                 :
-            );
+			asm volatile("cpushl ic,(%0)\n\t"
+						"addq.l #1,%0\n\t"
+						"cpushl ic,(%0)\n\t"
+						"addq.l #1,%0\n\t"
+						"cpushl ic,(%0)\n\t"
+						"addq.l #1,%0\n\t"
+						"cpushl ic,(%0)" : "=a" (set) : "a" (set));
 		}
 		/* next loop will finish the cache ie pass the hole */
 		end_set = LAST_ICACHE_ADDR;
 	}
 	for (set = start_set; set <= end_set; set += (0x10 - 3)) {
-        __asm__ __volatile__(
-                    "       cpushl  ic,(%[set])             \n\t"
-                    "       addq.l  #1,%[set]               \n\t"
-                    "       cpushl  ic,(%[set])             \n\t"
-                    "       addq.l  #1,%[set]               \n\t"
-                    "       cpushl  ic,(%[set])             \n\t"
-                    "       addq.l  #1,%[set]               \n\t"
-                    "       cpushl  ic,(%[set])"
-                    : /* output parameters */
-                    : [set] "a" (set)
-                    :
-         );
+		asm volatile("cpushl ic,(%0)\n\t"
+					"addq.l #1,%0\n\t"
+					"cpushl ic,(%0)\n\t"
+					"addq%.l #1,%0\n\t"
+					"cpushl ic,(%0)\n\t"
+					"addq.l #1,%0\n\t"
+					"cpushl ic,(%0)" : "=a" (set) : "a" (set));
 	}
 }
 
@@ -131,37 +121,25 @@ void flush_dcache_range(void *address, size_t size)
 
 	if (start_set > end_set) {
 		/* from the begining to the lowest address */
-        for (set = 0; set <= end_set; set += (0x10 - 3))
-        {
-            __asm__ __volatile__(
-                        "       cpushl  dc,(%[set])         \n\t"
-                        "       addq.l  #1,%[set]           \n\t"
-                        "       cpushl  dc,(%[set])         \n\t"
-                        "       addq.l  #1,%[set]           \n\t"
-                        "       cpushl  dc,(%[set])         \n\t"
-                        "       addq.l  #1,%[set]           \n\t"
-                        "       cpushl  dc,(%[set])         \n\t"
-                        : /* output parameters */
-                        : [set] "a" (set)
-                        : /* clobbered registers */
-            );
+		for (set = 0; set <= end_set; set += (0x10 - 3)) {
+			asm volatile("cpushl dc,(%0)\n\t"
+						"addq.l #1,%0\n\t"
+						"cpushl dc,(%0)\n\t"
+						"addq.l #1,%0\n\t"
+						"cpushl dc,(%0)\n\t"
+						"addq.l #1,%0\n\t"
+						"cpushl dc,(%0)" : "=a" (set) : "a" (set));
 		}
 		/* next loop will finish the cache ie pass the hole */
 		end_set = LAST_DCACHE_ADDR;
 	}
-    for (set = start_set; set <= end_set; set += (0x10 - 3))
-    {
-        __asm__ __volatile__(
-                    "       cpushl      dc,(%[set])     \n\t"
-                    "       addq.l      #1,%[set]       \n\t"
-                    "       cpushl      dc,(%[set])     \n\t"
-                    "       addq%.l     #1,%[set]       \n\t"
-                    "       cpushl      dc,(%[set])     \n\t"
-                    "       addq.l      #1,%[set]       \n\t"
-                    "       cpushl      dc,(%[set])     \n\t"
-                    : /* output parameters */
-                    : [set] "a" (set)
-                    : /* clobbered registers */
-        );
+	for (set = start_set; set <= end_set; set += (0x10 - 3)) {
+		asm volatile("cpushl dc,(%0)\n\t"
+					"addq.l #1,%0\n\t"
+					"cpushl dc,(%0)\n\t"
+					"addq%.l #1,%0\n\t"
+					"cpushl dc,(%0)\n\t"
+					"addq.l #1,%0\n\t"
+					"cpushl dc,(%0)" : "=a" (set) : "a" (set));
 	}
 }

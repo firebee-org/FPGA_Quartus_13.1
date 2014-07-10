@@ -2,7 +2,7 @@
  * File:		sysinit.c
  * Purpose:		Power-on Reset configuration of the Firebee board.
  *
- * Notes:
+ * Notes: 
  *
  * This file is part of BaS_gcc.
  *
@@ -37,17 +37,14 @@
 #include "wait.h"
 #include "util.h"
 #include "version.h"
-#if defined(MACHINE_FIREBEE)
+#ifdef MACHINE_FIREBEE
 #include "firebee.h"
-#elif defined(MACHINE_M5484LITE)
+#endif /* MACHINE_FIREBEE */
+
+#ifdef MACHINE_M5484LITE
 #include "m5484l.h"
-#elif defined(MACHINE_M54455)
-#include "m54455.h"
-#else
-#error "unknown machine"
 #endif /* MACHINE_M5484LITE */
 
-#
 #include "dma.h"
 #include "mod_devicetable.h"
 #include "pci_ids.h"
@@ -55,14 +52,12 @@
 #include "usb.h"
 #include "video.h"
 
-#define UNUSED(x) (void)(x)				/* Unused variable         */
-
-bool fpga_configured = false;			/* for FPGA JTAG configuration */
+#define UNUSED(x) (void)(x)               /* Unused variable         */
 
 extern volatile long _VRAM;	/* start address of video ram from linker script */
 
 /*
- * init SLICE TIMER 0
+ * init SLICE TIMER 0 
  * all  = 32.538 sec = 30.736mHz
  * BYT0 = 127.1ms/tick = 7.876Hz   offset 0
  * BYT1 = 496.5us/tick = 2.014kHz  offset 1
@@ -91,16 +86,16 @@ void init_gpio(void)
 	 * configure all four 547x GPIO module DMA pins:
 	 *
 	 * /DACK1 - DMA acknowledge 1
-	 * /DACK0 - DMA acknowledge 0
-	 * /DREQ1 - DMA request 1
-	 * /DREQ0 - DMA request 0
-	 *
+ 	 * /DACK0 - DMA acknowledge 0
+ 	 * /DREQ1 - DMA request 1
+ 	 * /DREQ0 - DMA request 0
+ 	 *
 	 * for DMA operation
 	 */
-	MCF_PAD_PAR_DMA = MCF_PAD_PAR_DMA_PAR_DACK0(0x3) |
-			MCF_PAD_PAR_DMA_PAR_DACK1(0x3) |
-			MCF_PAD_PAR_DMA_PAR_DREQ1(0x3) |
-			MCF_PAD_PAR_DMA_PAR_DREQ0(0x3);
+	MCF_PAD_PAR_DMA = MCF_PAD_PAR_DMA_PAR_DACK0(0b11) |
+			MCF_PAD_PAR_DMA_PAR_DACK1(0b11) |
+			MCF_PAD_PAR_DMA_PAR_DREQ1(0b11) |
+			MCF_PAD_PAR_DMA_PAR_DREQ0(0b11);
 
 	/*
 	 * configure FEC0 pin assignment on GPIO module as FEC0
@@ -209,6 +204,20 @@ void init_gpio(void)
 						MCF_PAD_PAR_TIMER_PAR_TOUT3 |
 						MCF_PAD_PAR_TIMER_PAR_TIN2(MCF_PAD_PAR_TIMER_PAR_TIN2_IRQ2) |
 						MCF_PAD_PAR_TIMER_PAR_TOUT2;
+
+#if defined(MACHINE_FIREBEE)
+	/*
+	 * Configure GPIO FEC1L port directions (needed to load FPGA configuration)
+	 */
+	MCF_GPIO_PDDR_FEC1L = 0 |								/* bit 7 = input */
+						  0	|								/* bit 6 = input */
+						  0 | 								/* bit 5 = input */
+						  MCF_GPIO_PDDR_FEC1L_PDDR_FEC1L4 |	/* bit 4 = LED => output */
+						  MCF_GPIO_PDDR_FEC1L_PDDR_FEC1L3 |	/* bit 3 = PRG_DQ0 => output */
+						  MCF_GPIO_PDDR_FEC1L_PDDR_FEC1L2 |	/* bit 2 = FPGA_CONFIG => output */
+						  MCF_GPIO_PDDR_FEC1L_PDDR_FEC1L1 |	/* bit 1 = PRG_CLK (FPGA) => output */
+						  0;								/* bit 0 => input */
+#endif /* MACHINE_FIREBEE */
 }
 
 /*
@@ -418,27 +427,27 @@ void init_fbcs()
 #if MACHINE_FIREBEE /* FBC setup for FireBee */
 	MCF_FBCS1_CSAR = 0xFFF00000;			/* ATARI I/O ADRESS */
 	MCF_FBCS1_CSCR = MCF_FBCS_CSCR_PS_16	/* 16BIT PORT */
-		| MCF_FBCS_CSCR_WS(8)				/* DEFAULT 8WS */
-		| MCF_FBCS_CSCR_AA;					/* AA */
+	    | MCF_FBCS_CSCR_WS(8)				/* DEFAULT 8WS */
+	    | MCF_FBCS_CSCR_AA;					/* AA */
 	MCF_FBCS1_CSMR = MCF_FBCS_CSMR_BAM_1M | MCF_FBCS_CSMR_V;
 
 	MCF_FBCS2_CSAR = 0xF0000000;			// NEUER I/O ADRESS-BEREICH
 	MCF_FBCS2_CSCR = MCF_FBCS_CSCR_PS_32	// 32BIT PORT
-		| MCF_FBCS_CSCR_WS(8)				// DEFAULT 4WS
-		| MCF_FBCS_CSCR_AA;					// AA
+	    | MCF_FBCS_CSCR_WS(8)				// DEFAULT 4WS
+	    | MCF_FBCS_CSCR_AA;					// AA
 	MCF_FBCS2_CSMR = (MCF_FBCS_CSMR_BAM_128M	// F000'0000-F7FF'FFFF
 			  | MCF_FBCS_CSMR_V);
 
 	MCF_FBCS3_CSAR = 0xF8000000;			// NEUER I/O ADRESS-BEREICH
 	MCF_FBCS3_CSCR = MCF_FBCS_CSCR_PS_16	// 16BIT PORT
-		| MCF_FBCS_CSCR_AA;	// AA
+	    | MCF_FBCS_CSCR_AA;	// AA 
 	MCF_FBCS3_CSMR = (MCF_FBCS_CSMR_BAM_64M	// F800'0000-FBFF'FFFF
 			  | MCF_FBCS_CSMR_V);
 
 	MCF_FBCS4_CSAR = 0x40000000;			// VIDEO RAM BEREICH, #FB_CS3 WIRD NICHT BENÜTZT, DECODE DIREKT AUF DEM FPGA
 	MCF_FBCS4_CSCR = MCF_FBCS_CSCR_PS_32	// 32BIT PORT
-		| MCF_FBCS_CSCR_BSTR				// BURST READ ENABLE
-		| MCF_FBCS_CSCR_BSTW;				// BURST WRITE ENABLE
+	    | MCF_FBCS_CSCR_BSTR				// BURST READ ENABLE
+	    | MCF_FBCS_CSCR_BSTW;				// BURST WRITE ENABLE
 	MCF_FBCS4_CSMR = MCF_FBCS_CSMR_BAM_1G	// 4000'0000-7FFF'FFFF
 			  | MCF_FBCS_CSMR_V;
 #elif MACHINE_M5484LITE
@@ -453,7 +462,7 @@ void init_fbcs()
 		| MCF_FBCS_CSCR_WS(32)
 		| MCF_FBCS_CSCR_ASET(1)
 		| MCF_FBCS_CSCR_AA;
-	MCF_FBCS5_CSMR = MCF_FBCS_CSMR_BAM_256M
+	MCF_FBCS5_CSMR = MCF_FBCS_CSMR_BAM_256M 
 		| MCF_FBCS_CSMR_V;
 #endif /* MACHINE_FIREBEE */
 
@@ -571,7 +580,7 @@ void init_video_ddr(void) {
 /*
  * probe for NEC compatible USB host controller and install if found
  */
-void init_usb(void)
+void init_usb(void) 
 {
 	extern struct pci_device_id ohci_usb_pci_table[];
 	extern struct pci_device_id ehci_usb_pci_table[];
@@ -657,20 +666,18 @@ static bool i2c_bus_free(void)
 /*
  * TFP410 (DVI) on
  */
-void dvi_on(void)
-{
+void dvi_on(void) {
 	uint8_t receivedByte;
 	uint8_t dummyByte; /* only used for a dummy read */
 	int num_tries = 0;
-
+	
 	xprintf("DVI digital video output initialization: ");
 
 	MCF_I2C_I2FDR = 0x3c;		/* divide system clock by 1280: 100kHz standard */
 
-	do
-	{
+	do {
 		/* disable all i2c interrupt routing targets */
-		MCF_I2C_I2ICR = 0x0;	// ~(MCF_I2C_I2ICR_IE | MCF_I2C_I2ICR_RE | MCF_I2C_I2ICR_TE | MCF_I2C_I2ICR_BNBE);
+		MCF_I2C_I2ICR = 0x0; //~(MCF_I2C_I2ICR_IE | MCF_I2C_I2ICR_RE | MCF_I2C_I2ICR_TE | MCF_I2C_I2ICR_BNBE);
 
 		/* disable i2c, disable i2c interrupts, slave, receive, i2c = acknowledge, no repeat start */
 		MCF_I2C_I2CR = 0x0;
@@ -807,16 +814,16 @@ void init_ac97(void) {
 	int va;
 	int vb;
 	int vc;
-
+	
 	xprintf("AC97 sound chip initialization: ");
 	MCF_PAD_PAR_PSC2 = MCF_PAD_PAR_PSC2_PAR_RTS2_RTS	// PSC2=TX,RX BCLK,CTS->AC'97
-		   | MCF_PAD_PAR_PSC2_PAR_CTS2_BCLK
+	       | MCF_PAD_PAR_PSC2_PAR_CTS2_BCLK
 			 | MCF_PAD_PAR_PSC2_PAR_TXD2
 			 | MCF_PAD_PAR_PSC2_PAR_RXD2;
 	MCF_PSC2_PSCMR1 = 0x0;
 	MCF_PSC2_PSCMR2 = 0x0;
 	MCF_PSC2_PSCIMR = 0x0300;
-	MCF_PSC2_PSCSICR = 0x03;	//AC97
+	MCF_PSC2_PSCSICR = 0x03;	//AC97           
 	MCF_PSC2_PSCRFCR = 0x0f000000;
 	MCF_PSC2_PSCTFCR = 0x0f000000;
 	MCF_PSC2_PSCRFAR = 0x00F0;
@@ -837,7 +844,7 @@ void init_ac97(void) {
 		{
 			MCF_PSC2_PSCTB_AC97 = 0x0;	//SLOT2-12:WR REG ALLES 0
 		}
-
+		
 		// read register
 		MCF_PSC2_PSCTB_AC97 = 0xc0000000;	//START SLOT1 + SLOT2, FIRST FRAME
 		MCF_PSC2_PSCTB_AC97 = 0x82000000;	//SLOT1:master volume
@@ -847,7 +854,7 @@ void init_ac97(void) {
 			MCF_PSC2_PSCTB_AC97 = 0x00000000;	//SLOT2-12:RD REG ALLES 0
 		}
 		wait(50);
-
+		
 		va = MCF_PSC2_PSCTB_AC97;
 		if ((va & 0x80000fff) == 0x80000800) {
 			vb = MCF_PSC2_PSCTB_AC97;
@@ -951,10 +958,10 @@ void initialize_hardware(void)
 		* (volatile uint32_t *) 0x43a = 0x237698aa;	/* memval2 TOS system variable */
 		* (volatile uint32_t *) 0x51a = 0x5555aaaa;	/* memval3 TOS system variable */
 
-		/* TT-RAM */
+	    /* TT-RAM */
 
-		* (uint32_t *) 0x5a4 = FASTRAM_END; /* ramtop TOS system variable */
-		* (uint32_t *) 0x5a8 = 0x1357bd13;  /* ramvalid TOS system variable */
+	    * (uint32_t *) 0x5a4 = FASTRAM_END; /* ramtop TOS system variable */
+	    * (uint32_t *) 0x5a8 = 0x1357bd13;  /* ramvalid TOS system variable */
 
 		/* Jump into FireTOS */
 		typedef void void_func(void);
@@ -967,7 +974,7 @@ void initialize_hardware(void)
 	init_serial();
 
 	xprintf("\n\n");
-	xprintf("%s BASIS system (BaS) v %d.%d (%s, %s)\r\n\r\n",
+	xprintf("%s BASIS system (BaS) v %d.%d (%s, %s)\r\n\r\n", 
 #if MACHINE_FIREBEE
 	"Firebee"
 #elif MACHINE_M5484LITE
@@ -1045,7 +1052,7 @@ void initialize_hardware(void)
 	/*
 	 * Determine the processor revision
 	 */
-	xprintf(" (revision %d)\r\n", ((MCF_SIU_JTAGID & MCF_SIU_JTAGID_REV) >> 28));
+	xprintf(" (revision %d)\r\n",((MCF_SIU_JTAGID & MCF_SIU_JTAGID_REV) >> 28));
 
 	init_slt();
 	init_fbcs();
@@ -1083,7 +1090,6 @@ void initialize_hardware(void)
 
 	/* the following only makes sense _after_ DDRAM has been initialized */
 	clear_bss_segment();
-	xprintf(".bss segment cleared\r\n");
 
 	if (BAS_LMA != BAS_IN_RAM)
 	{
@@ -1097,17 +1103,39 @@ void initialize_hardware(void)
 #if MACHINE_FIREBEE
 	if (coldboot) /* does not work with BDM */
 		;
-	fpga_configured = init_fpga();
+	init_fpga();
 
 	init_pll();
 	init_video_ddr();
 	dvi_on();
 
+#ifdef _NOT_USED_ 
+	/* experimental */
+	{
+		int i;
+		uint32_t *scradr = (uint32_t *) 0xd00000;
+
+		for (i = 0; i < 100; i++)
+		{
+			uint32_t *p = scradr;
+
+			for (p = scradr; p < scradr + 1024 * 150L; p++)
+			{
+				*p = 0xffffffff;
+			}
+			for (p = scradr; p < scradr + 1024 * 150L; p++)
+			{
+				*p = 0x0;
+			}
+		}
+	}
+#endif /* _NOT_USED_ */
+
 #endif /* MACHINE_FIREBEE */
 	driver_mem_init();
 	init_pci();
 	video_init();
-
+	
 	/* do not try to init USB for now on the Firebee, it hangs the machine */
 #ifndef MACHINE_FIREBEE
 	//init_usb();
