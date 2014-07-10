@@ -26,7 +26,66 @@
 
 #include "bas_types.h"
 
+/*
+ * ACR register handling macros
+ */
+#define ACR_BA(x)                   ((x) & 0xffff0000)
+#define ACR_ADMSK(x)                (((x) & 0xffff) << 16)
+#define ACR_E(x)                    (((x) & 1) << 15)
+
+#define ACR_S(x)                    (((x) & 3) << 13)
+#define ACR_S_USERMODE              0
+#define ACR_S_SUPERVISOR_MODE       1
+#define ACR_S_ALL                   2
+
+#define ACR_ADDRESS_MASK_MODE(x)	(((x) & 1) << 10)
+
+#define ACR_CACHE_MODE(x)			(((x) & 3) << 5)
+#define ACR_SUPERVISOR_PROTECT(x)	(((x) & 1) << 3)
+#define ACR_WRITE_PROTECT(x)		(((x) & 1) << 2)
+
+
+/*
+ * MMU register handling macros
+ */
+
 #define SCA_PAGE_ID		6	/* indicates video memory page */
+
+/*
+ * MMU page sizes
+ */
+#define MMU_PAGE_SIZE_1M	0
+#define MMU_PAGE_SIZE_4K	1
+#define MMU_PAGE_SIZE_8K	2
+#define MMU_PAGE_SIZE_1K	3
+
+/*
+ * cache modes
+ */
+#define CACHE_WRITETHROUGH		0
+#define CACHE_COPYBACK			1
+#define CACHE_NOCACHE_PRECISE	2
+#define CACHE_NOCACHE_IMPRECISE	3
+
+
+/*
+ * page flags
+ */
+#define SV_PROTECT				1
+#define SV_USER					0
+
+#define ACCESS_READ		(1 << 0)
+#define	ACCESS_WRITE	(1 << 1)
+#define ACCESS_EXECUTE	(1 << 2)
+
+struct map_flags
+{
+	unsigned cache_mode:2;
+	unsigned protection:1;
+	unsigned page_id:8;
+	unsigned access:3;
+	unsigned unused:18;
+};
 
 /*
  * global variables from linker script
@@ -35,6 +94,6 @@ extern long video_tlb;
 extern long video_sbt;
 
 extern void mmu_init(void);
-extern void mmutr_miss(uint32_t addresss);
+extern void mmu_map_page(uint32_t virt, uint32_t phys, uint32_t map_size, struct map_flags flags);
 
 #endif /* _MMU_H_ */
