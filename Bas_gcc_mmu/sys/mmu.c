@@ -70,18 +70,6 @@
 #endif /* DEBUG_MMU */
 #define err(format, arg...) do { xprintf("ERROR (%s()): " format, __FUNCTION__, ##arg); xprintf("system halted\r\n"); } while(0); while(1)
 
-struct page_descriptor
-{
-    uint8_t cache_mode          : 2;
-    uint8_t supervisor_protect  : 1;
-    uint8_t read                : 1;
-    uint8_t write               : 1;
-    uint8_t execute             : 1;
-    uint8_t global              : 1;
-    uint8_t locked              : 1;
-};
-
-static struct page_descriptor pages[65536];   /* 512 Mb RAM */
 
 /*
  * set ASID register
@@ -217,7 +205,9 @@ struct phys_to_virt
 
 static struct phys_to_virt translation[] =
 {
-    { 0x00000000, 0x01000000, 0x60000000 },     /* map first 16 MByte to first 16 Mb of video ram */
+    { 0x00000000, 0x00e00000, 0x60000000 },     /* map first 14 MByte to first 16 Mb of video ram */
+    { 0x00e00000, 0x00100000, 0x00000000 },     /* map TOS to SDRAM */
+    { 0x00f00000, 0x00100000, 0xff000000 },     /* map Falcon I/O area to FPGA */
     { 0x01000000, 0x10000000, 0x00000000 },     /* map rest of ram virt = phys */
     { 0x1fd00000, 0x01000000, 0x00000000 },     /* accessed by EmuTOS? */
 };
@@ -236,6 +226,19 @@ static inline uint32_t lookup_phys(uint32_t phys)
     }
     err("physical address 0x%lx not found in translation table!\r\n", phys);
 }
+
+struct page_descriptor
+{
+    uint8_t cache_mode          : 2;
+    uint8_t supervisor_protect  : 1;
+    uint8_t read                : 1;
+    uint8_t write               : 1;
+    uint8_t execute             : 1;
+    uint8_t global              : 1;
+    uint8_t locked              : 1;
+};
+
+static struct page_descriptor pages[65536];   /* 512 Mb RAM */
 
 /*
  * map a page of memory using virt and phys as addresses with the Coldfire MMU.
@@ -370,8 +373,6 @@ void mmu_init(void)
 {
     extern uint8_t _MMUBAR[];
     uint32_t MMUBAR = (uint32_t) &_MMUBAR[0];
-    extern uint8_t _TOS[];
-    uint32_t TOS = (uint32_t) &_TOS[0];
     struct mmu_map_flags flags;
     int i;
 
@@ -380,7 +381,16 @@ void mmu_init(void)
      */
     for (i = 0; i < sizeof(pages); i++)
     {
-        pages[i].cache_mode = CACHE_WRITETHROUGH;
+        uint32_t adr = i * 8192;
+
+        if (adr >= 0x00f00000 && adr < 0x00ffffff)
+        {
+            pages[i].cache_mode = CACHE_NOCACHE_PRECISE;
+        }
+        else
+        {
+            pages[i].cache_mode = CACHE_COPYBACK;
+        }
         pages[i].global = 1;
         pages[i].locked = 0;
         pages[i].read = 1;
@@ -453,53 +463,6 @@ void mmu_init(void)
 
     /* create locked TLB entries */
 
-    //flags.cache_mode = CACHE_COPYBACK;
-    //flags.protection = SV_USER;
-    //flags.page_id = 0;
-    //flags.access = ACCESS_READ | ACCESS_WRITE | ACCESS_EXECUTE;
-    //flags.locked = true;
-
-    /* 0x0000_0000 - 0x000F_FFFF (first MB of physical memory) locked virt = phys */
-    //mmu_map_page(0x0, 0x0, MMU_PAGE_SIZE_1M, &flags);
-
-#if defined(MACHINE_FIREBEE)
-    /*
-     * 0x00d0'0000 - 0x00df'ffff (last megabyte of ST RAM = Falcon video memory) locked ID = 6
-     * mapped to physical address 0x60d0'0000 (FPGA video memory)
-     * video RAM: read write execute normal write true
-     */
-    //flags.cache_mode = CACHE_WRITETHROUGH;
-    //flags.protection = SV_USER;
-    //flags.page_id = SCA_PAGE_ID;
-    //flags.access = ACCESS_READ | ACCESS_WRITE | ACCESS_EXECUTE;
-    //flags.locked = true;
-    //mmu_map_page(0x00d00000, 0x60d00000, MMU_PAGE_SIZE_1M, &flags);
-
-    //video_tlb = 0x2000;						/* set page as video page */
-    //video_sbt = 0x0;						/* clear time */
-#endif /* MACHINE_FIREBEE */
-
-    /*
-     * Make the TOS (in SDRAM) read-only
-     * This maps virtual 0x00e0'0000 - 0x00ef'ffff to the same virtual address
-     */
-    flags.cache_mode = CACHE_COPYBACK;
-    flags.protection = SV_PROTECT;
-    flags.page_id = 0;
-    flags.access = ACCESS_READ | ACCESS_EXECUTE;
-    flags.locked = true;
-    mmu_map_page(TOS, TOS, MMU_PAGE_SIZE_1M, &flags);
-
-#if defined(MACHINE_FIREBEE)
-    /*
-     * Map FireBee I/O area (0xfff0'0000 - 0xffff'ffff physical) to the Falcon-compatible I/O
-     * area (0x00f0'0000 - 0x00ff'ffff virtual) for the FireBee
-     */
-    flags.cache_mode = CACHE_NOCACHE_PRECISE;
-    flags.access = ACCESS_WRITE | ACCESS_READ;
-    mmu_map_page(0x00f00000, 0xfff00000, MMU_PAGE_SIZE_1M, &flags);
-#endif /* MACHINE_FIREBEE */
-
     /*
      * Map (locked) the second last MB of physical SDRAM (this is where BaS .data and .bss reside) to the same
      * virtual address. This is also used (completely) when BaS is in RAM
@@ -522,7 +485,15 @@ void mmu_init(void)
 void mmutr_miss(uint32_t address, uint32_t pc, uint32_t format_status)
 {
     dbg("MMU TLB MISS accessing 0x%08x\r\nFS = 0x%08x\r\nPC = 0x%08x\r\n", address, format_status, pc);
+    //flush_and_invalidate_caches();
+
+#ifdef _NOT_USED_
+    // experimental; try to ensure that supervisor stack area stays in mmu TLBs
+    register uint32_t sp asm("sp");
+    if (sp < 0x02000000)
+        mmu_map_8k_page(sp);
     flush_and_invalidate_caches();
+#endif /* _NOT_USED_ */
 
     switch (address)
     {
@@ -541,12 +512,6 @@ void mmutr_miss(uint32_t address, uint32_t pc, uint32_t format_status)
         default:
             /* add missed page to TLB */
             mmu_map_8k_page(address);
-
-            flush_and_invalidate_caches();
-
-            // experimental; try to ensure that supervisor stack area stays in mmu TLBs
-            register uint32_t sp asm("sp");
-            mmu_map_8k_page(sp);
 
             dbg("DTLB: MCF_MMU_MMUOR = %08x\r\n", MCF_MMU_MMUOR);
             dbg("ITLB: MCF_MMU_MMUOR = %08x\r\n\r\n", MCF_MMU_MMUOR);
