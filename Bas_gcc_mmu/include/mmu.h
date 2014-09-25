@@ -83,16 +83,6 @@ enum mmu_page_size
 #define	ACCESS_WRITE	(1 << 1)
 #define ACCESS_EXECUTE	(1 << 2)
 
-struct mmu_map_flags
-{
-	unsigned cache_mode:2;
-	unsigned protection:1;
-	unsigned page_id:8;
-	unsigned access:3;
-	unsigned locked:1;
-	unsigned unused:17;
-};
-
 /*
  * global variables from linker script
  */
@@ -100,6 +90,6 @@ extern long video_tlb;
 extern long video_sbt;
 
 extern void mmu_init(void);
-extern int mmu_map_page(uint32_t virt, uint32_t phys, enum mmu_page_size sz, const struct mmu_map_flags *flags);
+extern int mmu_map_page(uint32_t adr);
 
 #endif /* _MMU_H_ */
