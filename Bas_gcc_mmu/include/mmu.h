@@ -90,6 +90,6 @@ extern long video_tlb;
 extern long video_sbt;
 
 extern void mmu_init(void);
-extern int mmu_map_page(uint32_t adr);
+extern int mmu_map_8k_page(uint32_t adr);
 
 #endif /* _MMU_H_ */

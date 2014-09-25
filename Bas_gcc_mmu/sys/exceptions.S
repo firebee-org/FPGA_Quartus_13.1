@@ -193,7 +193,7 @@
 /**********************************************************/
 		.altmacro
 		.macro	irq	vector,int_mask,clr_int
-		//move.w	#0x2700,sr		// disable interrupt
+		move.w	#0x2700,sr		// disable interrupt
 		subq.l	#8,sp
 		movem.l	d0/a5,(sp)		// save registers
 
