@@ -95,7 +95,8 @@ void flush_icache_range(void *address, size_t size)
 	start_set = (uint32_t) address & _ICACHE_SET_MASK;
 	end_set = (uint32_t) endaddr & _ICACHE_SET_MASK;
 
-	if (start_set > end_set) {
+	if (start_set > end_set)
+	{
 		/* from the begining to the lowest address */
         for (set = 0; set <= end_set; set += (0x10 - 3))
         {
@@ -115,7 +116,8 @@ void flush_icache_range(void *address, size_t size)
 		/* next loop will finish the cache ie pass the hole */
 		end_set = LAST_ICACHE_ADDR;
 	}
-	for (set = start_set; set <= end_set; set += (0x10 - 3)) {
+	for (set = start_set; set <= end_set; set += (0x10 - 3))
+	{
 		__asm__ __volatile__(
 					"       cpushl  ic,(%[set])             \n\t"
 					"       addq.l  #1,%[set]               \n\t"

@@ -50,8 +50,8 @@
  * MMU register handling macros
  */
 
-#define SCA_PAGE_ID		6	/* indicates video memory page */
-
+#define SCA_PAGE_ID			6		/* indicates video memory page */
+#define DEFAULT_PAGE_SIZE	0x2000	/* use 8k pages for MiNT compatibility */
 /*
  * MMU page sizes
  */

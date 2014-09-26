@@ -192,39 +192,39 @@ inline uint32_t set_mmubar(uint32_t value)
 }
 
 /*
- * translation table for virtual addresses. Holds the virtual_offset (which must be added to a physical
- * address to get its virtual counterpart) for memory ranges.
- * Currently, this contains only the STRAM addresses which are mapped to Firebee video memory
+ * translation table for virtual address ranges. Holds the physical_offset (which must be added to a virtual
+ * address to get its physical counterpart) for memory ranges.
  */
-struct phys_to_virt
+struct virt_to_phys
 {
     uint32_t start_address;
     uint32_t length;
-    uint32_t virtual_offset;
+	uint32_t physical_offset;
 };
 
-static struct phys_to_virt translation[] =
+static struct virt_to_phys translation[] =
 {
-    { 0x00000000, 0x00e00000, 0x60000000 },     /* map first 14 MByte to first 16 Mb of video ram */
+	/* virtual  , length    , offset    */
+	{ 0x00000000, 0x00e00000, 0x60000000 },     /* map first 14 MByte to first 14 Mb of video ram */
     { 0x00e00000, 0x00100000, 0x00000000 },     /* map TOS to SDRAM */
     { 0x00f00000, 0x00100000, 0xff000000 },     /* map Falcon I/O area to FPGA */
     { 0x01000000, 0x10000000, 0x00000000 },     /* map rest of ram virt = phys */
     { 0x1fd00000, 0x01000000, 0x00000000 },     /* accessed by EmuTOS? */
 };
-static int num_translations = sizeof(translation) / sizeof(struct phys_to_virt);
+static int num_translations = sizeof(translation) / sizeof(struct virt_to_phys);
 
-static inline uint32_t lookup_phys(uint32_t phys)
+static inline uint32_t lookup_phys(uint32_t virt)
 {
     int i;
 
     for (i = 0; i < num_translations; i++)
     {
-        if (phys >= translation[i].start_address && phys < translation[i].start_address + translation[i].length)
+		if (virt >= translation[i].start_address && virt < translation[i].start_address + translation[i].length)
         {
-            return phys + translation[i].virtual_offset;
+			return virt + translation[i].physical_offset;
         }
     }
-    err("physical address 0x%lx not found in translation table!\r\n", phys);
+	err("virtual address 0x%lx not found in translation table!\r\n", virt);
 }
 
 struct page_descriptor
@@ -241,7 +241,7 @@ struct page_descriptor
 static struct page_descriptor pages[65536];   /* 512 Mb RAM */
 
 /*
- * map a page of memory using virt and phys as addresses with the Coldfire MMU.
+ * map a page of memory using virt addresses with the Coldfire MMU.
  *
  * Theory of operation: the Coldfire MMU in the Firebee has 64 TLB entries, 32 for data (DTLB), 32 for
  * instructions (ITLB). Mappings can either be done locked (normal MMU TLB misses will not consider them
@@ -255,10 +255,10 @@ static struct page_descriptor pages[65536];   /* 512 Mb RAM */
 int mmu_map_8k_page(uint32_t virt)
 {
     const int size_mask = 0xffffe000;                   /* 8k pagesize */
-    int page_index = (virt & size_mask) / 4096;          /* index into page_descriptor array */
+	int page_index = (virt & size_mask) / 4096;			/* index into page_descriptor array */
     struct page_descriptor *page = &pages[page_index];  /* attributes of page to map */
 
-    uint32_t adr = lookup_phys(virt);                /* phys2virt translation of page */
+	uint32_t addr = lookup_phys(virt);					/* virtual to physical translation of page */
 
     /*
      * add page to TLB
@@ -269,7 +269,7 @@ int mmu_map_8k_page(uint32_t virt)
         MCF_MMU_MMUTR_V;											/* valid */
     NOP();
 
-    MCF_MMU_MMUDR = (adr & size_mask) |                 			/* physical address */
+	MCF_MMU_MMUDR = (addr & size_mask) |                 			/* physical address */
         MCF_MMU_MMUDR_SZ(MMU_PAGE_SIZE_8K) |						/* page size */
         MCF_MMU_MMUDR_CM(page->cache_mode) |
         (page->read ? MCF_MMU_MMUDR_R : 0) |                    	/* read access enable */
@@ -285,7 +285,7 @@ int mmu_map_8k_page(uint32_t virt)
     MCF_MMU_MMUOR = MCF_MMU_MMUOR_ITLB | 	/* instruction */
         MCF_MMU_MMUOR_ACC |     			/* access TLB */
         MCF_MMU_MMUOR_UAA;      			/* update allocation address field */
-    dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt, adr);
+	dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt, addr);
 
     return 1;
 }
@@ -335,8 +335,7 @@ int mmu_map_page(uint32_t virt, uint32_t phys, enum mmu_page_size sz, const stru
             break;
 
         default:
-            dbg("illegal map size %d\r\n", sz);
-            return 0;
+			err("illegal map size %d\r\n", sz);
     }
 
     /*
@@ -377,13 +376,13 @@ void mmu_init(void)
     int i;
 
     /*
-     * prelaminary initialization of page descriptor table
+	 * prelaminary initialization of page descriptor 0 (root) table
      */
     for (i = 0; i < sizeof(pages); i++)
     {
-        uint32_t adr = i * 8192;
+		uint32_t addr = i * DEFAULT_PAGE_SIZE;
 
-        if (adr >= 0x00f00000 && adr < 0x00ffffff)
+		if (addr >= 0x00f00000 && addr < 0x00ffffff)
         {
             pages[i].cache_mode = CACHE_NOCACHE_PRECISE;
         }
@@ -391,20 +390,20 @@ void mmu_init(void)
         {
             pages[i].cache_mode = CACHE_COPYBACK;
         }
-        pages[i].global = 1;
-        pages[i].locked = 0;
-        pages[i].read = 1;
+		pages[i].global = 1;				/* all pages global by default */
+		pages[i].locked = 0;				/* not locked */
+		pages[i].read = 1;					/* readable, writable, executable */
         pages[i].write = 1;
         pages[i].execute = 1;
-        pages[i].supervisor_protect = 0;
+		pages[i].supervisor_protect = 0;	/* not supervisor protected */
     }
 
-    set_asid(0);			/* do not use address extension (ASID provides virtual 48 bit addresses */
+	set_asid(0);			/* do not use address extension (ASID provides virtual 48 bit addresses) yet */
 
     /* set data access attributes in ACR0 and ACR1 */
     set_acr0(ACR_W(0) |								/* read and write accesses permitted */
             ACR_SP(0) |								/* supervisor and user mode access permitted */
-            ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* cache inhibit, precise */
+			ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* cache inhibit, precise (i/o area!) */
             ACR_AMM(0) |							/* control region > 16 MB */
             ACR_S(ACR_S_ALL) |						/* match addresses in user and supervisor mode */
             ACR_E(1) |								/* enable ACR */
@@ -426,7 +425,7 @@ void mmu_init(void)
             ACR_SP(0) |
             ACR_CM(0) |
 #if defined(MACHINE_FIREBEE)
-            ACR_CM(ACR_CM_CACHEABLE_WT) |			/* video RAM on the Firebee */
+			ACR_CM(ACR_CM_CACHEABLE_WT) |			/* ST RAM on the Firebee */
 #elif defined(MACHINE_M5484LITE)
             ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* Compact Flash on the M548xLITE */
 #elif defined(MACHINE_M54455)
@@ -442,7 +441,7 @@ void mmu_init(void)
 
     /* set instruction access attributes in ACR2 and ACR3 */
 
-    //set_acr2(0xe007c400);
+	//set_acr2(0xe007c400);							/* flash area */
     set_acr2(ACR_W(0) |
             ACR_SP(0) |
             ACR_CM(0) |
@@ -469,6 +468,7 @@ void mmu_init(void)
      */
     flags.cache_mode = CACHE_COPYBACK;
     flags.access = ACCESS_READ | ACCESS_WRITE | ACCESS_EXECUTE;
+	flags.protection = SV_PROTECT;		/* supervisor access only */
     mmu_map_page(SDRAM_START + SDRAM_SIZE - 0X00200000, SDRAM_START + SDRAM_SIZE - 0X00200000, MMU_PAGE_SIZE_1M, &flags);
 
     /*
@@ -489,6 +489,7 @@ void mmutr_miss(uint32_t address, uint32_t pc, uint32_t format_status)
 
 #ifdef _NOT_USED_
     // experimental; try to ensure that supervisor stack area stays in mmu TLBs
+	// guess what: doesn't work...
     register uint32_t sp asm("sp");
     if (sp < 0x02000000)
         mmu_map_8k_page(sp);
