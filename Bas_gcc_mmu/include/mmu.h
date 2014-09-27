@@ -58,19 +58,22 @@
 
 enum mmu_page_size
 {
-	MMU_PAGE_SIZE_1M	= 0,
-	MMU_PAGE_SIZE_4K	= 1,
-	MMU_PAGE_SIZE_8K	= 2,
-	MMU_PAGE_SIZE_1K	= 3
+    MMU_PAGE_SIZE_1M	= 0,
+    MMU_PAGE_SIZE_4K	= 1,
+    MMU_PAGE_SIZE_8K	= 2,
+    MMU_PAGE_SIZE_1K	= 3
 };
 
 /*
  * cache modes
  */
-#define CACHE_WRITETHROUGH		0
-#define CACHE_COPYBACK			1
-#define CACHE_NOCACHE_PRECISE	2
-#define CACHE_NOCACHE_IMPRECISE	3
+enum mmu_cache_modes
+{
+    CACHE_WRITETHROUGH      = 0,
+    CACHE_COPYBACK          = 1,
+    CACHE_NOCACHE_PRECISE   = 2,
+    CACHE_NOCACHE_IMPRECISE = 3
+};
 
 
 /*

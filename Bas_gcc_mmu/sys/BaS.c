@@ -76,10 +76,10 @@ extern uint8_t _EMUTOS_SIZE[];
  */
 static inline bool pic_txready(void)
 {
-	if (MCF_PSC3_PSCSR & MCF_PSC_PSCSR_TXRDY)
-		return true;
+    if (MCF_PSC3_PSCSR & MCF_PSC_PSCSR_TXRDY)
+        return true;
 
-	return false;
+    return false;
 }
 
 /*
@@ -87,84 +87,84 @@ static inline bool pic_txready(void)
  */
 static inline bool pic_rxready(void)
 {
-	if (MCF_PSC3_PSCSR & MCF_PSC_PSCSR_RXRDY)
-		return true;
+    if (MCF_PSC3_PSCSR & MCF_PSC_PSCSR_RXRDY)
+        return true;
 
-	return false;
+    return false;
 }
 
 void write_pic_byte(uint8_t value)
 {
-	/* Wait until the transmitter is ready or 1000us are passed */
-	waitfor(1000, pic_txready);
+    /* Wait until the transmitter is ready or 1000us are passed */
+    waitfor(1000, pic_txready);
 
-	/* Transmit the byte */
-	*(volatile uint8_t*)(&MCF_PSC3_PSCTB_8BIT) = value; // Really 8-bit
+    /* Transmit the byte */
+    *(volatile uint8_t*)(&MCF_PSC3_PSCTB_8BIT) = value; // Really 8-bit
 }
 
 uint8_t read_pic_byte(void)
 {
-	/* Wait until a byte has been received or 1000us are passed */
-	waitfor(1000, pic_rxready);
+    /* Wait until a byte has been received or 1000us are passed */
+    waitfor(1000, pic_rxready);
 
-	/* Return the received byte */
-	return * (volatile uint8_t *) (&MCF_PSC3_PSCTB_8BIT); // Really 8-bit
+    /* Return the received byte */
+    return * (volatile uint8_t *) (&MCF_PSC3_PSCTB_8BIT); // Really 8-bit
 }
 
 void pic_init(void)
 {
-	char answer[4] = "OLD";
+    char answer[4] = "OLD";
 
-	xprintf("initialize the PIC: ");
+    xprintf("initialize the PIC: ");
 
-	/* Send the PIC initialization string */
-	write_pic_byte('A');
-	write_pic_byte('C');
-	write_pic_byte('P');
-	write_pic_byte('F');
+    /* Send the PIC initialization string */
+    write_pic_byte('A');
+    write_pic_byte('C');
+    write_pic_byte('P');
+    write_pic_byte('F');
 
-	/* Read the 3-char answer string. Should be "OK!". */
-	answer[0] = read_pic_byte();
-	answer[1] = read_pic_byte();
-	answer[2] = read_pic_byte();
-	answer[3] = '\0';
+    /* Read the 3-char answer string. Should be "OK!". */
+    answer[0] = read_pic_byte();
+    answer[1] = read_pic_byte();
+    answer[2] = read_pic_byte();
+    answer[3] = '\0';
 
-	if (answer[0] != 'O' || answer[1] != 'K' || answer[2] != '!')
-	{
-		dbg("PIC initialization failed. Already initialized?\r\n");
-	}
-	else
-	{
-		xprintf("%s\r\n", answer);
-	}
+    if (answer[0] != 'O' || answer[1] != 'K' || answer[2] != '!')
+    {
+        dbg("PIC initialization failed. Already initialized?\r\n");
+    }
+    else
+    {
+        xprintf("%s\r\n", answer);
+    }
 }
 
 void nvram_init(void)
 {
-	int i;
+    int i;
 
-	xprintf("Restore the NVRAM data: ");
+    xprintf("Restore the NVRAM data: ");
 
-	/* Request for NVRAM backup data */
-	write_pic_byte(0x01);
+    /* Request for NVRAM backup data */
+    write_pic_byte(0x01);
 
-	/* Check answer type */
-	if (read_pic_byte() != 0x81)
-	{
-		// FIXME: PIC protocol error
-		xprintf("FAILED\r\n");
-		return;
-	}
+    /* Check answer type */
+    if (read_pic_byte() != 0x81)
+    {
+        // FIXME: PIC protocol error
+        xprintf("FAILED\r\n");
+        return;
+    }
 
-	/* Restore the NVRAM backup to the FPGA */
-	for (i = 0; i < 64; i++)
-	{
-		uint8_t data = read_pic_byte();
-		*(volatile uint8_t*)0xffff8961 = i;
-		*(volatile uint8_t*)0xffff8963 = data;
-	}
+    /* Restore the NVRAM backup to the FPGA */
+    for (i = 0; i < 64; i++)
+    {
+        uint8_t data = read_pic_byte();
+        *(volatile uint8_t*)0xffff8961 = i;
+        *(volatile uint8_t*)0xffff8963 = data;
+    }
 
-	xprintf("finished\r\n");
+    xprintf("finished\r\n");
 }
 
 #define KBD_ACIA_CONTROL		((uint8_t *) 0xfffffc00)
@@ -174,24 +174,24 @@ void nvram_init(void)
 
 void acia_init()
 {
-	xprintf("init ACIA: ");
-	/* init ACIA */
-	* KBD_ACIA_CONTROL = 3;		/* master reset */
-	NOP();
+    xprintf("init ACIA: ");
+    /* init ACIA */
+    * KBD_ACIA_CONTROL = 3;		/* master reset */
+    NOP();
 
-	* MIDI_ACIA_CONTROL = 3;	/* master reset */
-	NOP();
+    * MIDI_ACIA_CONTROL = 3;	/* master reset */
+    NOP();
 
-	* KBD_ACIA_CONTROL = 0x96;	/* clock div = 64, 8N1, RTS low, TX int disable, RX int enable */
-	NOP();
+    * KBD_ACIA_CONTROL = 0x96;	/* clock div = 64, 8N1, RTS low, TX int disable, RX int enable */
+    NOP();
 
-	* MFP_INTR_IN_SERVICE_A = -1;
-	NOP();
+    * MFP_INTR_IN_SERVICE_A = -1;
+    NOP();
 
-	* MFP_INTR_IN_SERVICE_B = -1;
-	NOP();
+    * MFP_INTR_IN_SERVICE_B = -1;
+    NOP();
 
-	xprintf("finished\r\n");
+    xprintf("finished\r\n");
 }
 
 /* ACP interrupt controller */
@@ -201,43 +201,43 @@ void acia_init()
 
 void enable_coldfire_interrupts()
 {
-	xprintf("enable interrupts: ");
+    xprintf("enable interrupts: ");
 #if defined(MACHINE_FIREBEE)
-	*FPGA_INTR_CONTRL = 0L;				/* disable all interrupts */
+    *FPGA_INTR_CONTRL = 0L;				/* disable all interrupts */
 #endif /* MACHINE_FIREBEE */
-	MCF_EPORT_EPPAR = 0xaaa8;			/* all interrupts on falling edge */
+    MCF_EPORT_EPPAR = 0xaaa8;			/* all interrupts on falling edge */
 
 #if defined(MACHINE_FIREBEE)
-	/*
-	 * TIN0 on the Coldfire is connected to the FPGA. TIN0 triggers every write
-	 * access to 0xff8201 (vbasehi), i.e. everytime the video base address is written
-	 */
-	MCF_GPT0_GMS = MCF_GPT_GMS_ICT(1) |	/* timer 0 on, video change capture on rising edge */
-			MCF_GPT_GMS_IEN |
-			MCF_GPT_GMS_TMS(1);
-										/* route GPT0 interrupt on interrupt controller */
-	MCF_INTC_ICR62 = 0x3f;				/* interrupt level 7, interrupt priority 7 */
+    /*
+     * TIN0 on the Coldfire is connected to the FPGA. TIN0 triggers every write
+     * access to 0xff8201 (vbasehi), i.e. everytime the video base address is written
+     */
+    MCF_GPT0_GMS = MCF_GPT_GMS_ICT(1) |	/* timer 0 on, video change capture on rising edge */
+            MCF_GPT_GMS_IEN |
+            MCF_GPT_GMS_TMS(1);
+                                        /* route GPT0 interrupt on interrupt controller */
+    MCF_INTC_ICR62 = 0x3f;				/* interrupt level 7, interrupt priority 7 */
 
-	*FPGA_INTR_ENABLE  = 0xfe;	/* enable int 1-7 */
-	MCF_EPORT_EPIER = 0xfe;				/* int 1-7 on */
-	MCF_EPORT_EPFR = 0xff;				/* clear all pending interrupts */
-	MCF_INTC_IMRL = 0xffffff00;			/* int 1-7 on */
-	MCF_INTC_IMRH = 0xbffffffe;			/* psc3 and timer 0 int on */
+    *FPGA_INTR_ENABLE  = 0xfe;	/* enable int 1-7 */
+    MCF_EPORT_EPIER = 0xfe;				/* int 1-7 on */
+    MCF_EPORT_EPFR = 0xff;				/* clear all pending interrupts */
+    MCF_INTC_IMRL = 0xffffff00;			/* int 1-7 on */
+    MCF_INTC_IMRH = 0xbffffffe;			/* psc3 and timer 0 int on */
 #endif
 
-	xprintf("finished\r\n");
+    xprintf("finished\r\n");
 }
 
 void disable_coldfire_interrupts()
 {
 #if defined(MACHINE_FIREBEE)
-	*FPGA_INTR_ENABLE = 0;		/* disable all interrupts */
+    *FPGA_INTR_ENABLE = 0;		/* disable all interrupts */
 #endif /* MACHINE_FIREBEE */
 
-	MCF_EPORT_EPIER = 0x0;
-	MCF_EPORT_EPFR = 0x0;
-	MCF_INTC_IMRL = 0xfffffffe;
-	MCF_INTC_IMRH = 0xffffffff;
+    MCF_EPORT_EPIER = 0x0;
+    MCF_EPORT_EPFR = 0x0;
+    MCF_INTC_IMRL = 0xfffffffe;
+    MCF_INTC_IMRH = 0xffffffff;
 }
 
 
@@ -252,178 +252,179 @@ NIF nif2;
  */
 void init_isr(void)
 {
-	isr_init();		/* need to call that explicitely, otherwise isr table might be full */
+    isr_init();		/* need to call that explicitely, otherwise isr table might be full */
 
-	/*
-	 * register the FEC interrupt handler
-	 */
-	if (!isr_register_handler(64 + INT_SOURCE_FEC0, fec0_interrupt_handler, NULL, (void *) &nif1))
-	{
-		dbg("unable to register isr for FEC0\r\n");
-		return;
-	}
+    /*
+     * register the FEC interrupt handler
+     */
+    if (!isr_register_handler(64 + INT_SOURCE_FEC0, fec0_interrupt_handler, NULL, (void *) &nif1))
+    {
+        dbg("unable to register isr for FEC0\r\n");
+        return;
+    }
 
-	/*
-	 * Register the DMA interrupt handler
-	 */
+    /*
+     * Register the DMA interrupt handler
+     */
 
-	if (!isr_register_handler(64 + INT_SOURCE_DMA, dma_interrupt_handler, NULL,NULL))
-	{
-		dbg("Error: Unable to register isr for DMA\r\n");
-		return;
-	}
+    if (!isr_register_handler(64 + INT_SOURCE_DMA, dma_interrupt_handler, NULL,NULL))
+    {
+        dbg("Error: Unable to register isr for DMA\r\n");
+        return;
+    }
 
-	dma_irq_enable(5, 3);	/* TODO: need to match the FEC driver's specs in MiNT? */
+    dma_irq_enable(5, 3);	/* TODO: need to match the FEC driver's specs in MiNT? */
 
-	/*
-	 * register the PIC interrupt handler
-	 */
-	if (isr_register_handler(64 + INT_SOURCE_PSC3, pic_interrupt_handler, NULL, NULL))
-	{
-		dbg("Error: unable to register ISR for PSC3\r\n");
-		return;
-	}
+    /*
+     * register the PIC interrupt handler
+     */
+    if (isr_register_handler(64 + INT_SOURCE_PSC3, pic_interrupt_handler, NULL, NULL))
+    {
+        dbg("Error: unable to register ISR for PSC3\r\n");
+        return;
+    }
 }
 
 void BaS(void)
 {
-	uint8_t *src;
-	uint8_t *dst = (uint8_t *) TOS;
+    uint8_t *src;
+    uint8_t *dst = (uint8_t *) TOS;
 
 #if defined(MACHINE_FIREBEE)        /* LITE board has no pic and (currently) no nvram */
-	pic_init();
-	nvram_init();
+    pic_init();
+    nvram_init();
 #endif /* MACHINE_FIREBEE */
 
-	xprintf("copy EmuTOS: ");
+    xprintf("copy EmuTOS: ");
 
-	/* copy EMUTOS */
-	src = (uint8_t *) EMUTOS;
-	dma_memcpy(dst, src, EMUTOS_SIZE);
-	xprintf("finished\r\n");
+    /* copy EMUTOS */
+    src = (uint8_t *) EMUTOS;
+    dma_memcpy(dst, src, EMUTOS_SIZE);
+    xprintf("finished\r\n");
 
-	xprintf("initialize MMU: ");
-	mmu_init();
-	xprintf("finished\r\n");
+    xprintf("initialize MMU: ");
+    mmu_init();
+    xprintf("finished\r\n");
 
-	xprintf("initialize exception vector table: ");
-	vec_init();
-	xprintf("finished\r\n");
+    xprintf("enable MMU: ");
+    MCF_MMU_MMUCR = MCF_MMU_MMUCR_EN;			/* MMU on */
+    NOP();										/* force pipeline sync */
+    xprintf("finished\r\n");
 
-	xprintf("flush caches: ");
-	flush_and_invalidate_caches();
-	xprintf("finished\r\n");
-	xprintf("enable MMU: ");
-	MCF_MMU_MMUCR = MCF_MMU_MMUCR_EN;			/* MMU on */
-	NOP();										/* force pipeline sync */
-	xprintf("finished\r\n");
+    xprintf("initialize exception vector table: ");
+    vec_init();
+    xprintf("finished\r\n");
 
-	#ifdef MACHINE_FIREBEE
-	xprintf("IDE reset: ");
-	/* IDE reset */
-	* (volatile uint8_t *) (0xffff8802 - 2) = 14;
-	* (volatile uint8_t *) (0xffff8802 - 0) = 0x80;
-	wait(1);
+    xprintf("flush caches: ");
+    flush_and_invalidate_caches();
+    xprintf("finished\r\n");
 
-	* (volatile uint8_t *) (0xffff8802 - 0) = 0;
+    #ifdef MACHINE_FIREBEE
+    xprintf("IDE reset: ");
+    /* IDE reset */
+    * (volatile uint8_t *) (0xffff8802 - 2) = 14;
+    * (volatile uint8_t *) (0xffff8802 - 0) = 0x80;
+    wait(1);
 
-	xprintf("finished\r\n");
-	xprintf("enable video: ");
-	/*
-	 * video setup (25MHz)
-	 */
-	* (volatile uint32_t *) (0xf0000410 + 0) = 0x032002ba;	/* horizontal 640x480 */
-	* (volatile uint32_t *) (0xf0000410 + 4) = 0x020c020a;	/* vertical 640x480 */
-	* (volatile uint32_t *) (0xf0000410 + 8) = 0x0190015d;	/* horizontal 320x240 */
-	* (volatile uint32_t *) (0xf0000410 + 12) = 0x020C020A;	/* vertical 320x230 */
+    * (volatile uint8_t *) (0xffff8802 - 0) = 0;
+
+    xprintf("finished\r\n");
+    xprintf("enable video: ");
+    /*
+     * video setup (25MHz)
+     */
+    * (volatile uint32_t *) (0xf0000410 + 0) = 0x032002ba;	/* horizontal 640x480 */
+    * (volatile uint32_t *) (0xf0000410 + 4) = 0x020c020a;	/* vertical 640x480 */
+    * (volatile uint32_t *) (0xf0000410 + 8) = 0x0190015d;	/* horizontal 320x240 */
+    * (volatile uint32_t *) (0xf0000410 + 12) = 0x020C020A;	/* vertical 320x230 */
 
 #ifdef _NOT_USED_
 //  32MHz
-	* (volatile uint32_t *) (0xf0000410 + 0) = 0x037002ba;	/* horizontal 640x480 */
-	* (volatile uint32_t *) (0xf0000410 + 4) = 0x020d020a;	/* vertical 640x480 */
-	* (volatile uint32_t *) (0xf0000410 + 8) = 0x02a001e0;	/* horizontal 320x240 */
-	* (volatile uint32_t *) (0xf0000410 + 12) = 0x05a00160;	/* vertical 320x230 */
+    * (volatile uint32_t *) (0xf0000410 + 0) = 0x037002ba;	/* horizontal 640x480 */
+    * (volatile uint32_t *) (0xf0000410 + 4) = 0x020d020a;	/* vertical 640x480 */
+    * (volatile uint32_t *) (0xf0000410 + 8) = 0x02a001e0;	/* horizontal 320x240 */
+    * (volatile uint32_t *) (0xf0000410 + 12) = 0x05a00160;	/* vertical 320x230 */
 #endif /* _NOT_USED_ */
 
-	/* fifo on, refresh on, ddrcs and cke on, video dac on */
-	* (volatile uint32_t *) (0xf0000410 - 0x20) = 0x01070002;
+    /* fifo on, refresh on, ddrcs and cke on, video dac on */
+    * (volatile uint32_t *) (0xf0000410 - 0x20) = 0x01070002;
 
-	xprintf("finished\r\n");
+    xprintf("finished\r\n");
 
-	enable_coldfire_interrupts();
+    enable_coldfire_interrupts();
 
 #ifdef _NOT_USED_
-	screen_init();
+    screen_init();
 
-		/* experimental */
-	{
-		int i;
-		uint32_t *scradr = 0xd00000;
+        /* experimental */
+    {
+        int i;
+        uint32_t *scradr = 0xd00000;
 
-		for (i = 0; i < 100; i++)
-		{
-			uint32_t *p = scradr;
+        for (i = 0; i < 100; i++)
+        {
+            uint32_t *p = scradr;
 
-			for (p = scradr; p < scradr + 1024 * 150L; p++)
-			{
-				*p = 0xffffffff;
-			}
+            for (p = scradr; p < scradr + 1024 * 150L; p++)
+            {
+                *p = 0xffffffff;
+            }
 
-			for (p = scradr; p < scradr + 1024 * 150L; p++)
-			{
-				*p = 0x0;
-			}
-		}
-	}
+            for (p = scradr; p < scradr + 1024 * 150L; p++)
+            {
+                *p = 0x0;
+            }
+        }
+    }
 #endif /* _NOT_USED_ */
 
 #endif /* MACHINE_FIREBEE */
 
-	sd_card_init();
+    sd_card_init();
 
-	/*
-	 * memory setup
-	 */
-	memset((void *) 0x400, 0, 0x400);
+    /*
+     * memory setup
+     */
+    memset((void *) 0x400, 0, 0x400);
 
 #if defined(MACHINE_FIREBEE)
-	/* set Falcon bus control register */
-	/* sets bit 3 and 6. Both are undefined on an original Falcon? */
+    /* set Falcon bus control register */
+    /* sets bit 3 and 6. Both are undefined on an original Falcon? */
 
-	* (volatile uint8_t *) 0xffff8007 = 0x48;
+    * (volatile uint8_t *) 0xffff8007 = 0x48;
 #endif /* MACHINE_FIREBEE */
 
-	/* ST RAM */
+    /* ST RAM */
 
-	* (uint32_t *) 0x42e = STRAM_END;	/* phystop TOS system variable */
-	* (uint32_t *) 0x420 = 0x752019f3;	/* memvalid TOS system variable */
-	* (uint32_t *) 0x43a = 0x237698aa;	/* memval2 TOS system variable */
-	* (uint32_t *) 0x51a = 0x5555aaaa;	/* memval3 TOS system variable */
+    * (uint32_t *) 0x42e = STRAM_END;	/* phystop TOS system variable */
+    * (uint32_t *) 0x420 = 0x752019f3;	/* memvalid TOS system variable */
+    * (uint32_t *) 0x43a = 0x237698aa;	/* memval2 TOS system variable */
+    * (uint32_t *) 0x51a = 0x5555aaaa;	/* memval3 TOS system variable */
 
-	/* TT-RAM */
+    /* TT-RAM */
 
-	* (uint32_t *) 0x5a4 = FASTRAM_END;	/* ramtop TOS system variable */
-	* (uint32_t *) 0x5a8 = 0x1357bd13;	/* ramvalid TOS system variable */
+    * (uint32_t *) 0x5a4 = FASTRAM_END;	/* ramtop TOS system variable */
+    * (uint32_t *) 0x5a8 = 0x1357bd13;	/* ramvalid TOS system variable */
 
 #if defined(MACHINE_FIREBEE) /* m5484lite has no ACIA and no dip switch... */
-	acia_init();
+    acia_init();
 #endif /* MACHINE_FIREBEE */
 
-	srec_execute("BASFLASH.S19");
+    srec_execute("BASFLASH.S19");
 
-	/* Jump into the OS */
-	typedef void void_func(void);
-	struct rom_header
-	{
-		void *initial_sp;
-		void_func *initial_pc;
-	};
+    /* Jump into the OS */
+    typedef void void_func(void);
+    struct rom_header
+    {
+        void *initial_sp;
+        void_func *initial_pc;
+    };
 
-	xprintf("BaS initialization finished, enable interrupts\r\n");
-	enable_coldfire_interrupts();
-	init_isr();
+    xprintf("BaS initialization finished, enable interrupts\r\n");
+    enable_coldfire_interrupts();
+    init_isr();
 
-	xprintf("call EmuTOS\r\n");
-	struct rom_header *os_header = (struct rom_header *) TOS;
-	os_header->initial_pc();
+    xprintf("call EmuTOS\r\n");
+    struct rom_header *os_header = (struct rom_header *) TOS;
+    os_header->initial_pc();
 }

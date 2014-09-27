@@ -49,6 +49,8 @@ _rom_entry:
 		/* set stack pointer to end of SRAM */
 		lea 	__SUP_SP,a7
 		move.l	#0,(sp)
+		subq.l	#4,sp
+		move.l	#0,(sp)
 
 		/*
 		 * Initialize the processor caches.

@@ -310,12 +310,12 @@ init_vec_loop:
  */
 vector_table_start:
 std_exc_vec:
-		//move.w	#0x2700,sr		// disable interrupt
+		move.w	#0x2700,sr		// disable interrupt
 		subq.l	#8,sp
 		movem.l	d0/a5,(sp)		// save registers
 		move.w	8(sp),d0		// fetch vector
 		and.l	#0x3fc,d0		// mask out vector number
-
+#define DBG_EXC
 #ifdef DBG_EXC
 		// printout vector number of exception
 
@@ -388,12 +388,6 @@ access_mmu:
 		move.l	MCF_MMU_MMUSR,d0	// did the last fault hit in TLB?
 		btst	#1,d0			// yes, it did. So we already mapped that page
 		bne	bus_error		// and this must be a real bus error
-		btst	#5,d0			// supervisor protection fault?
-		bne	bus_error
-		btst	#4,d0			// read access fault?
-		bne	bus_error
-		btst	#3,d0			// write access fault?
-		bne	bus_error
 
 		move.l	MCF_MMU_MMUAR,d0
 		cmp.l	#__FASTRAM_END,d0	// above max User RAM area?
@@ -690,11 +684,13 @@ handler_gpt0:
 		link	a6,#-4 * 4		// make room for
 		movem.l	d0-d1/a0-a1,(sp)	// gcc scratch registers and save them,
 						// other registers will be handled by gcc itself
-
 		move.w	4(a6),d0		// fetch vector number from stack
 		move.l	d0,-(sp)		// push it
 		jsr	_gpt0_interrupt_handler	// call C handler
 		addq.l	#4,sp			// adjust stack
+
+		movem.l	(sp),d0-d1/a0-a1	// restore registers
+
 		unlk	a6
 		rte
 #endif /* MACHINE_FIREBEE */
