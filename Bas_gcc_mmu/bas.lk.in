@@ -78,7 +78,6 @@ SECTIONS
 		OBJDIR/s19reader.o(.text)
 		OBJDIR/bas_printf.o(.text)
 		OBJDIR/bas_string.o(.text)
-		OBJDIR/printf_helper.o(.text)
 		OBJDIR/cache.o(.text)
 		OBJDIR/dma.o(.text)
 		OBJDIR/MCD_dmaApi.o(.text)

@@ -305,6 +305,7 @@ access:
 		move.l	8(a6),-(sp)		// PC at exception
 		move.l	MCF_MMU_MMUAR,-(sp)	// fault address
 		move.l	MCF_MMU_MMUSR,-(sp)	// MMU status register
+		move.w	#0x2300,sr		// can lower interrupt mask once MMU status is safe
 		jsr	_mmutr_miss
 		lea	4 * 4(sp),sp		// adjust stack
 
