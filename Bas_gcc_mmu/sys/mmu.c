@@ -1,5 +1,6 @@
 #include "mmu.h"
 #include "acia.h"
+#include "exceptions.h"
 
 /*
  * mmu.c
@@ -301,10 +302,10 @@ int mmu_map_8k_page(uint32_t virt, uint8_t asid)
 
 int mmu_map_8k_instruction_page(uint32_t virt, uint8_t asid)
 {
-    const uint32_t size_mask = 0xffffe000;                      /* 8k pagesize */
+    const uint32_t size_mask = ~ (DEFAULT_PAGE_SIZE - 1);       /* 8k pagesize */
     int page_index = (virt & size_mask) / DEFAULT_PAGE_SIZE;	/* index into page_descriptor array */
     struct page_descriptor *page = &pages[page_index];          /* attributes of page to map */
-
+    int ipl;
     uint32_t phys = lookup_phys(virt);                          /* virtual to physical translation of page */
 
     if (phys == -1)
@@ -314,12 +315,16 @@ int mmu_map_8k_instruction_page(uint32_t virt, uint8_t asid)
     register int sp asm("sp");
     dbg("page_descriptor: 0x%02x, ssp = 0x%08x\r\n", * (uint8_t *) page, sp);
 #endif /* DBG_MMU */
+
     /*
      * add page to TLB
      */
+
+    ipl = set_ipl(7);                                               /* do not disturb */
+
     MCF_MMU_MMUAR = (virt & size_mask);
 
-    MCF_MMU_MMUTR = (virt & size_mask) |                           /* virtual address */
+    MCF_MMU_MMUTR = (virt & size_mask) |                            /* virtual address */
         MCF_MMU_MMUTR_ID(asid) |        							/* address space id (ASID) */
         (page->global ? MCF_MMU_MMUTR_SG : 0) |						/* shared global */
         MCF_MMU_MMUTR_V;											/* valid */
@@ -343,6 +348,8 @@ int mmu_map_8k_instruction_page(uint32_t virt, uint8_t asid)
 
     __asm__ __volatile("" : : : "memory");                          /* MMU commands must be exactly in sequence */
 
+    set_ipl(ipl);
+
     dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt & size_mask, phys & size_mask);
 
     dbg("ITLB: MCF_MMU_MMUOR = %08x\r\n", MCF_MMU_MMUOR);
@@ -351,7 +358,8 @@ int mmu_map_8k_instruction_page(uint32_t virt, uint8_t asid)
 
 int mmu_map_8k_data_page(uint32_t virt, uint8_t asid)
 {
-    const uint32_t size_mask = 0xffffe000;                      /* 8k pagesize */
+    uint16_t ipl;
+    const uint32_t size_mask = ~ (DEFAULT_PAGE_SIZE - 1);       /* 8k pagesize */
     int page_index = (virt & size_mask) / DEFAULT_PAGE_SIZE;	/* index into page_descriptor array */
     struct page_descriptor *page = &pages[page_index];          /* attributes of page to map */
 
@@ -362,11 +370,15 @@ int mmu_map_8k_data_page(uint32_t virt, uint8_t asid)
 
 #ifdef DBG_MMU
     register int sp asm("sp");
-    dbg("page_descriptor: 0x%02x, num_calls = %d ssp = 0x%08x\r\n", * (uint8_t *) page, sp);
+    dbg("page_descriptor: 0x%02x, ssp = 0x%08x\r\n", * (uint8_t *) page, sp);
 #endif /* DBG_MMU */
+
     /*
      * add page to TLB
      */
+
+    ipl = set_ipl(7);                                               /* do not disturb */
+
     MCF_MMU_MMUTR = (virt & size_mask) |                            /* virtual address */
         MCF_MMU_MMUTR_ID(asid) |        							/* address space id (ASID) */
         (page->global ? MCF_MMU_MMUTR_SG : 0) |						/* shared global */
@@ -384,6 +396,7 @@ int mmu_map_8k_data_page(uint32_t virt, uint8_t asid)
     MCF_MMU_MMUOR = MCF_MMU_MMUOR_ACC |		/* access TLB, data */
         MCF_MMU_MMUOR_UAA;					/* update allocation address field */
 
+    set_ipl(ipl);
     dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt & size_mask, phys & size_mask);
 
     dbg("DTLB: MCF_MMU_MMUOR = %08x\r\n", MCF_MMU_MMUOR);
@@ -406,23 +419,24 @@ int mmu_map_8k_data_page(uint32_t virt, uint8_t asid)
 int mmu_map_page(uint32_t virt, uint32_t phys, enum mmu_page_size sz, uint8_t page_id, const struct page_descriptor *flags)
 {
     int size_mask;
+    int ipl;
 
     switch (sz)
     {
         case MMU_PAGE_SIZE_1M:
-            size_mask = 0xfff00000;
+            size_mask = ~ (0x00010000 - 1);
             break;
 
         case MMU_PAGE_SIZE_8K:
-            size_mask = 0xffffe000;
+            size_mask = ~ (0x2000 - 1);
             break;
 
         case MMU_PAGE_SIZE_4K:
-            size_mask = 0xfffff000;
+            size_mask = ~ (0x1000 - 1);
             break;
 
         case MMU_PAGE_SIZE_1K:
-            size_mask = 0xfffff800;
+            size_mask = ~ (0x400 - 1);
             break;
 
         default:
@@ -432,6 +446,9 @@ int mmu_map_page(uint32_t virt, uint32_t phys, enum mmu_page_size sz, uint8_t pa
     /*
      * add page to TLB
      */
+
+    ipl = set_ipl(7);
+
     MCF_MMU_MMUTR = ((uint32_t) virt & size_mask) |					/* virtual address */
         MCF_MMU_MMUTR_ID(page_id) |                                 /* address space id (ASID) */
         (flags->global ? MCF_MMU_MMUTR_SG : 0) |					/* shared global */
@@ -454,6 +471,9 @@ int mmu_map_page(uint32_t virt, uint32_t phys, enum mmu_page_size sz, uint8_t pa
     MCF_MMU_MMUOR = MCF_MMU_MMUOR_ITLB | 	/* instruction */
         MCF_MMU_MMUOR_ACC |     			/* access TLB */
         MCF_MMU_MMUOR_UAA;      			/* update allocation address field */
+
+    set_ipl(ipl);
+
     dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt, phys);
 
     return 1;
@@ -519,7 +539,7 @@ void mmu_init(void)
             pages[i].global = 1;
         }
         pages[i].locked = 0;				/* not locked */
-        pages[0].supervisor_protect = 1;    /* protect system vectors */
+        pages[0].supervisor_protect = 0;    /* protect system vectors */
     }
 
     set_asid(0);			/* do not use address extension (ASID provides virtual 48 bit addresses) yet */
