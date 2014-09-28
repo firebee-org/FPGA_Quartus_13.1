@@ -92,7 +92,8 @@ enum mmu_cache_modes
 extern long video_tlb;
 extern long video_sbt;
 
+extern void mmu_enable(void);
 extern void mmu_init(void);
-extern int mmu_map_8k_page(uint32_t adr);
+extern int mmu_map_8k_page(uint32_t adr, uint8_t asid);
 
 #endif /* _MMU_H_ */

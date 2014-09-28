@@ -143,7 +143,6 @@ CSRCS= \
 
 ASRCS= \
 	startcf.S \
-	printf_helper.S \
 	exceptions.S \
 	xhdi_vec.S \
 	pci_wrappers.S

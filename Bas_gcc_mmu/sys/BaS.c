@@ -307,8 +307,9 @@ void BaS(void)
     xprintf("finished\r\n");
 
     xprintf("enable MMU: ");
-    MCF_MMU_MMUCR = MCF_MMU_MMUCR_EN;			/* MMU on */
-    NOP();										/* force pipeline sync */
+
+    mmu_enable();										/* force pipeline sync */
+
     xprintf("finished\r\n");
 
     xprintf("initialize exception vector table: ");
@@ -319,7 +320,7 @@ void BaS(void)
     flush_and_invalidate_caches();
     xprintf("finished\r\n");
 
-    #ifdef MACHINE_FIREBEE
+#ifdef MACHINE_FIREBEE
     xprintf("IDE reset: ");
     /* IDE reset */
     * (volatile uint8_t *) (0xffff8802 - 2) = 14;

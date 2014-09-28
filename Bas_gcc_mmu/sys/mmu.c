@@ -62,12 +62,12 @@
 #error "unknown machine!"
 #endif /* MACHINE_FIREBEE */
 
-//#define DEBUG_MMU
-#ifdef DEBUG_MMU
+#define DBG_MMU
+#ifdef DBG_MMU
 #define dbg(format, arg...) do { xprintf("DEBUG (%s()): " format, __FUNCTION__, ##arg);} while(0)
 #else
 #define dbg(format, arg...) do {;} while (0)
-#endif /* DEBUG_MMU */
+#endif /* DBG_MMU */
 #define err(format, arg...) do { xprintf("ERROR (%s()): " format, __FUNCTION__, ##arg); xprintf("system halted\r\n"); } while(0); while(1)
 
 
@@ -84,7 +84,7 @@ inline uint32_t set_asid(uint32_t value)
         "movec		%[value],ASID\n\t"
         : /* no output */
         : [value] "r" (value)
-        :
+        : "memory"
     );
 
     rt_asid = value;
@@ -106,7 +106,7 @@ inline uint32_t set_acr0(uint32_t value)
         "movec		%[value],ACR0\n\t"
         : /* not output */
         : [value] "r" (value)
-        :
+        : "memory"
     );
     rt_acr0 = value;
 
@@ -126,7 +126,7 @@ inline uint32_t set_acr1(uint32_t value)
         "movec		%[value],ACR1\n\t"
         : /* not output */
         : [value] "r" (value)
-        :
+        : "memory"
     );
     rt_acr1 = value;
 
@@ -147,7 +147,7 @@ inline uint32_t set_acr2(uint32_t value)
         "movec		%[value],ACR2\n\t"
         : /* not output */
         : [value] "r" (value)
-        :
+        : "memory"
     );
     rt_acr2 = value;
 
@@ -167,7 +167,7 @@ inline uint32_t set_acr3(uint32_t value)
         "movec		%[value],ACR3\n\t"
         : /* not output */
         : [value] "r" (value)
-        :
+        : "memory"
     );
     rt_acr3 = value;
 
@@ -183,7 +183,7 @@ inline uint32_t set_mmubar(uint32_t value)
         "movec		%[value],MMUBAR\n\t"
         : /* no output */
         : [value] "r" (value)
-        : /* no clobber */
+        : "memory"
     );
     rt_mmubar = value;
     NOP();
@@ -206,10 +206,9 @@ static struct virt_to_phys translation[] =
 {
     /* virtual  , length    , offset    */
     { 0x00000000, 0x00e00000, 0x60000000 },     /* map first 14 MByte to first 14 Mb of video ram */
-    //{ 0x00e00000, 0x00100000, 0x00000000 },     /* map TOS to SDRAM */
+    { 0x00e00000, 0x00100000, 0x00000000 },     /* map TOS to SDRAM */
     { 0x00f00000, 0x00100000, 0xff000000 },     /* map Falcon I/O area to FPGA */
-    { 0x01000000, 0x10000000, 0x00000000 },     /* map rest of ram virt = phys */
-    { 0x1fd00000, 0x01000000, 0x00000000 },     /* accessed by EmuTOS? */
+    { 0x01000000, 0x1f000000, 0x00000000 },     /* map rest of ram virt = phys */
 };
 static int num_translations = sizeof(translation) / sizeof(struct virt_to_phys);
 
@@ -225,6 +224,7 @@ static inline uint32_t lookup_phys(uint32_t virt)
         }
     }
     err("virtual address 0x%lx not found in translation table!\r\n", virt);
+    return -1;
 }
 
 struct page_descriptor
@@ -252,45 +252,141 @@ static struct page_descriptor pages[65536];   /* 512 Mb RAM */
  *
  *
  */
-int mmu_map_8k_page(uint32_t virt)
+int mmu_map_8k_page(uint32_t virt, uint8_t asid)
 {
-    const int size_mask = 0xffffe000;                           /* 8k pagesize */
+    static int num_calls = 0;
+
+    const uint32_t size_mask = 0xffffe000;                      /* 8k pagesize */
     int page_index = (virt & size_mask) / DEFAULT_PAGE_SIZE;	/* index into page_descriptor array */
     struct page_descriptor *page = &pages[page_index];          /* attributes of page to map */
 
+    register int sp asm("sp");
+
     uint32_t phys = lookup_phys(virt);                          /* virtual to physical translation of page */
 
+    if (phys == -1)
+        return 0;
+    dbg("page_descriptor: 0x%02x, num_calls = %d ssp = 0x%08x\r\n", * (uint8_t *) page, num_calls++, sp);
     /*
      * add page to TLB
      */
-    MCF_MMU_MMUTR = (virt & size_mask) |    						/* virtual address */
-        MCF_MMU_MMUTR_ID(0x00) |        							/* address space id (ASID) */
-        MCF_MMU_MMUTR_SG |											/* shared global */
+    MCF_MMU_MMUTR = (virt & 0xfffffc00) |                           /* virtual address */
+        MCF_MMU_MMUTR_ID(asid) |        							/* address space id (ASID) */
+        (page->global ? MCF_MMU_MMUTR_SG : 0) |						/* shared global */
         MCF_MMU_MMUTR_V;											/* valid */
-    NOP();
 
-    MCF_MMU_MMUDR = (phys & size_mask) |                 			/* physical address */
+    MCF_MMU_MMUDR = (phys & 0xfffffc00) |                 			/* physical address */
         MCF_MMU_MMUDR_SZ(MMU_PAGE_SIZE_8K) |						/* page size */
-        MCF_MMU_MMUDR_CM(page->cache_mode) |
+        MCF_MMU_MMUDR_CM(page->cache_mode) |                        /* cache mode */
+        (page->supervisor_protect ? MCF_MMU_MMUDR_SP : 0) |         /* supervisor protect */
         (page->read ? MCF_MMU_MMUDR_R : 0) |                    	/* read access enable */
         (page->write ? MCF_MMU_MMUDR_W : 0) |                       /* write access enable */
         (page->execute ? MCF_MMU_MMUDR_X : 0) |                     /* execute access enable */
         (page->locked ? MCF_MMU_MMUDR_LK : 0);
-    NOP();
+
+    MCF_MMU_MMUOR = MCF_MMU_MMUOR_ITLB | 	/* instruction */
+        MCF_MMU_MMUOR_ACC |     			/* access TLB */
+        MCF_MMU_MMUOR_UAA;      			/* update allocation address field */
+    dbg("ITLB: MCF_MMU_MMUOR = %08x\r\n", MCF_MMU_MMUOR);
 
     MCF_MMU_MMUOR = MCF_MMU_MMUOR_ACC |		/* access TLB, data */
         MCF_MMU_MMUOR_UAA;					/* update allocation address field */
-    NOP();
 
     dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt & size_mask, phys & size_mask);
 
     dbg("DTLB: MCF_MMU_MMUOR = %08x\r\n", MCF_MMU_MMUOR);
 
+    return 1;
+}
+
+int mmu_map_8k_instruction_page(uint32_t virt, uint8_t asid)
+{
+    static int num_calls = 0;
+
+    const uint32_t size_mask = 0xffffe000;                      /* 8k pagesize */
+    int page_index = (virt & size_mask) / DEFAULT_PAGE_SIZE;	/* index into page_descriptor array */
+    struct page_descriptor *page = &pages[page_index];          /* attributes of page to map */
+
+    register int sp asm("sp");
+
+    uint32_t phys = lookup_phys(virt);                          /* virtual to physical translation of page */
+
+    if (phys == -1)
+        return 0;
+    dbg("page_descriptor: 0x%02x, num_calls = %d ssp = 0x%08x\r\n", * (uint8_t *) page, num_calls++, sp);
+    /*
+     * add page to TLB
+     */
+    MCF_MMU_MMUAR = (virt & size_mask);
+
+    MCF_MMU_MMUTR = (virt & size_mask) |                           /* virtual address */
+        MCF_MMU_MMUTR_ID(asid) |        							/* address space id (ASID) */
+        (page->global ? MCF_MMU_MMUTR_SG : 0) |						/* shared global */
+        MCF_MMU_MMUTR_V;											/* valid */
+
+    __asm__ __volatile("" : : : "memory");                          /* MMU commands must be exactly in sequence */
+
+    MCF_MMU_MMUDR = (phys & size_mask) |                 			/* physical address */
+        MCF_MMU_MMUDR_SZ(MMU_PAGE_SIZE_8K) |						/* page size */
+        MCF_MMU_MMUDR_CM(page->cache_mode) |                        /* cache mode */
+        (page->supervisor_protect ? MCF_MMU_MMUDR_SP : 0) |         /* supervisor protect */
+        (page->read ? MCF_MMU_MMUDR_R : 0) |                    	/* read access enable */
+        (page->write ? MCF_MMU_MMUDR_W : 0) |                       /* write access enable */
+        (page->execute ? MCF_MMU_MMUDR_X : 0) |                     /* execute access enable */
+        (page->locked ? MCF_MMU_MMUDR_LK : 0);
+
+    __asm__ __volatile("" : : : "memory");                          /* MMU commands must be exactly in sequence */
+
     MCF_MMU_MMUOR = MCF_MMU_MMUOR_ITLB | 	/* instruction */
         MCF_MMU_MMUOR_ACC |     			/* access TLB */
         MCF_MMU_MMUOR_UAA;      			/* update allocation address field */
-    dbg("ITLB: MCF_MMU_MMUOR = %08x\r\n\r\n", MCF_MMU_MMUOR);
 
+    __asm__ __volatile("" : : : "memory");                          /* MMU commands must be exactly in sequence */
+
+    dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt & size_mask, phys & size_mask);
+
+    dbg("ITLB: MCF_MMU_MMUOR = %08x\r\n", MCF_MMU_MMUOR);
+    return 1;
+}
+
+int mmu_map_8k_data_page(uint32_t virt, uint8_t asid)
+{
+    static int num_calls = 0;
+
+    const uint32_t size_mask = 0xffffe000;                      /* 8k pagesize */
+    int page_index = (virt & size_mask) / DEFAULT_PAGE_SIZE;	/* index into page_descriptor array */
+    struct page_descriptor *page = &pages[page_index];          /* attributes of page to map */
+
+    register int sp asm("sp");
+
+    uint32_t phys = lookup_phys(virt);                          /* virtual to physical translation of page */
+
+    if (phys == -1)
+        return 0;
+    dbg("page_descriptor: 0x%02x, num_calls = %d ssp = 0x%08x\r\n", * (uint8_t *) page, num_calls++, sp);
+    /*
+     * add page to TLB
+     */
+    MCF_MMU_MMUTR = (virt & 0xfffffc00) |                           /* virtual address */
+        MCF_MMU_MMUTR_ID(asid) |        							/* address space id (ASID) */
+        (page->global ? MCF_MMU_MMUTR_SG : 0) |						/* shared global */
+        MCF_MMU_MMUTR_V;											/* valid */
+
+    MCF_MMU_MMUDR = (phys & 0xfffffc00) |                 			/* physical address */
+        MCF_MMU_MMUDR_SZ(MMU_PAGE_SIZE_8K) |						/* page size */
+        MCF_MMU_MMUDR_CM(page->cache_mode) |                        /* cache mode */
+        (page->supervisor_protect ? MCF_MMU_MMUDR_SP : 0) |         /* supervisor protect */
+        (page->read ? MCF_MMU_MMUDR_R : 0) |                    	/* read access enable */
+        (page->write ? MCF_MMU_MMUDR_W : 0) |                       /* write access enable */
+        (page->execute ? MCF_MMU_MMUDR_X : 0) |                     /* execute access enable */
+        (page->locked ? MCF_MMU_MMUDR_LK : 0);
+
+    MCF_MMU_MMUOR = MCF_MMU_MMUOR_ACC |		/* access TLB, data */
+        MCF_MMU_MMUOR_UAA;					/* update allocation address field */
+
+    dbg("mapped virt=0x%08x to phys=0x%08x\r\n", virt & size_mask, phys & size_mask);
+
+    dbg("DTLB: MCF_MMU_MMUOR = %08x\r\n", MCF_MMU_MMUOR);
 
     return 1;
 }
@@ -373,13 +469,13 @@ void mmu_init(void)
     /*
      * clear all MMU TLB entries first
      */
-    MCF_MMU_MMUOR = MCF_MMU_MMUOR_CA;
+    MCF_MMU_MMUOR = MCF_MMU_MMUOR_CA;       /* clears _all_ TLBs (including locked ones) */
     NOP();
 
     /*
      * prelaminary initialization of page descriptor 0 (root) table
      */
-    for (i = 0; i < sizeof(pages); i++)
+    for (i = 0; i < sizeof(pages) / sizeof(struct page_descriptor); i++)
     {
         uint32_t addr = i * DEFAULT_PAGE_SIZE;
 
@@ -387,27 +483,35 @@ void mmu_init(void)
         {
             pages[i].cache_mode = CACHE_NOCACHE_PRECISE;
             pages[i].execute = 0;
+            pages[i].read = 1;
+            pages[i].write = 1;
+            pages[i].global = 1;
             pages[i].supervisor_protect = 1;
         }
         else if (addr >= 0x0 && addr < 0x00f00000)      /* ST-RAM, potential video memory */
         {
-            pages[i].cache_mode = CACHE_WRITETHROUGH;
+            pages[i].cache_mode = CACHE_NOCACHE_PRECISE;
             pages[i].execute = 1;
             pages[i].supervisor_protect = 0;
+            pages[i].read = 1;
+            pages[i].write = 1;
+            pages[i].execute = 1;
+            pages[i].global = 1;
         }
         else
         {
-            pages[i].cache_mode = CACHE_COPYBACK;
+            pages[i].cache_mode = CACHE_NOCACHE_PRECISE;
             pages[i].execute = 1;
+            pages[i].read = 1;
+            pages[i].write = 1;
             pages[i].supervisor_protect = 0;
+            pages[i].global = 1;
         }
-        pages[i].global = 1;				/* all pages global by default */
         pages[i].locked = 0;				/* not locked */
-        pages[i].read = 1;					/* readable, writable, executable */
-        pages[i].write = 1;
     }
 
     set_asid(0);			/* do not use address extension (ASID provides virtual 48 bit addresses) yet */
+
 
     /* set data access attributes in ACR0 and ACR1 */
     set_acr0(ACR_W(0) |								/* read and write accesses permitted */
@@ -424,21 +528,23 @@ void mmu_init(void)
             ACR_BA(0x80000000));
 #elif defined(MACHINE_M54455)
             ACR_ADMSK(0x7f) |
-            ACR_BA(0x80000000));					/* FIXME: not determined yet */
+            ACR_BA(0x80000000));					/* FIXME: not determined yet for this machine */
 #else
 #error unknown machine!
 #endif /* MACHINE_FIREBEE */
 
+
+#ifdef _NOT_USED_
     // set_acr1(0x601fc000);
     set_acr1(ACR_W(0) |
             ACR_SP(0) |
             ACR_CM(0) |
 #if defined(MACHINE_FIREBEE)
-            ACR_CM(ACR_CM_CACHEABLE_WT) |			/* ST RAM on the Firebee */
+            ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* ST RAM on the Firebee */
 #elif defined(MACHINE_M5484LITE)
             ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* Compact Flash on the M548xLITE */
 #elif defined(MACHINE_M54455)
-            ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* FIXME: not determined yet */
+            ACR_CM(ACR_CM_CACHE_INH_PRECISE) |		/* FIXME: not determined yet for this machine */
 #else
 #error unknown machine!
 #endif /* MACHINE_FIREBEE */
@@ -454,13 +560,16 @@ void mmu_init(void)
     set_acr2(ACR_W(0) |
             ACR_SP(0) |
             ACR_CM(0) |
-            ACR_CM(ACR_CM_CACHEABLE_WT) |
+            ACR_CM(ACR_CM_CACHE_INH_PRECISE) |
             ACR_AMM(1) |
             ACR_S(ACR_S_ALL) |
             ACR_E(1) |
             ACR_ADMSK(0x7) |
             ACR_BA(0xe0000000));
+#endif /* _NOT_USED_ */
 
+    set_acr1(0x0);
+    set_acr2(0x0);
     /* disable ACR3 */
     set_acr3(0x0);
 
@@ -475,7 +584,7 @@ void mmu_init(void)
      * Map (locked) the second last MB of physical SDRAM (this is where BaS .data and .bss reside) to the same
      * virtual address. This is also used (completely) when BaS is in RAM
      */
-    flags.cache_mode = CACHE_COPYBACK;
+    flags.cache_mode = CACHE_NOCACHE_PRECISE;
     flags.read = 1;
     flags.write = 1;
     flags.execute = 1;
@@ -490,7 +599,7 @@ void mmu_init(void)
     flags.write = 1;
     flags.execute = 1;
     flags.locked = 1;
-    mmu_map_page(0xe00000, 0xe00000, MMU_PAGE_SIZE_1M, 0, &flags);
+    //mmu_map_page(0xe00000, 0xe00000, MMU_PAGE_SIZE_1M, 0, &flags);
 
     /*
      * Map (locked) the very last MB of physical SDRAM (this is where the driver buffers reside) to the same
@@ -505,43 +614,68 @@ void mmu_init(void)
     mmu_map_page(SDRAM_START + SDRAM_SIZE - 0x00100000, SDRAM_START + SDRAM_SIZE - 0x00100000, 0, MMU_PAGE_SIZE_1M, &flags);
 }
 
-
-void mmutr_miss(uint32_t address, uint32_t pc, uint32_t format_status)
+/*
+ * enable the MMU. The Coldfire MMU can be used in two different modes
+ * ... FIXME:
+ */
+void mmu_enable(void)
 {
-    dbg("MMU TLB MISS accessing 0x%08x\r\nFS = 0x%08x\r\nPC = 0x%08x\r\n", address, format_status, pc);
-    //flush_and_invalidate_caches();
+    MCF_MMU_MMUCR = MCF_MMU_MMUCR_EN;			/* MMU on */
+    NOP();                                      /* force pipeline sync */
+}
 
-#ifdef _NOT_USED_
-    // experimental; try to ensure that supervisor stack area stays in mmu TLBs
-    // guess what: doesn't work...
-    register uint32_t sp asm("sp");
-    dbg("stack is at %p\r\n", sp);
-    if (sp < 0x02000000)
-    {
-        dbg("mapped stack at 0x%08x\r\n");
-        mmu_map_8k_page(sp);
-        //flush_and_invalidate_caches();
-    }
-#endif /* _NOT_USED */
+#ifdef DBG_MMU
+void verify_mapping(uint32_t address)
+{
+    /* retrieve mapped page from MMU and make sure everything is correct */
+    int ds;
 
-    switch (address)
+    ds = * (int *) address;
+    dbg("found 0x%08x at address\r\n", ds);
+}
+#endif /* DBG_MMU */
+
+uint32_t mmutr_miss(uint32_t mmu_sr, uint32_t fault_address, uint32_t pc,
+                uint32_t format_status)
+{
+    uint32_t fault = format_status & 0x0c030000;
+
+    switch (fault)
     {
-        case keyctl:
-        case keybd:
-            /* do something to emulate the IKBD access */
-            dbg("IKBD access\r\n");
+        /* if we have a real TLB miss, map the offending page */
+
+        case 0x04010000:    /* TLB miss on opword of instruction fetch */
+        case 0x04020000:    /* TLB miss on extension word of instruction fetch */
+            dbg("MMU ITLB MISS accessing 0x%08x\r\n"
+                "FS = 0x%08x\r\n"
+                "MMUSR = 0x%08x\r\n"
+                "PC = 0x%08x\r\n",
+                fault_address, format_status, mmu_sr, pc);
+            dbg("fault = 0x%08x\r\n", fault);
+            mmu_map_8k_instruction_page(pc, 0);
             break;
 
-        case midictl:
-        case midi:
-            /* do something to emulate MIDI access */
-            dbg("MIDI ACIA access\r\n");
+        case 0x08020000:    /* TLB miss on data write */
+        case 0x0c020000:    /* TLB miss on data read or read-modify-write */
+            dbg("MMU DTLB MISS accessing 0x%08x\r\n"
+                "FS = 0x%08x\r\n"
+                "MMUSR = 0x%08x\r\n"
+                "PC = 0x%08x\r\n",
+                fault_address, format_status, mmu_sr, pc);
+            dbg("fault = 0x%08x\r\n", fault);
+            mmu_map_8k_data_page(fault_address, 0);
             break;
 
+        /* else issue an bus error */
         default:
-            /* add missed page to TLB */
-            mmu_map_8k_page(address);
+            dbg("bus error\r\n");
+            return 1;       /* signal bus error to caller */
     }
+#ifdef DBG_MMU
+    xprintf("\r\n");
+
+#endif /* DBG_MMU */
+    return 0;   /* signal TLB miss handled to caller */
 }
 
 
