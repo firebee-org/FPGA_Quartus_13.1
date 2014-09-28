@@ -63,7 +63,7 @@
 #error "unknown machine!"
 #endif /* MACHINE_FIREBEE */
 
-#define DBG_MMU
+//#define DBG_MMU
 #ifdef DBG_MMU
 #define dbg(format, arg...) do { xprintf("DEBUG (%s()): " format, __FUNCTION__, ##arg);} while(0)
 #else
@@ -686,6 +686,9 @@ uint32_t mmutr_miss(uint32_t mmu_sr, uint32_t fault_address, uint32_t pc,
                 fault_address, format_status, mmu_sr, pc);
             dbg("fault = 0x%08x\r\n", fault);
             mmu_map_8k_instruction_page(pc, 0);
+
+            /* due to prefetch, it makes sense to map the next adjacent page also for ITLBs */
+            mmu_map_8k_instruction_page(pc + DEFAULT_PAGE_SIZE, 0);
             break;
 
         case 0x08020000:    /* TLB miss on data write */
