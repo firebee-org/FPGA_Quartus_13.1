@@ -64,9 +64,15 @@ derive_clock_uncertainty
 # Set Input Delay
 #**************************************************************
 
+# constrain DDR RAM 
+set_input_delay -clock [get_clocks {inst12|altpll_component|auto_generated|pll1|*}] 5ps [get_ports {VD*}]
+
 #**************************************************************
 # Set Output Delay
 #**************************************************************
+
+# constrain DDR RAM
+set_output_delay -clock [get_clocks {inst12|altpll_component|auto_generated|pll1|*}] 5ps [get_ports {VD*}]
 
 #**************************************************************
 # Set Clock Groups
@@ -93,10 +99,11 @@ set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|cl
 set_false_path -from [get_clocks {main_clk}] -to [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}]
 set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {main_clk}]
 
-set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {main_clk}]
-set_false_path -from [get_clocks {main_clk}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}]
+set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|*}] -to [get_clocks {main_clk}]
+set_false_path -from [get_clocks {main_clk}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|*}]
 
 set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}]
+
 set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}]
 
 set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[0]}]
