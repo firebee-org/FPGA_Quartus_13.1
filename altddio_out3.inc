@@ -1,4 +1,4 @@
---Copyright (C) 1991-2008 Altera Corporation
+--Copyright (C) 1991-2013 Altera Corporation
 --Your use of Altera Corporation's design tools, logic functions 
 --and other software and tools, and its AMPP partner logic 
 --functions, and any output files from any of the foregoing 
@@ -15,11 +15,11 @@
 
 FUNCTION altddio_out3 
 (
-	datain_h,
-	datain_l,
+	datain_h[0..0],
+	datain_l[0..0],
 	outclock
 )
 
 RETURNS (
-	dataout
+	dataout[0..0]
 );
