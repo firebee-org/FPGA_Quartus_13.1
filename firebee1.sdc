@@ -90,8 +90,29 @@ set_false_path -from [get_clocks {*}] -to [get_clocks {inst13|altpll_component|a
 set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[2]}] -to [get_clocks {*}]
 
 
+set_false_path -from [get_clocks {main_clk}] -to [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}]
+set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {main_clk}]
 
+set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {main_clk}]
+set_false_path -from [get_clocks {main_clk}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}]
 
+set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}]
+set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}]
+
+set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path -from [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[4]}]
+
+set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {main_clk}]
+set_false_path -from [get_clocks {main_clk}] -to [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[0]}]
+
+set_false_path -from [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {clk33m}]
+set_false_path -from [get_clocks {clk33m}] -to [get_clocks {inst13|altpll_component|auto_generated|pll1|clk[0]}]
+
+set_false_path -from [get_clocks {clk33m}] -to [get_clocks {inst12|altpll_component|auto_generated|pll1|clk[0]}]
+
+set_false_path -from [get_clocks {inst|altpll_component|auto_generated|pll1|clk[1]}] -to [get_clocks {main_clk}]
+
+set_false_path -from [get_clocks {inst|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {main_clk}]
 #**************************************************************
 # Set Multicycle Path
 #**************************************************************
