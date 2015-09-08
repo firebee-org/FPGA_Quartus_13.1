@@ -265,8 +265,19 @@ signal NEXT_nIDE_WR				: STD_LOGIC;
 type CMD_STATES is(	IDLE, T1, T6, T7);
 signal CMD_STATE				: CMD_STATES;
 signal NEXT_CMD_STATE			: CMD_STATES;
-
-	
+SIGNAL data : std_logic_vector(31 DOWNTO 0);
+SIGNAL adr : std_logic_vector(2 DOWNTO 0);
+SIGNAL wr_n : std_logic;
+SIGNAL rd_n : std_logic;
+SIGNAL ds_n : std_logic;
+SIGNAL cs_n : std_logic;
+SIGNAL gpip_in_7 : std_logic;
+SIGNAL gpip_in_6 : std_logic;
+SIGNAL gpip_in_2 : std_logic;
+SIGNAL gpip_in_1 : std_logic;
+SIGNAL iack_n    : std_logic;
+SIGNAL dummy     : std_logic;
+SIGNAL io_b_en   : std_logic;
 BEGIN
 LONG  <= '1' when FB_SIZE1 = '0' and FB_SIZE0 = '0' else '0';
 BYT   <= '1' when FB_SIZE1 = '0' and FB_SIZE0 = '1' else '0';
@@ -375,10 +386,12 @@ RDF_RDE <= '1' when FCF_APH = '1' and nFB_WR = '1' else '0';										-- AKTIVIE
 FB_AD <= RDF_DOUT(7 downto 0) & RDF_DOUT(15 downto 8) & RDF_DOUT(23 downto 16) & RDF_DOUT(31 downto 24) when FCF_CS = '1' and nFB_OE = '0' else "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";	 
 RDF_DIN <= CD_OUT_FDC when DMA_MODUS(7) = '1' else SCSI_DOUT;
 -- daten write fifo
+data <= FB_AD(7 DOWNTO 0) & FB_AD(15 DOWNTO 8) & FB_AD(23 DOWNTO 16) & FB_AD(31 DOWNTO 24);
+
 	WRF: dcfifo1
 		port map(
 			aclr				=> CLR_FIFO,
-			data				=> FB_AD(7 downto 0) & FB_AD(15 downto 8) & FB_AD(23 downto 16) & FB_AD(31 downto 24),
+			data				=> data,
 			rdclk				=> FDC_CLK,
 			rdreq				=> WRF_RDE,
 			wrclk				=> MAIN_CLK,
@@ -691,19 +704,22 @@ FB_AD <= DMA_BYT_CNT when DMA_BYT_CNT_CS = '1'  and nFB_OE = '0' else "ZZZZZZZZZ
 			end if;
 	END PROCESS;
 CLR_FIFO <= DMA_MODUS(8) xor DMA_DIR_OLD;	
+adr <= ca2 & ca1 & ca0;
+rd_n <= (NOT nFDC_WR) OR (NOT scsi_cs);
+wr_n <= nFDC_WR OR (NOT scsi_cs);
 -- SCSI ----------------------------------------------------------------------------------
     I_SCSI: WF5380_TOP_SOC
         port map(
             CLK					=> FDC_CLK,
             RESETn				=> nRSTO,
-			ADR			        => CA2 & CA1 & CA0,
+			ADR			        => adr,
 			DATA_IN		        => CD_IN_FDC,	
 			DATA_OUT			=> SCSI_DOUT,
 			--DATA_EN			: out bit;
             -- Bus and DMA controls:
 			CSn			        => '1',			--SCSI_CSn,  ABGESCHALTET
-			RDn		            => (not nFDC_WR) or (not SCSI_CS),
-			WRn	                =>      nFDC_WR  or (not SCSI_CS),
+			RDn		            => rd_n,
+			WRn	                => wr_n,
             EOPn                => '1',
 			DACKn	            => nSCSI_DACK,
 			DRQ		            => SCSI_DRQ,
@@ -849,6 +865,13 @@ FB_AD(31 downto 24) <= DATA_OUT_ACIA_I when ACIA_CS_I = '1' and FB_ADR(2) = '0' 
 MIDI_TLR <= MIDI_OUT;
 MIDI_OLR <= MIDI_OUT;
 FB_AD(31 downto 24) <= DATA_OUT_ACIA_II when ACIA_CS_I = '1' and FB_ADR(2) = '1' and nFB_OE = '0' else "ZZZZZZZZ";
+ds_n <= NOT lds;
+cs_n <= NOT mfp_cs;
+gpip_in_7 <= NOT dma_drq_q;
+gpip_in_6 <= NOT ri;
+gpip_in_2 <= NOT cts;
+gpip_in_1 <= NOT dcd;
+iack_n <= NOT mfp_intack;
 ----------------------------------------------------------------------------
 -- MFP
 ----------------------------------------------------------------------------
@@ -858,8 +881,8 @@ FB_AD(31 downto 24) <= DATA_OUT_ACIA_II when ACIA_CS_I = '1' and FB_ADR(2) = '1'
 			CLK					=> MAIN_CLK,
 			RESETn				=> nRSTO,
 			-- Asynchronous bus control:
-			DSn					=> not LDS,
-			CSn					=> not MFP_CS,
+			DSn					=> ds_n,
+			CSn					=> cs_n,
 			RWn					=> nFB_WR,
  			DTACKn				=> DTACK_OUT_MFPn,
 			-- Data and Adresses:
@@ -867,18 +890,18 @@ FB_AD(31 downto 24) <= DATA_OUT_ACIA_II when ACIA_CS_I = '1' and FB_ADR(2) = '1'
 			DATA_IN				=> FB_AD(23 downto 16),
 			DATA_OUT			=> DATA_OUT_MFP,
 --			DATA_EN				=> DATA_EN_MFP,
-            GPIP_IN(7)			=> not DMA_DRQ_Q,
-            GPIP_IN(6)			=> not RI,
+            GPIP_IN(7)			=> gpip_in_7,
+            GPIP_IN(6)			=> gpip_in_6,
 			GPIP_IN(5)			=> DINTn,
 			GPIP_IN(4)			=> IRQ_ACIAn,
 			GPIP_IN(3)			=> DSP_INT,
-            GPIP_IN(2)			=> not CTS,
-            GPIP_IN(1)			=> not DCD,
+            GPIP_IN(2)			=> gpip_in_2,
+            GPIP_IN(1)			=> gpip_in_1,
             GPIP_IN(0)			=> LP_BUSY,
 			-- GPIP_OUT			=>, -- Not used; all GPIPs are direction input.
 			-- GPIP_EN			=>, -- Not used; all GPIPs are direction input.
 			-- Interrupt control:
-			IACKn				=> not MFP_INTACK,
+			IACKn				=> iack_n,
 			IEIn				=> '0',
 			-- IEOn				=>, -- Not used.
 			IRQn				=> nMFP_INT,
@@ -942,23 +965,24 @@ DINTn <= '0' when IDE_INT = '1' AND ACP_CONF(28) = '1' else
 			DA_IN				=> FB_AD(31 downto 24),
 			DA_OUT 				=> DA_OUT_X,
 
-			IO_A_IN				=> x"00", -- All port pins are dedicated outputs.
-			IO_A_OUT(7)			=> nnIDE_RES,
-            IO_A_OUT(6)			=> LP_DIR_X,
-			IO_A_OUT(5)			=> LP_STR,
-			IO_A_OUT(4)			=> DTR,
-			IO_A_OUT(3)			=> RTS,
---			IO_A_OUT(2)			=> FDD_D1SEL,
-			IO_A_OUT(1)			=> DSA_D,
-			IO_A_OUT(0)			=> nSDSEL,
-			-- IO_A_EN			=>, -- Not required.
-			IO_B_IN				=> LP_D,
-			IO_B_OUT			=> LP_D_X,
- --			IO_B_EN				=> IO_B_EN,
+			IO_A_IN				  => x"00", -- All port pins are dedicated outputs.
+			IO_A_OUT(7)		=> nnIDE_RES,
+      IO_A_OUT(6)		=> LP_DIR_X,
+			IO_A_OUT(5)		=> LP_STR,
+			IO_A_OUT(4)		=> DTR,
+			IO_A_OUT(3)		=> RTS,
+--			IO_A_OUT(2)		=> FDD_D1SEL,
+      IO_A_OUT(2)  => dummy,
+			IO_A_OUT(1)		=> DSA_D,
+			IO_A_OUT(0)		=> nSDSEL,
+--    IO_A_EN			   =>, -- Not required.
+			IO_B_IN				  => LP_D,
+			IO_B_OUT			  => LP_D_X,
+      IO_B_EN				  => IO_B_EN,
 
-			OUT_A				=> YM_QA,
-			OUT_B				=> YM_QB,
-			OUT_C				=> YM_QC
+			OUT_A				    => YM_QA,
+			OUT_B				    => YM_QB,
+			OUT_C				    => YM_QC
 		);
 
 SNDCS <= '1' when nFB_CS1 = '0' and FB_ADR(19 downto 2) = x"3E200" else '0';		-- 8800-8803 F8800/4

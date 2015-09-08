@@ -119,6 +119,7 @@ signal ADR_I		: bit_vector(3 downto 0);
 signal CTRL_REG		: bit_vector(7 downto 0);
 signal PORT_A		: bit_vector(7 downto 0);
 signal PORT_B		: bit_vector(7 downto 0);
+  SIGNAL bsel : bit_vector(2 DOWNTO 0);
 begin
 	P_WAVSTRB: process(RESETn, SYS_CLK)
 	variable LOCK	: boolean;
@@ -143,8 +144,8 @@ begin
 			end if;
 		end if;
 	end process P_WAVSTRB;		
-
-	with BDIR & BC2 & BC1 select
+  bsel <= bdir & bc2 & bc1;
+	with bsel select
 		BUSCYCLE <= INACTIVE	when "000" | "010" | "101",
 					ADDRESS 	when "001" | "100" | "111",
 					R_READ 		when "011",
