@@ -59,23 +59,6 @@ applicable agreement for further details.
 )
 (pin
 	(input)
-	(rect 168 296 336 312)
-	(text "INPUT" (rect 133 0 162 10)(font "Arial" (font_size 6)))
-	(text "CLK33M" (rect 9 0 53 11)(font "Arial" ))
-	(pt 168 8)
-	(drawing
-		(line (pt 92 12)(pt 117 12))
-		(line (pt 92 4)(pt 117 4))
-		(line (pt 121 8)(pt 168 8))
-		(line (pt 92 12)(pt 92 4))
-		(line (pt 117 4)(pt 121 8))
-		(line (pt 117 12)(pt 121 8))
-	)
-	(text "VCC" (rect 136 7 157 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect 104 312 176 328))
-)
-(pin
-	(input)
 	(rect 992 960 1160 976)
 	(text "INPUT" (rect 133 0 162 10)(font "Arial" (font_size 6)))
 	(text "nFB_CS1" (rect 5 0 53 11)(font "Arial" ))
@@ -858,23 +841,6 @@ applicable agreement for further details.
 )
 (pin
 	(input)
-	(rect 96 -288 264 -272)
-	(text "INPUT" (rect 133 0 162 10)(font "Arial" (font_size 6)))
-	(text "MAIN_CLK" (rect 9 0 66 11)(font "Arial" ))
-	(pt 168 8)
-	(drawing
-		(line (pt 92 12)(pt 117 12))
-		(line (pt 92 4)(pt 117 4))
-		(line (pt 121 8)(pt 168 8))
-		(line (pt 92 12)(pt 92 4))
-		(line (pt 117 4)(pt 121 8))
-		(line (pt 117 12)(pt 121 8))
-	)
-	(text "VCC" (rect 136 7 157 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect 56 -304 120 -288))
-)
-(pin
-	(input)
 	(rect 664 440 840 456)
 	(text "INPUT" (rect 141 0 170 10)(font "Arial" (font_size 6)))
 	(text "nRSTO_MCF" (rect 5 0 73 11)(font "Arial" ))
@@ -889,6 +855,23 @@ applicable agreement for further details.
 	)
 	(text "VCC" (rect 144 7 165 17)(font "Arial" (font_size 6)))
 	(annotation_block (location)(rect 600 448 664 464))
+)
+(pin
+	(input)
+	(rect 168 296 336 312)
+	(text "INPUT" (rect 133 0 162 10)(font "Arial" (font_size 6)))
+	(text "MAIN_CLK" (rect 5 0 63 11)(font "Arial" ))
+	(pt 168 8)
+	(drawing
+		(line (pt 92 12)(pt 117 12))
+		(line (pt 92 4)(pt 117 4))
+		(line (pt 121 8)(pt 168 8))
+		(line (pt 92 12)(pt 92 4))
+		(line (pt 117 4)(pt 121 8))
+		(line (pt 117 12)(pt 121 8))
+	)
+	(text "VCC" (rect 136 7 157 17)(font "Arial" (font_size 6)))
+	(annotation_block (location)(rect 104 312 176 328))
 )
 (pin
 	(output)
@@ -4380,11 +4363,6 @@ applicable agreement for further details.
 	(pt 1264 800)
 )
 (connector
-	(text "CLK33M" (rect 1210 760 1254 771)(font "Arial" ))
-	(pt 1200 776)
-	(pt 1264 776)
-)
-(connector
 	(text "CLK2M" (rect 1202 808 1240 819)(font "Arial" ))
 	(pt 1192 824)
 	(pt 1264 824)
@@ -5043,11 +5021,6 @@ applicable agreement for further details.
 	(pt 1264 1496)
 )
 (connector
-	(text "CLK33M" (rect 346 288 390 299)(font "Arial" ))
-	(pt 336 304)
-	(pt 400 304)
-)
-(connector
 	(text "CLK25M" (rect 1202 608 1246 619)(font "Arial" ))
 	(pt 1192 624)
 	(pt 1264 624)
@@ -5663,11 +5636,6 @@ applicable agreement for further details.
 	(pt 1264 568)
 )
 (connector
-	(text "CLK33M" (rect 1202 584 1246 595)(font "Arial" ))
-	(pt 1264 600)
-	(pt 1192 600)
-)
-(connector
 	(text "CLK500k" (rect 802 232 849 243)(font "Arial" ))
 	(pt 768 248)
 	(pt 864 248)
@@ -5733,11 +5701,6 @@ applicable agreement for further details.
 	(text "MAIN_CLK" (rect 1162 3008 1219 3019)(font "Arial" ))
 	(pt 1152 3024)
 	(pt 1264 3024)
-)
-(connector
-	(text "CLK33M" (rect 1210 2984 1254 2995)(font "Arial" ))
-	(pt 1200 3000)
-	(pt 1264 3000)
 )
 (connector
 	(text "nFB_WR" (rect 1170 3056 1216 3067)(font "Arial" ))
@@ -5830,6 +5793,26 @@ applicable agreement for further details.
 	(text "nFB_CS3" (rect 1170 3128 1219 3139)(font "Arial" ))
 	(pt 1264 3144)
 	(pt 1160 3144)
+)
+(connector
+	(text "MAIN_CLK" (rect 346 288 403 299)(font "Arial" ))
+	(pt 336 304)
+	(pt 400 304)
+)
+(connector
+	(text "MAIN_CLK" (rect 1202 584 1259 595)(font "Arial" ))
+	(pt 1264 600)
+	(pt 1192 600)
+)
+(connector
+	(text "MAIN_CLK" (rect 1210 760 1267 771)(font "Arial" ))
+	(pt 1200 776)
+	(pt 1264 776)
+)
+(connector
+	(text "MAIN_CLK" (rect 1210 2984 1267 2995)(font "Arial" ))
+	(pt 1200 3000)
+	(pt 1264 3000)
 )
 (junction (pt 2504 760))
 (junction (pt 400 248))
