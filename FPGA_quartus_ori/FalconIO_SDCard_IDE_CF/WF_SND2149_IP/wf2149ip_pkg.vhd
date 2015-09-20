@@ -64,7 +64,7 @@ type BUSCYCLES is (INACTIVE, R_READ, R_WRITE, ADDRESS);
 component WF2149IP_WAVE
 	port(
 		RESETn		: in bit;
-		SYS_CLK		: in bit;
+		SYS_CLK		: in std_logic;
 
 		WAV_STRB	: in bit;
 

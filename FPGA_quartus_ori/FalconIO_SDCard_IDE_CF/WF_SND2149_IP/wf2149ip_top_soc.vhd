@@ -76,129 +76,130 @@
 --   Minor changes.
 --
 
-library ieee;
-use ieee.std_logic_1164.all;
-use work.wf2149ip_pkg.all;
+LIBRARY ieee;
+    USE ieee.std_logic_1164.ALL;
+    USE work.wf2149ip_pkg.ALL;
 
-entity WF2149IP_TOP_SOC is
-	port(
+ENTITY WF2149IP_TOP_SOC IS
+	PORT(
 		
-		SYS_CLK		: in bit; -- Read the inforation in the header!
-		RESETn   	: in bit;
+		SYS_CLK		: IN std_logic; -- Read the inforation in the header!
+		RESETn   	: IN bit;
 
-		WAV_CLK		: in bit; -- Read the inforation in the header!
-		SELn		: in bit;
+		WAV_CLK		: IN bit; -- Read the inforation in the header!
+		SELn		: IN bit;
 		
-		BDIR		: in bit;
-		BC2, BC1	: in bit;
+		BDIR		: IN bit;
+		BC2, BC1	: IN bit;
 
-		A9n, A8		: in bit;
-		DA_IN		: in std_logic_vector(7 downto 0);
-		DA_OUT		: out std_logic_vector(7 downto 0);
-		DA_EN		: out bit;
+		A9n, A8		: IN bit;
+		DA_IN		: IN std_logic_vector(7 DOWNTO 0);
+		DA_OUT		: OUT std_logic_vector(7 DOWNTO 0);
+		DA_EN		: OUT bit;
 		
-		IO_A_IN		: in bit_vector(7 downto 0);
-		IO_A_OUT	: out bit_vector(7 downto 0);
-		IO_A_EN		: out bit;
-		IO_B_IN		: in bit_vector(7 downto 0);
-		IO_B_OUT	: out bit_vector(7 downto 0);
-		IO_B_EN		: out bit;
+		IO_A_IN		: IN bit_vector(7 DOWNTO 0);
+		IO_A_OUT	: OUT bit_vector(7 DOWNTO 0);
+		IO_A_EN		: OUT bit;
+		IO_B_IN		: IN bit_vector(7 DOWNTO 0);
+		IO_B_OUT	: OUT bit_vector(7 DOWNTO 0);
+		IO_B_EN		: OUT bit;
 
-		OUT_A		: out bit; -- Analog (PWM) outputs.
-		OUT_B		: out bit;
-		OUT_C		: out bit
+		OUT_A		: OUT bit; -- Analog (PWM) outputs.
+		OUT_B		: OUT bit;
+		OUT_C		: OUT bit
 	);
-end WF2149IP_TOP_SOC;
+END WF2149IP_TOP_SOC;
 
-architecture STRUCTURE of WF2149IP_TOP_SOC is
-signal BUSCYCLE		: BUSCYCLES;
-signal DATA_OUT_I	: std_logic_vector(7 downto 0);
-signal DATA_EN_I	: bit;
-signal WAV_STRB		: bit;
-signal ADR_I		: bit_vector(3 downto 0);
-signal CTRL_REG		: bit_vector(7 downto 0);
-signal PORT_A		: bit_vector(7 downto 0);
-signal PORT_B		: bit_vector(7 downto 0);
-begin
-	P_WAVSTRB: process(RESETn, SYS_CLK)
-	variable LOCK	: boolean;
-	variable TMP	: bit;
-	begin
-		if RESETn = '0' then
+ARCHITECTURE rtl OF WF2149IP_TOP_SOC IS
+    SIGNAL BUSCYCLE		: BUSCYCLES;
+    SIGNAL DATA_OUT_I	: std_logic_vector(7 DOWNTO 0);
+    SIGNAL DATA_EN_I	: bit;
+    SIGNAL WAV_STRB		: bit;
+    SIGNAL ADR_I		: bit_vector(3 DOWNTO 0);
+    SIGNAL CTRL_REG		: bit_vector(7 DOWNTO 0);
+    SIGNAL PORT_A		: bit_vector(7 DOWNTO 0);
+    SIGNAL PORT_B		: bit_vector(7 DOWNTO 0);
+BEGIN
+	P_WAVSTRB: PROCESS(RESETn, SYS_CLK)
+        VARIABLE LOCK	: boolean;
+        VARIABLE TMP	: bit;
+	BEGIN
+		IF RESETn = '0' THEN
 			LOCK := false;
 			TMP := '0';
-		elsif SYS_CLK = '1' and SYS_CLK' event then
-			if WAV_CLK = '1' and LOCK = false then
+		ELSIF rising_edge(SYS_CLK) THEN
+			IF WAV_CLK = '1' and LOCK = false THEN
 				LOCK := true;
 				TMP := not TMP; -- Divider by 2.
-				case SELn is
-					when '1' 	=> WAV_STRB <= '1';
-					when others => WAV_STRB <= TMP;
-				end case;
-			elsif WAV_CLK = '0' then
+				
+                CASE SELn IS
+					WHEN '1' 	=> WAV_STRB <= '1';
+					WHEN OTHERS => WAV_STRB <= TMP;
+				END CASE;
+			ELSIF WAV_CLK = '0' THEN
 				LOCK := false;
 				WAV_STRB <= '0';
-			else
+			ELSE
 				WAV_STRB <= '0';
-			end if;
-		end if;
-	end process P_WAVSTRB;		
+			END IF;
+		END IF;
+	END PROCESS P_WAVSTRB;		
 
-	with BDIR & BC2 & BC1 select
-		BUSCYCLE <= INACTIVE	when "000" | "010" | "101",
-					ADDRESS 	when "001" | "100" | "111",
-					R_READ 		when "011",
-					R_WRITE 	when "110";
+	WITH BDIR & BC2 & BC1 SELECT
+		BUSCYCLE <= INACTIVE	WHEN "000" | "010" | "101",
+					ADDRESS 	WHEN "001" | "100" | "111",
+					R_READ 		WHEN "011",
+					R_WRITE 	WHEN "110";
 
-	ADDRESSLATCH: process(RESETn, SYS_CLK)
+	ADDRESSLATCH: PROCESS(RESETn, SYS_CLK)
 	-- This process is responsible to store the desired register
 	-- address. The default (after reset) is channel A fine tone 
 	-- adjustment.
-	begin
-		if RESETn = '0' then
-			ADR_I <= (others => '0');
-        elsif SYS_CLK = '1' and SYS_CLK' event then
-			if BUSCYCLE = ADDRESS and A9n = '0' and A8 = '1' and DA_IN(7 downto 4) = x"0" then
-				ADR_I <= To_BitVector(DA_IN(3 downto 0));
-			end if;
-		end if;
-	end process ADDRESSLATCH;	
+	BEGIN
+		IF RESETn = '0' THEN
+			ADR_I <= (OTHERS => '0');
+        ELSIF rising_edge(SYS_CLK) THEN
+			IF BUSCYCLE = ADDRESS AND A9n = '0' AND A8 = '1' AND DA_IN(7 DOWNTO 4) = x"0" THEN
+				ADR_I <= To_BitVector(DA_IN(3 DOWNTO 0));
+			END IF;
+		END IF;
+	END PROCESS ADDRESSLATCH;	
 
-	P_CTRL_REG: process(RESETn, SYS_CLK)
+	P_CTRL_REG: PROCESS(RESETn, SYS_CLK)
 	-- THIS is the Control register for the mixer and for the I/O ports.
-	begin
-		if RESETn = '0' then
+	BEGIN
+		IF RESETn = '0' THEN
 			CTRL_REG <= x"00";
-		elsif SYS_CLK = '1' and SYS_CLK' event then
-			if BUSCYCLE = R_WRITE and ADR_I = x"7" then
+		ELSIF rising_edge(SYS_CLK) THEN
+			IF BUSCYCLE = R_WRITE AND ADR_I = x"7" THEN
 				CTRL_REG <= To_BitVector(DA_IN);
-			end if;
-		end if;
-	end process P_CTRL_REG;
+			END IF;
+		END IF;
+	END PROCESS P_CTRL_REG;
 	
-	DIG_PORTS: process(RESETn, SYS_CLK)
-	begin
-		if RESETn = '0' then
+	DIG_PORTS: PROCESS(RESETn, SYS_CLK)
+	BEGIN
+		IF RESETn = '0' THEN
 			PORT_A <= x"00";
 			PORT_B <= x"00";
-		elsif SYS_CLK = '1' and SYS_CLK' event then
-			if BUSCYCLE = R_WRITE and ADR_I = x"E" then
+		ELSIF rising_edge(SYS_CLK) THEN
+			IF BUSCYCLE = R_WRITE AND ADR_I = x"E" THEN
 				PORT_A <= To_BitVector(DA_IN);
-			elsif BUSCYCLE = R_WRITE and ADR_I = x"F" then
+			ELSIF BUSCYCLE = R_WRITE and ADR_I = x"F" THEN
 				PORT_B <= To_BitVector(DA_IN);
-			end if;
-		end if;	
-	end process DIG_PORTS;
+			END IF;
+		END IF;	
+	END PROCESS DIG_PORTS;
 	-- Set port direction to input or to output:
-	IO_A_EN	<= '1' when CTRL_REG(6) = '1' else '0';
-	IO_B_EN <= '1' when CTRL_REG(7) = '1' else '0';
+	IO_A_EN	<= '1' WHEN CTRL_REG(6) = '1' ELSE '0';
+	IO_B_EN <= '1' WHEN CTRL_REG(7) = '1' ELSE '0';
 	IO_A_OUT <= PORT_A;
 	IO_B_OUT <= PORT_B;
 
 	I_PSG_WAVE: WF2149IP_WAVE
-		port map(
+		PORT MAP(
 			RESETn		=> RESETn,
-			SYS_CLK	=> SYS_CLK,
+			SYS_CLK	    => SYS_CLK,
 
 			WAV_STRB	=> WAV_STRB,
 
@@ -208,7 +209,7 @@ begin
 			DATA_EN		=> DATA_EN_I,
 			
 			BUSCYCLE	=> BUSCYCLE,
-			CTRL_REG	=> CTRL_REG(5 downto 0),
+			CTRL_REG	=> CTRL_REG(5 DOWNTO 0),
 						
 			OUT_A		=> OUT_A,
 			OUT_B		=> OUT_B,
@@ -216,14 +217,14 @@ begin
 		);
 
 	-- Read the ports and registers:
-	DA_EN <= 	'1' when DATA_EN_I = '1' else
-				'1' when BUSCYCLE = R_READ and ADR_I = x"7" else
-				'1' when BUSCYCLE = R_READ and ADR_I = x"E" else
-				'1' when BUSCYCLE = R_READ and ADR_I = x"F" else '0';
+	DA_EN <= 	'1' WHEN DATA_EN_I = '1' ELSE
+				'1' WHEN BUSCYCLE = R_READ and ADR_I = x"7" ELSE
+				'1' WHEN BUSCYCLE = R_READ and ADR_I = x"E" ELSE
+				'1' WHEN BUSCYCLE = R_READ and ADR_I = x"F" ELSE '0';
 				
-	DA_OUT <= 	DATA_OUT_I when DATA_EN_I = '1' else -- WAV stuff.
-				To_StdLogicVector(IO_A_IN) when BUSCYCLE = R_READ and ADR_I = x"E" else
-				To_StdLogicVector(IO_B_IN) when BUSCYCLE = R_READ and ADR_I = x"F" else
-				To_StdLogicVector(CTRL_REG) when BUSCYCLE = R_READ and ADR_I = x"7" else (others => '0');
+	DA_OUT <= 	DATA_OUT_I WHEN DATA_EN_I = '1' ELSE -- WAV stuff.
+				To_StdLogicVector(IO_A_IN) WHEN BUSCYCLE = R_READ and ADR_I = x"E" ELSE
+				To_StdLogicVector(IO_B_IN) WHEN BUSCYCLE = R_READ and ADR_I = x"F" ELSE
+				To_StdLogicVector(CTRL_REG) WHEN BUSCYCLE = R_READ and ADR_I = x"7" ELSE (OTHERS => '0');
 
-end STRUCTURE;
+END rtl;
