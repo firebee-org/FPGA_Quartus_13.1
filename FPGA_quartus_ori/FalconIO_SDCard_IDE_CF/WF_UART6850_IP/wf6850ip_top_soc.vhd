@@ -60,8 +60,8 @@
 --
 
 library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+    use ieee.std_logic_1164.all;
+    use ieee.std_logic_unsigned.all;
 
 entity WF6850IP_TOP_SOC is
   port (
