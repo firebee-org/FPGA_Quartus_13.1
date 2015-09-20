@@ -61,6 +61,7 @@ derive_pll_clocks
 set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -rise_to [get_clocks {MAIN_CLK}]  0.100  
 set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -fall_to [get_clocks {MAIN_CLK}]  0.100  
 
+derive_clock_uncertainty
 
 #**************************************************************
 # Set Input Delay
