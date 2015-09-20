@@ -11,55 +11,55 @@ INCLUDE "lpm_bustri_BYT.inc";
 SUBDESIGN video_mod_mux_clutctr
 (
 	-- {{ALTERA_IO_BEGIN}} DO NOT REMOVE THIS LINE!
-	nRSTO : INPUT;
-	MAIN_CLK : INPUT;
-	nFB_CS1 : INPUT;
-	nFB_CS2 : INPUT;
-	nFB_CS3 : INPUT;
-	nFB_WR : INPUT;
-	nFB_OE : INPUT;
-	FB_SIZE0 : INPUT;
-	FB_SIZE1 : INPUT;
-	nFB_BURST : INPUT;
-	FB_ADR[31..0] : INPUT;
-	CLK33M : INPUT;
-	CLK25M : INPUT;
-	BLITTER_RUN : INPUT;
-	CLK_VIDEO : INPUT;
-	VR_D[8..0] : INPUT;
-	VR_BUSY : INPUT;
-	COLOR8 : OUTPUT;
-	ACP_CLUT_RD : OUTPUT;
-	COLOR1 : OUTPUT;
-	FALCON_CLUT_RDH : OUTPUT;
-	FALCON_CLUT_RDL : OUTPUT;
-	FALCON_CLUT_WR[3..0] : OUTPUT;
-	ST_CLUT_RD : OUTPUT;
-	ST_CLUT_WR[1..0] : OUTPUT;
-	CLUT_MUX_ADR[3..0] : OUTPUT;
-	HSYNC : OUTPUT;
-	VSYNC : OUTPUT;
-	nBLANK : OUTPUT;
-	nSYNC : OUTPUT;
-	nPD_VGA : OUTPUT;
-	FIFO_RDE : OUTPUT;
-	COLOR2 : OUTPUT;
-	COLOR4 : OUTPUT;
-	PIXEL_CLK : OUTPUT;
-	CLUT_OFF[3..0] : OUTPUT;
-	BLITTER_ON : OUTPUT;
-	VIDEO_RAM_CTR[15..0] : OUTPUT;
-	VIDEO_MOD_TA : OUTPUT;
-	CCR[23..0] : OUTPUT;
-	CCSEL[2..0] : OUTPUT;
-	ACP_CLUT_WR[3..0] : OUTPUT;
-	INTER_ZEI : OUTPUT;
-	DOP_FIFO_CLR : OUTPUT;
-	VIDEO_RECONFIG : OUTPUT;
-	VR_WR : OUTPUT;
-	VR_RD : OUTPUT;
-	CLR_FIFO : OUTPUT;
-	FB_AD[31..0] : BIDIR;
+	nRSTO                   : INPUT;
+	MAIN_CLK                : INPUT;
+	nFB_CS1                 : INPUT;
+	nFB_CS2                 : INPUT;
+	nFB_CS3                 : INPUT;
+	nFB_WR                  : INPUT;
+	nFB_OE                  : INPUT;
+	FB_SIZE0                : INPUT;
+	FB_SIZE1                : INPUT;
+	nFB_BURST               : INPUT;
+	FB_ADR[31..0]           : INPUT;
+	CLK33M                  : INPUT;
+	CLK25M                  : INPUT;
+	BLITTER_RUN             : INPUT;
+	CLK_VIDEO               : INPUT;
+	VR_D[8..0]              : INPUT;
+	VR_BUSY                 : INPUT;
+	COLOR8                  : OUTPUT;
+	ACP_CLUT_RD             : OUTPUT;
+	COLOR1                  : OUTPUT;
+	FALCON_CLUT_RDH         : OUTPUT;
+	FALCON_CLUT_RDL         : OUTPUT;
+	FALCON_CLUT_WR[3..0]    : OUTPUT;
+	ST_CLUT_RD              : OUTPUT;
+	ST_CLUT_WR[1..0]        : OUTPUT;
+	CLUT_MUX_ADR[3..0]      : OUTPUT;
+	HSYNC                   : OUTPUT;
+	VSYNC                   : OUTPUT;
+	nBLANK                  : OUTPUT;
+	nSYNC                   : OUTPUT;
+	nPD_VGA                 : OUTPUT;
+	FIFO_RDE                : OUTPUT;
+	COLOR2                  : OUTPUT;
+	COLOR4                  : OUTPUT;
+	PIXEL_CLK               : OUTPUT;
+	CLUT_OFF[3..0]          : OUTPUT;
+	BLITTER_ON              : OUTPUT;
+	VIDEO_RAM_CTR[15..0]    : OUTPUT;
+	VIDEO_MOD_TA            : OUTPUT;
+	CCR[23..0]              : OUTPUT;
+	CCSEL[2..0]             : OUTPUT;
+	ACP_CLUT_WR[3..0]       : OUTPUT;
+	INTER_ZEI               : OUTPUT;
+	DOP_FIFO_CLR            : OUTPUT;
+	VIDEO_RECONFIG          : OUTPUT;
+	VR_WR                   : OUTPUT;
+	VR_RD                   : OUTPUT;
+	CLR_FIFO                : OUTPUT;
+	FB_AD[31..0]            : BIDIR;
 	-- {{ALTERA_IO_END}} DO NOT REMOVE THIS LINE!
 )
 
@@ -195,23 +195,23 @@ VARIABLE
 
 BEGIN
     -- BYT SELECT 32 BIT
-	FB_B0 = FB_ADR[1..0]==0;								-- ADR==0
-	FB_B1 = FB_ADR[1..0]==1									-- ADR==1
+	FB_B0 = FB_ADR[1..0] == 0;								-- ADR==0
+	FB_B1 = FB_ADR[1..0] == 1								-- ADR==1
 		  # FB_SIZE1 & !FB_SIZE0 & !FB_ADR1					-- HIGH WORD
 		  # FB_SIZE1 & FB_SIZE0 # !FB_SIZE1 & !FB_SIZE0; 	-- LONG UND LINE
-	FB_B2 = FB_ADR[1..0]==2									-- ADR==2
+	FB_B2 = FB_ADR[1..0] == 2								-- ADR==2
 		  # FB_SIZE1 & FB_SIZE0 # !FB_SIZE1 & !FB_SIZE0; 	-- LONG UND LINE
-	FB_B3 = FB_ADR[1..0]==3									-- ADR==3
+	FB_B3 = FB_ADR[1..0] == 3								-- ADR==3
 		  # FB_SIZE1 & !FB_SIZE0 &  FB_ADR1 				-- LOW WORD
 		  # FB_SIZE1 & FB_SIZE0 # !FB_SIZE1 & !FB_SIZE0; 	-- LONG UND LINE
 
     -- BYT SELECT 16 BIT
-	FB_16B0 = FB_ADR[0]==0;									-- ADR==0
-	FB_16B1 = FB_ADR[0]==1									-- ADR==1
+	FB_16B0 = FB_ADR[0] == 0;								-- ADR==0
+	FB_16B1 = FB_ADR[0] == 1								-- ADR==1
 		    # !(!FB_SIZE1 & FB_SIZE0);						-- NOT BYT
 
     -- ACP CLUT --
-	ACP_CLUT_CS = !nFB_CS2 & FB_ADR[27..10]==H"0";						-- 0-3FF/1024
+	ACP_CLUT_CS = !nFB_CS2 & FB_ADR[27..10] == H"0";		-- 0-3FF/1024
 	ACP_CLUT_RD = ACP_CLUT_CS & !nFB_OE;
 	ACP_CLUT_WR[] = FB_B[] & ACP_CLUT_CS & !nFB_WR;
 	
@@ -220,7 +220,7 @@ BEGIN
 
     
     --FALCON CLUT --
-	FALCON_CLUT_CS  = !nFB_CS1 & FB_ADR[19..10]==H"3E6";				-- $F9800/$400
+	FALCON_CLUT_CS  = !nFB_CS1 & FB_ADR[19..10] == H"3E6";				-- $F9800/$400
 	FALCON_CLUT_RDH = FALCON_CLUT_CS & !nFB_OE & !FB_ADR1;				-- HIGH WORD
 	FALCON_CLUT_RDL = FALCON_CLUT_CS & !nFB_OE &  FB_ADR1;				-- LOW WORD
 	FALCON_CLUT_WR[1..0] = FB_16B[] & !FB_ADR1 & FALCON_CLUT_CS & !nFB_WR;
@@ -228,25 +228,25 @@ BEGIN
 
     
     -- ST CLUT --
-	ST_CLUT_CS  = !nFB_CS1 & FB_ADR[19..5]==H"7C12";					-- $F8240/$20
+	ST_CLUT_CS  = !nFB_CS1 & FB_ADR[19..5] == H"7C12";					-- $F8240/$20
 	ST_CLUT_RD  = ST_CLUT_CS & !nFB_OE;
 	ST_CLUT_WR[] = FB_16B[] & ST_CLUT_CS & !nFB_WR;
 
     
     -- ST SHIFT MODE
 	ST_SHIFT_MODE[].CLK = MAIN_CLK;
-	ST_SHIFT_MODE_CS = !nFB_CS1 & FB_ADR[19..1]==H"7C130";				-- $F8260/2
+	ST_SHIFT_MODE_CS = !nFB_CS1 & FB_ADR[19..1] == H"7C130";			-- $F8260/2
 	ST_SHIFT_MODE[] = FB_AD[25..24];
 	ST_SHIFT_MODE[].ENA = ST_SHIFT_MODE_CS & !nFB_WR & FB_B0;
 	
-    COLOR1 = ST_SHIFT_MODE[]==B"10" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- MONO
-	COLOR2 = ST_SHIFT_MODE[]==B"01" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- 4 FARBEN
-	COLOR4 = ST_SHIFT_MODE[]==B"00" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- 16 FARBEN
+    COLOR1 = ST_SHIFT_MODE[] == B"10" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- MONO
+	COLOR2 = ST_SHIFT_MODE[] == B"01" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- 4 FARBEN
+	COLOR4 = ST_SHIFT_MODE[] == B"00" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- 16 FARBEN
 
     
     -- FALCON SHIFT MODE
 	FALCON_SHIFT_MODE[].CLK = MAIN_CLK;
-	FALCON_SHIFT_MODE_CS = !nFB_CS1 & FB_ADR[19..1]==H"7C133";			-- $F8266/2
+	FALCON_SHIFT_MODE_CS = !nFB_CS1 & FB_ADR[19..1] == H"7C133";			-- $F8266/2
 	FALCON_SHIFT_MODE[] = FB_AD[26..16];
 	FALCON_SHIFT_MODE[10..8].ENA = FALCON_SHIFT_MODE_CS & !nFB_WR & FB_B2;
 	FALCON_SHIFT_MODE[7..0].ENA  = FALCON_SHIFT_MODE_CS & !nFB_WR & FB_B3;
@@ -274,7 +274,7 @@ BEGIN
     --     25=RANDFARBE EINSCHALTEN,
     --     26=STANDARD ATARI SYNCS
 	ACP_VCTR[].CLK = MAIN_CLK;
-	ACP_VCTR_CS = !nFB_CS2 & FB_ADR[27..2]==H"100";						-- $400/4
+	ACP_VCTR_CS = !nFB_CS2 & FB_ADR[27..2] == H"100";						-- $400/4
 	ACP_VCTR[31..8] = FB_AD[31..8];
 	ACP_VCTR[5..0] = FB_AD[5..0];
 	ACP_VCTR[31..24].ENA = ACP_VCTR_CS & FB_B0 & !nFB_WR;

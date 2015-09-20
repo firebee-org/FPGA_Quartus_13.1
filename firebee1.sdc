@@ -19,7 +19,7 @@
 ## PROGRAM "Quartus II"
 ## VERSION "Version 13.1.4 Build 182 03/12/2014 SJ Web Edition"
 
-## DATE    "Sun Sep 20 14:58:25 2015"
+## DATE    "Sun Sep 20 18:14:49 2015"
 
 ##
 ## DEVICE  "EP3C40F484C6"
@@ -88,11 +88,14 @@ set_false_path  -from  [get_clocks {MAIN_CLK}]  -to  [get_clocks {i_video_clock_
 set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}]  -to  [get_clocks {i_video_clock_pll|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}]  -to  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {MAIN_CLK}]
+set_false_path  -from  [get_clocks {i_video_clock_pll|altpll_component|auto_generated|pll1|clk[0]}]  -to  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}]
+set_false_path  -from  [get_clocks {i_video_clock_pll|altpll_component|auto_generated|pll1|clk[0]}]  -to  [get_clocks {MAIN_CLK}]
 set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_id9:dffpipe17|dffe18a*}]
 set_false_path -from [get_keepers {*delayed_wrptr_g*}] -to [get_keepers {*rs_dgwp|dffpipe_hd9:dffpipe12|dffe13a*}]
 set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_kd9:dffpipe15|dffe16a*}]
 set_false_path -from [get_keepers {*delayed_wrptr_g*}] -to [get_keepers {*rs_dgwp|dffpipe_jd9:dffpipe12|dffe13a*}]
 set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_re9:dffpipe19|dffe20a*}]
+set_false_path -from [get_keepers {Video:i_video|video_mod_mux_clutctr:i_video_mod_mux_clutctr|nBLANK}] -to [get_keepers {falconio_sdcard_ide_cf:i_falcon_io_sdcard_ide_cf|WF68901IP_TOP_SOC:I_MFP|WF68901IP_INTERRUPTS:I_INTERRUPTS|\EDGE_ENA:LOCK[3]}]
 
 
 #**************************************************************

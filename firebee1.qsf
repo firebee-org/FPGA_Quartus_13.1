@@ -742,4 +742,5 @@ set_global_assignment -name QIP_FILE lpm_bustri_BYT.qip
 set_global_assignment -name QIP_FILE lpm_bustri_WORD.qip
 set_global_assignment -name QIP_FILE altddio_out3.qip
 set_global_assignment -name SOURCE_FILE firebee1.fit.summary_alt
+
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
