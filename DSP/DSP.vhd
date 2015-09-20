@@ -21,12 +21,12 @@
 -- Created on Tue Sep 08 16:24:57 2009
 
 LIBRARY ieee;
-USE ieee.std_logic_1164.all;
+    USE ieee.std_logic_1164.all;
 
 
 --  Entity Declaration
 
-ENTITY DSP IS
+ENTITY dsp IS
 	-- {{ALTERA_IO_BEGIN}} DO NOT REMOVE THIS LINE!
 	PORT
 	(
@@ -55,12 +55,12 @@ ENTITY DSP IS
 	);
 	-- {{ALTERA_IO_END}} DO NOT REMOVE THIS LINE!
 	
-END DSP;
+END dsp;
 
 
 --  Architecture Body
 
-ARCHITECTURE DSP_architecture OF DSP IS
+ARCHITECTURE rtl OF DSP IS
 
 	
 BEGIN
@@ -76,4 +76,4 @@ BEGIN
 	FB_AD(31 downto 16) <= SRD(15 downto 0) when nFB_OE = '0' and nSRCS = '0' else "ZZZZZZZZZZZZZZZZ";
 	
 	
-END DSP_architecture;
+END rtl;
