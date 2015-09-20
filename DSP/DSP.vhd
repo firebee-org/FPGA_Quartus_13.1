@@ -1,18 +1,18 @@
--- WARNING: Do NOT edit the input and output ports in this file in a text
+-- WARNING: Do NOT edit the input AND output ports in this file in a text
 -- editor if you plan to continue editing the block that represents it in
 -- the Block Editor! File corruption is VERY likely to occur.
 
 -- Copyright (C) 1991-2008 Altera Corporation
 -- Your use of Altera Corporation's design tools, logic functions 
--- and other software and tools, and its AMPP partner logic 
--- functions, and any output files from any of the foregoing 
--- (including device programming or simulation files), and any 
+-- AND other software AND tools, AND its AMPP partner logic 
+-- functions, AND any output files from any of the foregoing 
+-- (including device programming or simulation files), AND any 
 -- associated documentation or information are expressly subject 
--- to the terms and conditions of the Altera Program License 
+-- to the terms AND conditions of the Altera Program License 
 -- Subscription Agreement, Altera MegaCore Function License 
 -- Agreement, or other applicable license agreement, including, 
 -- without limitation, that your use is for the sole purpose of 
--- programming logic devices manufactured by Altera and sold by 
+-- programming logic devices manufactured by Altera AND sold by 
 -- Altera or its authorized distributors.  Please refer to the 
 -- applicable agreement for further details.
 
@@ -30,28 +30,28 @@ ENTITY dsp IS
 	-- {{ALTERA_IO_BEGIN}} DO NOT REMOVE THIS LINE!
 	PORT
 	(
-		CLK33M : IN STD_LOGIC;
-		MAIN_CLK : IN STD_LOGIC;
-		nFB_OE : IN STD_LOGIC;
-		nFB_WR : IN STD_LOGIC;
-		nFB_CS1 : IN STD_LOGIC;
-		nFB_CS2 : IN STD_LOGIC;
-		FB_SIZE0 : IN STD_LOGIC;
-		FB_SIZE1 : IN STD_LOGIC;
-		nFB_BURST : IN STD_LOGIC;
-		FB_ADR : IN STD_LOGIC_VECTOR(31 downto 0);
-		nRSTO : IN STD_LOGIC;
-		nFB_CS3 : IN STD_LOGIC;
-		nSRCS : INOUT STD_LOGIC;
-		nSRBLE : OUT STD_LOGIC;
-		nSRBHE : OUT STD_LOGIC;
-		nSRWE : OUT STD_LOGIC;
-		nSROE : OUT STD_LOGIC;
-		DSP_INT : OUT STD_LOGIC;
-		DSP_TA : OUT STD_LOGIC;
-		FB_AD : INOUT STD_LOGIC_VECTOR(31 downto 0);
-		IO : INOUT STD_LOGIC_VECTOR(17 downto 0);
-		SRD : INOUT STD_LOGIC_VECTOR(15 downto 0)
+		CLK33M      : IN std_logic;
+		MAIN_CLK    : IN std_logic;
+		nFB_OE      : IN std_logic;
+		nFB_WR      : IN std_logic;
+		nFB_CS1     : IN std_logic;
+		nFB_CS2     : IN std_logic;
+		FB_SIZE0    : IN std_logic;
+		FB_SIZE1    : IN std_logic;
+		nFB_BURST   : IN std_logic;
+		FB_ADR      : IN std_logic_vector(31 DOWNTO 0);
+		nRSTO       : IN std_logic;
+		nFB_CS3     : IN std_logic;
+		nSRCS       : INOUT std_logic;
+		nSRBLE      : OUT std_logic;
+		nSRBHE      : OUT std_logic;
+		nSRWE       : OUT std_logic;
+		nSROE       : OUT std_logic;
+		DSP_INT     : OUT std_logic;
+		DSP_TA      : OUT std_logic;
+		FB_AD       : INOUT std_logic_vector(31 DOWNTO 0);
+		IO          : INOUT std_logic_vector(17 DOWNTO 0);
+		SRD         : INOUT std_logic_vector(15 DOWNTO 0)
 	);
 	-- {{ALTERA_IO_END}} DO NOT REMOVE THIS LINE!
 	
@@ -60,20 +60,18 @@ END dsp;
 
 --  Architecture Body
 
-ARCHITECTURE rtl OF DSP IS
+ARCHITECTURE rtl OF dsp IS
 
 	
 BEGIN
-	nSRCS  <= '0' when nFB_CS2 = '0' and FB_ADR(27 downto 24) = x"4" else '1';	--nFB_CS3;
-	nSRBHE <= '0' when FB_ADR(0 downto 0) = "0" else '1';
-	nSRBLE <= '1' when FB_ADR(0 downto 0) = "0" and FB_SIZE1 = '0' and FB_SIZE0 = '1' else '0'; 
-	nSRWE <= '0' when nFB_WR = '0' and nSRCS = '0' and MAIN_CLK = '0' else '1';
-	nSROE <= '0' when nFB_OE = '0' and nSRCS = '0' else '1';
+	nSRCS  <= '0' WHEN nFB_CS2 = '0' AND FB_ADR(27 DOWNTO 24) = x"4" ELSE '1';	--nFB_CS3;
+	nSRBHE <= '0' WHEN FB_ADR(0 DOWNTO 0) = "0" ELSE '1';
+	nSRBLE <= '1' WHEN FB_ADR(0 DOWNTO 0) = "0" AND FB_SIZE1 = '0' AND FB_SIZE0 = '1' ELSE '0'; 
+	nSRWE <= '0' WHEN nFB_WR = '0' AND nSRCS = '0' AND MAIN_CLK = '0' ELSE '1';
+	nSROE <= '0' WHEN nFB_OE = '0' AND nSRCS = '0' ELSE '1';
 	DSP_INT <= '0';
 	DSP_TA <= '0';
-	IO(17 downto 0) <= FB_ADR(18 downto 1);
-	SRD(15 downto 0) <= FB_AD(31 downto 16) when nFB_WR = '0' and nSRCS = '0' else "ZZZZZZZZZZZZZZZZ";
-	FB_AD(31 downto 16) <= SRD(15 downto 0) when nFB_OE = '0' and nSRCS = '0' else "ZZZZZZZZZZZZZZZZ";
-	
-	
+	IO(17 DOWNTO 0) <= FB_ADR(18 DOWNTO 1);
+	SRD(15 DOWNTO 0) <= FB_AD(31 DOWNTO 16) WHEN nFB_WR = '0' AND nSRCS = '0' ELSE "ZZZZZZZZZZZZZZZZ";
+	FB_AD(31 DOWNTO 16) <= SRD(15 DOWNTO 0) WHEN nFB_OE = '0' AND nSRCS = '0' ELSE "ZZZZZZZZZZZZZZZZ";
 END rtl;
