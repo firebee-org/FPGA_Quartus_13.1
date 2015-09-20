@@ -26,7 +26,7 @@ USE ieee.std_logic_1164.all;
 
 --  Entity Declaration
 
-ENTITY BLITTER IS
+ENTITY blitter IS
 	-- {{ALTERA_IO_BEGIN}} DO NOT REMOVE THIS LINE!
 	PORT
 	(
@@ -61,7 +61,7 @@ END BLITTER;
 
 --  Architecture Body
 
-ARCHITECTURE BLITTER_architecture OF BLITTER IS
+ARCHITECTURE BLITTER_architecture OF blitter IS
 
 	
 BEGIN
