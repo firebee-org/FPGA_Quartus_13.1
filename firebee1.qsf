@@ -374,9 +374,9 @@ set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING OFF
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING OFF
-set_global_assignment -name PHYSICAL_SYNTHESIS_EFFORT FAST
+set_global_assignment -name PHYSICAL_SYNTHESIS_EFFORT NORMAL
 set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_MAP_LOGIC_TO_MEMORY_FOR_AREA OFF
+set_global_assignment -name PHYSICAL_SYNTHESIS_MAP_LOGIC_TO_MEMORY_FOR_AREA ON
 set_instance_assignment -name IO_STANDARD "2.5 V" -to DDR_CLK
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VA
 set_instance_assignment -name IO_STANDARD "2.5 V" -to VD
@@ -740,7 +740,6 @@ set_global_assignment -name QIP_FILE lpm_counter0.qip
 set_global_assignment -name QIP_FILE lpm_bustri_LONG.qip
 set_global_assignment -name QIP_FILE lpm_bustri_BYT.qip
 set_global_assignment -name QIP_FILE lpm_bustri_WORD.qip
-set_global_assignment -name VECTOR_WAVEFORM_FILE firebee1.vwf
 set_global_assignment -name QIP_FILE altddio_out3.qip
 set_global_assignment -name SOURCE_FILE firebee1.fit.summary_alt
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
