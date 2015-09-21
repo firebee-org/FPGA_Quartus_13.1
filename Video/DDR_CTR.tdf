@@ -58,9 +58,9 @@ SUBDESIGN DDR_CTR
 )
 
 VARIABLE
-	FB_REGDDR				:MACHINE WITH STATES(FR_WAIT,FR_S0,FR_S1,FR_S2,FR_S3);	
-	DDR_SM					:MACHINE WITH STATES(DS_T1,DS_T2A,DS_T2B,DS_T3,DS_N5,DS_N6, DS_N7, DS_N8,					-- START (NORMAL 8 CYCLES TOTAL = 60ns)
-													   DS_C2,DS_C3,DS_C4, DS_C5, DS_C6, DS_C7, 		 					-- CONFIG 
+	FB_REGDDR				:MACHINE WITH STATES(FR_WAIT, FR_S0, FR_S1, FR_S2, FR_S3);	
+	DDR_SM					:MACHINE WITH STATES(DS_T1, DS_T2A, DS_T2B, DS_T3, DS_N5, DS_N6, DS_N7, DS_N8,				-- START (NORMAL 8 CYCLES TOTAL = 60ns)
+													    DS_C2, DS_C3, DS_C4, DS_C5, DS_C6, DS_C7, 	 					-- CONFIG 
 												                   DS_T4R,DS_T5R,										-- READ CPU UND BLITTER,  
 												                   DS_T4W,DS_T5W,DS_T6W,DS_T7W,DS_T8W,DS_T9W,		 	-- WRITE CPU UND BLITTER
 												                   DS_T4F,DS_T5F,DS_T6F,DS_T7F,DS_T8F,DS_T9F,DS_T10F, 	-- READ FIFO
@@ -129,7 +129,8 @@ VARIABLE
 	
 BEGIN
 	LINE =  FB_SIZE0 &  FB_SIZE1;
--- BYT SELECT
+
+    -- BYT SELECT
 	FB_B0 = FB_ADR[1..0]==0 								-- ADR==0
 		  # FB_SIZE1 & FB_SIZE0 # !FB_SIZE1 & !FB_SIZE0; 	-- LONG UND LINE
 	FB_B1 = FB_ADR[1..0]==1									-- ADR==1
@@ -140,7 +141,8 @@ BEGIN
 	FB_B3 = FB_ADR[1..0]==3									-- ADR==3
 		  # FB_SIZE1 & !FB_SIZE0 &  FB_ADR1 				-- LOW WORD
 		  # FB_SIZE1 & FB_SIZE0 # !FB_SIZE1 & !FB_SIZE0; 	-- LONG UND LINE
--- CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR)  --------------------------------------------------
+
+    -- CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR)  --------------------------------------------------
 	FB_REGDDR.CLK = MAIN_CLK;
 	CASE FB_REGDDR IS
 		WHEN FR_WAIT => 
@@ -198,7 +200,8 @@ BEGIN
 				FB_REGDDR = FR_WAIT;
 			END IF;
 	END CASE;
--- DDR STEUERUNG -----------------------------------------------------
+
+    -- DDR STEUERUNG -----------------------------------------------------
 -- VIDEO RAM CONTROL REGISTER (IST IN VIDEO_MUX_CTR) $F0000400: BIT 0: VCKE; 1: !nVCS ;2:REFRESH ON , (0=FIFO UND CNT CLEAR); 3: CONFIG; 8: FIFO_ACTIVE; 
 	VCKE = VIDEO_RAM_CTR0;
 	nVCS = !VIDEO_RAM_CTR1;
@@ -220,12 +223,14 @@ BEGIN
 	FIFO_AC.CLK = DDRCLK0;
 	BLITTER_AC.CLK = DDRCLK0;
 	DDRWR_D_SEL1 = BLITTER_AC;
--- SELECT LOGIC
+
+    -- SELECT LOGIC
 	DDR_SEL  = FB_ALE & FB_AD[31..30]==B"01";
 	DDR_CS.CLK = MAIN_CLK;
 	DDR_CS.ENA = FB_ALE;
 	DDR_CS	 = DDR_SEL;
--- WENN READ ODER WRITE B,W,L DDR SOFORT ANFORDERN, BEI WRITE LINE SP�TER
+
+    -- WENN READ ODER WRITE B,W,L DDR SOFORT ANFORDERN, BEI WRITE LINE SP�TER
 	CPU_SIG = DDR_SEL & (nFB_WR # !LINE)  & !DDR_CONFIG					-- NICHT LINE ODER READ SOFORT LOS WENN NICHT CONFIG
 			# DDR_SEL          			  &  DDR_CONFIG					-- CONFIG SOFORT LOS
 			# FB_REGDDR==FR_S1 & !nFB_WR; 								-- LINE WRITE SP�TER
@@ -241,14 +246,16 @@ BEGIN
 	MCS1 = MCS0;		
 	CPU_DDR_SYNC.CLK = DDRCLK0;
 	CPU_DDR_SYNC = MCS[]==2 & VCKE & !nVCS;				-- NUR 1 WENN EIN
-	---------------------------------------------------
+	
+    ---------------------------------------------------
 	VA_S[].CLK = DDRCLK0;
 	BA_S[].CLK = DDRCLK0;
 	VA[] =  VA_S[];
 	BA[] =  BA_S[];
 	VA_P[].CLK = DDRCLK0;
 	BA_P[].CLK = DDRCLK0;
--- DDR STATE MACHINE  -----------------------------------------------
+
+    -- DDR STATE MACHINE  -----------------------------------------------
 	DDR_SM.CLK = DDRCLK0;
 	CASE DDR_SM IS
 		WHEN DS_T1 =>
@@ -337,7 +344,8 @@ BEGIN
 					END IF;
 				END IF;
 			END IF;
--- READ			
+
+        -- READ			
 		WHEN DS_T4R =>
 			CPU_AC = CPU_AC;
 			BLITTER_AC = BLITTER_AC;
@@ -358,7 +366,8 @@ BEGIN
 				VA_S[10] = VCC;										-- ALLE PAGES SCHLIESSEN  
 				DDR_SM = DS_CB6;
 			END IF;
--- WRITE			
+
+        -- WRITE			
 		WHEN DS_T4W =>
 			CPU_AC = CPU_AC;
 			BLITTER_AC = BLITTER_AC;
@@ -408,7 +417,8 @@ BEGIN
 				VA_S[10] = VCC;										-- ALLE PAGES SCHLIESSEN  
 				DDR_SM = DS_CB6;
 			END IF;
--- FIFO READ 
+
+        -- FIFO READ 
 		WHEN DS_T4F =>
 			VCAS = VCC;															
 			SR_FIFO_WRE = VCC;										-- DATEN WRITE FIFO
@@ -498,7 +508,8 @@ BEGIN
 				DDR_SM = DS_T7F;
 			END IF;	
 
--- CONFIG CYCLUS
+
+        -- CONFIG CYCLUS
 		WHEN DS_C2 =>
 			DDR_SM = DS_C3;
 		WHEN DS_C3 =>
@@ -521,7 +532,8 @@ BEGIN
 			VCAS = FB_AD17 & !nFB_WR & !FB_SIZE0 & !FB_SIZE1;		-- NUR BEI LONG WRITE
 			VWE	 = FB_AD16 & !nFB_WR & !FB_SIZE0 & !FB_SIZE1;		-- NUR BEI LONG WRITE
 			DDR_SM = DS_N8;
--- CLOSE FIFO BANK
+
+        -- CLOSE FIFO BANK
 		WHEN DS_CB6 =>
 			FIFO_BANK_NOT_OK = VCC;						-- AUF NOT OK 
 			VRAS = VCC;									-- B�NKE SCHLIESSEN
@@ -532,7 +544,8 @@ BEGIN
 			VRAS = VCC;									-- B�NKE SCHLIESSEN
 			VWE = VCC;
 			DDR_SM = DS_T1;
--- REFRESH 70NS = 10 ZYCLEN
+
+        -- REFRESH 70NS = 10 ZYCLEN
 		WHEN DS_R2 =>
 			IF DDR_REFRESH_SIG[]==9 THEN				-- EIN CYCLUS VORLAUF UM BANKS ZU SCHLIESSEN
 				VRAS = VCC;								-- ALLE BANKS SCHLIESSEN
@@ -553,7 +566,8 @@ BEGIN
 			DDR_SM = DS_R6;
 		WHEN DS_R6 =>
 			DDR_SM = DS_N5;
--- LEERSCHLAUFE			
+
+        -- LEERSCHLAUFE			
 		WHEN DS_N5 =>
 			DDR_SM = DS_N6;
 		WHEN DS_N6 =>
