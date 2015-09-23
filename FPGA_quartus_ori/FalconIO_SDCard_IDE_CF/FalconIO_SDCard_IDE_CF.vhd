@@ -150,21 +150,21 @@ END falconio_sdcard_ide_cf;
 
 ARCHITECTURE rtl OF falconio_sdcard_ide_cf IS
     -- system
-    SIGNAL SYS_CLK					: std_logic;
+    SIGNAL SYS_CLK			        : std_logic;
     SIGNAL RESETn					: std_logic;
     SIGNAL FB_B0					: std_logic;	-- UPPER BYT BEI 16BIT BUS
     SIGNAL FB_B1					: std_logic;	-- LOWER BYT BEI 16BIT BUS
     SIGNAL BYT						: std_logic;	-- WENN BYT -> 1
-    SIGNAL LONG						: std_logic;	-- WENN  -> 1
+    SIGNAL LONG					    : std_logic;	-- WENN  -> 1
     -- KEYBOARD MIDI
     SIGNAL ACIA_CS_I				: std_logic;
-    SIGNAL IRQ_KEYBDn				: std_logic;
+    SIGNAL IRQ_KEYBDn			    : std_logic;
     SIGNAL IRQ_MIDIn				: std_logic;
-    SIGNAL KEYB_RxD					: std_logic;
-    SIGNAL AMKB_REG					: std_logic_vector(4 DOWNTO 0);
-    SIGNAL MIDI_OUT					: std_logic;
-    SIGNAL DATA_OUT_ACIA_I			: std_logic_vector(7 DOWNTO 0);
-    SIGNAL DATA_OUT_ACIA_II			: std_logic_vector(7 DOWNTO 0);
+    SIGNAL KEYB_RxD				    : std_logic;
+    SIGNAL AMKB_REG				    : std_logic_vector(4 DOWNTO 0);
+    SIGNAL MIDI_OUT				    : std_logic;
+    SIGNAL DATA_OUT_ACIA_I		    : std_logic_vector(7 DOWNTO 0);
+    SIGNAL DATA_OUT_ACIA_II	        : std_logic_vector(7 DOWNTO 0);
     -- MFP
     SIGNAL MFP_CS					: std_logic;
     SIGNAL MFP_INTACK				: std_logic;
@@ -370,7 +370,7 @@ BEGIN
     -- ACSI, SCSI UND FLOPPY WD1772 
     -------------------------------------------------------------------------------------------------------------------------------------------
     -- daten read fifo
-	RDF: dcfifo0
+	i_data_read_fifo: dcfifo0
 		PORT MAP(
 			aclr				=> CLR_FIFO,
 			data				=> RDF_DIN,
@@ -390,7 +390,7 @@ BEGIN
     RDF_DIN <= CD_OUT_FDC WHEN DMA_MODUS(7) = '1' ELSE SCSI_DOUT;
     
     -- daten write fifo
-	WRF: dcfifo1
+	i_data_write_fifo: dcfifo1
 		PORT MAP(
 			aclr				=> CLR_FIFO,
 			data				=> FB_AD(7 DOWNTO 0) & FB_AD(15 DOWNTO 8) & FB_AD(23 DOWNTO 16) & FB_AD(31 DOWNTO 24),
@@ -527,7 +527,7 @@ BEGIN
 		END CASE;
 	END PROCESS FCF_DECODER;
 
-	I_FDC: WF1772IP_TOP_SOC
+	i_fdc : WF1772IP_TOP_SOC
 		PORT MAP(
             CLK					=> FDC_CLK,
 			RESETn				=> nRSTO,
@@ -731,7 +731,7 @@ BEGIN
     CLR_FIFO <= DMA_MODUS(8) XOR DMA_DIR_OLD;	
 
     -- SCSI ----------------------------------------------------------------------------------
-    I_SCSI: WF5380_TOP_SOC
+    i_scsi : WF5380_TOP_SOC
         PORT MAP(
             CLK					=> FDC_CLK,
             RESETn				=> nRSTO,
@@ -810,7 +810,7 @@ BEGIN
     ----------------------------------------------------------------------------
     -- ACIA KEYBOARD
     ----------------------------------------------------------------------------
-	I_ACIA_KEYBOARD: WF6850IP_TOP_SOC
+	i_acia_keyboard : WF6850IP_TOP_SOC
 	  PORT MAP(
 			CLK					=> MAIN_CLK,
 			RESETn				=> nRSTO,
@@ -867,7 +867,7 @@ BEGIN
     ----------------------------------------------------------------------------
     -- ACIA MIDI
     ----------------------------------------------------------------------------
-	I_ACIA_MIDI: WF6850IP_TOP_SOC
+	i_acia_midi : WF6850IP_TOP_SOC
 		PORT MAP(
 			CLK					=> MAIN_CLK,
 			RESETn				=> nRSTO,
@@ -901,7 +901,7 @@ BEGIN
     ----------------------------------------------------------------------------
     -- MFP
     ----------------------------------------------------------------------------
-	I_MFP: WF68901IP_TOP_SOC
+	i_mfp : WF68901IP_TOP_SOC
 		PORT MAP(  
 			-- System control:
 			CLK					=> MAIN_CLK,
@@ -978,7 +978,7 @@ BEGIN
     ----------------------------------------------------------------------------
     -- Sound
     ----------------------------------------------------------------------------
- 	I_SOUND: WF2149IP_TOP_SOC
+ 	i_sound : WF2149IP_TOP_SOC
 		PORT MAP(
 			SYS_CLK				=> MAIN_CLK,
 			RESETn				=> nRSTO,

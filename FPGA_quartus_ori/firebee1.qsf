@@ -368,7 +368,7 @@ set_global_assignment -name ENABLE_DEVICE_WIDE_OE ON
 set_global_assignment -name CYCLONEIII_CONFIGURATION_SCHEME "PASSIVE SERIAL"
 set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
-set_global_assignment -name FITTER_EFFORT "AUTO FIT"
+set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
 set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON
@@ -573,6 +573,17 @@ set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_global_assignment -name DISABLE_OCP_HW_EVAL ON
 set_global_assignment -name OPTIMIZE_HOLD_TIMING "ALL PATHS"
 set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
+
+set_global_assignment -name SAVE_DISK_SPACE OFF
+set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name FITTER_EARLY_TIMING_ESTIMATE_MODE PESSIMISTIC
+set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL MAXIMUM
+set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON
+set_global_assignment -name PLACEMENT_EFFORT_MULTIPLIER 3
+set_global_assignment -name ROUTER_EFFORT_MULTIPLIER 1.5
+set_global_assignment -name ECO_OPTIMIZE_TIMING ON
+set_global_assignment -name AUTO_DELAY_CHAINS_FOR_HIGH_FANOUT_INPUT_PINS ON
+set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF
 set_global_assignment -name SDC_FILE firebee1.sdc
 set_global_assignment -name AHDL_FILE Interrupt_Handler/interrupt_handler.tdf
 set_global_assignment -name VHDL_FILE DSP/DSP.vhd
@@ -731,6 +742,7 @@ set_global_assignment -name VHDL_FILE altpll3.vhd
 set_global_assignment -name QIP_FILE altpll3.qip
 set_global_assignment -name SOURCE_FILE altpll3.cmp
 set_global_assignment -name QIP_FILE altpll4.qip
+set_global_assignment -name AHDL_FILE altpll4.tdf
 set_global_assignment -name QIP_FILE altpll_reconfig1.qip
 set_global_assignment -name SOURCE_FILE lpm_counter0.cmp
 set_global_assignment -name BDF_FILE firebee1.bdf
@@ -739,8 +751,4 @@ set_global_assignment -name QIP_FILE lpm_bustri_LONG.qip
 set_global_assignment -name QIP_FILE lpm_bustri_BYT.qip
 set_global_assignment -name QIP_FILE lpm_bustri_WORD.qip
 set_global_assignment -name QIP_FILE altddio_out3.qip
-set_global_assignment -name SOURCE_FILE firebee1.fit.summary_alt
-
-set_global_assignment -name SAVE_DISK_SPACE OFF
-set_global_assignment -name SMART_RECOMPILE ON
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

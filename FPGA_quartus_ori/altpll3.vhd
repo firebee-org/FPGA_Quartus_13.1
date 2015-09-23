@@ -164,13 +164,13 @@ BEGIN
 		clk1_duty_cycle => 50,
 		clk1_multiply_by => 16,
 		clk1_phase_shift => "0",
-		clk2_divide_by => 144,
+		clk2_divide_by => 300,
 		clk2_duty_cycle => 50,
-		clk2_multiply_by => 109,
+		clk2_multiply_by => 227,
 		clk2_phase_shift => "0",
-		clk3_divide_by => 11,
+		clk3_divide_by => 156,
 		clk3_duty_cycle => 50,
-		clk3_multiply_by => 16,
+		clk3_multiply_by => 227,
 		clk3_phase_shift => "0",
 		compensate_clock => "CLK1",
 		inclk0_input_frequency => 30303,
@@ -249,18 +249,18 @@ END SYN;
 -- Retrieval info: PRIVATE: CUR_DEDICATED_CLK STRING "c1"
 -- Retrieval info: PRIVATE: CUR_FBIN_CLK STRING "e0"
 -- Retrieval info: PRIVATE: DEVICE_SPEED_GRADE STRING "8"
--- Retrieval info: PRIVATE: DIV_FACTOR0 NUMERIC "33"
+-- Retrieval info: PRIVATE: DIV_FACTOR0 NUMERIC "3744"
 -- Retrieval info: PRIVATE: DIV_FACTOR1 NUMERIC "33"
--- Retrieval info: PRIVATE: DIV_FACTOR2 NUMERIC "144"
--- Retrieval info: PRIVATE: DIV_FACTOR3 NUMERIC "33"
+-- Retrieval info: PRIVATE: DIV_FACTOR2 NUMERIC "300"
+-- Retrieval info: PRIVATE: DIV_FACTOR3 NUMERIC "156"
 -- Retrieval info: PRIVATE: DUTY_CYCLE0 STRING "50.00000000"
 -- Retrieval info: PRIVATE: DUTY_CYCLE1 STRING "50.00000000"
 -- Retrieval info: PRIVATE: DUTY_CYCLE2 STRING "50.00000000"
 -- Retrieval info: PRIVATE: DUTY_CYCLE3 STRING "50.00000000"
 -- Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE0 STRING "2.000000"
 -- Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE1 STRING "16.000000"
--- Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE2 STRING "24.979166"
--- Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE3 STRING "48.000000"
+-- Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE2 STRING "24.969999"
+-- Retrieval info: PRIVATE: EFF_OUTPUT_FREQ_VALUE3 STRING "48.019230"
 -- Retrieval info: PRIVATE: EXPLICIT_SWITCHOVER_COUNTER STRING "0"
 -- Retrieval info: PRIVATE: EXT_FEEDBACK_RADIO STRING "0"
 -- Retrieval info: PRIVATE: GLOCKED_COUNTER_EDIT_CHANGED STRING "1"
@@ -289,16 +289,16 @@ END SYN;
 -- Retrieval info: PRIVATE: MIRROR_CLK1 STRING "0"
 -- Retrieval info: PRIVATE: MIRROR_CLK2 STRING "0"
 -- Retrieval info: PRIVATE: MIRROR_CLK3 STRING "0"
--- Retrieval info: PRIVATE: MULT_FACTOR0 NUMERIC "2"
+-- Retrieval info: PRIVATE: MULT_FACTOR0 NUMERIC "227"
 -- Retrieval info: PRIVATE: MULT_FACTOR1 NUMERIC "16"
--- Retrieval info: PRIVATE: MULT_FACTOR2 NUMERIC "109"
--- Retrieval info: PRIVATE: MULT_FACTOR3 NUMERIC "48"
+-- Retrieval info: PRIVATE: MULT_FACTOR2 NUMERIC "227"
+-- Retrieval info: PRIVATE: MULT_FACTOR3 NUMERIC "227"
 -- Retrieval info: PRIVATE: NORMAL_MODE_RADIO STRING "0"
 -- Retrieval info: PRIVATE: OUTPUT_FREQ0 STRING "2.00000000"
 -- Retrieval info: PRIVATE: OUTPUT_FREQ1 STRING "16.00000000"
 -- Retrieval info: PRIVATE: OUTPUT_FREQ2 STRING "25.00000000"
--- Retrieval info: PRIVATE: OUTPUT_FREQ3 STRING "160.00000000"
--- Retrieval info: PRIVATE: OUTPUT_FREQ_MODE0 STRING "0"
+-- Retrieval info: PRIVATE: OUTPUT_FREQ3 STRING "48.00000000"
+-- Retrieval info: PRIVATE: OUTPUT_FREQ_MODE0 STRING "1"
 -- Retrieval info: PRIVATE: OUTPUT_FREQ_MODE1 STRING "0"
 -- Retrieval info: PRIVATE: OUTPUT_FREQ_MODE2 STRING "0"
 -- Retrieval info: PRIVATE: OUTPUT_FREQ_MODE3 STRING "0"
@@ -365,13 +365,13 @@ END SYN;
 -- Retrieval info: CONSTANT: CLK1_DUTY_CYCLE NUMERIC "50"
 -- Retrieval info: CONSTANT: CLK1_MULTIPLY_BY NUMERIC "16"
 -- Retrieval info: CONSTANT: CLK1_PHASE_SHIFT STRING "0"
--- Retrieval info: CONSTANT: CLK2_DIVIDE_BY NUMERIC "144"
+-- Retrieval info: CONSTANT: CLK2_DIVIDE_BY NUMERIC "300"
 -- Retrieval info: CONSTANT: CLK2_DUTY_CYCLE NUMERIC "50"
--- Retrieval info: CONSTANT: CLK2_MULTIPLY_BY NUMERIC "109"
+-- Retrieval info: CONSTANT: CLK2_MULTIPLY_BY NUMERIC "227"
 -- Retrieval info: CONSTANT: CLK2_PHASE_SHIFT STRING "0"
--- Retrieval info: CONSTANT: CLK3_DIVIDE_BY NUMERIC "11"
+-- Retrieval info: CONSTANT: CLK3_DIVIDE_BY NUMERIC "156"
 -- Retrieval info: CONSTANT: CLK3_DUTY_CYCLE NUMERIC "50"
--- Retrieval info: CONSTANT: CLK3_MULTIPLY_BY NUMERIC "16"
+-- Retrieval info: CONSTANT: CLK3_MULTIPLY_BY NUMERIC "227"
 -- Retrieval info: CONSTANT: CLK3_PHASE_SHIFT STRING "0"
 -- Retrieval info: CONSTANT: COMPENSATE_CLOCK STRING "CLK1"
 -- Retrieval info: CONSTANT: INCLK0_INPUT_FREQUENCY NUMERIC "30303"
@@ -440,6 +440,6 @@ END SYN;
 -- Retrieval info: GEN_FILE: TYPE_NORMAL altpll3.cmp TRUE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL altpll3.bsf TRUE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL altpll3_inst.vhd FALSE
--- Retrieval info: GEN_FILE: TYPE_NORMAL altpll3_waveforms.html TRUE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL altpll3_waveforms.html FALSE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL altpll3_wave*.jpg FALSE
 -- Retrieval info: LIB_FILE: altera_mf
