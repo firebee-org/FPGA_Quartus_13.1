@@ -4,7 +4,7 @@ editor if you plan to continue editing the block that represents it in
 the Block Editor! File corruption is VERY likely to occur.
 */
 /*
-Copyright (C) 1991-2013 Altera Corporation
+Copyright (C) 1991-2008 Altera Corporation
 Your use of Altera Corporation's design tools, logic functions 
 and other software and tools, and its AMPP partner logic 
 functions, and any output files from any of the foregoing 
@@ -18,61 +18,53 @@ programming logic devices manufactured by Altera and sold by
 Altera or its authorized distributors.  Please refer to the 
 applicable agreement for further details.
 */
-(header "symbol" (version "1.2"))
+(header "symbol" (version "1.1"))
 (symbol
 	(rect 0 0 144 128)
-	(text "lpm_shiftreg0" (rect 33 0 128 16)(font "Arial" (font_size 10)))
-	(text "inst" (rect 8 113 26 124)(font "Arial" ))
+	(text "lpm_shiftreg0" (rect 34 1 124 17)(font "Arial" (font_size 10)))
+	(text "inst" (rect 8 112 25 124)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
-		(text "load" (rect 0 0 25 13)(font "Arial" (font_size 8)))
-		(text "load" (rect 20 26 41 38)(font "Arial" (font_size 8)))
-		(line (pt 0 32)(pt 16 32))
+		(text "load" (rect 0 0 23 14)(font "Arial" (font_size 8)))
+		(text "load" (rect 20 26 41 39)(font "Arial" (font_size 8)))
+		(line (pt 0 32)(pt 16 32)(line_width 1))
 	)
 	(port
 		(pt 0 48)
 		(input)
-		(text "data[15..0]" (rect 0 0 61 13)(font "Arial" (font_size 8)))
-		(text "data[15..0]" (rect 20 42 72 54)(font "Arial" (font_size 8)))
+		(text "data[15..0]" (rect 0 0 60 14)(font "Arial" (font_size 8)))
+		(text "data[15..0]" (rect 20 42 71 55)(font "Arial" (font_size 8)))
 		(line (pt 0 48)(pt 16 48)(line_width 3))
 	)
 	(port
 		(pt 0 80)
 		(input)
-		(text "clock" (rect 0 0 31 13)(font "Arial" (font_size 8)))
-		(text "clock" (rect 26 74 51 86)(font "Arial" (font_size 8)))
-		(line (pt 0 80)(pt 16 80))
+		(text "clock" (rect 0 0 29 14)(font "Arial" (font_size 8)))
+		(text "clock" (rect 26 74 49 87)(font "Arial" (font_size 8)))
+		(line (pt 0 80)(pt 16 80)(line_width 1))
 	)
 	(port
 		(pt 0 96)
 		(input)
-		(text "shiftin" (rect 0 0 34 13)(font "Arial" (font_size 8)))
-		(text "shiftin" (rect 20 90 48 102)(font "Arial" (font_size 8)))
-		(line (pt 0 96)(pt 16 96))
+		(text "shiftin" (rect 0 0 34 14)(font "Arial" (font_size 8)))
+		(text "shiftin" (rect 20 90 48 103)(font "Arial" (font_size 8)))
+		(line (pt 0 96)(pt 16 96)(line_width 1))
 	)
 	(port
-		(pt 144 64)
+		(pt 144 72)
 		(output)
-		(text "shiftout" (rect 0 0 42 13)(font "Arial" (font_size 8)))
-		(text "shiftout" (rect 91 58 126 70)(font "Arial" (font_size 8)))
-		(line (pt 144 64)(pt 128 64))
+		(text "shiftout" (rect 0 0 42 14)(font "Arial" (font_size 8)))
+		(text "shiftout" (rect 89 66 123 79)(font "Arial" (font_size 8)))
+		(line (pt 144 72)(pt 128 72)(line_width 1))
 	)
 	(drawing
-		(text "left shift" (rect 96 18 227 46)(font "Arial" ))
-		(line (pt 16 16)(pt 16 112))
-		(line (pt 16 16)(pt 128 16))
-		(line (pt 16 112)(pt 128 112))
-		(line (pt 128 16)(pt 128 112))
-		(line (pt 0 0)(pt 146 0))
-		(line (pt 146 0)(pt 146 130))
-		(line (pt 0 130)(pt 146 130))
-		(line (pt 0 0)(pt 0 130))
-		(line (pt 16 74)(pt 22 80))
-		(line (pt 22 80)(pt 16 86))
-		(line (pt 0 0)(pt 0 0))
-		(line (pt 0 0)(pt 0 0))
-		(line (pt 0 0)(pt 0 0))
-		(line (pt 0 0)(pt 0 0))
+		(text "left shift" (rect 92 17 128 29)(font "Arial" ))
+		(line (pt 16 16)(pt 128 16)(line_width 1))
+		(line (pt 128 16)(pt 128 112)(line_width 1))
+		(line (pt 128 112)(pt 16 112)(line_width 1))
+		(line (pt 16 112)(pt 16 16)(line_width 1))
+		(line (pt 16 74)(pt 22 80)(line_width 1))
+		(line (pt 22 80)(pt 16 86)(line_width 1))
 	)
 )

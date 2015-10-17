@@ -65,7 +65,7 @@ use work.wf2149ip_pkg.all;
 entity WF2149IP_WAVE is
 	port(
 		RESETn		: in bit;
-		SYS_CLK		: in bit;
+		SYS_CLK		: in std_logic;
 
 		WAV_STRB	: in bit;
 

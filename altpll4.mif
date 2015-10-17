@@ -1,4 +1,4 @@
--- Copyright (C) 1991-2010 Altera Corporation
+-- Copyright (C) 1991-2014 Altera Corporation
 -- Your use of Altera Corporation's design tools, logic functions 
 -- and other software and tools, and its AMPP partner logic 
 -- functions, and any output files from any of the foregoing 
@@ -17,8 +17,8 @@
 --    Device Part: -
 --    Device Speed Grade: 8
 --    PLL Scan Chain: Fast PLL (144 bits)
---    File Name: C:\FireBee\FPGA\altpll4.mif
---    Generated: Mon Dec 06 01:47:24 2010
+--    File Name: C:/Users/froesm1/Documents/Development/FPGA_quartus//altpll4.mif
+--    Generated: Mon Sep 21 17:50:54 2015
 
 WIDTH=1;
 DEPTH=144;

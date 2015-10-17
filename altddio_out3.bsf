@@ -4,7 +4,7 @@ editor if you plan to continue editing the block that represents it in
 the Block Editor! File corruption is VERY likely to occur.
 */
 /*
-Copyright (C) 1991-2013 Altera Corporation
+Copyright (C) 1991-2008 Altera Corporation
 Your use of Altera Corporation's design tools, logic functions 
 and other software and tools, and its AMPP partner logic 
 functions, and any output files from any of the foregoing 
@@ -18,47 +18,47 @@ programming logic devices manufactured by Altera and sold by
 Altera or its authorized distributors.  Please refer to the 
 applicable agreement for further details.
 */
-(header "symbol" (version "1.2"))
+(header "symbol" (version "1.1"))
 (symbol
-	(rect 0 0 192 112)
-	(text "altddio_out3" (rect 57 0 156 17)(font "Dialog" (font_size 10)))
-	(text "inst" (rect 8 97 26 108)(font "Arial" ))
+	(rect 0 0 232 120)
+	(text "altddio_out3" (rect 81 1 163 17)(font "Arial" (font_size 10)))
+	(text "inst" (rect 8 104 25 116)(font "Arial" ))
 	(port
-		(pt 0 48)
+		(pt 0 24)
 		(input)
-		(text "datain_h[0]" (rect 0 0 73 13)(font "Dialog" (font_size 8)))
-		(text "datain_h[0]" (rect 4 35 67 47)(font "Dialog" (font_size 8)))
-		(line (pt 0 48)(pt 64 48)(line_width 3))
+		(text "datain_h" (rect 0 0 48 14)(font "Arial" (font_size 8)))
+		(text "datain_h" (rect 4 11 46 24)(font "Arial" (font_size 8)))
+		(line (pt 0 24)(pt 88 24)(line_width 1))
 	)
 	(port
-		(pt 0 64)
+		(pt 0 40)
 		(input)
-		(text "datain_l[0]" (rect 0 0 69 13)(font "Dialog" (font_size 8)))
-		(text "datain_l[0]" (rect 4 51 63 63)(font "Dialog" (font_size 8)))
-		(line (pt 0 64)(pt 64 64)(line_width 3))
+		(text "datain_l" (rect 0 0 43 14)(font "Arial" (font_size 8)))
+		(text "datain_l" (rect 4 27 43 40)(font "Arial" (font_size 8)))
+		(line (pt 0 40)(pt 88 40)(line_width 1))
 	)
 	(port
-		(pt 0 80)
+		(pt 0 56)
 		(input)
-		(text "outclock" (rect 0 0 55 13)(font "Dialog" (font_size 8)))
-		(text "outclock" (rect 4 67 52 79)(font "Dialog" (font_size 8)))
-		(line (pt 0 80)(pt 64 80))
+		(text "outclock" (rect 0 0 47 14)(font "Arial" (font_size 8)))
+		(text "outclock" (rect 4 43 42 56)(font "Arial" (font_size 8)))
+		(line (pt 0 56)(pt 88 56)(line_width 1))
 	)
 	(port
-		(pt 192 48)
+		(pt 232 24)
 		(output)
-		(text "dataout[0]" (rect 0 0 68 13)(font "Dialog" (font_size 8)))
-		(text "dataout[0]" (rect 131 35 190 47)(font "Dialog" (font_size 8)))
-		(line (pt 192 48)(pt 128 48)(line_width 3))
+		(text "dataout" (rect 0 0 42 14)(font "Arial" (font_size 8)))
+		(text "dataout" (rect 193 11 229 24)(font "Arial" (font_size 8)))
+		(line (pt 232 24)(pt 152 24)(line_width 1))
 	)
 	(drawing
-		(line (pt 64 32)(pt 128 32))
-		(line (pt 128 32)(pt 128 96))
-		(line (pt 64 96)(pt 128 96))
-		(line (pt 64 32)(pt 64 96))
-		(line (pt 0 0)(pt 192 0))
-		(line (pt 192 0)(pt 192 112))
-		(line (pt 0 112)(pt 192 112))
-		(line (pt 0 0)(pt 0 112))
+		(text "ddio" (rect 110 27 131 40)(font "Arial" (font_size 8)))
+		(text "output" (rect 105 42 135 55)(font "Arial" (font_size 8)))
+		(text "power up" (rect 92 74 129 86)(font "Arial" ))
+		(text "low" (rect 92 84 105 96)(font "Arial" ))
+		(line (pt 88 16)(pt 152 16)(line_width 1))
+		(line (pt 152 16)(pt 152 96)(line_width 1))
+		(line (pt 152 96)(pt 88 96)(line_width 1))
+		(line (pt 88 96)(pt 88 16)(line_width 1))
 	)
 )
