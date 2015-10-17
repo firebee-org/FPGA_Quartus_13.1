@@ -1,30 +1,47 @@
-## Generated SDC file "firebee1.sdc"
-
-## Copyright (C) 1991-2014 Altera Corporation
-## Your use of Altera Corporation's design tools, logic functions 
-## and other software and tools, and its AMPP partner logic 
-## functions, and any output files from any of the foregoing 
-## (including device programming or simulation files), and any 
-## associated documentation or information are expressly subject 
-## to the terms and conditions of the Altera Program License 
-## Subscription Agreement, Altera MegaCore Function License 
-## Agreement, or other applicable license agreement, including, 
-## without limitation, that your use is for the sole purpose of 
-## programming logic devices manufactured by Altera and sold by 
-## Altera or its authorized distributors.  Please refer to the 
-## applicable agreement for further details.
-
-
-## VENDOR  "Altera"
-## PROGRAM "Quartus II"
-## VERSION "Version 13.1.4 Build 182 03/12/2014 SJ Web Edition"
-
-## DATE    "Mon Sep 21 20:39:03 2015"
-
-##
-## DEVICE  "EP3C40F484C6"
-##
-
+#--------------------------------------------------------------#
+#                                                              #
+# Synopsis design constraints for the Firebee project          #
+#                                                              #
+# This file is part of the Firebee ACP project.                #
+# http://www.experiment-s.de                                   #
+#                                                              #
+# Description:                                                 #
+#   timing constraints for the Firebee VHDL config             #
+#                                                              #
+#                                                              #
+#                                                              #
+# To Do:                                                       #
+# -                                                            #
+#                                                              #
+# Author(s):                                                   #
+# Markus Fröschle, mfro@mubf.de                                #
+#                                                              #
+#--------------------------------------------------------------#
+#                                                              #
+# Copyright (C) 2015 Markus Fröschle & the ACP project         #
+#                                                              #
+# This source file may be used and distributed without         #
+# restriction provided that this copyright statement is not    #
+# removed from the file and that any derivative work contains  #
+# the original copyright notice and the associated disclaimer. #
+#                                                              #
+# This source file is free software; you can redistribute it   #
+# and/or modify it under the terms of the GNU Lesser General   #
+# Public License as published by the Free Software Foundation; #
+# either version 2.1 of the License, or (at your option) any   #
+# later version.                                               #
+#                                                              #
+# This source is distributed in the hope that it will be       #
+# useful, but WITHOUT ANY WARRANTY; without even the implied   #
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR      #
+# PURPOSE. See the GNU Lesser General Public License for more  #
+# details.                                                     #
+#                                                              #
+# You should have received a copy of the GNU Lesser General    #
+# Public License along with this source; if not, download it   #
+# from http://www.gnu.org/licenses/lgpl.html                   #
+#                                                              #
+################################################################
 
 #**************************************************************
 # Time Information
@@ -51,11 +68,11 @@ create_clock -name {MAIN_CLK} -period 30.303 -waveform { 0.000 15.151 } [get_por
 # 
 # PLL2: i_ddr_clock_pll
 # input: MAIN_CLK
-# c0: 132 MHz
-# c1: 132 MHz
-# c2: 132 MHz
-# c3: 132 MHz
-# c4: 66 MHz
+# c0: 132 MHz   190°
+# c1: 132 MHz   0°
+# c2: 132 MHz   180°
+# c3: 132 MHz   105°
+# c4: 66 MHz    270°
 #
 # PLL3: i_atari_clk_pll
 # input: MAIN_CLK
@@ -101,14 +118,14 @@ derive_clock_uncertainty
 # Set Input Delay
 #**************************************************************
 
-set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] 1.000 [get_ports {FB_AD[0]}]
+set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.000 [all_inputs]
 
 
 #**************************************************************
 # Set Output Delay
 #**************************************************************
 
-set_output_delay -add_delay  -clock [get_clocks {MAIN_CLK}]  1.000 [get_ports {FB_AD[0]}]
+set_output_delay -add_delay  -clock [get_clocks {MAIN_CLK}]  -max 1.000 [all_outputs]
 
 
 #**************************************************************
@@ -122,7 +139,7 @@ set_output_delay -add_delay  -clock [get_clocks {MAIN_CLK}]  1.000 [get_ports {F
 #**************************************************************
 
 #
-# i_videl_clk is freely programmable
+# i_video_clk is freely programmable
 #
 set_false_path  -from  [get_clocks {MAIN_CLK}]  -to  [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 
@@ -133,9 +150,6 @@ set_false_path  -from  [get_clocks {MAIN_CLK}]  -to  [get_clocks {i_atari_clk_pl
 # MAIN_CLK to DDR clk and v.v.
 set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {MAIN_CLK}]
-set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]
-set_false_path -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {MAIN_CLK}]
-
 
 set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]
 set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
@@ -174,48 +188,6 @@ set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpip
 # Set Multicycle Path
 #**************************************************************
 
-# Clocks used:
-# MAIN_CLK          33MHz
-# 
-# PLL1: i_mfp_acia_clk_pll
-# input: MAIN_CLK
-# c0: 500 kHz
-# c1: 2.4576 MHz
-# c2: 24.576 MHz
-# 
-# PLL2: i_ddr_clock_pll
-# input: MAIN_CLK
-# c0: 132 MHz
-# c1: 132 MHz
-# c2: 132 MHz
-# c3: 132 MHz
-# c4: 66 MHz
-#
-# PLL3: i_atari_clk_pll
-# input: MAIN_CLK
-# c0: 2 MHz
-# c1: 16 MHz
-# c2: 25 MHz
-# c3: 48 MHz
-# 
-# PLL4_ i_video_clk_pll
-# input: USB_CLK (48 MHz, PLL3 c3)
-# c0: 96 MHz, programmable in 1MHz steps
-
-
-# 66 MHz to 33 MHz
-set_multicycle_path -setup -start -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {MAIN_CLK}] 2
-set_multicycle_path -hold -start -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {MAIN_CLK}] 2
-# 33 MHz to 66 MHz 
-set_multicycle_path -setup -end -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] 2
-set_multicycle_path -hold -end -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] 2
-# 132 MHz to 33 MHz 
-set_multicycle_path -setup -end -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {MAIN_CLK}] 4
-set_multicycle_path -hold -end -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {MAIN_CLK}] 4
-# 33 MHz to 132 MHz 
-set_multicycle_path -setup -start -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] 4
-set_multicycle_path -hold -start -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] 4
-
 #**************************************************************
 # Set Maximum Delay
 #**************************************************************
@@ -238,3 +210,15 @@ set_multicycle_path -hold -start -from [get_clocks {MAIN_CLK}] -to [get_clocks {
 #set_output_delay -max -clock [get_clocks {MAIN_CLK}] [get_pins {*}] 25
 #set_output_delay -min -clock [get_clocks {MAIN_CLK}] [get_pins {*}] .5
 
+# restrict timing of video controller
+
+#set_output_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {VA[*]}]
+#set_output_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {VA[*]}]
+
+#set_output_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {BA[*]}]
+#set_output_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {BA[*]}]
+
+#set_output_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {VD[*]}]
+#set_output_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {VD[*]}]
+#set_input_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {VD[*]}]
+#set_input_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {VD[*]}]
