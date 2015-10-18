@@ -150,6 +150,7 @@ set_false_path  -from  [get_clocks {MAIN_CLK}]  -to  [get_clocks {i_atari_clk_pl
 # MAIN_CLK to DDR clk and v.v.
 set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {MAIN_CLK}]
+set_false_path -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {MAIN_CLK}]
 
 set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]
 set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
