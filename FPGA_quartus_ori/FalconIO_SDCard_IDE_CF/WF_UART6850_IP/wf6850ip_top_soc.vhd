@@ -59,121 +59,122 @@
 --   Introduced a minor RTSn correction.
 --
 
-library ieee;
-    use ieee.std_logic_1164.all;
-    use ieee.std_logic_unsigned.all;
+LIBRARY ieee;
+    USE ieee.std_logic_1164.ALL;
+    USE ieee.std_logic_unsigned.ALL;
 
-entity WF6850IP_TOP_SOC is
-  port (
-		CLK					: in bit;
+ENTITY WF6850IP_TOP_SOC IS
+  PORT (
+		CLK					: IN bit;
         RESETn				: in bit;
 
-        CS2n, CS1, CS0		: in bit;
-        E		       		: in bit;   
-        RWn              	: in bit;
+        CS2n, CS1, CS0		: IN bit;
+        E		       		: IN bit;   
+        RWn              	: IN bit;
         RS					: in bit;
 
-        DATA_IN		        : in std_logic_vector(7 downto 0);   
-        DATA_OUT	        : out std_logic_vector(7 downto 0);   
-		DATA_EN				: out bit;
+        DATA_IN		        : IN std_logic_vector(7 DOWNTO 0);   
+        DATA_OUT	        : OUT std_logic_vector(7 DOWNTO 0);   
+		DATA_EN				: OUT bit;
 
-        TXCLK				: in bit;
-        RXCLK				: in bit;
-        RXDATA				: in bit;
-        CTSn				: in bit;
-        DCDn				: in bit;
+        TXCLK				: IN bit;
+        RXCLK				: IN bit;
+        RXDATA				: IN bit;
+        CTSn				: IN bit;
+        DCDn				: IN bit;
         
-        IRQn				: out bit;
-        TXDATA				: out bit;   
-        RTSn				: out bit
+        IRQn				: OUT bit;
+        TXDATA				: OUT bit;   
+        RTSn				: OUT bit
        );                                              
-end entity WF6850IP_TOP_SOC;
+END ENTITY WF6850IP_TOP_SOC;
 
-architecture STRUCTURE of WF6850IP_TOP_SOC is
-component WF6850IP_CTRL_STATUS
-	port (
-		CLK			: in bit;
-        RESETn		: in bit;
-        CS			: in bit_vector(2 downto 0);
-        E			: in bit;   
-        RWn     	: in bit;
-        RS			: in bit;
-        DATA_IN		: in bit_vector(7 downto 0);   
-        DATA_OUT	: out bit_vector(7 downto 0);  
-		DATA_EN		: out bit;
-		RDRF		: in bit;
-		TDRE		: in bit;
-		DCDn		: in bit;
-		CTSn		: in bit;
-		FE			: in bit;
-		OVR			: in bit;
-		PE			: in bit;
-		MCLR		: out bit;
-		RTSn		: out bit;
-		CDS			: out bit_vector(1 downto 0);
-		WS			: out bit_vector(2 downto 0);
-		TC			: out bit_vector(1 downto 0);
-		IRQn		: out bit
+ARCHITECTURE structure OF WF6850IP_TOP_SOC IS
+    COMPONENT WF6850IP_CTRL_STATUS
+	PORT (
+		CLK			: IN bit;
+        RESETn		: IN bit;
+        CS			: IN bit_vector(2 DOWNTO 0);
+        E			: IN bit;   
+        RWn     	: IN bit;
+        RS			: IN bit;
+        DATA_IN		: IN bit_vector(7 DOWNTO 0);   
+        DATA_OUT	: OUT bit_vector(7 DOWNTO 0);  
+		DATA_EN		: OUT bit;
+		RDRF		: IN bit;
+		TDRE		: IN bit;
+		DCDn		: IN bit;
+		CTSn		: IN bit;
+		FE			: IN bit;
+		OVR			: IN bit;
+		PE			: IN bit;
+		MCLR		: OUT bit;
+		RTSn		: OUT bit;
+		CDS			: OUT bit_vector(1 DOWNTO 0);
+		WS			: OUT bit_vector(2 DOWNTO 0);
+		TC			: OUT bit_vector(1 DOWNTO 0);
+		IRQn		: OUT bit
        );                                              
-end component;
+    END COMPONENT;
 
-component WF6850IP_RECEIVE
-	port (
-		CLK					: in bit;
-        RESETn				: in bit;
-		MCLR				: in bit;
-        CS					: in bit_vector(2 downto 0);
-        E		       		: in bit;   
-        RWn              	: in bit;
-        RS					: in bit;
-        DATA_OUT	        : out bit_vector(7 downto 0);   
-		DATA_EN				: out bit;
-		WS					: in bit_vector(2 downto 0);
-		CDS					: in bit_vector(1 downto 0);
-        RXCLK				: in bit;
-        RXDATA				: in bit;
-		RDRF				: out bit;
-		OVR					: out bit;
-		PE					: out bit;
-		FE					: out bit
-       );                                              
-end component;
-
-component WF6850IP_TRANSMIT
-	port (
-		CLK					: in bit;
-        RESETn				: in bit;
-		MCLR				: in bit;
-        CS					: in bit_vector(2 downto 0);
-        E		       		: in bit;   
-        RWn              	: in bit;
-        RS					: in bit;
-        DATA_IN		        : in bit_vector(7 downto 0);   
-		CTSn				: in bit;
-		TC					: in bit_vector(1 downto 0);
-		WS					: in bit_vector(2 downto 0);
-		CDS					: in bit_vector(1 downto 0);
-        TXCLK				: in bit;
-		TDRE				: out bit;        
-        TXDATA				: out bit
-       );                                              
-end component;
-signal DATA_IN_I	: bit_vector(7 downto 0);
-signal DATA_RX		: bit_vector(7 downto 0);
-signal DATA_RX_EN	: bit;
-signal DATA_CTRL	: bit_vector(7 downto 0);
-signal DATA_CTRL_EN	: bit;
-signal RDRF_I		: bit;
-signal TDRE_I		: bit;
-signal FE_I			: bit;
-signal OVR_I		: bit;
-signal PE_I			: bit;
-signal MCLR_I		: bit;
-signal CDS_I		: bit_vector(1 downto 0);
-signal WS_I			: bit_vector(2 downto 0);
-signal TC_I			: bit_vector(1 downto 0);
-signal IRQ_In		: bit;
-begin
+    COMPONENT WF6850IP_RECEIVE
+        PORT (
+            CLK					: IN bit;
+            RESETn				: IN bit;
+            MCLR				: IN bit;
+            CS					: IN bit_vector(2 DOWNTO 0);
+            E		       		: IN bit;   
+            RWn              	: IN bit;
+            RS					: IN bit;
+            DATA_OUT	        : OUT bit_vector(7 DOWNTO 0);   
+            DATA_EN				: OUT bit;
+            WS					: IN bit_vector(2 DOWNTO 0);
+            CDS					: IN bit_vector(1 DOWNTO 0);
+            RXCLK				: IN bit;
+            RXDATA				: IN bit;
+            RDRF				: OUT bit;
+            OVR					: OUT bit;
+            PE					: OUT bit;
+            FE					: OUT bit
+           );                                              
+    END COMPONENT;
+    
+    COMPONENT WF6850IP_TRANSMIT
+        PORT (
+            CLK					: IN bit;
+            RESETn				: IN bit;
+            MCLR				: IN bit;
+            CS					: IN bit_vector(2 DOWNTO 0);
+            E		       		: IN bit;   
+            RWn              	: IN bit;
+            RS					: IN bit;
+            DATA_IN		        : IN bit_vector(7 DOWNTO 0);   
+            CTSn				: IN bit;
+            TC					: IN bit_vector(1 DOWNTO 0);
+            WS					: IN bit_vector(2 DOWNTO 0);
+            CDS					: IN bit_vector(1 DOWNTO 0);
+            TXCLK				: IN bit;
+            TDRE				: OUT bit;        
+            TXDATA				: OUT bit
+           );                                              
+    END COMPONENT;
+    
+    SIGNAL DATA_IN_I	: bit_vector(7 DOWNTO 0);
+    SIGNAL DATA_RX		: bit_vector(7 DOWNTO 0);
+    SIGNAL DATA_RX_EN	: bit;
+    SIGNAL DATA_CTRL	: bit_vector(7 DOWNTO 0);
+    SIGNAL DATA_CTRL_EN	: bit;
+    SIGNAL RDRF_I		: bit;
+    SIGNAL TDRE_I		: bit;
+    SIGNAL FE_I			: bit;
+    SIGNAL OVR_I		: bit;
+    SIGNAL PE_I			: bit;
+    SIGNAL MCLR_I		: bit;
+    SIGNAL CDS_I		: bit_vector(1 DOWNTO 0);
+    SIGNAL WS_I			: bit_vector(2 DOWNTO 0);
+    SIGNAL TC_I			: bit_vector(1 DOWNTO 0);
+    SIGNAL IRQ_In		: bit;
+BEGIN
 	DATA_IN_I <= To_BitVector(DATA_IN);
 	DATA_EN <= DATA_RX_EN or DATA_CTRL_EN;
 	DATA_OUT <= To_StdLogicVector(DATA_RX) when DATA_RX_EN = '1' else
@@ -182,13 +183,14 @@ begin
 	IRQn <= '0' when IRQ_In = '0' else '1';
 
 	I_UART_CTRL_STATUS: WF6850IP_CTRL_STATUS
-	port map(
-			CLK			=> CLK,
-	        RESETn		=> RESETn,
-	        CS(2)		=> CS2n,
-	        CS(1)		=> CS1,
-	        CS(0)		=> CS0,
-	        E			=> E,
+        PORT MAP
+        (
+            CLK			=> CLK,
+            RESETn		=> RESETn,
+            CS(2)		=> CS2n,
+            CS(1)		=> CS1,
+            CS(0)		=> CS0,
+            E			=> E,
 	        RWn     	=> RWn,
 	        RS			=> RS,
 	        DATA_IN		=> DATA_IN_I,
@@ -207,10 +209,11 @@ begin
 			WS			=> WS_I,
 			TC			=> TC_I,
 			IRQn		=> IRQ_In
-	);                                              
+        );                                              
 
 	I_UART_RECEIVE: WF6850IP_RECEIVE
-	port map (
+        PORT MAP
+        (
 			CLK			=> CLK,
 	        RESETn		=> RESETn,
 			MCLR		=> MCLR_I,
@@ -230,10 +233,11 @@ begin
 			OVR			=> OVR_I,
 			PE			=> PE_I,
 			FE			=> FE_I
-	);                                              
+        );                                              
 
 	I_UART_TRANSMIT: WF6850IP_TRANSMIT
-	port map (
+        PORT MAP
+        (
 			CLK			=> CLK,
 	        RESETn		=> RESETn,
 			MCLR		=> MCLR_I,
@@ -251,5 +255,5 @@ begin
 			TDRE		=> TDRE_I,
 			TXCLK		=> TXCLK,
 			TXDATA		=> TXDATA
-	);
-end architecture STRUCTURE;
+        );
+END ARCHITECTURE structure;
