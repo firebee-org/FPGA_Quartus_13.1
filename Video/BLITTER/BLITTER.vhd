@@ -28,29 +28,30 @@ ENTITY blitter IS
 	-- {{ALTERA_IO_BEGIN}} DO NOT REMOVE THIS LINE!
 	PORT
 	(
-		nRSTO           : IN STD_LOGIC;
-		MAIN_CLK        : IN STD_LOGIC;
-		FB_ALE          : IN STD_LOGIC;
-		nFB_WR          : IN STD_LOGIC;
-		nFB_OE          : IN STD_LOGIC;
-		FB_SIZE0        : IN STD_LOGIC;
-		FB_SIZE1        : IN STD_LOGIC;
-		VIDEO_RAM_CTR   : IN STD_LOGIC_VECTOR(15 downto 0);
-		BLITTER_ON      : IN STD_LOGIC;
-		FB_ADR          : IN STD_LOGIC_VECTOR(31 downto 0);
-		nFB_CS1         : IN STD_LOGIC;
-		nFB_CS2         : IN STD_LOGIC;
-		nFB_CS3         : IN STD_LOGIC;
-		DDRCLK0         : IN STD_LOGIC;
-		BLITTER_DIN     : IN STD_LOGIC_VECTOR(127 downto 0);
-		BLITTER_DACK    : IN STD_LOGIC_VECTOR(4 downto 0);
-		BLITTER_RUN     : OUT STD_LOGIC;
-		BLITTER_DOUT    : OUT STD_LOGIC_VECTOR(127 downto 0);
-		BLITTER_ADR     : OUT STD_LOGIC_VECTOR(31 downto 0);
-		BLITTER_SIG     : OUT STD_LOGIC;
-		BLITTER_WR      : OUT STD_LOGIC;
-		BLITTER_TA      : OUT STD_LOGIC;
-		FB_AD           : INOUT STD_LOGIC_VECTOR(31 downto 0)
+		nRSTO           : IN std_logic;
+		MAIN_CLK        : IN std_logic;
+		FB_ALE          : IN std_logic;
+		nFB_WR          : IN std_logic;
+		nFB_OE          : IN std_logic;
+		FB_SIZE0        : IN std_logic;
+		FB_SIZE1        : IN std_logic;
+		VIDEO_RAM_CTR   : IN std_logic_vector(15 DOWNTO 0);
+		BLITTER_ON      : IN std_logic;
+		FB_ADR          : IN std_logic_vector(31 DOWNTO 0);
+		nFB_CS1         : IN std_logic;
+		nFB_CS2         : IN std_logic;
+		nFB_CS3         : IN std_logic;
+		DDRCLK0         : IN std_logic;
+		BLITTER_DIN     : IN std_logic_vector(127 DOWNTO 0);
+		BLITTER_DACK    : IN std_logic_vector(4 DOWNTO 0);
+        SR_BLITTER_DACK : IN std_logic;
+		BLITTER_RUN     : OUT std_logic;
+		BLITTER_DOUT    : OUT std_logic_vector(127 DOWNTO 0);
+		BLITTER_ADR     : OUT std_logic_vector(31 DOWNTO 0);
+		BLITTER_SIG     : OUT std_logic;
+		BLITTER_WR      : OUT std_logic;
+		BLITTER_TA      : OUT std_logic;
+		FB_AD           : INOUT std_logic_vector(31 DOWNTO 0)
 	);
 	-- {{ALTERA_IO_END}} DO NOT REMOVE THIS LINE!
 	

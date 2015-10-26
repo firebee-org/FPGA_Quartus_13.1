@@ -54,362 +54,379 @@
 --   Minor changes.
 --
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
+LIBRARY ieee;
+    USE ieee.std_logic_1164.ALL;
+    USE ieee.std_logic_unsigned.ALL;
 
-entity WF6850IP_RECEIVE is
-  port (
-		CLK					: in bit;
-        RESETn				: in bit;
-		MCLR				: in bit;
+ENTITY WF6850IP_RECEIVE IS
+    PORT
+    (
+        CLK					: IN std_logic;
+        RESETn				: IN bit;
+		MCLR				: IN bit;
 
-        CS					: in bit_vector(2 downto 0);
-        E		       		: in bit;   
-        RWn              	: in bit;
-        RS					: in bit;
+        CS					: IN bit_vector(2 DOWNTO 0);
+        E		       		: IN bit;   
+        RWn              	: IN bit;
+        RS					: IN bit;
 
-        DATA_OUT	        : out bit_vector(7 downto 0);   
-		DATA_EN				: out bit;
+        DATA_OUT	        : OUT bit_vector(7 DOWNTO 0);   
+		DATA_EN				: OUT bit;
 		
-		WS					: in bit_vector(2 downto 0);
-		CDS					: in bit_vector(1 downto 0);
+		WS					: IN bit_vector(2 DOWNTO 0);
+		CDS					: IN bit_vector(1 DOWNTO 0);
 
-        RXCLK				: in bit;
-        RXDATA				: in bit;
+        RXCLK				: IN bit;
+        RXDATA				: IN bit;
 
-		RDRF				: buffer bit;
-		OVR					: out bit;
-		PE					: out bit;
-		FE					: out bit
+		RDRF				: BUFFER bit;
+		OVR					: OUT bit;
+		PE					: OUT bit;
+		FE					: OUT bit
        );                                              
-end entity WF6850IP_RECEIVE;
+END ENTITY WF6850IP_RECEIVE;
 
-architecture BEHAVIOR of WF6850IP_RECEIVE is
-type RCV_STATES is (IDLE, WAIT_START, SAMPLE, PARITY, STOP1, STOP2, SYNC);
-signal RCV_STATE, RCV_NEXT_STATE	: RCV_STATES;
-signal RXDATA_I		: bit;
-signal RXDATA_S		: bit;
-signal DATA_REG		: bit_vector(7 downto 0);
-signal SHIFT_REG	: bit_vector(7 downto 0);
-signal CLK_STRB		: bit;
-signal BITCNT		: std_logic_vector(2 downto 0);
-begin
-	P_SAMPLE: process
-	-- This filter provides a synchronisation to the system
-	-- clock, even for random baud rates of the received data
-	-- stream.
-	variable FLT_TMP	: integer range 0 to 2;
-	begin
-		wait until CLK = '1' and CLK' event;
-		--
-		RXDATA_I <= RXDATA;
-		--
-		if RXDATA_I = '1' and FLT_TMP < 2 then
-			FLT_TMP := FLT_TMP + 1;
-		elsif RXDATA_I = '1' then
-			RXDATA_S <= '1';
-		elsif RXDATA_I = '0' and FLT_TMP > 0 then
-			FLT_TMP := FLT_TMP - 1;
-		elsif RXDATA_I = '0' then
-			RXDATA_S <= '0';
-		end if;
-	end process P_SAMPLE;
-
-	CLKDIV: process
-	variable CLK_LOCK	: boolean;
-	variable STRB_LOCK	: boolean;
-	variable CLK_DIVCNT	: std_logic_vector(6 downto 0);
-	begin
-		wait until CLK = '1' and CLK' event;
-		if CDS = "00" then -- Divider off.
-			if RXCLK = '1' and STRB_LOCK = false then
-				CLK_STRB <= '1';
-				STRB_LOCK := true;
-			elsif RXCLK = '0' then
-				CLK_STRB <= '0';
-				STRB_LOCK := false;
-			else
-				CLK_STRB <= '0';
-			end if;
-		elsif RCV_STATE = IDLE then
-			-- Preset the CLKDIV with the start delays.
-			if CDS = "01" then
-				CLK_DIVCNT := "0001000"; -- Half of div by 16 mode.
-			elsif CDS = "10" then
-				CLK_DIVCNT := "0100000"; -- Half of div by 64 mode.
-			end if;
-	 		CLK_STRB <= '0';
-		else
-			if CLK_DIVCNT > "0000000" and RXCLK = '1' and CLK_LOCK = false then
-				CLK_DIVCNT := CLK_DIVCNT - '1';
-				CLK_STRB <= '0';
-				CLK_LOCK := true;
-			elsif CDS = "01" and CLK_DIVCNT = "0000000" then
-				CLK_DIVCNT := "0010000"; -- Div by 16 mode.
-				--
-				if STRB_LOCK = false then
-					STRB_LOCK := true;
-					CLK_STRB <= '1';
-				else
-					CLK_STRB <= '0';
-				end if;
-			elsif CDS = "10" and CLK_DIVCNT = "0000000" then
-				CLK_DIVCNT := "1000000"; -- Div by 64 mode.
-				if STRB_LOCK = false then
-					STRB_LOCK := true;
-					CLK_STRB <= '1';
-				else
-					CLK_STRB <= '0';
-				end if;
-			elsif RXCLK = '0' then
-				CLK_LOCK := false;
-				STRB_LOCK := false;
-				CLK_STRB <= '0';
-			else
-				CLK_STRB <= '0';
-			end if;
-		end if;
-	end process CLKDIV;
+ARCHITECTURE rtl OF WF6850IP_RECEIVE IS
+    TYPE RCV_STATES IS (IDLE, WAIT_START, SAMPLE, PARITY, STOP1, STOP2, SYNC);
+    SIGNAL RCV_STATE, RCV_NEXT_STATE	: RCV_STATES;
+    SIGNAL RXDATA_I		: bit;
+    SIGNAL RXDATA_S		: bit;
+    SIGNAL DATA_REG		: bit_vector(7 DOWNTO 0);
+    SIGNAL SHIFT_REG	: bit_vector(7 DOWNTO 0);
+    SIGNAL CLK_STRB		: bit;
+    SIGNAL BITCNT		: std_logic_vector(2 DOWNTO 0);
+BEGIN
+	p_sample : PROCESS(CLK)
+        -- This filter provides a synchronisation to the system
+        -- clock, even for random baud rates of the received data
+        -- stream.
+        VARIABLE FLT_TMP	: integer RANGE 0 TO 2;
+	BEGIN
+		IF rising_edge(CLK) THEN
+            --
+            RXDATA_I <= RXDATA;
+            --
+            IF RXDATA_I = '1' and FLT_TMP < 2 THEN
+                FLT_TMP := FLT_TMP + 1;
+            ELSIF RXDATA_I = '1' THEN
+                RXDATA_S <= '1';
+            ELSIF RXDATA_I = '0' and FLT_TMP > 0 THEN
+                FLT_TMP := FLT_TMP - 1;
+            ELSIF RXDATA_I = '0' THEN
+                RXDATA_S <= '0';
+            END IF;
+        END IF;
+	END PROCESS p_sample;
+    
+	clkdiv : PROCESS(CLK)
+        VARIABLE CLK_LOCK	: boolean;
+        VARIABLE STRB_LOCK	: boolean;
+        VARIABLE CLK_DIVCNT	: std_logic_vector(6 DOWNTO 0);
+	BEGIN
+		IF rising_edge(CLK) THEN
+            IF CDS = "00" THEN -- Divider off.
+                IF RXCLK = '1' and STRB_LOCK = false THEN
+                    CLK_STRB <= '1';
+                    STRB_LOCK := true;
+                ELSIF RXCLK = '0' THEN
+                    CLK_STRB <= '0';
+                    STRB_LOCK := false;
+                ELSE
+                    CLK_STRB <= '0';
+                END IF;
+            ELSIF RCV_STATE = IDLE THEN
+                -- Preset the CLKDIV with the start delays.
+                IF CDS = "01" THEN
+                    CLK_DIVCNT := "0001000"; -- Half of div by 16 mode.
+                ELSIF CDS = "10" THEN
+                    CLK_DIVCNT := "0100000"; -- Half of div by 64 mode.
+                END IF;
+                CLK_STRB <= '0';
+            ELSE
+                IF CLK_DIVCNT > "0000000" and RXCLK = '1' and CLK_LOCK = false THEN
+                    CLK_DIVCNT := CLK_DIVCNT - '1';
+                    CLK_STRB <= '0';
+                    CLK_LOCK := true;
+                ELSIF CDS = "01" and CLK_DIVCNT = "0000000" THEN
+                    CLK_DIVCNT := "0010000"; -- Div by 16 mode.
+                    --
+                    IF STRB_LOCK = false THEN
+                        STRB_LOCK := true;
+                        CLK_STRB <= '1';
+                    ELSE
+                        CLK_STRB <= '0';
+                    END IF;
+                ELSIF CDS = "10" and CLK_DIVCNT = "0000000" THEN
+                    CLK_DIVCNT := "1000000"; -- Div by 64 mode.
+                    IF STRB_LOCK = false THEN
+                        STRB_LOCK := true;
+                        CLK_STRB <= '1';
+                    ELSE
+                        CLK_STRB <= '0';
+                    END IF;
+                ELSIF RXCLK = '0' THEN
+                    CLK_LOCK := false;
+                    STRB_LOCK := false;
+                    CLK_STRB <= '0';
+                ELSE
+                    CLK_STRB <= '0';
+                END IF;
+            END IF;
+		END IF;
+	END PROCESS clkdiv;
 	
-	DATAREG: process(RESETn, CLK)
-	begin
-		if RESETn = '0' then
-			DATA_REG <= x"00";
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
+	datareg : PROCESS(RESETn, CLK)
+	BEGIN
+		IF RESETn = '0' or MCLR = '1' THEN
 				DATA_REG <= x"00";
-			elsif RCV_STATE = SYNC and WS(2) = '0' and RDRF = '0' then -- 7 bit data.
-				-- Transfer from shift- to data register only if
-				-- data register is empty (RDRF = '0').
-				DATA_REG <= '0' & SHIFT_REG(7 downto 1);
-			elsif RCV_STATE = SYNC and WS(2) = '1' and RDRF = '0' then -- 8 bit data.
-				-- Transfer from shift- to data register only if
-				-- data register is empty (RDRF = '0').
-				DATA_REG <= SHIFT_REG;
-			end if;
-		end if;
-	end process DATAREG;	
-    DATA_OUT <= DATA_REG when CS = "011" and RWn = '1' and RS = '1' and E = '1' else (others => '0');
-    DATA_EN <= '1' when CS = "011" and RWn = '1' and RS = '1' and E = '1' else '0';
+		ELSE
+			IF rising_edge(CLK) THEN
+				IF RCV_STATE = SYNC and WS(2) = '0' and RDRF = '0' THEN -- 7 bit data.
+                    -- Transfer from shift- to data register only if
+                    -- data register is empty (RDRF = '0').
+                    DATA_REG <= '0' & SHIFT_REG(7 downto 1);
+                ELSIF RCV_STATE = SYNC and WS(2) = '1' and RDRF = '0' THEN -- 8 bit data.
+                    -- Transfer from shift- to data register only if
+                    -- data register is empty (RDRF = '0').
+                    DATA_REG <= SHIFT_REG;
+                END IF;
+            END IF;
+		END IF;
+	END PROCESS datareg;	
+    
+    DATA_OUT <= DATA_REG WHEN CS = "011" and RWn = '1' and RS = '1' ELSE (OTHERS => '0');
+    DATA_EN <= '1' WHEN CS = "011" and RWn = '1' and RS = '1' ELSE '0';
 	
-	SHIFTREG: process(RESETn, CLK)
-	begin
-		if RESETn = '0' then
-			SHIFT_REG <= x"00";
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
+	shiftreg : PROCESS(RESETn, CLK)
+	BEGIN
+		IF RESETn = '0' or MCLR = '1' THEN
 				SHIFT_REG <= x"00";
-			elsif RCV_STATE = SAMPLE and CLK_STRB = '1' then
-				SHIFT_REG <= RXDATA_S & SHIFT_REG(7 downto 1); -- Shift right.
-			end if;
-		end if;
-	end process SHIFTREG;	
+		ELSE
+			IF rising_edge(CLK) THEN
+				IF RCV_STATE = SAMPLE and CLK_STRB = '1' THEN
+                    SHIFT_REG <= RXDATA_S & SHIFT_REG(7 DOWNTO 1); -- Shift right.
+                END IF;
+            END IF;
+		END IF;
+	END PROCESS shiftreg;	
 
-	P_BITCNT: process
-	begin
-		wait until CLK = '1' and CLK' event;
-		if RCV_STATE = SAMPLE and CLK_STRB = '1' then
-			BITCNT <= BITCNT + '1';
-		elsif RCV_STATE /= SAMPLE then
-			BITCNT <= (others => '0');
-		end if;
-	end process P_BITCNT;
+	p_bitcnt : PROCESS(CLK)
+	BEGIN
+		IF rising_edge(CLK) THEN
+            IF RCV_STATE = SAMPLE and CLK_STRB = '1' THEN
+                BITCNT <= BITCNT + '1';
+            ELSIF RCV_STATE /= SAMPLE THEN
+                BITCNT <= (OTHERS => '0');
+            END IF;
+		END IF;
+	END PROCESS p_bitcnt;
 
-	FRAME_ERR: process(RESETn, CLK)
+	p_frame_err: PROCESS(RESETn, CLK)
 	-- This module detects a framing error
 	-- during stop bit 1 and stop bit 2.
-	variable FE_I: bit;
-	begin
-		if RESETn = '0' then
+        VARIABLE FE_I: bit;
+	BEGIN
+		IF RESETn = '0' THEN
 			FE_I := '0';
 			FE <= '0';
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
-				FE_I := '0';
-				FE <= '0';
-			elsif CLK_STRB = '1' then
-				if RCV_STATE = STOP1 and RXDATA_S = '0' then
-					FE_I := '1';
-				elsif RCV_STATE = STOP2 and RXDATA_S = '0' then
-					FE_I := '1';
-				elsif RCV_STATE = STOP1 or RCV_STATE = STOP2 then
-					FE_I := '0'; -- Error resets when correct data appears.
-				end if;
-			end if;
-			if RCV_STATE = SYNC then
-				FE <= FE_I; -- Update the FE every SYNC time.
-			end if;
-		end if;
-	end process FRAME_ERR;
+		ELSE
+			IF rising_edge(CLK) THEN
+                IF MCLR = '1' THEN
+                    FE_I := '0';
+                    FE <= '0';
+                ELSIF CLK_STRB = '1' THEN
+                    IF RCV_STATE = STOP1 and RXDATA_S = '0' THEN
+                        FE_I := '1';
+                    ELSIF RCV_STATE = STOP2 and RXDATA_S = '0' THEN
+                        FE_I := '1';
+                    ELSIF RCV_STATE = STOP1 or RCV_STATE = STOP2 THEN
+                        FE_I := '0'; -- Error resets when correct data appears.
+                    END IF;
+                END IF;
+                IF RCV_STATE = SYNC THEN
+                    FE <= FE_I; -- Update the FE every SYNC time.
+                END IF;
+            END IF;
+		END IF;
+	END PROCESS p_frame_err;
 
-	OVERRUN: process(RESETn, CLK)
-	variable OVR_I		: bit;
-	variable FIRST_READ	: boolean;
-	begin
-		if RESETn = '0' then
-			OVR_I := '0';
-			OVR <= '0';
-			FIRST_READ := false;
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
+	p_overrun : PROCESS(RESETn, CLK)
+        VARIABLE OVR_I		: bit;
+        VARIABLE FIRST_READ	: boolean;
+	BEGIN
+		IF rising_edge(CLK) THEN
+			IF RESETn = '0'  or MCLR = '1' THEN
 				OVR_I := '0';
 				OVR <= '0';
 				FIRST_READ := false;
-			elsif CLK_STRB = '1' and RCV_STATE = STOP1 then
-				-- Overrun appears if RDRF is '1' in this state.
-				OVR_I := RDRF;
-			end if;
-			if CS = "011" and RWn = '1' and RS = '1' and E = '1' and OVR_I = '1' then
-				-- If an overrun was detected, the concerning flag is
-				-- set when the valid data word in the receiver data
-				-- register is read. Thereafter the RDRF flag is reset
-				-- and the overrun disappears (OVR_I goes low) after 
-				-- a second read (in time) of the receiver data register.
-				if FIRST_READ = false then
-					OVR <= '1';
-					FIRST_READ := true;
-				else
-					OVR <= '0';
+			ELSE
+				IF CLK_STRB = '1' and RCV_STATE = STOP1 THEN
+                    -- Overrun appears if RDRF is '1' in this state.
+                    OVR_I := RDRF;
+                END IF;
+				IF CS = "011" and RWn = '1' and RS = '1' THEN
+                    -- If an overrun was detected, the concerning flag is
+                    -- set when the valid data word in the receiver data
+                    -- register is read. Thereafter the RDRF flag is reset
+                    -- and the overrun disappears (OVR_I goes low) after 
+                    -- a second read (in time) of the receiver data register.
+                    IF FIRST_READ = false THEN
+						IF OVR_I = '1' THEN
+                            OVR <= '1';
+							OVR_I := '0';
+                            FIRST_READ := true;
+                        ELSE
+                            OVR <= '0';
+						END IF;
+					END IF;
+				ELSE
 					FIRST_READ := false;
-				end if;
-			end if;
-		end if;
-	end process OVERRUN;
+				END IF;
+			END IF;
+		END IF;
+	END PROCESS p_overrun;
 	
-	PARITY_TEST: process(RESETn, CLK)
-	variable PAR_TMP	: bit;
-	variable PE_I		: bit;
-	begin
-		if RESETn = '0' then
+	p_parity_test : PROCESS(RESETn,MCLR,CLK)
+        VARIABLE PAR_TMP	: bit;
+        VARIABLE PE_I	    : bit;
+	BEGIN
+		IF RESETn = '0' or MCLR = '1' THEN
 			PE <= '0';
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
-				PE <= '0';
-			elsif CLK_STRB = '1' then -- Sample parity on clock strobe.
-				PE_I := '0'; -- Initialise.
-				if RCV_STATE = PARITY then
-				    for i in 1 to 7 loop
-				        if i = 1 then
-				            PAR_TMP := SHIFT_REG(i-1) xor SHIFT_REG(i);
-				        else
-				            PAR_TMP := PAR_TMP xor SHIFT_REG(i);
-				        end if;
-				    end loop;
-					if WS = "000" or WS = "010" or WS = "110" then -- Even parity.
-				    	PE_I := PAR_TMP xor RXDATA_S;
-					elsif WS = "001" or WS = "011" or WS = "111" then -- Odd parity.
-						PE_I := not PAR_TMP xor RXDATA_S;
-					else -- No parity for WS = "100" and WS = "101".
-						PE_I := '0';		
-					end if;
-				end if;
-			end if;
+		ELSE
+			IF rising_edge(CLK) THEN
+				IF CLK_STRB = '1' THEN -- Sample parity on clock strobe.
+                    PE_I := '0'; -- Initialise.
+                    IF RCV_STATE = PARITY THEN
+                        FOR i in 1 TO 7 LOOP
+                            IF i = 1 THEN
+                                PAR_TMP := SHIFT_REG(i - 1) xor SHIFT_REG(i);
+                            ELSE
+                                PAR_TMP := PAR_TMP xor SHIFT_REG(i);
+                            END IF;
+                        END LOOP;
+                        IF WS = "000" or WS = "010" or WS = "110" THEN -- Even parity.
+                            PE_I := PAR_TMP xor RXDATA_S;
+                        ELSIF WS = "001" or WS = "011" or WS = "111" THEN -- Odd parity.
+                            PE_I := not PAR_TMP xor RXDATA_S;
+                        ELSE -- No parity for WS = "100" and WS = "101".
+                            PE_I := '0';		
+                        END IF;
+                    END IF;
+                END IF;
+			END IF;
 			-- Transmit the parity flag together with the data
 			-- In other words: no parity to the status register
 			-- when RDRF inhibits the data transfer to the
 			-- receiver data register.
-			if RCV_STATE = SYNC and RDRF = '0' then
+			IF RCV_STATE = SYNC and RDRF = '0' THEN
 				PE <= PE_I;
-			elsif CS = "011" and RWn = '1' and RS = '1' and E = '1' then
+			ELSIF CS = "011" and RWn = '1' and RS = '1' THEN
 				PE <= '0'; -- Clear when reading the data register.
-			end if;
-		end if;
-	end process PARITY_TEST;
+			END IF;
+		END IF;
+	END PROCESS p_parity_test;
 
-	P_RDRF: process(RESETn, CLK)
+	p_rdrf : process(RESETn, CLK)
 	-- Receive data register full flag.
-	begin
-		if RESETn = '0' then
-			RDRF <= '0';
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
-				RDRF <= '0';
-			elsif RCV_STATE = SYNC then
-				RDRF <= '1'; -- Data register is full until now!
-			elsif CS = "011" and RWn = '1' and RS = '1' and E = '1' then
-				RDRF <= '0'; -- After reading the data register ...
-			end if;
-		end if;
-	end process P_RDRF;
+	BEGIN
+		IF rising_edge(CLK) THEN
+			IF RESETn = '0' or MCLR = '1' THEN
+                RDRF <= '0';
+			ELSE
+				IF RCV_STATE = SYNC THEN
+                    RDRF <= '1'; -- Data register is full until now!
+				END IF;
+				IF CS = "011" and RWn = '1' and RS = '1' THEN
+					RDRF <= '0'; -- when reading the data register ...
+				END IF;
+			END IF;
+		END IF;
+	END PROCESS p_rdrf;
 	
-	RCV_STATEREG: process(RESETn, CLK)
-	begin
-		if RESETn = '0' then
+	p_rcv_statereg : PROCESS(RESETn, CLK)
+	BEGIN
+		IF RESETn = '0' THEN
 			RCV_STATE <= IDLE;
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
-				RCV_STATE <= IDLE;
-			else
-				RCV_STATE <= RCV_NEXT_STATE;
-			end if;
-		end if;
-	end process RCV_STATEREG;
+		ELSE
+			IF rising_edge(CLK) THEN
+                IF MCLR = '1' THEN
+                    RCV_STATE <= IDLE;
+                ELSE
+                    RCV_STATE <= RCV_NEXT_STATE;
+                END IF;
+            END IF;
+		END IF;
+	END PROCESS p_rcv_statereg;
 	
-	RCV_STATEDEC: process(RCV_STATE, RXDATA_S, CDS, WS, BITCNT, CLK_STRB)
-	begin
-		case RCV_STATE is
-			when IDLE =>
-				if RXDATA_S = '0' and CDS = "00" then
+	p_rcv_statedec : PROCESS(RCV_STATE, RXDATA_S, CDS, WS, BITCNT, CLK_STRB)
+	BEGIN
+		CASE RCV_STATE IS
+			WHEN IDLE =>
+				IF RXDATA_S = '0' and CDS = "00" THEN
 					RCV_NEXT_STATE <= SAMPLE; -- Startbit detected in div by 1 mode.
-				elsif RXDATA_S = '0' and CDS = "01" then
+				ELSIF RXDATA_S = '0' and CDS = "01" THEN
 					RCV_NEXT_STATE <= WAIT_START; -- Startbit detected in div by 16 mode.
-				elsif RXDATA_S = '0' and CDS = "10" then
+				ELSIF RXDATA_S = '0' and CDS = "10" THEN
 					RCV_NEXT_STATE <= WAIT_START; -- Startbit detected in div by 64 mode.
-				else
+				ELSE
 					RCV_NEXT_STATE <= IDLE; -- No startbit; sleep well :-)
-				end if;
-			when WAIT_START =>
-				if CLK_STRB = '1' then
-					if RXDATA_S = '0' then
+				END IF;
+			
+            WHEN WAIT_START =>
+				IF CLK_STRB = '1' THEN
+					IF RXDATA_S = '0' THEN
 						RCV_NEXT_STATE <= SAMPLE; -- Start condition in no div by 1 modes.
-					else
+					ELSE
 						RCV_NEXT_STATE <= IDLE; -- No valid start condition, go back.
-					end if;
-				else
+					END IF;
+				ELSE
 					RCV_NEXT_STATE <= WAIT_START; -- Stay.
-				end if;
-			when SAMPLE =>
-				if CLK_STRB = '1' then
-					if BITCNT < "110" and WS(2) = '0' then
+				END IF;
+			
+            WHEN SAMPLE =>
+				IF CLK_STRB = '1' THEN
+					IF BITCNT < "110" and WS(2) = '0' THEN
 						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 7 data bits.
-					elsif BITCNT < "111" and WS(2) = '1' then
+					ELSIF BITCNT < "111" and WS(2) = '1' THEN
 						RCV_NEXT_STATE <= SAMPLE; -- Go on sampling 8 data bits.
-					elsif WS = "100" or WS = "101" then
+					ELSIF WS = "100" or WS = "101" THEN
 						RCV_NEXT_STATE <= STOP1; -- No parity check enabled.
-					else
+					ELSE
 						RCV_NEXT_STATE <= PARITY; -- Parity enabled.
-					end if;
-				else
+					END IF;
+				ELSE
 					RCV_NEXT_STATE <= SAMPLE; -- Stay in sample mode.
-				end if;
-			when PARITY =>
-				if CLK_STRB = '1' then
+				END IF;
+                
+			WHEN PARITY =>
+				IF CLK_STRB = '1' THEN
 					RCV_NEXT_STATE <= STOP1;
-				else
+				ELSE
 					RCV_NEXT_STATE <= PARITY;
-				end if;				
-			when STOP1 =>
-				if CLK_STRB = '1' then
-					if RXDATA_S = '0' then
+				END IF;				
+			
+            WHEN STOP1 =>
+				IF CLK_STRB = '1' THEN
+					IF RXDATA_S = '0' THEN
 						RCV_NEXT_STATE <= SYNC; -- Framing error detected.
-					elsif WS = "000" or WS = "001" or WS = "100" then
+					ELSIF WS = "000" or WS = "001" or WS = "100" THEN
 						RCV_NEXT_STATE <= STOP2; -- Two stop bits selected.
-					else
+					ELSE
 						RCV_NEXT_STATE <= SYNC; -- One stop bit selected.
-					end if;
-				else
+					END IF;
+				ELSE
 					RCV_NEXT_STATE <= STOP1;
-				end if;				
-			when STOP2 =>
-				if CLK_STRB = '1' then
+				END IF;	
+                
+            WHEN STOP2 =>
+				IF CLK_STRB = '1' THEN
 					RCV_NEXT_STATE <= SYNC;
-				else
+				ELSE
 					RCV_NEXT_STATE <= STOP2;
-				end if;				
-			when SYNC =>
+				END IF;				
+			WHEN SYNC =>
 				RCV_NEXT_STATE <= IDLE;
-		end case;
-	end process RCV_STATEDEC;
-end architecture BEHAVIOR;
+		END CASE;
+	END PROCESS p_rcv_statedec;
+END ARCHITECTURE rtl;
 

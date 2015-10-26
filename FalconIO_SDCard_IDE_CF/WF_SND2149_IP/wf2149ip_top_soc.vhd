@@ -83,7 +83,7 @@ LIBRARY ieee;
 ENTITY WF2149IP_TOP_SOC IS
 	PORT(
 		
-		SYS_CLK		: IN std_logic; -- Read the inforation in the header!
+		SYS_CLK		: in bit; -- Read the inforation in the header!
 		RESETn   	: IN bit;
 
 		WAV_CLK		: IN bit; -- Read the inforation in the header!
@@ -110,7 +110,7 @@ ENTITY WF2149IP_TOP_SOC IS
 	);
 END WF2149IP_TOP_SOC;
 
-ARCHITECTURE rtl OF WF2149IP_TOP_SOC IS
+architecture STRUCTURE of WF2149IP_TOP_SOC is
     SIGNAL BUSCYCLE		: BUSCYCLES;
     SIGNAL DATA_OUT_I	: std_logic_vector(7 DOWNTO 0);
     SIGNAL DATA_EN_I	: bit;
@@ -127,11 +127,10 @@ BEGIN
 		IF RESETn = '0' THEN
 			LOCK := false;
 			TMP := '0';
-		ELSIF rising_edge(SYS_CLK) THEN
+		elsif SYS_CLK = '1' and SYS_CLK' event then
 			IF WAV_CLK = '1' and LOCK = false THEN
 				LOCK := true;
 				TMP := not TMP; -- Divider by 2.
-				
                 CASE SELn IS
 					WHEN '1' 	=> WAV_STRB <= '1';
 					WHEN OTHERS => WAV_STRB <= TMP;
@@ -158,7 +157,7 @@ BEGIN
 	BEGIN
 		IF RESETn = '0' THEN
 			ADR_I <= (OTHERS => '0');
-        ELSIF rising_edge(SYS_CLK) THEN
+        elsif SYS_CLK = '1' and SYS_CLK' event then
 			IF BUSCYCLE = ADDRESS AND A9n = '0' AND A8 = '1' AND DA_IN(7 DOWNTO 4) = x"0" THEN
 				ADR_I <= To_BitVector(DA_IN(3 DOWNTO 0));
 			END IF;
@@ -170,7 +169,7 @@ BEGIN
 	BEGIN
 		IF RESETn = '0' THEN
 			CTRL_REG <= x"00";
-		ELSIF rising_edge(SYS_CLK) THEN
+		elsif SYS_CLK = '1' and SYS_CLK' event then
 			IF BUSCYCLE = R_WRITE AND ADR_I = x"7" THEN
 				CTRL_REG <= To_BitVector(DA_IN);
 			END IF;
@@ -182,7 +181,7 @@ BEGIN
 		IF RESETn = '0' THEN
 			PORT_A <= x"00";
 			PORT_B <= x"00";
-		ELSIF rising_edge(SYS_CLK) THEN
+		elsif SYS_CLK = '1' and SYS_CLK' event then
 			IF BUSCYCLE = R_WRITE AND ADR_I = x"E" THEN
 				PORT_A <= To_BitVector(DA_IN);
 			ELSIF BUSCYCLE = R_WRITE and ADR_I = x"F" THEN
@@ -227,4 +226,4 @@ BEGIN
 				To_StdLogicVector(IO_B_IN) WHEN BUSCYCLE = R_READ and ADR_I = x"F" ELSE
 				To_StdLogicVector(CTRL_REG) WHEN BUSCYCLE = R_READ and ADR_I = x"7" ELSE (OTHERS => '0');
 
-END rtl;
+end STRUCTURE;

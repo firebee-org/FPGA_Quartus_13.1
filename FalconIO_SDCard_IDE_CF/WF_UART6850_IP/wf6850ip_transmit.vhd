@@ -63,7 +63,7 @@ use ieee.std_logic_unsigned.all;
 
 entity WF6850IP_TRANSMIT is
   port (
-		CLK					: in bit;
+		CLK					: in std_logic;
         RESETn				: in bit;
 		MCLR				: in bit;
 
@@ -108,12 +108,12 @@ begin
 				'1'				when TR_STATE = STOP1 		else
 				'1'				when TR_STATE = STOP2 		else '1';
 
-	CLKDIV: process
+	CLKDIV: process(CLK)
 	variable CLK_LOCK	: boolean;
 	variable STRB_LOCK	: boolean;
 	variable CLK_DIVCNT	: std_logic_vector(6 downto 0);
 	begin
-		wait until CLK = '1' and CLK' event;
+		if rising_edge(CLK) then
 		if CDS = "00" then -- divider off
 			if TXCLK = '0' and STRB_LOCK = false then  -- Works on negative TXCLK edge.
 				CLK_STRB <= '1';
@@ -162,13 +162,14 @@ begin
 				CLK_STRB <= '0';
 			end if;
 		end if;
+		end if;
 	end process CLKDIV;
 
 	DATAREG: process(RESETn, CLK)
 	begin
 		if RESETn = '0' then
 			DATA_REG <= x"00";
-		elsif CLK = '1' and CLK' event then
+		elsif rising_edge(CLK) then
 			if MCLR = '1' then
 				DATA_REG <= x"00";
 			elsif WS(2) = '0' and CS = "011" and RWn = '0' and RS = '1' and E = '1' then
@@ -183,7 +184,7 @@ begin
 	begin
 		if RESETn = '0' then
 			SHIFT_REG <= x"00";
-		elsif CLK = '1' and CLK' event then
+		elsif rising_edge(CLK) then
 			if MCLR = '1' then
 				SHIFT_REG <= x"00";
 			elsif TR_STATE = LOAD_SHFT and TDRE = '0' then
@@ -198,47 +199,42 @@ begin
 		end if;
 	end process SHIFTREG;	
 
-	P_BITCNT: process
+	P_BITCNT: process(CLK)
 	-- Counter for the data bits transmitted.
 	begin
-		wait until CLK = '1' and CLK' event;
+		if rising_edge(CLK) then
 		if TR_STATE = SHIFTOUT and CLK_STRB = '1' then
 			BITCNT <= BITCNT + '1';
 		elsif TR_STATE /= SHIFTOUT then
 			BITCNT <= "000";
 		end if;
+		end if;
 	end process P_BITCNT;
 
 	P_TDRE: process(RESETn, CLK)
 	-- Transmit data register empty flag.
-	variable LOCK	: boolean;
 	begin
-		if RESETn = '0' then
+		if rising_edge(CLK) then
+			if RESETn = '0' or MCLR = '1' then
 			TDRE <= '1';
-			LOCK := false;
-		elsif CLK = '1' and CLK' event then
-			if MCLR = '1' then
-				TDRE <= '1';
-            elsif TR_NEXT_STATE = START and TR_STATE /= START then
+			else
+				if TR_NEXT_STATE = START and TR_STATE /= START then
 				-- Data has been loaded to shift register, thus data register is free again.
 				-- Thanks to Lyndon Amsdon for finding a bug here. The TDRE is set to one once
 				-- entering the state now.
 				TDRE <= '1';
-			elsif  CS = "011" and RWn = '0' and RS = '1' and E = '1' and LOCK = false then
-				LOCK := true;
-			elsif E = '0' and LOCK = true then
-				-- This construction clears TDRE after the falling edge of E
-				-- and after the transmit data register has been written to.
+				end if;
+				if  CS = "011" and RWn = '0' and RS = '1' then
 				TDRE <= '0';
-				LOCK := false;
+				end if;
 			end if;
 		end if;
 	end process P_TDRE;
 
-	PARITY_GEN: process
+	PARITY_GEN: process(CLK)
 	variable PAR_TMP	: bit;
 	begin
-		wait until CLK = '1' and CLK' event;
+		if rising_edge(CLK) then
 		if TR_STATE = START then -- Calculate the parity during the start phase.
 		    for i in 1 to 7 loop
 		        if i = 1 then
@@ -255,18 +251,21 @@ begin
 				PARITY_I <= '0';		
 			end if;
 		end if;
+		end if;
 	end process PARITY_GEN;
 
 	TR_STATEREG: process(RESETn, CLK)
 	begin
 		if RESETn = '0' then
 			TR_STATE <= IDLE;
-		elsif CLK = '1' and CLK' event then
+		else
+			if rising_edge(CLK) then
 			if MCLR = '1' then
 				TR_STATE <= IDLE;
 			else
 				TR_STATE <= TR_NEXT_STATE;
 			end if;
+		end if;
 		end if;
 	end process TR_STATEREG;
 	

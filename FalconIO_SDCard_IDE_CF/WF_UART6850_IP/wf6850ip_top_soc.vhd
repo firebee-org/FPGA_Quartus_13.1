@@ -158,7 +158,6 @@ ARCHITECTURE structure OF WF6850IP_TOP_SOC IS
             TXDATA				: OUT bit
            );                                              
     END COMPONENT;
-    
     SIGNAL DATA_IN_I	: bit_vector(7 DOWNTO 0);
     SIGNAL DATA_RX		: bit_vector(7 DOWNTO 0);
     SIGNAL DATA_RX_EN	: bit;
@@ -183,8 +182,7 @@ BEGIN
 	IRQn <= '0' when IRQ_In = '0' else '1';
 
 	I_UART_CTRL_STATUS: WF6850IP_CTRL_STATUS
-        PORT MAP
-        (
+	port map(
             CLK			=> CLK,
             RESETn		=> RESETn,
             CS(2)		=> CS2n,
@@ -212,8 +210,7 @@ BEGIN
         );                                              
 
 	I_UART_RECEIVE: WF6850IP_RECEIVE
-        PORT MAP
-        (
+	port map (
 			CLK			=> CLK,
 	        RESETn		=> RESETn,
 			MCLR		=> MCLR_I,
@@ -236,8 +233,7 @@ BEGIN
         );                                              
 
 	I_UART_TRANSMIT: WF6850IP_TRANSMIT
-        PORT MAP
-        (
+	port map (
 			CLK			=> CLK,
 	        RESETn		=> RESETn,
 			MCLR		=> MCLR_I,

@@ -118,14 +118,14 @@ derive_clock_uncertainty
 # Set Input Delay
 #**************************************************************
 
-set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.000 [all_inputs]
+set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.500 [all_inputs]
 
 
 #**************************************************************
 # Set Output Delay
 #**************************************************************
 
-set_output_delay -add_delay  -clock [get_clocks {MAIN_CLK}]  -max 1.000 [all_outputs]
+set_output_delay -add_delay  -clock [get_clocks {MAIN_CLK}]  -max 1.500 [all_outputs]
 
 
 #**************************************************************
@@ -149,17 +149,22 @@ set_false_path  -from  [get_clocks {MAIN_CLK}]  -to  [get_clocks {i_atari_clk_pl
 
 # MAIN_CLK to DDR clk and v.v.
 set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]
 set_false_path -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {MAIN_CLK}]
 set_false_path -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[3]}] -to [get_clocks {MAIN_CLK}]
 set_false_path -from [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] -to [get_clocks {MAIN_CLK}]
 
-set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]
 set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]
+set_false_path  -from  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}]  -to  [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]
+
 set_false_path  -from  [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]  -to  [get_clocks {MAIN_CLK}]
 set_false_path  -from  [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]  -to  [get_clocks {MAIN_CLK}]
-
+set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 # 2 MHz to 33 MHz
 set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]  -to  [get_clocks {MAIN_CLK}]
+set_false_path  -from  [get_clocks {MAIN_CLK}]  -to [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path  -from [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[3]}] -to [get_clocks {MAIN_CLK}] 
 
 # 16 MHz to 33 MHz
 set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[1]}]  -to  [get_clocks {MAIN_CLK}]
@@ -168,6 +173,9 @@ set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_atari_clk_pll|al
 # 25 MHz to 33 MHz
 set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}]  -to  [get_clocks {MAIN_CLK}]
 set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}]
+set_false_path -from [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path -from [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[2]}] -to [get_clocks {MAIN_CLK}]
+
 
 set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}]  -to  [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 set_false_path  -from  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}]  -to  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
@@ -178,6 +186,7 @@ set_false_path  -from  [get_clocks {i_video_clk_pll|altpll_component|auto_genera
 set_false_path -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 
 set_false_path  -from  [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]  -to  [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
+set_false_path  -from  [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]  -to  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
 
 set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_id9:dffpipe17|dffe18a*}]
 set_false_path -from [get_keepers {*delayed_wrptr_g*}] -to [get_keepers {*rs_dgwp|dffpipe_hd9:dffpipe12|dffe13a*}]
