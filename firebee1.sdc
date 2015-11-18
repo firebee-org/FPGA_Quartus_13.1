@@ -3,7 +3,7 @@
 # Synopsis design constraints for the Firebee project          #
 #                                                              #
 # This file is part of the Firebee ACP project.                #
-# http://www.experiment-s.de                                   #
+# http://www.firebee.org                                       #
 #                                                              #
 # Description:                                                 #
 #   timing constraints for the Firebee VHDL config             #
