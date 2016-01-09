@@ -50,7 +50,7 @@ SUBDESIGN video_mod_mux_clutctr
 	BLITTER_ON              : OUTPUT;
 	VIDEO_RAM_CTR[15..0]    : OUTPUT;
 	VIDEO_MOD_TA            : OUTPUT;
-	CCR[23..0]              : OUTPUT;
+	BORDER_COLOR[23..0]     : OUTPUT;
 	CCSEL[2..0]             : OUTPUT;
 	ACP_CLUT_WR[3..0]       : OUTPUT;
 	INTER_ZEI               : OUTPUT;
@@ -88,8 +88,8 @@ VARIABLE
 	CLUT_MUX_AV[1..0][3..0]		:DFF;
 	ACP_VCTR_CS					:NODE;
 	ACP_VCTR[31..0]				:DFFE;
-	CCR_CS						:NODE;
-	CCR[23..0]					:DFFE;
+	BORDER_COLOR_CS				:NODE;
+	BORDER_COLOR[23..0]			:DFFE;
 	ACP_VIDEO_ON				:NODE;
 	SYS_CTR[6..0]				:DFFE;
 	SYS_CTR_CS					:NODE;
@@ -267,6 +267,7 @@ BEGIN
 	ACP_VCTR[5..0].ENA   = ACP_VCTR_CS & FB_B3 & !nFB_WR;
 	ACP_VIDEO_ON = ACP_VCTR0;
 	nPD_VGA = ACP_VCTR1;
+    
     -- ATARI MODUS
 	ATARI_SYNC = ACP_VCTR26;			-- WENN 1 AUTOMATISCHE AUFLÖSUNG
     
@@ -311,6 +312,7 @@ BEGIN
 	VR_WR.CLK = MAIN_CLK;
 	VR_WR = VIDEO_PLL_CONFIG_CS & !nFB_WR & !VR_BUSY & !VR_WR;
 	VR_RD = VIDEO_PLL_CONFIG_CS &  nFB_WR & !VR_BUSY;
+    
 	VR_DOUT[].CLK = MAIN_CLK;
 	VR_DOUT[].ENA = !VR_BUSY;
 	VR_DOUT[] = VR_D[];
@@ -349,12 +351,12 @@ BEGIN
             
     -- DIVERSE (VIDEO)-REGISTER ----------------------------
     -- RANDFARBE
-	CCR[].CLK = MAIN_CLK;
-	CCR_CS = !nFB_CS2 & FB_ADR[27..2]==H"101";						-- $404/4
-	CCR[] = FB_AD[23..0];
-	CCR[23..16].ENA = CCR_CS & FB_B1 & !nFB_WR;
-	CCR[15..8].ENA  = CCR_CS & FB_B2 & !nFB_WR;
-	CCR[7..0].ENA   = CCR_CS & FB_B3 & !nFB_WR;
+	BORDER_COLOR[].CLK = MAIN_CLK;
+	BORDER_COLOR_CS = !nFB_CS2 & FB_ADR[27..2]==H"101";						-- $404/4
+	BORDER_COLOR[] = FB_AD[23..0];
+	BORDER_COLOR[23..16].ENA = BORDER_COLOR_CS & FB_B1 & !nFB_WR;
+	BORDER_COLOR[15..8].ENA  = BORDER_COLOR_CS & FB_B2 & !nFB_WR;
+	BORDER_COLOR[7..0].ENA   = BORDER_COLOR_CS & FB_B3 & !nFB_WR;
     
     -- System Config Register
     -- $FFFF8006 [R/W] B  76543210  Monitor-Type Hi
@@ -523,10 +525,10 @@ BEGIN
 					  #	ATARI_VH_CS & ATARI_VH[31..16]
 					  #	ATARI_HL_CS & ATARI_HL[31..16]
 					  #	ATARI_VL_CS & ATARI_VL[31..16]
-					  #	CCR_CS & (0, CCR[23..16])
+					  #	BORDER_COLOR_CS & (0, BORDER_COLOR[23..16])
  					  #	VIDEO_PLL_CONFIG_CS & (0,VR_DOUT[])
  					  #	VIDEO_PLL_RECONFIG_CS & (VR_BUSY, B"0000", VR_WR, VR_RD, VIDEO_RECONFIG, H"FA")
-					  ,(ST_SHIFT_MODE_CS # FALCON_SHIFT_MODE_CS # ACP_VCTR_CS # CCR_CS # SYS_CTR_CS # LOF_CS # LWD_CS
+					  ,(ST_SHIFT_MODE_CS # FALCON_SHIFT_MODE_CS # ACP_VCTR_CS # BORDER_COLOR_CS # SYS_CTR_CS # LOF_CS # LWD_CS
 					 # HBE_CS # HDB_CS # HDE_CS # HBB_CS # HSS_CS # HHT_CS 
 					 # ATARI_HH_CS # ATARI_VH_CS # ATARI_HL_CS # ATARI_VL_CS # VIDEO_PLL_CONFIG_CS # VIDEO_PLL_RECONFIG_CS
 					 # VBE_CS # VDB_CS # VDE_CS # VBB_CS # VSS_CS # VFT_CS # VCO_CS # VCNTRL_CS) & !nFB_OE);
@@ -538,8 +540,8 @@ BEGIN
 					  #	ATARI_VH_CS & ATARI_VH[15..0]
 					  #	ATARI_HL_CS & ATARI_HL[15..0]
 					  #	ATARI_VL_CS & ATARI_VL[15..0]
- 					  #	CCR_CS & CCR[15..0],
-                      (ACP_VCTR_CS # CCR_CS # ATARI_HH_CS # ATARI_VH_CS # ATARI_HL_CS # ATARI_VL_CS ) & !nFB_OE);
+ 					  #	BORDER_COLOR_CS & BORDER_COLOR[15..0],
+                      (ACP_VCTR_CS # BORDER_COLOR_CS # ATARI_HH_CS # ATARI_VH_CS # ATARI_HL_CS # ATARI_VL_CS ) & !nFB_OE);
 
 	VIDEO_MOD_TA = CLUT_TA # ST_SHIFT_MODE_CS # FALCON_SHIFT_MODE_CS # ACP_VCTR_CS # SYS_CTR_CS # LOF_CS # LWD_CS 
 			   	 # HBE_CS # HDB_CS # HDE_CS # HBB_CS # HSS_CS # HHT_CS
@@ -566,10 +568,10 @@ BEGIN
     ----------------------------------------------------------------
 	-- HSY_LEN[].CLK = MAIN_CLK;		
     HSY_LEN[].CLK = PIXEL_CLK;      -- check if this is better (mfro)
-	HSY_LEN[] = 14 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & (VCNTRL2 &  VCO2 #  VCO0)    -- 320 pixels
-			#	16 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & (VCNTRL2 & !VCO2 #  VCO0)    -- 640 pixels
-			#	28 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & !VCNTRL2 &  VCO2 & !VCO0     -- 320 pixels
-			#	32 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & !VCNTRL2 & !VCO2 & !VCO0     -- 640 pixels
+	HSY_LEN[] = 14 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & (VCNTRL2 &  VCO2 #  VCO0)    -- 320 pixels, 32 MHz, RGB
+			#	16 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & (VCNTRL2 & !VCO2 #  VCO0)    -- 320 pixels, 25.175 MHz, VGA
+			#	28 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & !VCNTRL2 &  VCO2 & !VCO0     -- 640 pixels, 32 MHz, RGB
+			#	32 & !ACP_VIDEO_ON & (FALCON_VIDEO # ST_VIDEO) & !VCNTRL2 & !VCO2 & !VCO0     -- 640 pixels, 25.175 MHz, VGA
 			#	28 &  ACP_VIDEO_ON & ACP_VCTR[9..8] == B"00"
 			#	32 &  ACP_VIDEO_ON & ACP_VCTR[9..8] == B"01"
 			#   16 + (0, VR_FRQ[7..1]) &  ACP_VIDEO_ON & ACP_VCTR[9];			-- hsync pulse length in pixeln = frequenz / = 500ns
@@ -580,12 +582,12 @@ BEGIN
 			# 32 &  ST_VIDEO & !VCNTRL2;
 	 	
 	 	
-	HDIS_LEN[] =  320 &  VCNTRL2								-- BREITE IN PIXELN
+	HDIS_LEN[] =  320 &  VCNTRL2							-- BREITE IN PIXELN
 			   #  640 & !VCNTRL2;
 					
     -- DOPPELZEILENMODUS
 	DOP_ZEI.CLK = MAIN_CLK;
-	DOP_ZEI = VCNTRL0 & (FALCON_VIDEO # ST_VIDEO);				-- ZEILENVERDOPPELUNG EIN AUS
+	DOP_ZEI = VCNTRL0 & (FALCON_VIDEO # ST_VIDEO);			-- ZEILENVERDOPPELUNG EIN AUS
     
 	INTER_ZEI.CLK = PIXEL_CLK;
 	INTER_ZEI =  DOP_ZEI & VVCNT0 != VDIS_START0 & VVCNT[] != 0 & VHCNT[] < (HDIS_END[] - 1)     -- EINSCHIEBEZEILE AUF "DOPPEL" ZEILEN UND ZEILE NULL WEGEN SYNC
@@ -650,14 +652,16 @@ BEGIN
     
 	VHCNT[].CLK = PIXEL_CLK;
 	VHCNT[] = (VHCNT[] + 1) & !LAST;
+    
 	VVCNT[].CLK = PIXEL_CLK;
 	VVCNT[].ENA = LAST;
 	VVCNT[] = (VVCNT[] + 1) & (VVCNT[] != V_TOTAL[] - 1);
     
     -- DISPLAY ON OFF
 	DPO_ZL.CLK = PIXEL_CLK;
-	DPO_ZL = (VVCNT[]>RAND_OBEN[]-1) & (VVCNT[]<RAND_UNTEN[]-1);	-- 1 ZEILE DAVOR ON OFF
+	DPO_ZL = (VVCNT[] > RAND_OBEN[] - 1) & (VVCNT[] < RAND_UNTEN[] - 1);	-- 1 ZEILE DAVOR ON OFF
 	DPO_ZL.ENA = LAST;												-- AM ZEILENENDE ÜBERNEHMEN
+    
 	DPO_ON.CLK = PIXEL_CLK;
 	DPO_ON = VHCNT[] == RAND_LINKS[];								-- BESSER EINZELN WEGEN TIMING
     
@@ -670,7 +674,7 @@ BEGIN
             
     -- DATENTRANSFER ON OFF
 	VCO_ON.CLK = PIXEL_CLK;
-	VCO_ON = VHCNT[] == (HDIS_START[]-1);							-- BESSER EINZELN WEGEN TIMING
+	VCO_ON = VHCNT[] == (HDIS_START[] - 1);							-- BESSER EINZELN WEGEN TIMING
     
 	VCO_OFF.CLK = PIXEL_CLK;
 	VCO_OFF = VHCNT[] == HDIS_END[];
@@ -718,14 +722,18 @@ BEGIN
 				#  ACP_VCTR15 &  VCO5  & VSYNC_I[] == 0;	-- NUR MÖGLICH WENN BEIDE
                 
     nBLANK.CLK = PIXEL_CLK;
-	nBLANK =  VERZ[0][8];
+	-- nBLANK =  VERZ[0][8];
+    nBLANK = DISP_ON;
     
     HSYNC.CLK = PIXEL_CLK;
-	HSYNC  =  VERZ[1][9];
-    
+	-- HSYNC  =  VERZ[1][9];
+    HSYNC = (!ACP_VCTR15 # !VCO6) & HSYNC_I[] != 0
+           #  ACP_VCTR15 &  VCO6  & HSYNC_I[] == 0;	-- NUR MÖGLICH WENN BEIDE
+           
 	VSYNC.CLK = PIXEL_CLK;
-	VSYNC  =  VERZ[2][9];
-    
+	-- VSYNC  =  VERZ[2][9];
+    VSYNC = (!ACP_VCTR15 # !VCO5) & VSYNC_I[] != 0
+		   #  ACP_VCTR15 &  VCO5  & VSYNC_I[] == 0;	-- NUR MÖGLICH WENN BEIDE
     nSYNC  = GND;
     
     -- RANDFARBE MACHEN ------------------------------------
@@ -737,7 +745,8 @@ BEGIN
 	RAND[4] = RAND[3];
 	RAND[5] = RAND[4];
 	RAND[6] = RAND[5];
-	RAND_ON = RAND[6];
+	-- RAND_ON = RAND[6];
+    RAND_ON = DISP_ON & !VDTRON & ACP_VCTR25;
     ----------------------------------------------------------
     
 	CLR_FIFO.CLK = PIXEL_CLK;

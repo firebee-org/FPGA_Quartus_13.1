@@ -6759,254 +6759,6 @@ applicable agreement for further details.
 	)
 )
 (block
-	(rect 1664 1664 2016 2600)
-	(text "VIDEO_MOD_MUX_CLUTCTR" (rect 5 5 183 18)(font "Arial" (font_size 8)))	(text "VIDEO_MOD_MUX_CLUTCTR" (rect 5 922 160 933)(font "Arial" ))	(block_io "nRSTO" (input))
-	(block_io "MAIN_CLK" (input))
-	(block_io "nFB_CS1" (input))
-	(block_io "nFB_CS2" (input))
-	(block_io "nFB_CS3" (input))
-	(block_io "nFB_WR" (input))
-	(block_io "nFB_OE" (input))
-	(block_io "FB_SIZE0" (input))
-	(block_io "FB_SIZE1" (input))
-	(block_io "nFB_BURST" (input))
-	(block_io "FB_ADR[31..0]" (input))
-	(block_io "CLK33M" (input))
-	(block_io "CLK25M" (input))
-	(block_io "BLITTER_RUN" (input))
-	(block_io "CLK_VIDEO" (input))
-	(block_io "VR_D[8..0]" (input))
-	(block_io "VR_BUSY" (input))
-	(block_io "COLOR8" (output))
-	(block_io "ACP_CLUT_RD" (output))
-	(block_io "COLOR1" (output))
-	(block_io "FALCON_CLUT_RDH" (output))
-	(block_io "FALCON_CLUT_RDL" (output))
-	(block_io "FALCON_CLUT_WR[3..0]" (output))
-	(block_io "ST_CLUT_RD" (output))
-	(block_io "ST_CLUT_WR[1..0]" (output))
-	(block_io "CLUT_MUX_ADR[3..0]" (output))
-	(block_io "HSYNC" (output))
-	(block_io "VSYNC" (output))
-	(block_io "nBLANK" (output))
-	(block_io "nSYNC" (output))
-	(block_io "nPD_VGA" (output))
-	(block_io "FIFO_RDE" (output))
-	(block_io "COLOR2" (output))
-	(block_io "COLOR4" (output))
-	(block_io "PIXEL_CLK" (output))
-	(block_io "CLUT_OFF[3..0]" (output))
-	(block_io "BLITTER_ON" (output))
-	(block_io "VIDEO_RAM_CTR[15..0]" (output))
-	(block_io "VIDEO_MOD_TA" (output))
-	(block_io "CCR[23..0]" (output))
-	(block_io "CCSEL[2..0]" (output))
-	(block_io "ACP_CLUT_WR[3..0]" (output))
-	(block_io "INTER_ZEI" (output))
-	(block_io "DOP_FIFO_CLR" (output))
-	(block_io "VIDEO_RECONFIG" (output))
-	(block_io "VR_WR" (output))
-	(block_io "VR_RD" (output))
-	(block_io "CLR_FIFO" (output))
-	(block_io "FB_AD[31..0]" (bidir))
-	(mapper
-		(pt 352 72)
-		(bidir)
-		)
-	(mapper
-		(pt 0 272)
-		(bidir)
-		)
-	(mapper
-		(pt 0 56)
-		(bidir)
-		)
-	(mapper
-		(pt 0 80)
-		(bidir)
-		)
-	(mapper
-		(pt 0 296)
-		(bidir)
-		)
-	(mapper
-		(pt 0 104)
-		(bidir)
-		)
-	(mapper
-		(pt 0 128)
-		(bidir)
-		)
-	(mapper
-		(pt 0 152)
-		(bidir)
-		)
-	(mapper
-		(pt 0 176)
-		(bidir)
-		)
-	(mapper
-		(pt 0 248)
-		(bidir)
-		)
-	(mapper
-		(pt 0 200)
-		(bidir)
-		)
-	(mapper
-		(pt 0 224)
-		(bidir)
-		)
-	(mapper
-		(pt 0 520)
-		(bidir)
-		)
-	(mapper
-		(pt 0 544)
-		(bidir)
-		)
-	(mapper
-		(pt 0 880)
-		(bidir)
-		)
-	(mapper
-		(pt 352 600)
-		(bidir)
-		)
-	(mapper
-		(pt 352 624)
-		(bidir)
-		)
-	(mapper
-		(pt 352 648)
-		(bidir)
-		)
-	(mapper
-		(pt 352 672)
-		(bidir)
-		)
-	(mapper
-		(pt 352 696)
-		(bidir)
-		)
-	(mapper
-		(pt 352 720)
-		(bidir)
-		)
-	(mapper
-		(pt 352 840)
-		(bidir)
-		)
-	(mapper
-		(pt 352 472)
-		(bidir)
-		)
-	(mapper
-		(pt 352 448)
-		(bidir)
-		)
-	(mapper
-		(pt 352 528)
-		(bidir)
-		)
-	(mapper
-		(pt 352 320)
-		(bidir)
-		)
-	(mapper
-		(pt 352 576)
-		(bidir)
-		)
-	(mapper
-		(pt 352 400)
-		(bidir)
-		)
-	(mapper
-		(pt 352 376)
-		(bidir)
-		)
-	(mapper
-		(pt 352 352)
-		(bidir)
-		)
-	(mapper
-		(pt 352 504)
-		(bidir)
-		)
-	(mapper
-		(pt 352 296)
-		(bidir)
-		)
-	(mapper
-		(pt 352 424)
-		(bidir)
-		)
-	(mapper
-		(pt 352 552)
-		(bidir)
-		)
-	(mapper
-		(pt 352 752)
-		(bidir)
-		)
-	(mapper
-		(pt 352 776)
-		(bidir)
-		)
-	(mapper
-		(pt 352 872)
-		(bidir)
-		)
-	(mapper
-		(pt 0 496)
-		(bidir)
-		)
-	(mapper
-		(pt 352 88)
-		(bidir)
-		)
-	(mapper
-		(pt 352 264)
-		(bidir)
-		)
-	(mapper
-		(pt 352 248)
-		(bidir)
-		)
-	(mapper
-		(pt 352 232)
-		(bidir)
-		)
-	(mapper
-		(pt 352 216)
-		(bidir)
-		)
-	(mapper
-		(pt 352 136)
-		(bidir)
-		)
-	(mapper
-		(pt 352 40)
-		(bidir)
-		)
-	(mapper
-		(pt 352 152)
-		(bidir)
-		)
-	(mapper
-		(pt 0 472)
-		(bidir)
-		)
-	(mapper
-		(pt 0 456)
-		(bidir)
-		)
-	(mapper
-		(pt 352 104)
-		(bidir)
-		)
-)
-(block
 	(rect 296 1872 560 2536)
 	(text "DDR_CTR" (rect 5 5 66 18)(font "Arial" (font_size 8)))	(text "DDR_CTR" (rect 5 650 59 661)(font "Arial" ))	(block_io "FB_ADR[31..0]" (input))
 	(block_io "nFB_CS1" (input))
@@ -7324,6 +7076,254 @@ applicable agreement for further details.
 		)
 	(mapper
 		(pt 0 440)
+		(bidir)
+		)
+)
+(block
+	(rect 1664 1664 2016 2600)
+	(text "VIDEO_MOD_MUX_CLUTCTR" (rect 5 5 183 18)(font "Arial" (font_size 8)))	(text "VIDEO_MOD_MUX_CLUTCTR" (rect 5 922 160 933)(font "Arial" ))	(block_io "nRSTO" (input))
+	(block_io "MAIN_CLK" (input))
+	(block_io "nFB_CS1" (input))
+	(block_io "nFB_CS2" (input))
+	(block_io "nFB_CS3" (input))
+	(block_io "nFB_WR" (input))
+	(block_io "nFB_OE" (input))
+	(block_io "FB_SIZE0" (input))
+	(block_io "FB_SIZE1" (input))
+	(block_io "nFB_BURST" (input))
+	(block_io "FB_ADR[31..0]" (input))
+	(block_io "CLK33M" (input))
+	(block_io "CLK25M" (input))
+	(block_io "BLITTER_RUN" (input))
+	(block_io "CLK_VIDEO" (input))
+	(block_io "VR_D[8..0]" (input))
+	(block_io "VR_BUSY" (input))
+	(block_io "COLOR8" (output))
+	(block_io "ACP_CLUT_RD" (output))
+	(block_io "COLOR1" (output))
+	(block_io "FALCON_CLUT_RDH" (output))
+	(block_io "FALCON_CLUT_RDL" (output))
+	(block_io "FALCON_CLUT_WR[3..0]" (output))
+	(block_io "ST_CLUT_RD" (output))
+	(block_io "ST_CLUT_WR[1..0]" (output))
+	(block_io "CLUT_MUX_ADR[3..0]" (output))
+	(block_io "HSYNC" (output))
+	(block_io "VSYNC" (output))
+	(block_io "nBLANK" (output))
+	(block_io "nSYNC" (output))
+	(block_io "nPD_VGA" (output))
+	(block_io "FIFO_RDE" (output))
+	(block_io "COLOR2" (output))
+	(block_io "COLOR4" (output))
+	(block_io "PIXEL_CLK" (output))
+	(block_io "CLUT_OFF[3..0]" (output))
+	(block_io "BLITTER_ON" (output))
+	(block_io "VIDEO_RAM_CTR[15..0]" (output))
+	(block_io "VIDEO_MOD_TA" (output))
+	(block_io "BORDER_COLOR[23..0]" (output))
+	(block_io "CCSEL[2..0]" (output))
+	(block_io "ACP_CLUT_WR[3..0]" (output))
+	(block_io "INTER_ZEI" (output))
+	(block_io "DOP_FIFO_CLR" (output))
+	(block_io "VIDEO_RECONFIG" (output))
+	(block_io "VR_WR" (output))
+	(block_io "VR_RD" (output))
+	(block_io "CLR_FIFO" (output))
+	(block_io "FB_AD[31..0]" (bidir))
+	(mapper
+		(pt 352 72)
+		(bidir)
+		)
+	(mapper
+		(pt 0 272)
+		(bidir)
+		)
+	(mapper
+		(pt 0 56)
+		(bidir)
+		)
+	(mapper
+		(pt 0 80)
+		(bidir)
+		)
+	(mapper
+		(pt 0 296)
+		(bidir)
+		)
+	(mapper
+		(pt 0 104)
+		(bidir)
+		)
+	(mapper
+		(pt 0 128)
+		(bidir)
+		)
+	(mapper
+		(pt 0 152)
+		(bidir)
+		)
+	(mapper
+		(pt 0 176)
+		(bidir)
+		)
+	(mapper
+		(pt 0 248)
+		(bidir)
+		)
+	(mapper
+		(pt 0 200)
+		(bidir)
+		)
+	(mapper
+		(pt 0 224)
+		(bidir)
+		)
+	(mapper
+		(pt 0 520)
+		(bidir)
+		)
+	(mapper
+		(pt 0 544)
+		(bidir)
+		)
+	(mapper
+		(pt 0 880)
+		(bidir)
+		)
+	(mapper
+		(pt 352 600)
+		(bidir)
+		)
+	(mapper
+		(pt 352 624)
+		(bidir)
+		)
+	(mapper
+		(pt 352 648)
+		(bidir)
+		)
+	(mapper
+		(pt 352 672)
+		(bidir)
+		)
+	(mapper
+		(pt 352 696)
+		(bidir)
+		)
+	(mapper
+		(pt 352 720)
+		(bidir)
+		)
+	(mapper
+		(pt 352 840)
+		(bidir)
+		)
+	(mapper
+		(pt 352 472)
+		(bidir)
+		)
+	(mapper
+		(pt 352 448)
+		(bidir)
+		)
+	(mapper
+		(pt 352 528)
+		(bidir)
+		)
+	(mapper
+		(pt 352 320)
+		(bidir)
+		)
+	(mapper
+		(pt 352 576)
+		(bidir)
+		)
+	(mapper
+		(pt 352 400)
+		(bidir)
+		)
+	(mapper
+		(pt 352 376)
+		(bidir)
+		)
+	(mapper
+		(pt 352 352)
+		(bidir)
+		)
+	(mapper
+		(pt 352 504)
+		(bidir)
+		)
+	(mapper
+		(pt 352 296)
+		(bidir)
+		)
+	(mapper
+		(pt 352 424)
+		(bidir)
+		)
+	(mapper
+		(pt 352 552)
+		(bidir)
+		)
+	(mapper
+		(pt 352 752)
+		(bidir)
+		)
+	(mapper
+		(pt 352 776)
+		(bidir)
+		)
+	(mapper
+		(pt 352 872)
+		(bidir)
+		)
+	(mapper
+		(pt 0 496)
+		(bidir)
+		)
+	(mapper
+		(pt 352 88)
+		(bidir)
+		)
+	(mapper
+		(pt 352 264)
+		(bidir)
+		)
+	(mapper
+		(pt 352 248)
+		(bidir)
+		)
+	(mapper
+		(pt 352 232)
+		(bidir)
+		)
+	(mapper
+		(pt 352 216)
+		(bidir)
+		)
+	(mapper
+		(pt 352 136)
+		(bidir)
+		)
+	(mapper
+		(pt 352 40)
+		(bidir)
+		)
+	(mapper
+		(pt 352 152)
+		(bidir)
+		)
+	(mapper
+		(pt 0 472)
+		(bidir)
+		)
+	(mapper
+		(pt 0 456)
+		(bidir)
+		)
+	(mapper
+		(pt 352 104)
 		(bidir)
 		)
 )
@@ -8026,122 +8026,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "FB_AD[31..0]" (rect 570 1904 636 1915)(font "Arial" ))
-	(pt 680 1920)
-	(pt 560 1920)
-	(bus)
-)
-(connector
-	(text "nFB_CS1" (rect 202 2040 250 2051)(font "Arial" ))
-	(pt 192 2056)
-	(pt 296 2056)
-)
-(connector
-	(text "nFB_CS2" (rect 202 2064 251 2075)(font "Arial" ))
-	(pt 192 2080)
-	(pt 296 2080)
-)
-(connector
-	(text "nFB_CS3" (rect 202 2088 251 2099)(font "Arial" ))
-	(pt 192 2104)
-	(pt 296 2104)
-)
-(connector
-	(text "nFB_WR" (rect 202 2112 248 2123)(font "Arial" ))
-	(pt 192 2128)
-	(pt 296 2128)
-)
-(connector
-	(text "FB_SIZE0" (rect 202 2136 253 2147)(font "Arial" ))
-	(pt 192 2152)
-	(pt 296 2152)
-)
-(connector
-	(text "FB_SIZE1" (rect 202 2160 252 2171)(font "Arial" ))
-	(pt 192 2176)
-	(pt 296 2176)
-)
-(connector
-	(text "nFB_OE" (rect 202 2184 245 2195)(font "Arial" ))
-	(pt 192 2200)
-	(pt 296 2200)
-)
-(connector
-	(text "VA[12..0]" (rect 570 2168 616 2179)(font "Arial" ))
-	(pt 632 2184)
-	(pt 560 2184)
-	(bus)
-)
-(connector
-	(text "nVWE" (rect 570 2192 603 2203)(font "Arial" ))
-	(pt 632 2208)
-	(pt 560 2208)
-)
-(connector
-	(text "nVCAS" (rect 570 2216 607 2227)(font "Arial" ))
-	(pt 632 2232)
-	(pt 560 2232)
-)
-(connector
-	(text "nVRAS" (rect 570 2240 607 2251)(font "Arial" ))
-	(pt 632 2256)
-	(pt 560 2256)
-)
-(connector
-	(text "nVCS" (rect 570 2264 600 2275)(font "Arial" ))
-	(pt 632 2280)
-	(pt 560 2280)
-)
-(connector
-	(text "VCKE" (rect 570 2288 601 2299)(font "Arial" ))
-	(pt 632 2304)
-	(pt 560 2304)
-)
-(connector
-	(text "MAIN_CLK" (rect 202 1944 259 1955)(font "Arial" ))
-	(pt 296 1960)
-	(pt 192 1960)
-)
-(connector
-	(text "FB_ALE" (rect 202 2016 244 2027)(font "Arial" ))
-	(pt 296 2032)
-	(pt 192 2032)
-)
-(connector
-	(text "FB_LE[3..0]" (rect 570 1976 629 1987)(font "Arial" ))
-	(pt 560 1992)
-	(pt 680 1992)
-	(bus)
-)
-(connector
-	(text "FB_VDOE[3..0]" (rect 570 2000 646 2011)(font "Arial" ))
-	(pt 560 2016)
-	(pt 680 2016)
-	(bus)
-)
-(connector
-	(text "DDR_SYNC_66M" (rect 210 1968 299 1979)(font "Arial" ))
-	(pt 200 1984)
-	(pt 296 1984)
-)
-(connector
-	(text "FB_ADR[31..0]" (rect 202 1992 276 2003)(font "Arial" ))
-	(pt 192 2008)
-	(pt 296 2008)
-	(bus)
-)
-(connector
-	(text "nRSTO" (rect 202 1896 240 1907)(font "Arial" ))
-	(pt 192 1912)
-	(pt 296 1912)
-)
-(connector
-	(text "VIDEO_RAM_CTR[15..0]" (rect 178 2240 303 2251)(font "Arial" ))
-	(pt 296 2256)
-	(pt 168 2256)
-	(bus)
-)
-(connector
 	(pt 792 1648)
 	(pt 920 1648)
 	(bus)
@@ -8322,51 +8206,9 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "BLITTER_ADR[31..0]" (rect 194 2288 300 2299)(font "Arial" ))
-	(pt 184 2304)
-	(pt 296 2304)
-	(bus)
-)
-(connector
-	(text "BLITTER_SIG" (rect 194 2312 265 2323)(font "Arial" ))
-	(pt 184 2328)
-	(pt 296 2328)
-)
-(connector
-	(text "BLITTER_WR" (rect 194 2336 265 2347)(font "Arial" ))
-	(pt 184 2352)
-	(pt 296 2352)
-)
-(connector
-	(text "SR_FIFO_WRE" (rect 570 2072 650 2083)(font "Arial" ))
-	(pt 648 2088)
-	(pt 560 2088)
-)
-(connector
-	(text "SR_DDR_FB" (rect 570 2312 637 2323)(font "Arial" ))
-	(pt 640 2328)
-	(pt 560 2328)
-)
-(connector
 	(text "SR_FIFO_WRE" (rect 842 2280 922 2291)(font "Arial" ))
 	(pt 920 2296)
 	(pt 832 2296)
-)
-(connector
-	(text "SR_DDR_WR" (rect 570 2024 641 2035)(font "Arial" ))
-	(pt 664 2040)
-	(pt 560 2040)
-)
-(connector
-	(text "SR_VDMP[7..0]" (rect 570 2336 647 2347)(font "Arial" ))
-	(pt 560 2352)
-	(pt 664 2352)
-	(bus)
-)
-(connector
-	(text "SR_DDRWR_D_SEL" (rect 570 2360 676 2371)(font "Arial" ))
-	(pt 560 2376)
-	(pt 664 2376)
 )
 (connector
 	(text "VDVZ[127..0]" (rect 810 2920 876 2931)(font "Arial" ))
@@ -8409,16 +8251,6 @@ applicable agreement for further details.
 	(text "FIFO_WRE" (rect 1074 2280 1133 2291)(font "Arial" ))
 	(pt 1064 2296)
 	(pt 1144 2296)
-)
-(connector
-	(text "DDRCLK0" (rect 194 1920 247 1931)(font "Arial" ))
-	(pt 296 1936)
-	(pt 184 1936)
-)
-(connector
-	(text "VIDEO_DDR_TA" (rect 570 2488 657 2499)(font "Arial" ))
-	(pt 560 2504)
-	(pt 664 2504)
 )
 (connector
 	(pt 432 1808)
@@ -8509,11 +8341,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "SR_BLITTER_DACK" (rect 570 2464 676 2475)(font "Arial" ))
-	(pt 664 2480)
-	(pt 560 2480)
-)
-(connector
 	(text "DDRCLK0" (rect 1114 1528 1167 1539)(font "Arial" ))
 	(pt 1104 1544)
 	(pt 1176 1544)
@@ -8548,11 +8375,6 @@ applicable agreement for further details.
 	(pt 1064 2192)
 	(pt 1168 2192)
 	(bus)
-)
-(connector
-	(text "CLK33M" (rect 218 2432 262 2443)(font "Arial" ))
-	(pt 208 2448)
-	(pt 296 2448)
 )
 (connector
 	(text "FIFO_D[127..0]" (rect 2170 1416 2246 1427)(font "Arial" ))
@@ -8782,12 +8604,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "BA[1..0]" (rect 570 2120 610 2131)(font "Arial" ))
-	(pt 632 2136)
-	(pt 560 2136)
-	(bus)
-)
-(connector
 	(text "DDRWR_D_SEL0" (rect 1066 2768 1156 2779)(font "Arial" ))
 	(pt 1056 2784)
 	(pt 1152 2784)
@@ -8807,11 +8623,6 @@ applicable agreement for further details.
 	(text "SR_DDRWR_D_SEL" (rect 890 2768 996 2779)(font "Arial" ))
 	(pt 888 2784)
 	(pt 992 2784)
-)
-(connector
-	(text "DDRWR_D_SEL1" (rect 570 2392 659 2403)(font "Arial" ))
-	(pt 656 2408)
-	(pt 560 2408)
 )
 (connector
 	(text "VDOUT_OE" (rect 1386 2328 1448 2339)(font "Arial" ))
@@ -9008,69 +8819,9 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "CCR[23..0]" (rect 3954 2720 4009 2731)(font "Arial" ))
-	(pt 4024 2736)
-	(pt 3944 2736)
-	(bus)
-)
-(connector
 	(text "CCS[23..0]" (rect 3362 2840 3416 2851)(font "Arial" ))
 	(pt 3432 2856)
 	(pt 3352 2856)
-	(bus)
-)
-(connector
-	(text "CC16[23..0]" (rect 3954 2752 4013 2763)(font "Arial" ))
-	(pt 4024 2768)
-	(pt 3944 2768)
-	(bus)
-)
-(connector
-	(text "VR[7..0],VG[7..0],VB[7..0]" (rect 4522 2776 4648 2787)(font "Arial" ))
-	(pt 4512 2792)
-	(pt 4664 2792)
-	(bus)
-)
-(connector
-	(pt 4240 2808)
-	(pt 4280 2808)
-	(bus)
-)
-(connector
-	(text "PIXEL_CLK" (rect 4202 2808 4263 2819)(font "Arial" ))
-	(pt 4192 2824)
-	(pt 4280 2824)
-)
-(connector
-	(pt 4240 2792)
-	(pt 4280 2792)
-	(bus)
-)
-(connector
-	(pt 4240 2800)
-	(pt 4176 2800)
-	(bus)
-)
-(connector
-	(text "PIXEL_CLK" (rect 3946 2848 4007 2859)(font "Arial" ))
-	(pt 3936 2864)
-	(pt 4024 2864)
-)
-(connector
-	(pt 4104 2888)
-	(pt 4104 2920)
-	(bus)
-)
-(connector
-	(text "CCSEL[2..0]" (rect 4010 2904 4071 2915)(font "Arial" ))
-	(pt 4104 2920)
-	(pt 4000 2920)
-	(bus)
-)
-(connector
-	(text "CCA[23..0]" (rect 3954 2768 4008 2779)(font "Arial" ))
-	(pt 4024 2784)
-	(pt 3944 2784)
 	(bus)
 )
 (connector
@@ -9095,22 +8846,6 @@ applicable agreement for further details.
 	(pt 2736 2840)
 )
 (connector
-	(text "CC24[23..0]" (rect 3954 2736 4013 2747)(font "Arial" ))
-	(pt 3944 2752)
-	(pt 4024 2752)
-	(bus)
-)
-(connector
-	(pt 4240 2792)
-	(pt 4240 2800)
-	(bus)
-)
-(connector
-	(pt 4240 2800)
-	(pt 4240 2808)
-	(bus)
-)
-(connector
 	(pt 3576 2784)
 	(pt 3672 2784)
 	(bus)
@@ -9126,28 +8861,8 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 3888 2800)
-	(pt 3888 2832)
-	(bus)
-)
-(connector
-	(pt 3888 2832)
-	(pt 4024 2832)
-	(bus)
-)
-(connector
-	(pt 4024 2848)
-	(pt 3888 2848)
-	(bus)
-)
-(connector
 	(pt 3888 2888)
 	(pt 3816 2888)
-	(bus)
-)
-(connector
-	(pt 3888 2848)
-	(pt 3888 2888)
 	(bus)
 )
 (connector
@@ -9174,12 +8889,6 @@ applicable agreement for further details.
 	(text "PIXEL_CLK" (rect 3378 2768 3439 2779)(font "Arial" ))
 	(pt 3376 2784)
 	(pt 3432 2784)
-)
-(connector
-	(text "CC16[23..19],CC16[15..10],CC16[7..3]" (rect 2506 2592 2694 2603)(font "Arial" ))
-	(pt 2688 2664)
-	(pt 2560 2664)
-	(bus)
 )
 (connector
 	(text "CC16[18..16],CC16[9..8],CC16[2..0]" (rect 2530 2728 2707 2739)(font "Arial" ))
@@ -9255,12 +8964,6 @@ applicable agreement for further details.
 (connector
 	(pt 3112 2960)
 	(pt 3192 2960)
-)
-(connector
-	(text "FIFO_MW[8..0]" (rect 194 2376 269 2387)(font "Arial" ))
-	(pt 296 2392)
-	(pt 184 2392)
-	(bus)
 )
 (connector
 	(text "MAIN_CLK" (rect 3370 2208 3427 2219)(font "Arial" ))
@@ -10005,12 +9708,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "VDM_SEL[3..0]" (rect 570 2416 646 2427)(font "Arial" ))
-	(pt 560 2432)
-	(pt 656 2432)
-	(bus)
-)
-(connector
 	(text "VDMB[127..0]" (rect 1586 1080 1654 1091)(font "Arial" ))
 	(pt 1576 1096)
 	(pt 1800 1096)
@@ -10150,11 +9847,6 @@ applicable agreement for further details.
 	(text "VIDEO_MOD_TA" (rect 258 1816 347 1827)(font "Arial" ))
 	(pt 264 1832)
 	(pt 360 1832)
-)
-(connector
-	(text "CLR_FIFO" (rect 202 2216 257 2227)(font "Arial" ))
-	(pt 296 2232)
-	(pt 192 2232)
 )
 (connector
 	(text "CLR_FIFO" (rect 1634 1456 1689 1467)(font "Arial" ))
@@ -10321,6 +10013,73 @@ applicable agreement for further details.
 	(pt 1992 1312)
 )
 (connector
+	(pt 1968 1424)
+	(pt 1968 1208)
+	(bus)
+)
+(connector
+	(pt 2248 1208)
+	(pt 2240 1208)
+	(bus)
+)
+(connector
+	(pt 2248 1344)
+	(pt 2248 1208)
+	(bus)
+)
+(connector
+	(pt 1608 1432)
+	(pt 1608 1232)
+)
+(connector
+	(pt 1944 1296)
+	(pt 1944 1248)
+)
+(connector
+	(pt 2064 1312)
+	(pt 2064 1296)
+)
+(connector
+	(pt 1872 1424)
+	(pt 1968 1424)
+	(bus)
+)
+(connector
+	(pt 1968 1424)
+	(pt 2000 1424)
+	(bus)
+)
+(connector
+	(pt 1600 1432)
+	(pt 1608 1432)
+)
+(connector
+	(pt 1608 1432)
+	(pt 1712 1432)
+)
+(connector
+	(pt 1968 1208)
+	(pt 2080 1208)
+	(bus)
+)
+(connector
+	(pt 1608 1232)
+	(pt 2080 1232)
+)
+(connector
+	(pt 1944 1248)
+	(pt 2080 1248)
+)
+(connector
+	(text "PIXEL_CLK" (rect 2010 1256 2071 1267)(font "Arial" ))
+	(pt 2000 1272)
+	(pt 2080 1272)
+)
+(connector
+	(pt 2064 1296)
+	(pt 2080 1296)
+)
+(connector
 	(text "nFB_BURST" (rect 1570 1896 1634 1907)(font "Arial" ))
 	(pt 1560 1912)
 	(pt 1664 1912)
@@ -10462,12 +10221,6 @@ applicable agreement for further details.
 	(bus)
 )
 (connector
-	(text "CCR[23..0]" (rect 2026 2176 2081 2187)(font "Arial" ))
-	(pt 2096 2192)
-	(pt 2016 2192)
-	(bus)
-)
-(connector
 	(text "CCSEL[2..0]" (rect 2026 2200 2087 2211)(font "Arial" ))
 	(pt 2016 2216)
 	(pt 2096 2216)
@@ -10577,71 +10330,328 @@ applicable agreement for further details.
 	(pt 2112 1768)
 )
 (connector
-	(pt 1968 1424)
-	(pt 1968 1208)
+	(text "BORDER_COLOR[23..0]" (rect 2026 2176 2149 2187)(font "Arial" ))
+	(pt 2096 2192)
+	(pt 2016 2192)
 	(bus)
 )
 (connector
-	(pt 2248 1208)
-	(pt 2240 1208)
+	(text "VR[7..0],VG[7..0],VB[7..0]" (rect 4522 2776 4648 2787)(font "Arial" ))
+	(pt 4512 2792)
+	(pt 4664 2792)
 	(bus)
 )
 (connector
-	(pt 2248 1344)
-	(pt 2248 1208)
+	(pt 4240 2808)
+	(pt 4280 2808)
 	(bus)
 )
 (connector
-	(pt 1608 1432)
-	(pt 1608 1232)
+	(text "PIXEL_CLK" (rect 4202 2808 4263 2819)(font "Arial" ))
+	(pt 4192 2824)
+	(pt 4280 2824)
 )
 (connector
-	(pt 1944 1296)
-	(pt 1944 1248)
-)
-(connector
-	(pt 2064 1312)
-	(pt 2064 1296)
-)
-(connector
-	(pt 1872 1424)
-	(pt 1968 1424)
+	(pt 4240 2792)
+	(pt 4280 2792)
 	(bus)
 )
 (connector
-	(pt 1968 1424)
-	(pt 2000 1424)
+	(text "FB_AD[31..0]" (rect 570 1904 636 1915)(font "Arial" ))
+	(pt 680 1920)
+	(pt 560 1920)
 	(bus)
 )
 (connector
-	(pt 1600 1432)
-	(pt 1608 1432)
+	(text "nFB_CS1" (rect 202 2040 250 2051)(font "Arial" ))
+	(pt 192 2056)
+	(pt 296 2056)
 )
 (connector
-	(pt 1608 1432)
-	(pt 1712 1432)
+	(text "nFB_CS2" (rect 202 2064 251 2075)(font "Arial" ))
+	(pt 192 2080)
+	(pt 296 2080)
 )
 (connector
-	(pt 1968 1208)
-	(pt 2080 1208)
+	(text "nFB_CS3" (rect 202 2088 251 2099)(font "Arial" ))
+	(pt 192 2104)
+	(pt 296 2104)
+)
+(connector
+	(text "nFB_WR" (rect 202 2112 248 2123)(font "Arial" ))
+	(pt 192 2128)
+	(pt 296 2128)
+)
+(connector
+	(text "FB_SIZE0" (rect 202 2136 253 2147)(font "Arial" ))
+	(pt 192 2152)
+	(pt 296 2152)
+)
+(connector
+	(text "FB_SIZE1" (rect 202 2160 252 2171)(font "Arial" ))
+	(pt 192 2176)
+	(pt 296 2176)
+)
+(connector
+	(text "nFB_OE" (rect 202 2184 245 2195)(font "Arial" ))
+	(pt 192 2200)
+	(pt 296 2200)
+)
+(connector
+	(text "nVWE" (rect 570 2192 603 2203)(font "Arial" ))
+	(pt 632 2208)
+	(pt 560 2208)
+)
+(connector
+	(text "nVCAS" (rect 570 2216 607 2227)(font "Arial" ))
+	(pt 632 2232)
+	(pt 560 2232)
+)
+(connector
+	(text "nVRAS" (rect 570 2240 607 2251)(font "Arial" ))
+	(pt 632 2256)
+	(pt 560 2256)
+)
+(connector
+	(text "nVCS" (rect 570 2264 600 2275)(font "Arial" ))
+	(pt 632 2280)
+	(pt 560 2280)
+)
+(connector
+	(text "VCKE" (rect 570 2288 601 2299)(font "Arial" ))
+	(pt 632 2304)
+	(pt 560 2304)
+)
+(connector
+	(text "MAIN_CLK" (rect 202 1944 259 1955)(font "Arial" ))
+	(pt 296 1960)
+	(pt 192 1960)
+)
+(connector
+	(text "FB_ALE" (rect 202 2016 244 2027)(font "Arial" ))
+	(pt 296 2032)
+	(pt 192 2032)
+)
+(connector
+	(text "FB_LE[3..0]" (rect 570 1976 629 1987)(font "Arial" ))
+	(pt 560 1992)
+	(pt 680 1992)
 	(bus)
 )
 (connector
-	(pt 1608 1232)
-	(pt 2080 1232)
+	(text "FB_VDOE[3..0]" (rect 570 2000 646 2011)(font "Arial" ))
+	(pt 560 2016)
+	(pt 680 2016)
+	(bus)
 )
 (connector
-	(pt 1944 1248)
-	(pt 2080 1248)
+	(text "DDR_SYNC_66M" (rect 210 1968 299 1979)(font "Arial" ))
+	(pt 200 1984)
+	(pt 296 1984)
 )
 (connector
-	(text "PIXEL_CLK" (rect 2010 1256 2071 1267)(font "Arial" ))
-	(pt 2000 1272)
-	(pt 2080 1272)
+	(text "FB_ADR[31..0]" (rect 202 1992 276 2003)(font "Arial" ))
+	(pt 192 2008)
+	(pt 296 2008)
+	(bus)
 )
 (connector
-	(pt 2064 1296)
-	(pt 2080 1296)
+	(text "nRSTO" (rect 202 1896 240 1907)(font "Arial" ))
+	(pt 192 1912)
+	(pt 296 1912)
+)
+(connector
+	(text "VIDEO_RAM_CTR[15..0]" (rect 178 2240 303 2251)(font "Arial" ))
+	(pt 296 2256)
+	(pt 168 2256)
+	(bus)
+)
+(connector
+	(text "BLITTER_ADR[31..0]" (rect 194 2288 300 2299)(font "Arial" ))
+	(pt 184 2304)
+	(pt 296 2304)
+	(bus)
+)
+(connector
+	(text "BLITTER_SIG" (rect 194 2312 265 2323)(font "Arial" ))
+	(pt 184 2328)
+	(pt 296 2328)
+)
+(connector
+	(text "BLITTER_WR" (rect 194 2336 265 2347)(font "Arial" ))
+	(pt 184 2352)
+	(pt 296 2352)
+)
+(connector
+	(text "SR_FIFO_WRE" (rect 570 2072 650 2083)(font "Arial" ))
+	(pt 648 2088)
+	(pt 560 2088)
+)
+(connector
+	(text "SR_DDR_FB" (rect 570 2312 637 2323)(font "Arial" ))
+	(pt 640 2328)
+	(pt 560 2328)
+)
+(connector
+	(text "SR_DDR_WR" (rect 570 2024 641 2035)(font "Arial" ))
+	(pt 664 2040)
+	(pt 560 2040)
+)
+(connector
+	(text "SR_VDMP[7..0]" (rect 570 2336 647 2347)(font "Arial" ))
+	(pt 560 2352)
+	(pt 664 2352)
+	(bus)
+)
+(connector
+	(text "SR_DDRWR_D_SEL" (rect 570 2360 676 2371)(font "Arial" ))
+	(pt 560 2376)
+	(pt 664 2376)
+)
+(connector
+	(text "DDRCLK0" (rect 194 1920 247 1931)(font "Arial" ))
+	(pt 296 1936)
+	(pt 184 1936)
+)
+(connector
+	(text "VIDEO_DDR_TA" (rect 570 2488 657 2499)(font "Arial" ))
+	(pt 560 2504)
+	(pt 664 2504)
+)
+(connector
+	(text "SR_BLITTER_DACK" (rect 570 2464 676 2475)(font "Arial" ))
+	(pt 664 2480)
+	(pt 560 2480)
+)
+(connector
+	(text "CLK33M" (rect 218 2432 262 2443)(font "Arial" ))
+	(pt 208 2448)
+	(pt 296 2448)
+)
+(connector
+	(text "BA[1..0]" (rect 570 2120 610 2131)(font "Arial" ))
+	(pt 632 2136)
+	(pt 560 2136)
+	(bus)
+)
+(connector
+	(text "DDRWR_D_SEL1" (rect 570 2392 659 2403)(font "Arial" ))
+	(pt 656 2408)
+	(pt 560 2408)
+)
+(connector
+	(text "FIFO_MW[8..0]" (rect 194 2376 269 2387)(font "Arial" ))
+	(pt 296 2392)
+	(pt 184 2392)
+	(bus)
+)
+(connector
+	(text "VDM_SEL[3..0]" (rect 570 2416 646 2427)(font "Arial" ))
+	(pt 560 2432)
+	(pt 656 2432)
+	(bus)
+)
+(connector
+	(text "CLR_FIFO" (rect 202 2216 257 2227)(font "Arial" ))
+	(pt 296 2232)
+	(pt 192 2232)
+)
+(connector
+	(text "VA[12..0]" (rect 570 2168 616 2179)(font "Arial" ))
+	(pt 560 2184)
+	(pt 632 2184)
+	(bus)
+)
+(connector
+	(text "CC16[23..0]" (rect 3954 2752 4013 2763)(font "Arial" ))
+	(pt 4024 2768)
+	(pt 3944 2768)
+	(bus)
+)
+(connector
+	(pt 4240 2800)
+	(pt 4176 2800)
+	(bus)
+)
+(connector
+	(text "PIXEL_CLK" (rect 3946 2848 4007 2859)(font "Arial" ))
+	(pt 3936 2864)
+	(pt 4024 2864)
+)
+(connector
+	(pt 4104 2920)
+	(pt 4104 2888)
+	(bus)
+)
+(connector
+	(text "CCSEL[2..0]" (rect 4010 2904 4071 2915)(font "Arial" ))
+	(pt 4000 2920)
+	(pt 4104 2920)
+	(bus)
+)
+(connector
+	(text "CCA[23..0]" (rect 3954 2768 4008 2779)(font "Arial" ))
+	(pt 4024 2784)
+	(pt 3944 2784)
+	(bus)
+)
+(connector
+	(text "CC24[23..0]" (rect 3954 2736 4013 2747)(font "Arial" ))
+	(pt 3944 2752)
+	(pt 4024 2752)
+	(bus)
+)
+(connector
+	(pt 3888 2800)
+	(pt 3888 2832)
+	(bus)
+)
+(connector
+	(pt 3888 2832)
+	(pt 4024 2832)
+	(bus)
+)
+(connector
+	(pt 3888 2848)
+	(pt 4024 2848)
+	(bus)
+)
+(connector
+	(pt 3888 2888)
+	(pt 3888 2848)
+	(bus)
+)
+(connector
+	(text "BORDER_COLOR[23..0]" (rect 3954 2720 4077 2731)(font "Arial" ))
+	(pt 4024 2736)
+	(pt 3944 2736)
+	(bus)
+)
+(connector
+	(pt 4240 2792)
+	(pt 4240 2800)
+	(bus)
+)
+(connector
+	(pt 4240 2800)
+	(pt 4240 2808)
+	(bus)
+)
+(connector
+	(pt 2568 2664)
+	(pt 2568 2568)
+	(bus)
+)
+(connector
+	(pt 2560 2664)
+	(pt 2568 2664)
+	(bus)
+)
+(connector
+	(text "CC16[23..19],CC16[15..10],CC16[7..3]" (rect 2530 2552 2718 2563)(font "Arial" ))
+	(pt 2568 2568)
+	(pt 2688 2568)
+	(bus)
 )
 (junction (pt 2984 1688))
 (junction (pt 792 1192))
