@@ -131,8 +131,19 @@ set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -min 1.500 [get_port
 set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -min 1.500 {nFB_TA}
 set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -max 1.500 [get_ports {FB*}]
 set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -max 1.500 {nFB_TA}
+
+# the video RAM access
 set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -min 1.500 [get_ports {VA[*]}]
 set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 1.500 [get_ports {VA[*]}]
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -min 1.500 [get_ports {VD[*]}]
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 1.500 [get_ports {VD[*]}]
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -min 1.500 [get_ports {VDQS[*]}]
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 1.500 [get_ports {VDQS[*]}]
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -min 1.500 [get_ports {VDM[*]}]
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 1.500 [get_ports {VDM[*]}]
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 1.500 {nVCAS nVRAS nVWE nVCS VCKE DDRCLK nDDRCLK BA[*]}
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 1.500 {nVCAS nVRAS nVWE nVCS VCKE DDRCLK nDDRCLK BA[*]}
+
 
 #**************************************************************
 # Set Clock Groups
