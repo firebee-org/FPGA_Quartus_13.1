@@ -657,10 +657,10 @@ BEGIN
 	VIDEO_CNT_M = !nFB_CS1 & FB_ADR[19..1]==H"7C103"; 								-- 8207/2
 	VIDEO_CNT_H = !nFB_CS1 & FB_ADR[19..1]==H"7C102"; 								-- 8204,5/2
 					  
-	FB_AD[31..24] = lpm_bustri_BYT(
-						VIDEO_BASE_H  & (0,VIDEO_BASE_X_D[]) 
-					  # VIDEO_CNT_H	  & (0,VIDEO_ACT_ADR[26..24])
-					  ,(VIDEO_BASE_H # VIDEO_CNT_H) & !nFB_OE);
+	% FB_AD[31..24] = lpm_bustri_BYT(
+						VIDEO_BASE_H  & (0, VIDEO_BASE_X_D[]) 
+					  # VIDEO_CNT_H	  & (0, VIDEO_ACT_ADR[26..24]),
+					   (VIDEO_BASE_H # VIDEO_CNT_H) & !nFB_OE); %
 
 	FB_AD[23..16] = lpm_bustri_BYT(
 						VIDEO_BASE_L  & VIDEO_BASE_L_D[]
@@ -669,6 +669,6 @@ BEGIN
 					  # VIDEO_CNT_L	  & VIDEO_ACT_ADR[7..0]
 					  # VIDEO_CNT_M	  & VIDEO_ACT_ADR[15..8]
 					  # VIDEO_CNT_H	  & VIDEO_ACT_ADR[23..16]
-					  ,(VIDEO_BASE_L # VIDEO_BASE_M # VIDEO_BASE_H # VIDEO_CNT_L # VIDEO_CNT_M # VIDEO_CNT_H) & !nFB_OE);
+					  , (VIDEO_BASE_L # VIDEO_BASE_M # VIDEO_BASE_H # VIDEO_CNT_L # VIDEO_CNT_M # VIDEO_CNT_H) & !nFB_OE);
 END;
 

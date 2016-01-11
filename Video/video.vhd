@@ -69,165 +69,194 @@ ENTITY video IS
 	);
 END video;
 
-ARCHITECTURE bdf_type OF video IS 
-    ATTRIBUTE black_box : BOOLEAN;
-    ATTRIBUTE noopt : BOOLEAN;
+ARCHITECTURE rtl OF video IS 
+    ATTRIBUTE black_box     : BOOLEAN;
+    ATTRIBUTE noopt         : BOOLEAN;
     
     COMPONENT mux41_0
-        PORT(S0 : IN std_logic;
-             S1 : IN std_logic;
-             D0 : IN std_logic;
-             INH : IN std_logic;
-             D1 : IN std_logic;
-             Q : OUT std_logic);
-    END COMPONENT;
+        PORT
+        (
+            S0  : IN std_logic;
+            S1  : IN std_logic;
+            D0  : IN std_logic;
+            INH : IN std_logic;
+            D1  : IN std_logic;
+            Q   : OUT std_logic
+        );
+    END COMPONENT mux41_0;
     
     ATTRIBUTE black_box OF mux41_0: COMPONENT IS true;
     ATTRIBUTE noopt OF mux41_0: COMPONENT IS true;
     
     COMPONENT mux41_1
-        PORT(S0 : IN std_logic;
-             S1 : IN std_logic;
-             D0 : IN std_logic;
-             INH : IN std_logic;
-             D1 : IN std_logic;
-             Q : OUT std_logic);
-    END COMPONENT;
+        PORT
+        (
+            S0  : IN std_logic;
+            S1  : IN std_logic;
+            D0  : IN std_logic;
+            INH : IN std_logic;
+            D1  : IN std_logic;
+            Q   : OUT std_logic
+        );
+    END COMPONENT mux41_1;
+    
     ATTRIBUTE black_box OF mux41_1: COMPONENT IS true;
     ATTRIBUTE noopt OF mux41_1: COMPONENT IS true;
     
     COMPONENT mux41_2
-        PORT(S0 : IN std_logic;
-             D2 : IN std_logic;
-             S1 : IN std_logic;
-             D0 : IN std_logic;
-             INH : IN std_logic;
-             D1 : IN std_logic;
-             Q : OUT std_logic);
-    END COMPONENT;
+        PORT
+        (
+            S0  : IN std_logic;
+            D2  : IN std_logic;
+            S1  : IN std_logic;
+            D0  : IN std_logic;
+            INH : IN std_logic;
+            D1  : IN std_logic;
+            Q   : OUT std_logic
+        );
+    END COMPONENT mux41_2;
+    
     ATTRIBUTE black_box OF mux41_2: COMPONENT IS true;
     ATTRIBUTE noopt OF mux41_2: COMPONENT IS true;
     
     COMPONENT mux41_3
-        PORT(S0 : IN std_logic;
-             D2 : IN std_logic;
-             S1 : IN std_logic;
-             D0 : IN std_logic;
-             INH : IN std_logic;
-             D1 : IN std_logic;
-             Q : OUT std_logic);
-    END COMPONENT;
+        PORT
+        (
+            S0  : IN std_logic;
+            D2  : IN std_logic;
+            S1  : IN std_logic;
+            D0  : IN std_logic;
+            INH : IN std_logic;
+            D1  : IN std_logic;
+            Q   : OUT std_logic
+        );
+    END COMPONENT mux41_3;
+    
     ATTRIBUTE black_box OF mux41_3: COMPONENT IS true;
     ATTRIBUTE noopt OF mux41_3: COMPONENT IS true;
     
     COMPONENT mux41_4
-        PORT(S0 : IN std_logic;
-             D2 : IN std_logic;
-             S1 : IN std_logic;
-             D0 : IN std_logic;
-             INH : IN std_logic;
-             D1 : IN std_logic;
-             Q : OUT std_logic);
+        PORT
+        (
+            S0  : IN std_logic;
+            D2  : IN std_logic;
+            S1  : IN std_logic;
+            D0  : IN std_logic;
+            INH : IN std_logic;
+            D1  : IN std_logic;
+            Q   : OUT std_logic
+        );
     END COMPONENT;
+    
     ATTRIBUTE black_box OF mux41_4: COMPONENT IS true;
     ATTRIBUTE noopt OF mux41_4: COMPONENT IS true;
     
     COMPONENT mux41_5
-        PORT(S0 : IN std_logic;
-             D2 : IN std_logic;
-             S1 : IN std_logic;
-             D0 : IN std_logic;
-             INH : IN std_logic;
-             D1 : IN std_logic;
-             Q : OUT std_logic);
+        PORT
+        (
+            S0  : IN std_logic;
+            D2  : IN std_logic;
+            S1  : IN std_logic;
+            D0  : IN std_logic;
+            INH : IN std_logic;
+            D1  : IN std_logic;
+            Q   : OUT std_logic
+        );
     END COMPONENT;
+    
     ATTRIBUTE black_box OF mux41_5: COMPONENT IS true;
     ATTRIBUTE noopt OF mux41_5: COMPONENT IS true;
     
     COMPONENT altdpram2
-        PORT(wren_a : IN std_logic;
-             wren_b : IN std_logic;
-             clock_a : IN std_logic;
-             clock_b : IN std_logic;
-             address_a : IN std_logic_vector(7 DOWNTO 0);
-             address_b : IN std_logic_vector(7 DOWNTO 0);
-             data_a : IN std_logic_vector(7 DOWNTO 0);
-             data_b : IN std_logic_vector(7 DOWNTO 0);
-             q_a : OUT std_logic_vector(7 DOWNTO 0);
-             q_b : OUT std_logic_vector(7 DOWNTO 0)
+        PORT
+        (
+            wren_a      : IN std_logic;
+            wren_b      : IN std_logic;
+            clock_a     : IN std_logic;
+            clock_b     : IN std_logic;
+            address_a   : IN std_logic_vector(7 DOWNTO 0);
+            address_b   : IN std_logic_vector(7 DOWNTO 0);
+            data_a      : IN std_logic_vector(7 DOWNTO 0);
+            data_b      : IN std_logic_vector(7 DOWNTO 0);
+            q_a         : OUT std_logic_vector(7 DOWNTO 0);
+            q_b         : OUT std_logic_vector(7 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT blitter
-        PORT(nRSTO : IN std_logic;
-             MAIN_CLK : IN std_logic;
-             FB_ALE : IN std_logic;
-             nFB_WR : IN std_logic;
-             nFB_OE : IN std_logic;
-             FB_SIZE0 : IN std_logic;
-             FB_SIZE1 : IN std_logic;
-             BLITTER_ON : IN std_logic;
-             nFB_CS1 : IN std_logic;
-             nFB_CS2 : IN std_logic;
-             nFB_CS3 : IN std_logic;
-             DDRCLK0 : IN std_logic;
-             SR_BLITTER_DACK : IN std_logic;
-             BLITTER_DACK : IN std_logic_vector(4 DOWNTO 0);
-             BLITTER_DIN : IN std_logic_vector(127 DOWNTO 0);
-             FB_AD : INOUT std_logic_vector(31 DOWNTO 0);
-             FB_ADR : IN std_logic_vector(31 DOWNTO 0);
-             VIDEO_RAM_CTR : IN std_logic_vector(15 DOWNTO 0);
-             BLITTER_RUN : OUT std_logic;
-             BLITTER_SIG : OUT std_logic;
-             BLITTER_WR : OUT std_logic;
-             BLITTER_TA : OUT std_logic;
-             BLITTER_ADR : OUT std_logic_vector(31 DOWNTO 0);
-             BLITTER_DOUT : OUT std_logic_vector(127 DOWNTO 0)
+        PORT
+        (
+            nRSTO           : IN std_logic;
+            MAIN_CLK        : IN std_logic;
+            FB_ALE          : IN std_logic;
+            nFB_WR          : IN std_logic;
+            nFB_OE          : IN std_logic;
+            FB_SIZE0        : IN std_logic;
+            FB_SIZE1        : IN std_logic;
+            BLITTER_ON      : IN std_logic;
+            nFB_CS1         : IN std_logic;
+            nFB_CS2         : IN std_logic;
+            nFB_CS3         : IN std_logic;
+            DDRCLK0         : IN std_logic;
+            SR_BLITTER_DACK : IN std_logic;
+            BLITTER_DACK    : IN std_logic_vector(4 DOWNTO 0);
+            BLITTER_DIN     : IN std_logic_vector(127 DOWNTO 0);
+            FB_AD           : INOUT std_logic_vector(31 DOWNTO 0);
+            FB_ADR          : IN std_logic_vector(31 DOWNTO 0);
+            VIDEO_RAM_CTR   : IN std_logic_vector(15 DOWNTO 0);
+            BLITTER_RUN     : OUT std_logic;
+            BLITTER_SIG     : OUT std_logic;
+            BLITTER_WR      : OUT std_logic;
+            BLITTER_TA      : OUT std_logic;
+            BLITTER_ADR     : OUT std_logic_vector(31 DOWNTO 0);
+            BLITTER_DOUT    : OUT std_logic_vector(127 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT ddr_ctr
-        PORT(nFB_CS1 : IN std_logic;
-             nFB_CS2 : IN std_logic;
-             nFB_CS3 : IN std_logic;
-             nFB_OE : IN std_logic;
-             FB_SIZE0 : IN std_logic;
-             FB_SIZE1 : IN std_logic;
-             nRSTO : IN std_logic;
-             MAIN_CLK : IN std_logic;
-             FB_ALE : IN std_logic;
-             nFB_WR : IN std_logic;
-             DDR_SYNC_66M : IN std_logic;
-             BLITTER_SIG : IN std_logic;
-             BLITTER_WR : IN std_logic;
-             DDRCLK0 : IN std_logic;
-             CLK33M : IN std_logic;
-             CLR_FIFO : IN std_logic;
-             BLITTER_ADR : IN std_logic_vector(31 DOWNTO 0);
-             FB_AD : INOUT std_logic_vector(31 DOWNTO 0);
-             FB_ADR : IN std_logic_vector(31 DOWNTO 0);
-             FIFO_MW : IN std_logic_vector(8 DOWNTO 0);
-             VIDEO_RAM_CTR : IN std_logic_vector(15 DOWNTO 0);
-             nVWE : OUT std_logic;
-             nVRAS : OUT std_logic;
-             nVCS : OUT std_logic;
-             VCKE : OUT std_logic;
-             nVCAS : OUT std_logic;
-             SR_FIFO_WRE : OUT std_logic;
-             SR_DDR_FB : OUT std_logic;
-             SR_DDR_WR : OUT std_logic;
-             SR_DDRWR_D_SEL : OUT std_logic;
-             VIDEO_DDR_TA : OUT std_logic;
-             SR_BLITTER_DACK : OUT std_logic;
-             DDRWR_D_SEL1 : OUT std_logic;
-             BA : OUT std_logic_vector(1 DOWNTO 0);
-             FB_LE : OUT std_logic_vector(3 DOWNTO 0);
-             FB_VDOE : OUT std_logic_vector(3 DOWNTO 0);
-             SR_VDMP : OUT std_logic_vector(7 DOWNTO 0);
-             VA : OUT std_logic_vector(12 DOWNTO 0);
-             VDM_SEL : OUT std_logic_vector(3 DOWNTO 0)
+        PORT
+        (
+            nFB_CS1 : IN std_logic;
+            nFB_CS2 : IN std_logic;
+            nFB_CS3 : IN std_logic;
+            nFB_OE : IN std_logic;
+            FB_SIZE0 : IN std_logic;
+            FB_SIZE1 : IN std_logic;
+            nRSTO : IN std_logic;
+            MAIN_CLK : IN std_logic;
+            FB_ALE : IN std_logic;
+            nFB_WR : IN std_logic;
+            DDR_SYNC_66M : IN std_logic;
+            BLITTER_SIG : IN std_logic;
+            BLITTER_WR : IN std_logic;
+            DDRCLK0 : IN std_logic;
+            CLK33M : IN std_logic;
+            CLR_FIFO : IN std_logic;
+            BLITTER_ADR : IN std_logic_vector(31 DOWNTO 0);
+            FB_AD : INOUT std_logic_vector(31 DOWNTO 0);
+            FB_ADR : IN std_logic_vector(31 DOWNTO 0);
+            FIFO_MW : IN std_logic_vector(8 DOWNTO 0);
+            VIDEO_RAM_CTR : IN std_logic_vector(15 DOWNTO 0);
+            nVWE : OUT std_logic;
+            nVRAS : OUT std_logic;
+            nVCS : OUT std_logic;
+            VCKE : OUT std_logic;
+            nVCAS : OUT std_logic;
+            SR_FIFO_WRE : OUT std_logic;
+            SR_DDR_FB : OUT std_logic;
+            SR_DDR_WR : OUT std_logic;
+            SR_DDRWR_D_SEL : OUT std_logic;
+            VIDEO_DDR_TA : OUT std_logic;
+            SR_BLITTER_DACK : OUT std_logic;
+            DDRWR_D_SEL1    : OUT std_logic;
+            BA              : OUT std_logic_vector(1 DOWNTO 0);
+            FB_LE           : OUT std_logic_vector(3 DOWNTO 0);
+            FB_VDOE         : OUT std_logic_vector(3 DOWNTO 0);
+            SR_VDMP         : OUT std_logic_vector(7 DOWNTO 0);
+            VA : OUT std_logic_vector(12 DOWNTO 0);
+            VDM_SEL : OUT std_logic_vector(3 DOWNTO 0)
         );
-    END COMPONENT;
+    END COMPONENT ddr_ctr;
     
     COMPONENT altdpram1
         PORT(wren_a : IN std_logic;
@@ -760,6 +789,7 @@ BEGIN
     VB(7 DOWNTO 0) <= SYNTHESIZED_WIRE_65(7 DOWNTO 0);
     VG(7 DOWNTO 0) <= SYNTHESIZED_WIRE_65(15 DOWNTO 8);
     VR(7 DOWNTO 0) <= SYNTHESIZED_WIRE_65(23 DOWNTO 16);
+
     SYNTHESIZED_WIRE_0 <= '0';
     SYNTHESIZED_WIRE_1 <= '0';
     SYNTHESIZED_WIRE_2 <= '0';
@@ -1023,18 +1053,12 @@ BEGIN
              result => ZR_C8B(0));
     
     
+    
+    CLUT_ADR(2) <= CLUT_ADR2A AND SYNTHESIZED_WIRE_61;    
     CLUT_ADR(4) <= CLUT_OFF(0) OR SYNTHESIZED_WIRE_8;
-    
-    
     CLUT_ADR(6) <= CLUT_OFF(2) OR SYNTHESIZED_WIRE_9;
-    
-    
+
     SYNTHESIZED_WIRE_61 <= COLOR8 OR COLOR4;
-    
-    
-    CLUT_ADR(2) <= CLUT_ADR2A AND SYNTHESIZED_WIRE_61;
-    
-    
     SYNTHESIZED_WIRE_16 <= COLOR4 OR COLOR8 OR COLOR2;
     
     
@@ -1216,22 +1240,11 @@ BEGIN
              data => VDP_IN(63 DOWNTO 32),
              q => VDVZ(63 DOWNTO 32));
     
-    
     CLUT_ADR(3) <= SYNTHESIZED_WIRE_61 AND CLUT_ADR3A;
-    
-    
     CLUT_ADR(5) <= CLUT_OFF(1) OR SYNTHESIZED_WIRE_18;
-    
-    
     SYNTHESIZED_WIRE_8 <= CLUT_ADR4A AND COLOR8;
-    
-    
     SYNTHESIZED_WIRE_18 <= CLUT_ADR5A AND COLOR8;
-    
-    
     SYNTHESIZED_WIRE_9 <= CLUT_ADR6A AND COLOR8;
-    
-    
     SYNTHESIZED_WIRE_46 <= CLUT_ADR7A AND COLOR8;
     
     
@@ -1497,51 +1510,22 @@ BEGIN
     PORT MAP(		 result => CCF(17 DOWNTO 16));
     
     
-    PROCESS(DDRCLK(0),DDR_WR)
+    PROCESS(DDRCLK(0), DDR_WR)
     BEGIN
-    if (DDR_WR = '1') THEN
-        VDQS(3) <= DDRCLK(0);
-    ELSE
-        VDQS(3) <= 'Z';
-    END IF;
+        IF (DDR_WR = '1') THEN
+            VDQS <= (OTHERS => DDRCLK(0));
+        ELSE
+            VDQS <= (OTHERS => 'Z');
+        END IF;
     END PROCESS;
-    
-    
-    PROCESS(DDRCLK(0),DDR_WR)
-    BEGIN
-    if (DDR_WR = '1') THEN
-        VDQS(2) <= DDRCLK(0);
-    ELSE
-        VDQS(2) <= 'Z';
-    END IF;
-    END PROCESS;
-    
-    
-    PROCESS(DDRCLK(0),DDR_WR)
-    BEGIN
-    if (DDR_WR = '1') THEN
-        VDQS(1) <= DDRCLK(0);
-    ELSE
-        VDQS(1) <= 'Z';
-    END IF;
-    END PROCESS;
-    
-    
-    PROCESS(DDRCLK(0),DDR_WR)
-    BEGIN
-    if (DDR_WR = '1') THEN
-        VDQS(0) <= DDRCLK(0);
-    ELSE
-        VDQS(0) <= 'Z';
-    END IF;
-    END PROCESS;
-    
+        
     
     PROCESS(DDRCLK(3))
     BEGIN
-    IF (rising_edge(DDRCLK(3))) THEN
-        DDRWR_D_SEL(0) <= SR_DDRWR_D_SEL;
-    END IF;
+        IF (rising_edge(DDRCLK(3))) THEN
+            DDRWR_D_SEL(0) <= SR_DDRWR_D_SEL;
+            DDR_WR <= SR_DDR_WR;
+        END IF;
     END PROCESS;
     
     
@@ -1556,15 +1540,7 @@ BEGIN
              data => SYNTHESIZED_WIRE_48,
              q => CC24);
     
-    
-    PROCESS(DDRCLK(3))
-    BEGIN
-    IF (rising_edge(DDRCLK(3))) THEN
-        DDR_WR <= SR_DDR_WR;
-    END IF;
-    END PROCESS;
-    
-    
+        
     PROCESS(PIXEL_CLK_ALTERA_SYNTHESIZED)
     BEGIN
     IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
@@ -1764,4 +1740,4 @@ BEGIN
              VIDEO_RAM_CTR => VIDEO_RAM_CTR);
     
     PIXEL_CLK <= PIXEL_CLK_ALTERA_SYNTHESIZED;
-END bdf_type;
+END rtl;
