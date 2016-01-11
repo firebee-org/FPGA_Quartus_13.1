@@ -93,10 +93,10 @@ VARIABLE
 	ACP_VIDEO_ON				:NODE;
 	SYS_CTR[6..0]				:DFFE;
 	SYS_CTR_CS					:NODE;
-	LOF[15..0]				:DFFE;
-	LOF_CS					:NODE;
-	LWD[15..0]				:DFFE;
-	LWD_CS					:NODE;
+	LOF[15..0]				    :DFFE;
+	LOF_CS					    :NODE;
+	LWD[15..0]				    :DFFE;
+	LWD_CS					    :NODE;
 -- DIV. CONTROL REGISTER
 	CLUT_TA						:DFF;  			-- BRAUCHT EIN WAITSTAT
 	HSYNC						:DFF;
@@ -131,6 +131,7 @@ VARIABLE
 	CCSEL[2..0]					:DFF;
 	COLOR16						:NODE;
 	COLOR24						:NODE;
+    
 -- ATARI RESOLUTION
 	ATARI_SYNC					:NODE;	 
 	ATARI_HH[31..0]				:DFFE;		-- HORIZONTAL TIMING 640x480
@@ -150,18 +151,18 @@ VARIABLE
 	H_TOTAL[11..0]				:NODE;
 	HDIS_LEN[11..0]				:NODE;
 	MULF[5..0]					:NODE;
-	HHT[11..0]				:DFFE;
-	HHT_CS					:NODE;
-	HBE[11..0]				:DFFE;
-	HBE_CS					:NODE;
-	HDB[11..0]				:DFFE;
-	HDB_CS					:NODE;
-	HDE[11..0]				:DFFE;
-	HDE_CS					:NODE;
-	HBB[11..0]				:DFFE;
-	HBB_CS					:NODE;
-	HSS[11..0]				:DFFE;
-	HSS_CS					:NODE;
+	HHT[11..0]				    :DFFE;
+	HHT_CS					    :NODE;
+	HBE[11..0]				    :DFFE;
+	HBE_CS					    :NODE;
+	HDB[11..0]				    :DFFE;
+	HDB_CS					    :NODE;
+	HDE[11..0]				    :DFFE;
+	HDE_CS					    :NODE;
+	HBB[11..0]				    :DFFE;
+	HBB_CS					    :NODE;
+	HSS[11..0]				    :DFFE;
+	HSS_CS					    :NODE;
 -- VERTIKAL
 	RAND_OBEN[10..0]			:NODE; 
 	VDIS_START[10..0]			:NODE; 
@@ -175,20 +176,20 @@ VARIABLE
 	DOP_ZEI						:DFF;
 	DOP_FIFO_CLR				:DFF;
 	
-	VBE[10..0]				:DFFE;
-	VBE_CS					:NODE;
-	VDB[10..0]				:DFFE;
-	VDB_CS					:NODE;
-	VDE[10..0]				:DFFE;
-	VDE_CS					:NODE;
-	VBB[10..0]				:DFFE;
-	VBB_CS					:NODE;
-	VSS[10..0]				:DFFE;
-	VSS_CS					:NODE;
-	VFT[10..0]				:DFFE;
-	VFT_CS					:NODE;
-	VCO[8..0]				:DFFE;
-	VCO_CS					:NODE;
+	VBE[10..0]				    :DFFE;
+	VBE_CS					    :NODE;
+	VDB[10..0]				    :DFFE;
+	VDB_CS					    :NODE;
+	VDE[10..0]				    :DFFE;
+	VDE_CS					    :NODE;
+	VBB[10..0]				    :DFFE;
+	VBB_CS					    :NODE;
+	VSS[10..0]				    :DFFE;
+	VSS_CS					    :NODE;
+	VFT[10..0]				    :DFFE;
+	VFT_CS					    :NODE;
+	VCO[8..0]				    :DFFE;
+	VCO_CS					    :NODE;
 	VCNTRL[3..0]				:DFFE;
 	VCNTRL_CS					:NODE;
 
@@ -203,26 +204,32 @@ BEGIN
 	FB_B3 = FB_ADR[1..0] == 3								-- ADR==3
 		  # FB_SIZE1 & !FB_SIZE0 &  FB_ADR1 				-- LOW WORD
 		  # FB_SIZE1 & FB_SIZE0 # !FB_SIZE1 & !FB_SIZE0; 	-- LONG UND LINE
+          
     -- BYT SELECT 16 BIT
 	FB_16B0 = FB_ADR[0] == 0;								-- ADR==0
 	FB_16B1 = FB_ADR[0] == 1								-- ADR==1
 		    # !(!FB_SIZE1 & FB_SIZE0);						-- NOT BYT
+            
     -- ACP CLUT --
 	ACP_CLUT_CS = !nFB_CS2 & FB_ADR[27..10] == H"0";		-- 0-3FF/1024
 	ACP_CLUT_RD = ACP_CLUT_CS & !nFB_OE;
 	ACP_CLUT_WR[] = FB_B[] & ACP_CLUT_CS & !nFB_WR;
+    
     CLUT_TA.CLK = MAIN_CLK;
 	CLUT_TA = (ACP_CLUT_CS # FALCON_CLUT_CS # ST_CLUT_CS) & !VIDEO_MOD_TA;
+    
     --FALCON CLUT --
 	FALCON_CLUT_CS  = !nFB_CS1 & FB_ADR[19..10] == H"3E6";				-- $F9800/$400
 	FALCON_CLUT_RDH = FALCON_CLUT_CS & !nFB_OE & !FB_ADR1;				-- HIGH WORD
 	FALCON_CLUT_RDL = FALCON_CLUT_CS & !nFB_OE &  FB_ADR1;				-- LOW WORD
 	FALCON_CLUT_WR[1..0] = FB_16B[] & !FB_ADR1 & FALCON_CLUT_CS & !nFB_WR;
 	FALCON_CLUT_WR[3..2] = FB_16B[] &  FB_ADR1 & FALCON_CLUT_CS & !nFB_WR;
+    
     -- ST CLUT --
 	ST_CLUT_CS  = !nFB_CS1 & FB_ADR[19..5] == H"7C12";					-- $F8240/$20
 	ST_CLUT_RD  = ST_CLUT_CS & !nFB_OE;
 	ST_CLUT_WR[] = FB_16B[] & ST_CLUT_CS & !nFB_WR;
+    
     -- ST SHIFT MODE
 	ST_SHIFT_MODE[].CLK = MAIN_CLK;
 	ST_SHIFT_MODE_CS = !nFB_CS1 & FB_ADR[19..1] == H"7C130";			-- $F8260/2
@@ -231,6 +238,7 @@ BEGIN
     COLOR1 = ST_SHIFT_MODE[] == B"10" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- MONO
 	COLOR2 = ST_SHIFT_MODE[] == B"01" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- 4 FARBEN
 	COLOR4 = ST_SHIFT_MODE[] == B"00" & !COLOR8 & ST_VIDEO & !ACP_VIDEO_ON;	-- 16 FARBEN
+    
     -- FALCON SHIFT MODE
 	FALCON_SHIFT_MODE[].CLK = MAIN_CLK;
 	FALCON_SHIFT_MODE_CS = !nFB_CS1 & FB_ADR[19..1] == H"7C133";			-- $F8266/2

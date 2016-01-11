@@ -118,15 +118,17 @@ derive_clock_uncertainty
 # Set Input Delay
 #**************************************************************
 
-set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.500 [all_inputs]
-
+set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.500 [get_pins {FB*}]
+set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.500 {nFB_CS1 nFB_CS2 nFB_CS3 nFB_OE}
 
 #**************************************************************
 # Set Output Delay
 #**************************************************************
 
-set_output_delay -add_delay  -clock [get_clocks {MAIN_CLK}]  -max 1.500 [all_outputs]
+set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -max 1.500 [get_pins {FB*}]
+set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -max 1.500 {nFB_TA}
 
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 1.5 [get_pins {VA}]
 
 #**************************************************************
 # Set Clock Groups
