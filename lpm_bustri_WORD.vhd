@@ -43,7 +43,7 @@ ENTITY lpm_bustri_WORD IS
 	PORT
 	(
 		data		: IN STD_LOGIC_VECTOR (15 DOWNTO 0);
-		enabledt		: IN STD_LOGIC ;
+		enabledt	: IN STD_LOGIC ;
 		tridata		: INOUT STD_LOGIC_VECTOR (15 DOWNTO 0)
 	);
 END lpm_bustri_WORD;
@@ -61,8 +61,8 @@ ARCHITECTURE SYN OF lpm_bustri_word IS
 	);
 	PORT (
 			enabledt	: IN STD_LOGIC ;
-			data	: IN STD_LOGIC_VECTOR (15 DOWNTO 0);
-			tridata	: INOUT STD_LOGIC_VECTOR (15 DOWNTO 0)
+			data		: IN STD_LOGIC_VECTOR (15 DOWNTO 0);
+			tridata		: INOUT STD_LOGIC_VECTOR (15 DOWNTO 0)
 	);
 	END COMPONENT;
 
