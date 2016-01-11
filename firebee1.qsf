@@ -670,10 +670,10 @@ set_global_assignment -name SYNCHRONIZER_IDENTIFICATION AUTO
 set_global_assignment -name TIMEQUEST_DO_CCPP_REMOVAL ON
 set_global_assignment -name SAVE_DISK_SPACE OFF
 set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_global_assignment -name VHDL_FILE firebee1.vhd
 set_global_assignment -name SDC_FILE firebee1.sdc
 set_global_assignment -name AHDL_FILE altpll_reconfig1.tdf
 set_global_assignment -name AHDL_FILE altpll4.tdf
-set_global_assignment -name BDF_FILE firebee1.bdf
 set_global_assignment -name BDF_FILE Video/video.bdf
 set_global_assignment -name VHDL_FILE Video/BLITTER/BLITTER.vhd
 set_global_assignment -name AHDL_FILE Video/DDR_CTR.tdf
