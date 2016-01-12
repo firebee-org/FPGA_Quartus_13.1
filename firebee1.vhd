@@ -333,7 +333,7 @@ BEGIN
             SD_CARD_DEDECT => SD_CARD_DEDECT,
             SD_WP => SD_WP,
             nDACK0 => nDACK0,
-            nFB_WR => nFB_WR_i,
+            nFB_WR => nFB_WR,
             WP_CF_CARD => WP_CF_CARD,
             nWP => nWP,
             nFB_CS2 => nFB_CS2,

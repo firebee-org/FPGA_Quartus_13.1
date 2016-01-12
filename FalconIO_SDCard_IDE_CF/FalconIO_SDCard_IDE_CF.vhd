@@ -71,7 +71,7 @@ ENTITY falconio_sdcard_ide_cf IS
 		SD_CARD_DEDECT  : IN std_logic;
 		SD_WP           : IN std_logic;
 		nDACK0          : IN std_logic;
-		nFB_WR          : INOUT std_logic;
+		nFB_WR          : IN std_logic;
 		WP_CF_CARD      : IN std_logic;
 		nWP             : IN std_logic;
 		nFB_CS2         : IN std_logic;
