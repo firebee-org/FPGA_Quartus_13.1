@@ -145,9 +145,8 @@ set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|a
 set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -min 0.500 [get_ports {VDM[*]}]
 set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 0.500 [get_ports {VDM[*]}]
 
-set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -min 0.500 {nVCAS nVRAS nVWE nVCS VCKE DDRCLK nDDRCLK BA[*]}
-set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 0.500 {nVCAS nVRAS nVWE nVCS VCKE DDRCLK nDDRCLK BA[*]}
-
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -min 0.500 {nVCAS nVRAS nVWE nVCS VCKE DDR_CLK nDDR_CLK BA[*]}
+set_output_delay -add_delay -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] -max 0.500 {nVCAS nVRAS nVWE nVCS VCKE DDR_CLK nDDR_CLK BA[*]}
 
 #**************************************************************
 # Set Clock Groups
@@ -224,33 +223,10 @@ set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpip
 # Set Maximum Delay
 #**************************************************************
 
-# from here to the end of the file statements are just an experiment
-
-#set_max_delay 25 -from [get_ports {*}]
-
 #**************************************************************
 # Set Minimum Delay
 #**************************************************************
 
-#set_min_delay 0.5 -from [get_ports {*}]
-
 #**************************************************************
 # Set Input Transition
 #**************************************************************
-#set_input_delay -max -clock [get_clocks {MAIN_CLK}] [get_pins {*}] 25
-#set_input_delay -min -clock [get_clocks {MAIN_CLK}] [get_pins {*}] .5
-#set_output_delay -max -clock [get_clocks {MAIN_CLK}] [get_pins {*}] 25
-#set_output_delay -min -clock [get_clocks {MAIN_CLK}] [get_pins {*}] .5
-
-# restrict timing of video controller
-
-#set_output_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {VA[*]}]
-#set_output_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {VA[*]}]
-
-#set_output_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {BA[*]}]
-#set_output_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {BA[*]}]
-
-#set_output_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {VD[*]}]
-#set_output_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {VD[*]}]
-#set_input_delay -min -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.1 [get_ports {VD[*]}]
-#set_input_delay -max -clock [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] 0.2 [get_ports {VD[*]}]
