@@ -183,70 +183,40 @@ ARCHITECTURE rtl OF video IS
         );
     END COMPONENT;
     
-    COMPONENT blitter
+    COMPONENT ddr_ctr
         PORT
         (
+            nFB_CS1         : IN std_logic;
+            nFB_CS2         : IN std_logic;
+            nFB_CS3         : IN std_logic;
+            nFB_OE          : IN std_logic;
+            FB_SIZE0        : IN std_logic;
+            FB_SIZE1        : IN std_logic;
             nRSTO           : IN std_logic;
             MAIN_CLK        : IN std_logic;
             FB_ALE          : IN std_logic;
             nFB_WR          : IN std_logic;
-            nFB_OE          : IN std_logic;
-            FB_SIZE0        : IN std_logic;
-            FB_SIZE1        : IN std_logic;
-            BLITTER_ON      : IN std_logic;
-            nFB_CS1         : IN std_logic;
-            nFB_CS2         : IN std_logic;
-            nFB_CS3         : IN std_logic;
+            DDR_SYNC_66M    : IN std_logic;
+            BLITTER_SIG     : IN std_logic;
+            BLITTER_WR      : IN std_logic;
             DDRCLK0         : IN std_logic;
-            SR_BLITTER_DACK : IN std_logic;
-            BLITTER_DACK    : IN std_logic_vector(4 DOWNTO 0);
-            BLITTER_DIN     : IN std_logic_vector(127 DOWNTO 0);
+            CLK33M          : IN std_logic;
+            CLR_FIFO        : IN std_logic;
+            BLITTER_ADR     : IN std_logic_vector(31 DOWNTO 0);
             FB_AD           : INOUT std_logic_vector(31 DOWNTO 0);
             FB_ADR          : IN std_logic_vector(31 DOWNTO 0);
+            FIFO_MW         : IN std_logic_vector(8 DOWNTO 0);
             VIDEO_RAM_CTR   : IN std_logic_vector(15 DOWNTO 0);
-            BLITTER_RUN     : OUT std_logic;
-            BLITTER_SIG     : OUT std_logic;
-            BLITTER_WR      : OUT std_logic;
-            BLITTER_TA      : OUT std_logic;
-            BLITTER_ADR     : OUT std_logic_vector(31 DOWNTO 0);
-            BLITTER_DOUT    : OUT std_logic_vector(127 DOWNTO 0)
-        );
-    END COMPONENT;
-    
-    COMPONENT ddr_ctr
-        PORT
-        (
-            nFB_CS1 : IN std_logic;
-            nFB_CS2 : IN std_logic;
-            nFB_CS3 : IN std_logic;
-            nFB_OE : IN std_logic;
-            FB_SIZE0 : IN std_logic;
-            FB_SIZE1 : IN std_logic;
-            nRSTO : IN std_logic;
-            MAIN_CLK : IN std_logic;
-            FB_ALE : IN std_logic;
-            nFB_WR : IN std_logic;
-            DDR_SYNC_66M : IN std_logic;
-            BLITTER_SIG : IN std_logic;
-            BLITTER_WR : IN std_logic;
-            DDRCLK0 : IN std_logic;
-            CLK33M : IN std_logic;
-            CLR_FIFO : IN std_logic;
-            BLITTER_ADR : IN std_logic_vector(31 DOWNTO 0);
-            FB_AD : INOUT std_logic_vector(31 DOWNTO 0);
-            FB_ADR : IN std_logic_vector(31 DOWNTO 0);
-            FIFO_MW : IN std_logic_vector(8 DOWNTO 0);
-            VIDEO_RAM_CTR : IN std_logic_vector(15 DOWNTO 0);
-            nVWE : OUT std_logic;
-            nVRAS : OUT std_logic;
-            nVCS : OUT std_logic;
-            VCKE : OUT std_logic;
-            nVCAS : OUT std_logic;
-            SR_FIFO_WRE : OUT std_logic;
-            SR_DDR_FB : OUT std_logic;
-            SR_DDR_WR : OUT std_logic;
-            SR_DDRWR_D_SEL : OUT std_logic;
-            VIDEO_DDR_TA : OUT std_logic;
+            nVWE            : OUT std_logic;
+            nVRAS           : OUT std_logic;
+            nVCS            : OUT std_logic;
+            VCKE            : OUT std_logic;
+            nVCAS           : OUT std_logic;
+            SR_FIFO_WRE     : OUT std_logic;
+            SR_DDR_FB       : OUT std_logic;
+            SR_DDR_WR       : OUT std_logic;
+            SR_DDRWR_D_SEL  : OUT std_logic;
+            VIDEO_DDR_TA    : OUT std_logic;
             SR_BLITTER_DACK : OUT std_logic;
             DDRWR_D_SEL1    : OUT std_logic;
             BA              : OUT std_logic_vector(1 DOWNTO 0);
@@ -259,455 +229,525 @@ ARCHITECTURE rtl OF video IS
     END COMPONENT ddr_ctr;
     
     COMPONENT altdpram1
-        PORT(wren_a : IN std_logic;
-             wren_b : IN std_logic;
-             clock_a : IN std_logic;
-             clock_b : IN std_logic;
-             address_a : IN std_logic_vector(7 DOWNTO 0);
-             address_b : IN std_logic_vector(7 DOWNTO 0);
-             data_a : IN std_logic_vector(5 DOWNTO 0);
-             data_b : IN std_logic_vector(5 DOWNTO 0);
-             q_a : OUT std_logic_vector(5 DOWNTO 0);
-             q_b : OUT std_logic_vector(5 DOWNTO 0)
+        PORT
+        (
+            wren_a      : IN std_logic;
+            wren_b      : IN std_logic;
+            clock_a     : IN std_logic;
+            clock_b     : IN std_logic;
+            address_a   : IN std_logic_vector(7 DOWNTO 0);
+            address_b   : IN std_logic_vector(7 DOWNTO 0);
+            data_a      : IN std_logic_vector(5 DOWNTO 0);
+            data_b      : IN std_logic_vector(5 DOWNTO 0);
+            q_a         : OUT std_logic_vector(5 DOWNTO 0);
+            q_b         : OUT std_logic_vector(5 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_fifo_dc0
-        PORT(wrreq : IN std_logic;
-             wrclk : IN std_logic;
-             rdreq : IN std_logic;
-             rdclk : IN std_logic;
-             aclr : IN std_logic;
-             data : IN std_logic_vector(127 DOWNTO 0);
-             rdempty : OUT std_logic;
-             q : OUT std_logic_vector(127 DOWNTO 0);
-             wrusedw : OUT std_logic_vector(8 DOWNTO 0)
+        PORT
+        (
+            wrreq   : IN std_logic;
+            wrclk   : IN std_logic;
+            rdreq   : IN std_logic;
+            rdclk   : IN std_logic;
+            aclr    : IN std_logic;
+            data    : IN std_logic_vector(127 DOWNTO 0);
+            rdempty : OUT std_logic;
+            q       : OUT std_logic_vector(127 DOWNTO 0);
+            wrusedw : OUT std_logic_vector(8 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT altddio_bidir0
-        PORT(oe : IN std_logic;
-             inclock : IN std_logic;
-             outclock : IN std_logic;
-             datain_h : IN std_logic_vector(31 DOWNTO 0);
-             datain_l : IN std_logic_vector(31 DOWNTO 0);
-             padio : INOUT std_logic_vector(31 DOWNTO 0);
-             combout : OUT std_logic_vector(31 DOWNTO 0);
-             dataout_h : OUT std_logic_vector(31 DOWNTO 0);
-             dataout_l : OUT std_logic_vector(31 DOWNTO 0)
+        PORT
+        (
+            oe          : IN std_logic;
+            inclock     : IN std_logic;
+            outclock    : IN std_logic;
+            datain_h    : IN std_logic_vector(31 DOWNTO 0);
+            datain_l    : IN std_logic_vector(31 DOWNTO 0);
+            padio       : INOUT std_logic_vector(31 DOWNTO 0);
+            combout     : OUT std_logic_vector(31 DOWNTO 0);
+            dataout_h   : OUT std_logic_vector(31 DOWNTO 0);
+            dataout_l   : OUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_ff4
-        PORT(clock : IN std_logic;
-             data : IN std_logic_vector(15 DOWNTO 0);
-             q : OUT std_logic_vector(15 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data    : IN std_logic_vector(15 DOWNTO 0);
+            q       : OUT std_logic_vector(15 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_muxvdm
-        PORT(data0x : IN std_logic_vector(127 DOWNTO 0);
-             data10x : IN std_logic_vector(127 DOWNTO 0);
-             data11x : IN std_logic_vector(127 DOWNTO 0);
-             data12x : IN std_logic_vector(127 DOWNTO 0);
-             data13x : IN std_logic_vector(127 DOWNTO 0);
-             data14x : IN std_logic_vector(127 DOWNTO 0);
-             data15x : IN std_logic_vector(127 DOWNTO 0);
-             data1x : IN std_logic_vector(127 DOWNTO 0);
-             data2x : IN std_logic_vector(127 DOWNTO 0);
-             data3x : IN std_logic_vector(127 DOWNTO 0);
-             data4x : IN std_logic_vector(127 DOWNTO 0);
-             data5x : IN std_logic_vector(127 DOWNTO 0);
-             data6x : IN std_logic_vector(127 DOWNTO 0);
-             data7x : IN std_logic_vector(127 DOWNTO 0);
-             data8x : IN std_logic_vector(127 DOWNTO 0);
-             data9x : IN std_logic_vector(127 DOWNTO 0);
-             sel : IN std_logic_vector(3 DOWNTO 0);
-             result : OUT std_logic_vector(127 DOWNTO 0)
+        PORT
+        (
+            data0x  : IN std_logic_vector(127 DOWNTO 0);
+            data10x : IN std_logic_vector(127 DOWNTO 0);
+            data11x : IN std_logic_vector(127 DOWNTO 0);
+            data12x : IN std_logic_vector(127 DOWNTO 0);
+            data13x : IN std_logic_vector(127 DOWNTO 0);
+            data14x : IN std_logic_vector(127 DOWNTO 0);
+            data15x : IN std_logic_vector(127 DOWNTO 0);
+            data1x  : IN std_logic_vector(127 DOWNTO 0);
+            data2x  : IN std_logic_vector(127 DOWNTO 0);
+            data3x  : IN std_logic_vector(127 DOWNTO 0);
+            data4x  : IN std_logic_vector(127 DOWNTO 0);
+            data5x  : IN std_logic_vector(127 DOWNTO 0);
+            data6x  : IN std_logic_vector(127 DOWNTO 0);
+            data7x  : IN std_logic_vector(127 DOWNTO 0);
+            data8x  : IN std_logic_vector(127 DOWNTO 0);
+            data9x  : IN std_logic_vector(127 DOWNTO 0);
+            sel     : IN std_logic_vector(3 DOWNTO 0);
+            result  : OUT std_logic_vector(127 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_mux3
-        PORT(data1 : IN std_logic;
-             data0 : IN std_logic;
-             sel : IN std_logic;
-             result : OUT std_logic
+        PORT
+        (
+            data1   : IN std_logic;
+            data0   : IN std_logic;
+            sel     : IN std_logic;
+            result  : OUT std_logic
         );
     END COMPONENT;
     
     COMPONENT lpm_bustri_long
-        PORT(enabledt : IN std_logic;
-             data : IN std_logic_vector(31 DOWNTO 0);
-             tridata : INOUT std_logic_vector(31 DOWNTO 0)
+        PORT
+        (
+            enabledt    : IN std_logic;
+            data        : IN std_logic_vector(31 DOWNTO 0);
+            tridata     : INOUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_ff5
-        PORT(clock : IN std_logic;
-             data : IN std_logic_vector(7 DOWNTO 0);
-             q : OUT std_logic_vector(7 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data    : IN std_logic_vector(7 DOWNTO 0);
+            q       : OUT std_logic_vector(7 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_ff1
-        PORT(clock : IN std_logic;
-             data : IN std_logic_vector(31 DOWNTO 0);
-             q : OUT std_logic_vector(31 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data    : IN std_logic_vector(31 DOWNTO 0);
+            q       : OUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_ff0
-        PORT(clock : IN std_logic;
-             enable : IN std_logic;
-             data : IN std_logic_vector(31 DOWNTO 0);
-             q : OUT std_logic_vector(31 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            enable  : IN std_logic;
+            data    : IN std_logic_vector(31 DOWNTO 0);
+            q       : OUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT altddio_out0
-        PORT(outclock : IN std_logic;
-             datain_h : IN std_logic_vector(3 DOWNTO 0);
-             datain_l : IN std_logic_vector(3 DOWNTO 0);
-             dataout : OUT std_logic_vector(3 DOWNTO 0)
+        PORT
+        (
+            outclock    : IN std_logic;
+            datain_h    : IN std_logic_vector(3 DOWNTO 0);
+            datain_l    : IN std_logic_vector(3 DOWNTO 0);
+            dataout     : OUT std_logic_vector(3 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_mux0
-        PORT(clock : IN std_logic;
-             data0x : IN std_logic_vector(31 DOWNTO 0);
-             data1x : IN std_logic_vector(31 DOWNTO 0);
-             data2x : IN std_logic_vector(31 DOWNTO 0);
-             data3x : IN std_logic_vector(31 DOWNTO 0);
-             sel : IN std_logic_vector(1 DOWNTO 0);
-             result : OUT std_logic_vector(31 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data0x  : IN std_logic_vector(31 DOWNTO 0);
+            data1x  : IN std_logic_vector(31 DOWNTO 0);
+            data2x  : IN std_logic_vector(31 DOWNTO 0);
+            data3x  : IN std_logic_vector(31 DOWNTO 0);
+            sel     : IN std_logic_vector(1 DOWNTO 0);
+            result  : OUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_mux5
-        PORT(data0x : IN std_logic_vector(63 DOWNTO 0);
-             data1x : IN std_logic_vector(63 DOWNTO 0);
-             data2x : IN std_logic_vector(63 DOWNTO 0);
-             data3x : IN std_logic_vector(63 DOWNTO 0);
-             sel : IN std_logic_vector(1 DOWNTO 0);
-             result : OUT std_logic_vector(63 DOWNTO 0)
+        PORT
+        (
+            data0x  : IN std_logic_vector(63 DOWNTO 0);
+            data1x  : IN std_logic_vector(63 DOWNTO 0);
+            data2x  : IN std_logic_vector(63 DOWNTO 0);
+            data3x  : IN std_logic_vector(63 DOWNTO 0);
+            sel     : IN std_logic_vector(1 DOWNTO 0);
+            result  : OUT std_logic_vector(63 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_constant2
-        PORT(		 result : OUT std_logic_vector(7 DOWNTO 0)
+        PORT
+        (
+            result  : OUT std_logic_vector(7 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_mux1
-        PORT(clock : IN std_logic;
-             data0x : IN std_logic_vector(15 DOWNTO 0);
-             data1x : IN std_logic_vector(15 DOWNTO 0);
-             data2x : IN std_logic_vector(15 DOWNTO 0);
-             data3x : IN std_logic_vector(15 DOWNTO 0);
-             data4x : IN std_logic_vector(15 DOWNTO 0);
-             data5x : IN std_logic_vector(15 DOWNTO 0);
-             data6x : IN std_logic_vector(15 DOWNTO 0);
-             data7x : IN std_logic_vector(15 DOWNTO 0);
-             sel : IN std_logic_vector(2 DOWNTO 0);
-             result : OUT std_logic_vector(15 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data0x  : IN std_logic_vector(15 DOWNTO 0);
+            data1x  : IN std_logic_vector(15 DOWNTO 0);
+            data2x  : IN std_logic_vector(15 DOWNTO 0);
+            data3x  : IN std_logic_vector(15 DOWNTO 0);
+            data4x  : IN std_logic_vector(15 DOWNTO 0);
+            data5x  : IN std_logic_vector(15 DOWNTO 0);
+            data6x  : IN std_logic_vector(15 DOWNTO 0);
+            data7x  : IN std_logic_vector(15 DOWNTO 0);
+            sel     : IN std_logic_vector(2 DOWNTO 0);
+            result  : OUT std_logic_vector(15 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_mux2
-        PORT(clock : IN std_logic;
-             data0x : IN std_logic_vector(7 DOWNTO 0);
-             data10x : IN std_logic_vector(7 DOWNTO 0);
-             data11x : IN std_logic_vector(7 DOWNTO 0);
-             data12x : IN std_logic_vector(7 DOWNTO 0);
-             data13x : IN std_logic_vector(7 DOWNTO 0);
-             data14x : IN std_logic_vector(7 DOWNTO 0);
-             data15x : IN std_logic_vector(7 DOWNTO 0);
-             data1x : IN std_logic_vector(7 DOWNTO 0);
-             data2x : IN std_logic_vector(7 DOWNTO 0);
-             data3x : IN std_logic_vector(7 DOWNTO 0);
-             data4x : IN std_logic_vector(7 DOWNTO 0);
-             data5x : IN std_logic_vector(7 DOWNTO 0);
-             data6x : IN std_logic_vector(7 DOWNTO 0);
-             data7x : IN std_logic_vector(7 DOWNTO 0);
-             data8x : IN std_logic_vector(7 DOWNTO 0);
-             data9x : IN std_logic_vector(7 DOWNTO 0);
-             sel : IN std_logic_vector(3 DOWNTO 0);
-             result : OUT std_logic_vector(7 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data0x  : IN std_logic_vector(7 DOWNTO 0);
+            data10x : IN std_logic_vector(7 DOWNTO 0);
+            data11x : IN std_logic_vector(7 DOWNTO 0);
+            data12x : IN std_logic_vector(7 DOWNTO 0);
+            data13x : IN std_logic_vector(7 DOWNTO 0);
+            data14x : IN std_logic_vector(7 DOWNTO 0);
+            data15x : IN std_logic_vector(7 DOWNTO 0);
+            data1x  : IN std_logic_vector(7 DOWNTO 0);
+            data2x  : IN std_logic_vector(7 DOWNTO 0);
+            data3x  : IN std_logic_vector(7 DOWNTO 0);
+            data4x  : IN std_logic_vector(7 DOWNTO 0);
+            data5x  : IN std_logic_vector(7 DOWNTO 0);
+            data6x  : IN std_logic_vector(7 DOWNTO 0);
+            data7x  : IN std_logic_vector(7 DOWNTO 0);
+            data8x  : IN std_logic_vector(7 DOWNTO 0);
+            data9x  : IN std_logic_vector(7 DOWNTO 0);
+            sel     : IN std_logic_vector(3 DOWNTO 0);
+            result  : OUT std_logic_vector(7 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_shiftreg4
-        PORT(clock : IN std_logic;
-             shiftin : IN std_logic;
-             shiftout : OUT std_logic
+        PORT
+        (
+            clock       : IN std_logic;
+            shiftin     : IN std_logic;
+            shiftout    : OUT std_logic
         );
     END COMPONENT;
     
     COMPONENT lpm_latch0
-        PORT(gate : IN std_logic;
-             data : IN std_logic_vector(31 DOWNTO 0);
-             q : OUT std_logic_vector(31 DOWNTO 0)
+        PORT
+        (
+            gate    : IN std_logic;
+            data    : IN std_logic_vector(31 DOWNTO 0);
+            q       : OUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_ff6
-        PORT(clock : IN std_logic;
-             enable : IN std_logic;
-             data : IN std_logic_vector(127 DOWNTO 0);
-             q : OUT std_logic_vector(127 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            enable  : IN std_logic;
+            data    : IN std_logic_vector(127 DOWNTO 0);
+            q       : OUT std_logic_vector(127 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_ff3
-        PORT(clock : IN std_logic;
-             data : IN std_logic_vector(23 DOWNTO 0);
-             q : OUT std_logic_vector(23 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data    : IN std_logic_vector(23 DOWNTO 0);
+            q       : OUT std_logic_vector(23 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT altddio_out2
-        PORT(outclock : IN std_logic;
-             datain_h : IN std_logic_vector(23 DOWNTO 0);
-             datain_l : IN std_logic_vector(23 DOWNTO 0);
-             dataout : OUT std_logic_vector(23 DOWNTO 0)
+        PORT
+        (
+            outclock    : IN std_logic;
+            datain_h    : IN std_logic_vector(23 DOWNTO 0);
+            datain_l    : IN std_logic_vector(23 DOWNTO 0);
+            dataout     : OUT std_logic_vector(23 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_bustri1
-        PORT(enabledt : IN std_logic;
-             data : IN std_logic_vector(2 DOWNTO 0);
-             tridata : INOUT std_logic_vector(2 DOWNTO 0)
+        PORT
+        (
+            enabledt    : IN std_logic;
+            data        : IN std_logic_vector(2 DOWNTO 0);
+            tridata     : INOUT std_logic_vector(2 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_bustri_byt
-        PORT(enabledt : IN std_logic;
-             data : IN std_logic_vector(7 DOWNTO 0);
-             tridata : INOUT std_logic_vector(7 DOWNTO 0)
+        PORT
+        (
+            enabledt    : IN std_logic;
+            data        : IN std_logic_vector(7 DOWNTO 0);
+            tridata     : INOUT std_logic_vector(7 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_constant0
-        PORT(		 result : OUT std_logic_vector(4 DOWNTO 0)
+        PORT
+        (
+            result  : OUT std_logic_vector(4 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_muxdz
-        PORT(clock : IN std_logic;
-             clken : IN std_logic;
-             sel : IN std_logic;
-             data0x : IN std_logic_vector(127 DOWNTO 0);
-             data1x : IN std_logic_vector(127 DOWNTO 0);
-             result : OUT std_logic_vector(127 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            clken   : IN std_logic;
+            sel     : IN std_logic;
+            data0x  : IN std_logic_vector(127 DOWNTO 0);
+            data1x  : IN std_logic_vector(127 DOWNTO 0);
+            result  : OUT std_logic_vector(127 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_fifodz
-        PORT(wrreq : IN std_logic;
-             rdreq : IN std_logic;
-             clock : IN std_logic;
-             aclr : IN std_logic;
-             data : IN std_logic_vector(127 DOWNTO 0);
-             q : OUT std_logic_vector(127 DOWNTO 0)
+        PORT
+        (
+            wrreq   : IN std_logic;
+            rdreq   : IN std_logic;
+            clock   : IN std_logic;
+            aclr    : IN std_logic;
+            data    : IN std_logic_vector(127 DOWNTO 0);
+            q       : OUT std_logic_vector(127 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_bustri3
-        PORT(enabledt : IN std_logic;
-             data : IN std_logic_vector(5 DOWNTO 0);
-             tridata : INOUT std_logic_vector(5 DOWNTO 0)
+        PORT
+        (
+            enabledt    : IN std_logic;
+            data        : IN std_logic_vector(5 DOWNTO 0);
+            tridata     : INOUT std_logic_vector(5 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_mux6
-        PORT(clock : IN std_logic;
-             data0x : IN std_logic_vector(23 DOWNTO 0);
-             data1x : IN std_logic_vector(23 DOWNTO 0);
-             data2x : IN std_logic_vector(23 DOWNTO 0);
-             data3x : IN std_logic_vector(23 DOWNTO 0);
-             data4x : IN std_logic_vector(23 DOWNTO 0);
-             data5x : IN std_logic_vector(23 DOWNTO 0);
-             data6x : IN std_logic_vector(23 DOWNTO 0);
-             data7x : IN std_logic_vector(23 DOWNTO 0);
-             sel : IN std_logic_vector(2 DOWNTO 0);
-             result : OUT std_logic_vector(23 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            data0x  : IN std_logic_vector(23 DOWNTO 0);
+            data1x  : IN std_logic_vector(23 DOWNTO 0);
+            data2x  : IN std_logic_vector(23 DOWNTO 0);
+            data3x  : IN std_logic_vector(23 DOWNTO 0);
+            data4x  : IN std_logic_vector(23 DOWNTO 0);
+            data5x  : IN std_logic_vector(23 DOWNTO 0);
+            data6x  : IN std_logic_vector(23 DOWNTO 0);
+            data7x  : IN std_logic_vector(23 DOWNTO 0);
+            sel     : IN std_logic_vector(2 DOWNTO 0);
+            result  : OUT std_logic_vector(23 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_constant1
-        PORT(		 result : OUT std_logic_vector(1 DOWNTO 0)
+        PORT
+        (
+            result  : OUT std_logic_vector(1 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_mux4
-        PORT(sel : IN std_logic;
-             data0x : IN std_logic_vector(6 DOWNTO 0);
-             data1x : IN std_logic_vector(6 DOWNTO 0);
-             result : OUT std_logic_vector(6 DOWNTO 0)
+        PORT
+        (
+            sel     : IN std_logic;
+            data0x  : IN std_logic_vector(6 DOWNTO 0);
+            data1x  : IN std_logic_vector(6 DOWNTO 0);
+            result  : OUT std_logic_vector(6 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_constant3
-        PORT(		 result : OUT std_logic_vector(6 DOWNTO 0)
+        PORT
+        (
+            result  : OUT std_logic_vector(6 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_shiftreg6
-        PORT(clock : IN std_logic;
-             shiftin : IN std_logic;
-             q : OUT std_logic_vector(4 DOWNTO 0)
+        PORT
+        (
+            clock   : IN std_logic;
+            shiftin : IN std_logic;
+            q       : OUT std_logic_vector(4 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT lpm_shiftreg0
-        PORT(load : IN std_logic;
-             clock : IN std_logic;
-             shiftin : IN std_logic;
-             data : IN std_logic_vector(15 DOWNTO 0);
-             shiftout : OUT std_logic
+        PORT
+        (
+            load        : IN std_logic;
+            clock       : IN std_logic;
+            shiftin     : IN std_logic;
+            data        : IN std_logic_vector(15 DOWNTO 0);
+            shiftout    : OUT std_logic
         );
     END COMPONENT;
     
     COMPONENT altdpram0
-        PORT(wren_a : IN std_logic;
-             wren_b : IN std_logic;
-             clock_a : IN std_logic;
-             clock_b : IN std_logic;
-             address_a : IN std_logic_vector(3 DOWNTO 0);
-             address_b : IN std_logic_vector(3 DOWNTO 0);
-             data_a : IN std_logic_vector(2 DOWNTO 0);
-             data_b : IN std_logic_vector(2 DOWNTO 0);
-             q_a : OUT std_logic_vector(2 DOWNTO 0);
-             q_b : OUT std_logic_vector(2 DOWNTO 0)
+        PORT
+        (
+            wren_a      : IN std_logic;
+            wren_b      : IN std_logic;
+            clock_a     : IN std_logic;
+            clock_b     : IN std_logic;
+            address_a   : IN std_logic_vector(3 DOWNTO 0);
+            address_b   : IN std_logic_vector(3 DOWNTO 0);
+            data_a      : IN std_logic_vector(2 DOWNTO 0);
+            data_b      : IN std_logic_vector(2 DOWNTO 0);
+            q_a         : OUT std_logic_vector(2 DOWNTO 0);
+            q_b         : OUT std_logic_vector(2 DOWNTO 0)
         );
     END COMPONENT;
     
     COMPONENT video_mod_mux_clutctr
-        PORT(nRSTO : IN std_logic;
-             MAIN_CLK : IN std_logic;
-             nFB_CS1 : IN std_logic;
-             nFB_CS2 : IN std_logic;
-             nFB_CS3 : IN std_logic;
-             nFB_WR : IN std_logic;
-             nFB_OE : IN std_logic;
-             FB_SIZE0 : IN std_logic;
-             FB_SIZE1 : IN std_logic;
-             nFB_BURST : IN std_logic;
-             CLK33M : IN std_logic;
-             CLK25M : IN std_logic;
-             BLITTER_RUN : IN std_logic;
-             CLK_VIDEO : IN std_logic;
-             VR_BUSY : IN std_logic;
-             FB_AD : INOUT std_logic_vector(31 DOWNTO 0);
-             FB_ADR : IN std_logic_vector(31 DOWNTO 0);
-             VR_D : IN std_logic_vector(8 DOWNTO 0);
-             COLOR8 : OUT std_logic;
-             ACP_CLUT_RD : OUT std_logic;
-             COLOR1 : OUT std_logic;
-             FALCON_CLUT_RDH : OUT std_logic;
-             FALCON_CLUT_RDL : OUT std_logic;
-             ST_CLUT_RD : OUT std_logic;
-             HSYNC : OUT std_logic;
-             VSYNC : OUT std_logic;
-             nBLANK : OUT std_logic;
-             nSYNC : OUT std_logic;
-             nPD_VGA : OUT std_logic;
-             FIFO_RDE : OUT std_logic;
-             COLOR2 : OUT std_logic;
-             COLOR4 : OUT std_logic;
-             PIXEL_CLK : OUT std_logic;
-             BLITTER_ON : OUT std_logic;
-             VIDEO_MOD_TA : OUT std_logic;
-             INTER_ZEI : OUT std_logic;
-             DOP_FIFO_CLR : OUT std_logic;
-             VIDEO_RECONFIG : OUT std_logic;
-             VR_WR : OUT std_logic;
-             VR_RD : OUT std_logic;
-             CLR_FIFO : OUT std_logic;
-             ACP_CLUT_WR : OUT std_logic_vector(3 DOWNTO 0);
-             BORDER_COLOR : OUT std_logic_vector(23 DOWNTO 0);
-             CCSEL : OUT std_logic_vector(2 DOWNTO 0);
-             CLUT_MUX_ADR : OUT std_logic_vector(3 DOWNTO 0);
-             CLUT_OFF : OUT std_logic_vector(3 DOWNTO 0);
-             FALCON_CLUT_WR : OUT std_logic_vector(3 DOWNTO 0);
-             ST_CLUT_WR : OUT std_logic_vector(1 DOWNTO 0);
-             VIDEO_RAM_CTR : OUT std_logic_vector(15 DOWNTO 0)
+        PORT
+        (
+            nRSTO           : IN std_logic;
+            MAIN_CLK        : IN std_logic;
+            nFB_CS1         : IN std_logic;
+            nFB_CS2         : IN std_logic;
+            nFB_CS3         : IN std_logic;
+            nFB_WR          : IN std_logic;
+            nFB_OE          : IN std_logic;
+            FB_SIZE0        : IN std_logic;
+            FB_SIZE1        : IN std_logic;
+            nFB_BURST       : IN std_logic;
+            CLK33M          : IN std_logic;
+            CLK25M          : IN std_logic;
+            BLITTER_RUN     : IN std_logic;
+            CLK_VIDEO       : IN std_logic;
+            VR_BUSY         : IN std_logic;
+            FB_AD           : INOUT std_logic_vector(31 DOWNTO 0);
+            FB_ADR          : IN std_logic_vector(31 DOWNTO 0);
+            VR_D            : IN std_logic_vector(8 DOWNTO 0);
+            COLOR8          : OUT std_logic;
+            ACP_CLUT_RD     : OUT std_logic;
+            COLOR1          : OUT std_logic;
+            FALCON_CLUT_RDH : OUT std_logic;
+            FALCON_CLUT_RDL : OUT std_logic;
+            ST_CLUT_RD      : OUT std_logic;
+            HSYNC           : OUT std_logic;
+            VSYNC           : OUT std_logic;
+            nBLANK          : OUT std_logic;
+            nSYNC           : OUT std_logic;
+            nPD_VGA         : OUT std_logic;
+            FIFO_RDE        : OUT std_logic;
+            COLOR2          : OUT std_logic;
+            COLOR4          : OUT std_logic;
+            PIXEL_CLK       : OUT std_logic;
+            BLITTER_ON      : OUT std_logic;
+            VIDEO_MOD_TA    : OUT std_logic;
+            INTER_ZEI       : OUT std_logic;
+            DOP_FIFO_CLR    : OUT std_logic;
+            VIDEO_RECONFIG  : OUT std_logic;
+            VR_WR           : OUT std_logic;
+            VR_RD           : OUT std_logic;
+            CLR_FIFO        : OUT std_logic;
+            ACP_CLUT_WR     : OUT std_logic_vector(3 DOWNTO 0);
+            BORDER_COLOR    : OUT std_logic_vector(23 DOWNTO 0);
+            CCSEL           : OUT std_logic_vector(2 DOWNTO 0);
+            CLUT_MUX_ADR    : OUT std_logic_vector(3 DOWNTO 0);
+            CLUT_OFF        : OUT std_logic_vector(3 DOWNTO 0);
+            FALCON_CLUT_WR  : OUT std_logic_vector(3 DOWNTO 0);
+            ST_CLUT_WR      : OUT std_logic_vector(1 DOWNTO 0);
+            VIDEO_RAM_CTR   : OUT std_logic_vector(15 DOWNTO 0)
         );
     END COMPONENT;
     
-    SIGNAL	ACP_CLUT_RD :  std_logic;
-    SIGNAL	ACP_CLUT_WR :  std_logic_vector(3 DOWNTO 0);
-    SIGNAL	BLITTER_ADR :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	BLITTER_DACK :  std_logic_vector(4 DOWNTO 0);
-    SIGNAL	BLITTER_DIN :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	BLITTER_DOUT :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	BLITTER_ON :  std_logic;
-    SIGNAL	BLITTER_RUN :  std_logic;
-    SIGNAL	BLITTER_SIG :  std_logic;
-    SIGNAL	BLITTER_TA :  std_logic;
-    SIGNAL	BLITTER_WR :  std_logic;
-    SIGNAL	BORDER_COLOR :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CC16 :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CC24 :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	CCA :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CCF :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CCS :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CCSEL :  std_logic_vector(2 DOWNTO 0);
-    SIGNAL	CLR_FIFO :  std_logic;
-    SIGNAL	CLUT_ADR :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	CLUT_ADR1A :  std_logic;
-    SIGNAL	CLUT_ADR2A :  std_logic;
-    SIGNAL	CLUT_ADR3A :  std_logic;
-    SIGNAL	CLUT_ADR4A :  std_logic;
-    SIGNAL	CLUT_ADR5A :  std_logic;
-    SIGNAL	CLUT_ADR6A :  std_logic;
-    SIGNAL	CLUT_ADR7A :  std_logic;
-    SIGNAL	CLUT_MUX_ADR :  std_logic_vector(3 DOWNTO 0);
-    SIGNAL	CLUT_OFF :  std_logic_vector(3 DOWNTO 0);
-    SIGNAL	COLOR1 :  std_logic;
-    SIGNAL	COLOR2 :  std_logic;
-    SIGNAL	COLOR4 :  std_logic;
-    SIGNAL	COLOR8 :  std_logic;
-    SIGNAL	DDR_FB :  std_logic_vector(4 DOWNTO 0);
-    SIGNAL	DDR_WR :  std_logic;
-    SIGNAL	DDRWR_D_SEL :  std_logic_vector(1 DOWNTO 0);
-    SIGNAL	DOP_FIFO_CLR :  std_logic;
+    SIGNAL	ACP_CLUT_RD     :  std_logic;
+    SIGNAL	ACP_CLUT_WR     :  std_logic_vector(3 DOWNTO 0);
+    SIGNAL	BLITTER_ADR     :  std_logic_vector(31 DOWNTO 0);
+    SIGNAL	BLITTER_DACK    :  std_logic_vector(4 DOWNTO 0);
+    SIGNAL	BLITTER_DIN     :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	BLITTER_DOUT    :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	BLITTER_ON      :  std_logic;
+    SIGNAL	BLITTER_RUN     :  std_logic;
+    SIGNAL	BLITTER_SIG     :  std_logic;
+    SIGNAL	BLITTER_TA      :  std_logic;
+    SIGNAL	BLITTER_WR      :  std_logic;
+    SIGNAL	BORDER_COLOR    :  std_logic_vector(23 DOWNTO 0);
+    SIGNAL	CC16            :  std_logic_vector(23 DOWNTO 0);
+    SIGNAL	CC24            :  std_logic_vector(31 DOWNTO 0);
+    SIGNAL	CCA             :  std_logic_vector(23 DOWNTO 0);
+    SIGNAL	CCF             :  std_logic_vector(23 DOWNTO 0);
+    SIGNAL	CCS             :  std_logic_vector(23 DOWNTO 0);
+    SIGNAL	CCSEL           :  std_logic_vector(2 DOWNTO 0);
+    SIGNAL	CLR_FIFO        :  std_logic;
+    SIGNAL	CLUT_ADR        :  std_logic_vector(7 DOWNTO 0);
+    SIGNAL	CLUT_ADR1A      :  std_logic;
+    SIGNAL	CLUT_ADR2A      :  std_logic;
+    SIGNAL	CLUT_ADR3A      :  std_logic;
+    SIGNAL	CLUT_ADR4A      :  std_logic;
+    SIGNAL	CLUT_ADR5A      :  std_logic;
+    SIGNAL	CLUT_ADR6A      :  std_logic;
+    SIGNAL	CLUT_ADR7A      :  std_logic;
+    SIGNAL	CLUT_MUX_ADR    :  std_logic_vector(3 DOWNTO 0);
+    SIGNAL	CLUT_OFF        :  std_logic_vector(3 DOWNTO 0);
+    SIGNAL	COLOR1          :  std_logic;
+    SIGNAL	COLOR2          :  std_logic;
+    SIGNAL	COLOR4          :  std_logic;
+    SIGNAL	COLOR8          :  std_logic;
+    SIGNAL	DDR_FB          :  std_logic_vector(4 DOWNTO 0);
+    SIGNAL	DDR_WR          :  std_logic;
+    SIGNAL	DDRWR_D_SEL     :  std_logic_vector(1 DOWNTO 0);
+    SIGNAL	DOP_FIFO_CLR    :  std_logic;
     SIGNAL	FALCON_CLUT_RDH :  std_logic;
     SIGNAL	FALCON_CLUT_RDL :  std_logic;
-    SIGNAL	FALCON_CLUT_WR :  std_logic_vector(3 DOWNTO 0);
-    SIGNAL	FB_DDR :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	FB_LE :  std_logic_vector(3 DOWNTO 0);
-    SIGNAL	FB_VDOE :  std_logic_vector(3 DOWNTO 0);
-    SIGNAL	FIFO_D :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	FIFO_MW :  std_logic_vector(8 DOWNTO 0);
-    SIGNAL	FIFO_RDE :  std_logic;
-    SIGNAL	FIFO_WRE :  std_logic;
-    SIGNAL	INTER_ZEI :  std_logic;
-    SIGNAL	nFB_BURST :  std_logic;
+    SIGNAL	FALCON_CLUT_WR  :  std_logic_vector(3 DOWNTO 0);
+    SIGNAL	FB_DDR          :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	FB_LE           :  std_logic_vector(3 DOWNTO 0);
+    SIGNAL	FB_VDOE         :  std_logic_vector(3 DOWNTO 0);
+    SIGNAL	FIFO_D          :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	FIFO_MW         :  std_logic_vector(8 DOWNTO 0);
+    SIGNAL	FIFO_RDE        :  std_logic;
+    SIGNAL	FIFO_WRE        :  std_logic;
+    SIGNAL	INTER_ZEI       :  std_logic;
+    SIGNAL	nFB_BURST       :  std_logic;
     SIGNAL	PIXEL_CLK_ALTERA_SYNTHESIZED :  std_logic;
     SIGNAL	SR_BLITTER_DACK :  std_logic;
-    SIGNAL	SR_DDR_FB :  std_logic;
-    SIGNAL	SR_DDR_WR :  std_logic;
-    SIGNAL	SR_DDRWR_D_SEL :  std_logic;
-    SIGNAL	SR_FIFO_WRE :  std_logic;
-    SIGNAL	SR_VDMP :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	ST_CLUT_RD :  std_logic;
-    SIGNAL	ST_CLUT_WR :  std_logic_vector(1 DOWNTO 0);
-    SIGNAL	VDM_SEL :  std_logic_vector(3 DOWNTO 0);
-    SIGNAL	VDMA :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VDMB :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VDMC :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VDMP :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	VDOUT_OE :  std_logic;
-    SIGNAL	VDP_IN :  std_logic_vector(63 DOWNTO 0);
-    SIGNAL	VDP_OUT :  std_logic_vector(63 DOWNTO 0);
-    SIGNAL	VDR :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	VDVZ :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VIDEO_DDR_TA :  std_logic;
-    SIGNAL	VIDEO_MOD_TA :  std_logic;
-    SIGNAL	VIDEO_RAM_CTR :  std_logic_vector(15 DOWNTO 0);
-    SIGNAL	ZR_C8 :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	ZR_C8B :  std_logic_vector(7 DOWNTO 0);
+    SIGNAL	SR_DDR_FB       :  std_logic;
+    SIGNAL	SR_DDR_WR       :  std_logic;
+    SIGNAL	SR_DDRWR_D_SEL  :  std_logic;
+    SIGNAL	SR_FIFO_WRE     :  std_logic;
+    SIGNAL	SR_VDMP         :  std_logic_vector(7 DOWNTO 0);
+    SIGNAL	ST_CLUT_RD      :  std_logic;
+    SIGNAL	ST_CLUT_WR      :  std_logic_vector(1 DOWNTO 0);
+    SIGNAL	VDM_SEL         :  std_logic_vector(3 DOWNTO 0);
+    SIGNAL	VDMA            :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	VDMB            :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	VDMC            :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	VDMP            :  std_logic_vector(7 DOWNTO 0);
+    SIGNAL	VDOUT_OE        :  std_logic;
+    SIGNAL	VDP_IN          :  std_logic_vector(63 DOWNTO 0);
+    SIGNAL	VDP_OUT         :  std_logic_vector(63 DOWNTO 0);
+    SIGNAL	VDR             :  std_logic_vector(31 DOWNTO 0);
+    SIGNAL	VDVZ            :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	VIDEO_DDR_TA    :  std_logic;
+    SIGNAL	VIDEO_MOD_TA    :  std_logic;
+    SIGNAL	VIDEO_RAM_CTR   :  std_logic_vector(15 DOWNTO 0);
+    SIGNAL	ZR_C8           :  std_logic_vector(7 DOWNTO 0);
+    SIGNAL	ZR_C8B          :  std_logic_vector(7 DOWNTO 0);
     SIGNAL	SYNTHESIZED_WIRE_0 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_1 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_2 :  std_logic;
@@ -716,7 +756,7 @@ ARCHITECTURE rtl OF video IS
     SIGNAL	SYNTHESIZED_WIRE_5 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_60 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_7 :  std_logic_vector(15 DOWNTO 0);
-    SIGNAL	DFF_inst93 :  std_logic;
+    SIGNAL	DFF_inst93      :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_8 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_9 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_61 :  std_logic;
@@ -754,7 +794,7 @@ ARCHITECTURE rtl OF video IS
     SIGNAL	SYNTHESIZED_WIRE_46 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_47 :  std_logic_vector(6 DOWNTO 0);
     SIGNAL	SYNTHESIZED_WIRE_48 :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	DFF_inst91 :  std_logic;
+    SIGNAL	DFF_inst91          :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_64 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_49 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_50 :  std_logic;
@@ -768,22 +808,22 @@ ARCHITECTURE rtl OF video IS
     SIGNAL	SYNTHESIZED_WIRE_65 :  std_logic_vector(23 DOWNTO 0);
     
     SIGNAL	GDFX_TEMP_SIGNAL_16 :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_0 :  std_logic_vector(15 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_6 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_5 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_4 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_3 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_2 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_1 :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_0  :  std_logic_vector(15 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_6  :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_5  :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_4  :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_3  :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_2  :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_1  :  std_logic_vector(127 DOWNTO 0);
     SIGNAL	GDFX_TEMP_SIGNAL_15 :  std_logic_vector(127 DOWNTO 0);
     SIGNAL	GDFX_TEMP_SIGNAL_14 :  std_logic_vector(127 DOWNTO 0);
     SIGNAL	GDFX_TEMP_SIGNAL_13 :  std_logic_vector(127 DOWNTO 0);
     SIGNAL	GDFX_TEMP_SIGNAL_12 :  std_logic_vector(127 DOWNTO 0);
     SIGNAL	GDFX_TEMP_SIGNAL_11 :  std_logic_vector(127 DOWNTO 0);
     SIGNAL	GDFX_TEMP_SIGNAL_10 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_9 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_8 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_7 :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_9  :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_8  :  std_logic_vector(127 DOWNTO 0);
+    SIGNAL	GDFX_TEMP_SIGNAL_7  :  std_logic_vector(127 DOWNTO 0);
     
 BEGIN 
     VB(7 DOWNTO 0) <= SYNTHESIZED_WIRE_65(7 DOWNTO 0);
@@ -806,38 +846,32 @@ BEGIN
     SYNTHESIZED_WIRE_56 <= '0';
     SYNTHESIZED_WIRE_57 <= '0';
     
-    CC16(18) <= GDFX_TEMP_SIGNAL_16(7);
-    CC16(17) <= GDFX_TEMP_SIGNAL_16(6);
-    CC16(16) <= GDFX_TEMP_SIGNAL_16(5);
-    CC16(9) <= GDFX_TEMP_SIGNAL_16(4);
-    CC16(8) <= GDFX_TEMP_SIGNAL_16(3);
-    CC16(2) <= GDFX_TEMP_SIGNAL_16(2);
-    CC16(1) <= GDFX_TEMP_SIGNAL_16(1);
-    CC16(0) <= GDFX_TEMP_SIGNAL_16(0);
-    
     CC16(23) <= GDFX_TEMP_SIGNAL_0(15);
     CC16(22) <= GDFX_TEMP_SIGNAL_0(14);
     CC16(21) <= GDFX_TEMP_SIGNAL_0(13);
     CC16(20) <= GDFX_TEMP_SIGNAL_0(12);
     CC16(19) <= GDFX_TEMP_SIGNAL_0(11);
+    CC16(18) <= GDFX_TEMP_SIGNAL_16(7);
+    CC16(17) <= GDFX_TEMP_SIGNAL_16(6);
+    CC16(16) <= GDFX_TEMP_SIGNAL_16(5);
     CC16(15) <= GDFX_TEMP_SIGNAL_0(10);
     CC16(14) <= GDFX_TEMP_SIGNAL_0(9);
     CC16(13) <= GDFX_TEMP_SIGNAL_0(8);
     CC16(12) <= GDFX_TEMP_SIGNAL_0(7);
     CC16(11) <= GDFX_TEMP_SIGNAL_0(6);
     CC16(10) <= GDFX_TEMP_SIGNAL_0(5);
+    CC16(9) <= GDFX_TEMP_SIGNAL_16(4);
+    CC16(8) <= GDFX_TEMP_SIGNAL_16(3);
     CC16(7) <= GDFX_TEMP_SIGNAL_0(4);
     CC16(6) <= GDFX_TEMP_SIGNAL_0(3);
     CC16(5) <= GDFX_TEMP_SIGNAL_0(2);
     CC16(4) <= GDFX_TEMP_SIGNAL_0(1);
     CC16(3) <= GDFX_TEMP_SIGNAL_0(0);
+    CC16(2) <= GDFX_TEMP_SIGNAL_16(2);
+    CC16(1) <= GDFX_TEMP_SIGNAL_16(1);
+    CC16(0) <= GDFX_TEMP_SIGNAL_16(0);
     
-    GDFX_TEMP_SIGNAL_6 <= (VDMB(7 DOWNTO 0) & VDMA(127 DOWNTO 8));
-    GDFX_TEMP_SIGNAL_5 <= (VDMB(15 DOWNTO 0) & VDMA(127 DOWNTO 16));
-    GDFX_TEMP_SIGNAL_4 <= (VDMB(23 DOWNTO 0) & VDMA(127 DOWNTO 24));
-    GDFX_TEMP_SIGNAL_3 <= (VDMB(31 DOWNTO 0) & VDMA(127 DOWNTO 32));
-    GDFX_TEMP_SIGNAL_2 <= (VDMB(39 DOWNTO 0) & VDMA(127 DOWNTO 40));
-    GDFX_TEMP_SIGNAL_1 <= (VDMB(47 DOWNTO 0) & VDMA(127 DOWNTO 48));
+    
     GDFX_TEMP_SIGNAL_15 <= (VDMB(55 DOWNTO 0) & VDMA(127 DOWNTO 56));
     GDFX_TEMP_SIGNAL_14 <= (VDMB(63 DOWNTO 0) & VDMA(127 DOWNTO 64));
     GDFX_TEMP_SIGNAL_13 <= (VDMB(71 DOWNTO 0) & VDMA(127 DOWNTO 72));
@@ -847,210 +881,255 @@ BEGIN
     GDFX_TEMP_SIGNAL_9 <= (VDMB(103 DOWNTO 0) & VDMA(127 DOWNTO 104));
     GDFX_TEMP_SIGNAL_8 <= (VDMB(111 DOWNTO 0) & VDMA(127 DOWNTO 112));
     GDFX_TEMP_SIGNAL_7 <= (VDMB(119 DOWNTO 0) & VDMA(127 DOWNTO 120));
+    GDFX_TEMP_SIGNAL_6 <= (VDMB(7 DOWNTO 0) & VDMA(127 DOWNTO 8));
+    GDFX_TEMP_SIGNAL_5 <= (VDMB(15 DOWNTO 0) & VDMA(127 DOWNTO 16));
+    GDFX_TEMP_SIGNAL_4 <= (VDMB(23 DOWNTO 0) & VDMA(127 DOWNTO 24));
+    GDFX_TEMP_SIGNAL_3 <= (VDMB(31 DOWNTO 0) & VDMA(127 DOWNTO 32));
+    GDFX_TEMP_SIGNAL_2 <= (VDMB(39 DOWNTO 0) & VDMA(127 DOWNTO 40));
+    GDFX_TEMP_SIGNAL_1 <= (VDMB(47 DOWNTO 0) & VDMA(127 DOWNTO 48));
     
     
     ACP_CLUT_RAM : altdpram2
-    PORT MAP(wren_a => ACP_CLUT_WR(3),
-             wren_b => SYNTHESIZED_WIRE_0,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(9 DOWNTO 2),
-             address_b => ZR_C8B,
-             data_a => FB_AD(7 DOWNTO 0),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_30,
-             q_b => CCA(7 DOWNTO 0));
+        PORT MAP
+        (
+            wren_a => ACP_CLUT_WR(3),
+            wren_b => SYNTHESIZED_WIRE_0,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(9 DOWNTO 2),
+            address_b => ZR_C8B,
+            data_a => FB_AD(7 DOWNTO 0),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_30,
+            q_b => CCA(7 DOWNTO 0)
+        );
     
     
     ACP_CLUT_RAM54 : altdpram2
-    PORT MAP(wren_a => ACP_CLUT_WR(2),
-             wren_b => SYNTHESIZED_WIRE_1,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(9 DOWNTO 2),
-             address_b => ZR_C8B,
-             data_a => FB_AD(15 DOWNTO 8),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_32,
-             q_b => CCA(15 DOWNTO 8));
+        PORT MAP
+        (
+            wren_a => ACP_CLUT_WR(2),
+            wren_b => SYNTHESIZED_WIRE_1,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(9 DOWNTO 2),
+            address_b => ZR_C8B,
+            data_a => FB_AD(15 DOWNTO 8),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_32,
+            q_b => CCA(15 DOWNTO 8)
+        );
     
     
     ACP_CLUT_RAM55 : altdpram2
-    PORT MAP(wren_a => ACP_CLUT_WR(1),
-             wren_b => SYNTHESIZED_WIRE_2,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(9 DOWNTO 2),
-             address_b => ZR_C8B,
-             data_a => FB_AD(23 DOWNTO 16),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_33,
-             q_b => CCA(23 DOWNTO 16));
+        PORT MAP
+        (
+            wren_a => ACP_CLUT_WR(1),
+            wren_b => SYNTHESIZED_WIRE_2,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(9 DOWNTO 2),
+            address_b => ZR_C8B,
+            data_a => FB_AD(23 DOWNTO 16),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_33,
+            q_b => CCA(23 DOWNTO 16)
+        );
     
     
-    i_blitter : blitter
-    PORT MAP(nRSTO => nRSTO,
-             MAIN_CLK => MAIN_CLK,
-             FB_ALE => FB_ALE,
-             nFB_WR => nFB_WR,
-             nFB_OE => nFB_OE,
-             FB_SIZE0 => FB_SIZE0,
-             FB_SIZE1 => FB_SIZE1,
-             BLITTER_ON => BLITTER_ON,
-             nFB_CS1 => nFB_CS1,
-             nFB_CS2 => nFB_CS2,
-             nFB_CS3 => nFB_CS3,
-             DDRCLK0 => DDRCLK(0),
-             SR_BLITTER_DACK => SR_BLITTER_DACK,
-             BLITTER_DACK => BLITTER_DACK,
-             BLITTER_DIN => BLITTER_DIN,
-             FB_AD => FB_AD,
-             FB_ADR => FB_ADR,
-             VIDEO_RAM_CTR => VIDEO_RAM_CTR,
-             BLITTER_RUN => BLITTER_RUN,
-             BLITTER_SIG => BLITTER_SIG,
-             BLITTER_WR => BLITTER_WR,
-             BLITTER_TA => BLITTER_TA,
-             BLITTER_ADR => BLITTER_ADR,
-             BLITTER_DOUT => BLITTER_DOUT);
+    i_blitter : work.blitter
+        PORT MAP
+        (
+            nRSTO => nRSTO,
+            MAIN_CLK => MAIN_CLK,
+            FB_ALE => FB_ALE,
+            nFB_WR => nFB_WR,
+            nFB_OE => nFB_OE,
+            FB_SIZE0 => FB_SIZE0,
+            FB_SIZE1 => FB_SIZE1,
+            BLITTER_ON => BLITTER_ON,
+            nFB_CS1 => nFB_CS1,
+            nFB_CS2 => nFB_CS2,
+            nFB_CS3 => nFB_CS3,
+            DDRCLK0 => DDRCLK(0),
+            SR_BLITTER_DACK => SR_BLITTER_DACK,
+            BLITTER_DACK => BLITTER_DACK,
+            BLITTER_DIN => BLITTER_DIN,
+            FB_AD => FB_AD,
+            FB_ADR => FB_ADR,
+            VIDEO_RAM_CTR => VIDEO_RAM_CTR,
+            BLITTER_RUN => BLITTER_RUN,
+            BLITTER_SIG => BLITTER_SIG,
+            BLITTER_WR => BLITTER_WR,
+            BLITTER_TA => BLITTER_TA,
+            BLITTER_ADR => BLITTER_ADR,
+            BLITTER_DOUT => BLITTER_DOUT
+        );
     
     
     i_ddr_ctr : ddr_ctr
-    PORT MAP(nFB_CS1 => nFB_CS1,
-             nFB_CS2 => nFB_CS2,
-             nFB_CS3 => nFB_CS3,
-             nFB_OE => nFB_OE,
-             FB_SIZE0 => FB_SIZE0,
-             FB_SIZE1 => FB_SIZE1,
-             nRSTO => nRSTO,
-             MAIN_CLK => MAIN_CLK,
-             FB_ALE => FB_ALE,
-             nFB_WR => nFB_WR,
-             DDR_SYNC_66M => DDR_SYNC_66M,
-             BLITTER_SIG => BLITTER_SIG,
-             BLITTER_WR => BLITTER_WR,
-             DDRCLK0 => DDRCLK(0),
-             CLK33M => CLK33M,
-             CLR_FIFO => CLR_FIFO,
-             BLITTER_ADR => BLITTER_ADR,
-             FB_AD => FB_AD,
-             FB_ADR => FB_ADR,
-             FIFO_MW => FIFO_MW,
-             VIDEO_RAM_CTR => VIDEO_RAM_CTR,
-             nVWE => nVWE,
-             nVRAS => nVRAS,
-             nVCS => nVCS,
-             VCKE => VCKE,
-             nVCAS => nVCAS,
-             SR_FIFO_WRE => SR_FIFO_WRE,
-             SR_DDR_FB => SR_DDR_FB,
-             SR_DDR_WR => SR_DDR_WR,
-             SR_DDRWR_D_SEL => SR_DDRWR_D_SEL,
-             VIDEO_DDR_TA => VIDEO_DDR_TA,
-             SR_BLITTER_DACK => SR_BLITTER_DACK,
-             DDRWR_D_SEL1 => DDRWR_D_SEL(1),
-             BA => BA,
-             FB_LE => FB_LE,
-             FB_VDOE => FB_VDOE,
-             SR_VDMP => SR_VDMP,
-             VA => VA,
-             VDM_SEL => VDM_SEL);
+        PORT MAP
+        (
+            nFB_CS1 => nFB_CS1,
+            nFB_CS2 => nFB_CS2,
+            nFB_CS3 => nFB_CS3,
+            nFB_OE => nFB_OE,
+            FB_SIZE0 => FB_SIZE0,
+            FB_SIZE1 => FB_SIZE1,
+            nRSTO => nRSTO,
+            MAIN_CLK => MAIN_CLK,
+            FB_ALE => FB_ALE,
+            nFB_WR => nFB_WR,
+            DDR_SYNC_66M => DDR_SYNC_66M,
+            BLITTER_SIG => BLITTER_SIG,
+            BLITTER_WR => BLITTER_WR,
+            DDRCLK0 => DDRCLK(0),
+            CLK33M => CLK33M,
+            CLR_FIFO => CLR_FIFO,
+            BLITTER_ADR => BLITTER_ADR,
+            FB_AD => FB_AD,
+            FB_ADR => FB_ADR,
+            FIFO_MW => FIFO_MW,
+            VIDEO_RAM_CTR => VIDEO_RAM_CTR,
+            nVWE => nVWE,
+            nVRAS => nVRAS,
+            nVCS => nVCS,
+            VCKE => VCKE,
+            nVCAS => nVCAS,
+            SR_FIFO_WRE => SR_FIFO_WRE,
+            SR_DDR_FB => SR_DDR_FB,
+            SR_DDR_WR => SR_DDR_WR,
+            SR_DDRWR_D_SEL => SR_DDRWR_D_SEL,
+            VIDEO_DDR_TA => VIDEO_DDR_TA,
+            SR_BLITTER_DACK => SR_BLITTER_DACK,
+            DDRWR_D_SEL1 => DDRWR_D_SEL(1),
+            BA => BA,
+            FB_LE => FB_LE,
+            FB_VDOE => FB_VDOE,
+            SR_VDMP => SR_VDMP,
+            VA => VA,
+            VDM_SEL => VDM_SEL
+        );
     
     
     FALCON_CLUT_BLUE : altdpram1
-    PORT MAP(wren_a => FALCON_CLUT_WR(3),
-             wren_b => SYNTHESIZED_WIRE_3,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(9 DOWNTO 2),
-             address_b => CLUT_ADR,
-             data_a => FB_AD(23 DOWNTO 18),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_45,
-             q_b => CCF(7 DOWNTO 2));
+        PORT MAP
+        (
+            wren_a => FALCON_CLUT_WR(3),
+            wren_b => SYNTHESIZED_WIRE_3,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(9 DOWNTO 2),
+            address_b => CLUT_ADR,
+            data_a => FB_AD(23 DOWNTO 18),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_45,
+            q_b => CCF(7 DOWNTO 2)
+        );
     
     
     FALCON_CLUT_GREEN : altdpram1
-    PORT MAP(wren_a => FALCON_CLUT_WR(1),
-             wren_b => SYNTHESIZED_WIRE_4,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(9 DOWNTO 2),
-             address_b => CLUT_ADR,
-             data_a => FB_AD(23 DOWNTO 18),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_44,
-             q_b => CCF(15 DOWNTO 10));
+        PORT MAP
+        (
+            wren_a => FALCON_CLUT_WR(1),
+            wren_b => SYNTHESIZED_WIRE_4,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(9 DOWNTO 2),
+            address_b => CLUT_ADR,
+            data_a => FB_AD(23 DOWNTO 18),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_44,
+            q_b => CCF(15 DOWNTO 10)
+        );
     
     
     FALCON_CLUT_RED : altdpram1
-    PORT MAP(wren_a => FALCON_CLUT_WR(0),
-             wren_b => SYNTHESIZED_WIRE_5,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(9 DOWNTO 2),
-             address_b => CLUT_ADR,
-             data_a => FB_AD(31 DOWNTO 26),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_41,
-             q_b => CCF(23 DOWNTO 18));
+        PORT MAP
+        (
+            wren_a => FALCON_CLUT_WR(0),
+            wren_b => SYNTHESIZED_WIRE_5,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(9 DOWNTO 2),
+            address_b => CLUT_ADR,
+            data_a => FB_AD(31 DOWNTO 26),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_41,
+            q_b => CCF(23 DOWNTO 18)
+        );
     
     
     inst : lpm_fifo_dc0
-    PORT MAP(wrreq => FIFO_WRE,
-             wrclk => DDRCLK(0),
-             rdreq => SYNTHESIZED_WIRE_60,
-             rdclk => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             aclr => CLR_FIFO,
-             data => VDMC,
-             q => SYNTHESIZED_WIRE_63,
-             wrusedw => FIFO_MW);
+        PORT MAP
+        (
+            wrreq => FIFO_WRE,
+            wrclk => DDRCLK(0),
+            rdreq => SYNTHESIZED_WIRE_60,
+            rdclk => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            aclr => CLR_FIFO,
+            data => VDMC,
+            q => SYNTHESIZED_WIRE_63,
+            wrusedw => FIFO_MW
+        );
     
     
     inst1 : altddio_bidir0
-    PORT MAP(oe => VDOUT_OE,
-             inclock => DDRCLK(1),
-             outclock => DDRCLK(3),
-             datain_h => VDP_OUT(63 DOWNTO 32),
-             datain_l => VDP_OUT(31 DOWNTO 0),
-             padio => VD,
-             combout => SYNTHESIZED_WIRE_15,
-             dataout_h => VDP_IN(31 DOWNTO 0),
-             dataout_l => VDP_IN(63 DOWNTO 32));
+        PORT MAP
+        (
+            oe => VDOUT_OE,
+            inclock => DDRCLK(1),
+            outclock => DDRCLK(3),
+            datain_h => VDP_OUT(63 DOWNTO 32),
+            datain_l => VDP_OUT(31 DOWNTO 0),
+            padio => VD,
+            combout => SYNTHESIZED_WIRE_15,
+            dataout_h => VDP_IN(31 DOWNTO 0),
+            dataout_l => VDP_IN(63 DOWNTO 32)
+        );
     
     
     inst10 : lpm_ff4
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data => SYNTHESIZED_WIRE_7,
-             q => GDFX_TEMP_SIGNAL_0);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data => SYNTHESIZED_WIRE_7,
+            q => GDFX_TEMP_SIGNAL_0
+        );
     
     
     inst100 : lpm_muxvdm
-    PORT MAP(data0x => VDMB,
-             data10x => GDFX_TEMP_SIGNAL_1,
-             data11x => GDFX_TEMP_SIGNAL_2,
-             data12x => GDFX_TEMP_SIGNAL_3,
-             data13x => GDFX_TEMP_SIGNAL_4,
-             data14x => GDFX_TEMP_SIGNAL_5,
-             data15x => GDFX_TEMP_SIGNAL_6,
-             data1x => GDFX_TEMP_SIGNAL_7,
-             data2x => GDFX_TEMP_SIGNAL_8,
-             data3x => GDFX_TEMP_SIGNAL_9,
-             data4x => GDFX_TEMP_SIGNAL_10,
-             data5x => GDFX_TEMP_SIGNAL_11,
-             data6x => GDFX_TEMP_SIGNAL_12,
-             data7x => GDFX_TEMP_SIGNAL_13,
-             data8x => GDFX_TEMP_SIGNAL_14,
-             data9x => GDFX_TEMP_SIGNAL_15,
-             sel => VDM_SEL,
-             result => VDMC);
+        PORT MAP
+        (
+            data0x => VDMB,
+            data10x => GDFX_TEMP_SIGNAL_1,
+            data11x => GDFX_TEMP_SIGNAL_2,
+            data12x => GDFX_TEMP_SIGNAL_3,
+            data13x => GDFX_TEMP_SIGNAL_4,
+            data14x => GDFX_TEMP_SIGNAL_5,
+            data15x => GDFX_TEMP_SIGNAL_6,
+            data1x => GDFX_TEMP_SIGNAL_7,
+            data2x => GDFX_TEMP_SIGNAL_8,
+            data3x => GDFX_TEMP_SIGNAL_9,
+            data4x => GDFX_TEMP_SIGNAL_10,
+            data5x => GDFX_TEMP_SIGNAL_11,
+            data6x => GDFX_TEMP_SIGNAL_12,
+            data7x => GDFX_TEMP_SIGNAL_13,
+            data8x => GDFX_TEMP_SIGNAL_14,
+            data9x => GDFX_TEMP_SIGNAL_15,
+            sel => VDM_SEL,
+            result => VDMC
+        );
     
     
     inst102 : lpm_mux3
-    PORT MAP(data1 => DFF_inst93,
-             data0 => ZR_C8(0),
-             sel => COLOR1,
-             result => ZR_C8B(0));
+        PORT MAP
+        (
+            data1 => DFF_inst93,
+            data0 => ZR_C8(0),
+            sel => COLOR1,
+            result => ZR_C8B(0)
+        );
     
     
     
@@ -1063,53 +1142,77 @@ BEGIN
     
     
     inst108 : lpm_bustri_long
-    PORT MAP(enabledt => FB_VDOE(0),
-             data => VDR,
-             tridata => FB_AD);
+        PORT MAP
+        (
+            enabledt => FB_VDOE(0),
+            data => VDR,
+            tridata => FB_AD
+        );
     
     
     inst109 : lpm_bustri_long
-    PORT MAP(enabledt => FB_VDOE(1),
-             data => SYNTHESIZED_WIRE_11,
-             tridata => FB_AD);
+        PORT MAP
+        (
+            enabledt => FB_VDOE(1),
+            data => SYNTHESIZED_WIRE_11,
+            tridata => FB_AD
+        );
     
     
     inst11 : lpm_ff5
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data => SYNTHESIZED_WIRE_12,
-             q => ZR_C8);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data => SYNTHESIZED_WIRE_12,
+            q => ZR_C8
+        );
     
     
     inst110 : lpm_bustri_long
-    PORT MAP(enabledt => FB_VDOE(2),
-             data => SYNTHESIZED_WIRE_13,
-             tridata => FB_AD);
+        PORT MAP
+        (
+            enabledt => FB_VDOE(2),
+            data => SYNTHESIZED_WIRE_13,
+            tridata => FB_AD
+        );
     
     
     inst119 : lpm_bustri_long
-    PORT MAP(enabledt => FB_VDOE(3),
-             data => SYNTHESIZED_WIRE_14,
-             tridata => FB_AD);
+        PORT MAP
+        (
+            enabledt => FB_VDOE(3),
+            data => SYNTHESIZED_WIRE_14,
+            tridata => FB_AD
+        );
     
     
     inst12 : lpm_ff1
-    PORT MAP(clock => DDRCLK(0),
-             data => VDP_IN(31 DOWNTO 0),
-             q => VDVZ(31 DOWNTO 0));
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            data => VDP_IN(31 DOWNTO 0),
+            q => VDVZ(31 DOWNTO 0)
+        );
     
     
     inst13 : lpm_ff0
-    PORT MAP(clock => DDR_SYNC_66M,
-             enable => FB_LE(0),
-             data => FB_AD,
-             q => FB_DDR(127 DOWNTO 96));
+        PORT MAP
+        (
+            clock => DDR_SYNC_66M,
+            enable => FB_LE(0),
+            data => FB_AD,
+            q => FB_DDR(127 DOWNTO 96)
+        );
     
     
     inst14 : lpm_ff0
-    PORT MAP(clock => DDR_SYNC_66M,
-             enable => FB_LE(1),
-             data => FB_AD,
-             q => FB_DDR(95 DOWNTO 64));
+        PORT MAP
+        (
+            clock => DDR_SYNC_66M,
+            enable => FB_LE(1),
+            data => FB_AD,
+            q => FB_DDR(95 DOWNTO 64)
+        );
     
     
     inst15 : lpm_ff0

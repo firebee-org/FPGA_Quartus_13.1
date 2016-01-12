@@ -15,45 +15,47 @@ CONSTANT FIFO_HWM = 500;
 SUBDESIGN ddr_ctr
 (
 	-- {{ALTERA_IO_BEGIN}} DO NOT REMOVE THIS LINE!
-	FB_ADR[31..0] : INPUT;
-	nFB_CS1 : INPUT;
-	nFB_CS2 : INPUT;
-	nFB_CS3 : INPUT;
-	nFB_OE : INPUT;
-	FB_SIZE0 : INPUT;
-	FB_SIZE1 : INPUT;
-	nRSTO : INPUT;
-	MAIN_CLK : INPUT;
-	FB_ALE : INPUT;
-	nFB_WR : INPUT;
-	DDR_SYNC_66M : INPUT;
-	CLR_FIFO : INPUT;
-	VIDEO_RAM_CTR[15..0] : INPUT;
-	BLITTER_ADR[31..0] : INPUT;
-	BLITTER_SIG : INPUT;
-	BLITTER_WR : INPUT;
-	DDRCLK0 : INPUT;
-	CLK33M : INPUT;
-	FIFO_MW[8..0] : INPUT;
-	VA[12..0] : OUTPUT;
-	nVWE : OUTPUT;
-	nVRAS : OUTPUT;
-	nVCS : OUTPUT;
-	VCKE : OUTPUT;
-	nVCAS : OUTPUT;
-	FB_LE[3..0] : OUTPUT;
-	FB_VDOE[3..0] : OUTPUT;
-	SR_FIFO_WRE : OUTPUT;
-	SR_DDR_FB : OUTPUT;
-	SR_DDR_WR : OUTPUT;
-	SR_DDRWR_D_SEL : OUTPUT;
-	SR_VDMP[7..0] : OUTPUT;
-	VIDEO_DDR_TA : OUTPUT;
-	SR_BLITTER_DACK : OUTPUT;
-	BA[1..0] : OUTPUT;
-	DDRWR_D_SEL1 : OUTPUT;
-	VDM_SEL[3..0] : OUTPUT;
-	FB_AD[31..0] : BIDIR;
+	FB_ADR[31..0]           : INPUT;
+	nFB_CS1                 : INPUT;
+	nFB_CS2                 : INPUT;
+	nFB_CS3                 : INPUT;
+	nFB_OE                  : INPUT;
+	FB_SIZE0                : INPUT;
+	FB_SIZE1                : INPUT;
+	nRSTO                   : INPUT;
+	MAIN_CLK                : INPUT;
+	FB_ALE                  : INPUT;
+	nFB_WR                  : INPUT;
+	DDR_SYNC_66M            : INPUT;
+	CLR_FIFO                : INPUT;
+	VIDEO_RAM_CTR[15..0]    : INPUT;
+	BLITTER_ADR[31..0]      : INPUT;
+	BLITTER_SIG             : INPUT;
+	BLITTER_WR              : INPUT;
+	CLK33M                  : INPUT;
+	FIFO_MW[8..0]           : INPUT;
+
+	DDRCLK0                 : INPUT;
+	VA[12..0]               : OUTPUT;
+	nVWE                    : OUTPUT;
+	nVRAS                   : OUTPUT;
+	nVCS                    : OUTPUT;
+	VCKE                    : OUTPUT;
+	nVCAS                   : OUTPUT;
+	BA[1..0]                : OUTPUT;
+	VDM_SEL[3..0]           : OUTPUT;
+
+	FB_LE[3..0]             : OUTPUT;
+	FB_VDOE[3..0]           : OUTPUT;
+	SR_FIFO_WRE             : OUTPUT;
+	SR_DDR_FB               : OUTPUT;
+	SR_DDR_WR               : OUTPUT;
+	SR_DDRWR_D_SEL          : OUTPUT;
+	SR_VDMP[7..0]           : OUTPUT;
+	VIDEO_DDR_TA            : OUTPUT;
+	SR_BLITTER_DACK         : OUTPUT;
+	DDRWR_D_SEL1            : OUTPUT;
+	FB_AD[31..0]            : BIDIR;
 	-- {{ALTERA_IO_END}} DO NOT REMOVE THIS LINE!
 )
 
@@ -657,10 +659,10 @@ BEGIN
 	VIDEO_CNT_M = !nFB_CS1 & FB_ADR[19..1]==H"7C103"; 								-- 8207/2
 	VIDEO_CNT_H = !nFB_CS1 & FB_ADR[19..1]==H"7C102"; 								-- 8204,5/2
 					  
-	% FB_AD[31..24] = lpm_bustri_BYT(
+	FB_AD[31..24] = lpm_bustri_BYT(
 						VIDEO_BASE_H  & (0, VIDEO_BASE_X_D[]) 
 					  # VIDEO_CNT_H	  & (0, VIDEO_ACT_ADR[26..24]),
-					   (VIDEO_BASE_H # VIDEO_CNT_H) & !nFB_OE); %
+					   (VIDEO_BASE_H # VIDEO_CNT_H) & !nFB_OE);
 
 	FB_AD[23..16] = lpm_bustri_BYT(
 						VIDEO_BASE_L  & VIDEO_BASE_L_D[]

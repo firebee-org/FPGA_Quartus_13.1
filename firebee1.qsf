@@ -670,6 +670,7 @@ set_global_assignment -name SYNCHRONIZER_IDENTIFICATION AUTO
 set_global_assignment -name TIMEQUEST_DO_CCPP_REMOVAL ON
 set_global_assignment -name SAVE_DISK_SPACE OFF
 set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_global_assignment -name VHDL_FILE Video/DDR_CTR.vhd
 set_global_assignment -name SOURCE_FILE altpll_reconfig1.cmp
 set_global_assignment -name VHDL_FILE Interrupt_Handler/interrupt_handler.vhd
 set_global_assignment -name SOURCE_FILE altpll4.cmp
@@ -684,7 +685,6 @@ set_global_assignment -name VHDL_FILE Video/mux41_2.vhd
 set_global_assignment -name VHDL_FILE Video/mux41_1.vhd
 set_global_assignment -name VHDL_FILE Video/mux41_0.vhd
 set_global_assignment -name VHDL_FILE Video/BLITTER/BLITTER.vhd
-set_global_assignment -name AHDL_FILE Video/DDR_CTR.tdf
 set_global_assignment -name SOURCE_FILE Video/lpm_bustri7.cmp
 set_global_assignment -name VHDL_FILE Video/lpm_bustri7.vhd
 set_global_assignment -name SOURCE_FILE Video/lpm_ff4.cmp
