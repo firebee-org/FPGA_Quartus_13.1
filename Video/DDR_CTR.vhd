@@ -242,27 +242,37 @@ ARCHITECTURE rtl OF ddr_ctr IS
 -- Sub Module Interface Section
 
 
-   component lpm_bustri_BYT
-      Port (
-	 data: in std_logic_vector(7 DOWNTO 0);
-	 enabledt: in std_logic;
-	 tridata: buffer std_logic_vector(7 DOWNTO 0)
-      );
-   END component;
+    COMPONENT lpm_bustri_BYT
+        PORT
+        (
+            data        : IN std_logic_vector(7 DOWNTO 0);
+            enabledt    : IN std_logic;
+            tridata     : BUFFER std_logic_vector(7 DOWNTO 0)
+        );
+    END COMPONENT lpm_bustri_BYT;
 
-   Function to_std_logic(X: in Boolean) return Std_Logic IS
-   VARIABLE ret : std_logic;
-   BEGIN
-   IF x THEN ret := '1';  ELSE ret := '0'; END IF;
-   return ret;
-   END to_std_logic;
+    FUNCTION to_std_logic(X : IN boolean) RETURN std_logic IS
+        VARIABLE ret : std_logic;
+    BEGIN
+        IF x THEN
+            ret := '1';
+        ELSE
+            ret := '0';
+        END IF;
+        RETURN ret;
+    END to_std_logic;
 
 
-   -- sizeIt replicates a value to an array of specific length.
-   Function sizeIt(a: std_Logic; len: integer) return std_logic_vector IS
-      VARIABLE rep: std_logic_vector( len-1 DOWNTO 0);
-   BEGIN for i in rep'range loop rep(i) := a;  END loop; return rep;
-   END sizeIt;
+    -- sizeIt replicates a value to an array of specific length.
+    FUNCTION sizeit(a: std_logic; len: integer) RETURN std_logic_vector IS
+        VARIABLE rep: std_logic_vector(len - 1 DOWNTO 0);
+    BEGIN
+        FOR i IN rep'RANGE LOOP
+            rep(i) := a;
+        END LOOP;
+        RETURN rep;
+    END sizeIt;
+
 BEGIN
 
 -- Sub Module Section
