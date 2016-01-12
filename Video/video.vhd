@@ -223,8 +223,8 @@ ARCHITECTURE rtl OF video IS
             FB_LE           : OUT std_logic_vector(3 DOWNTO 0);
             FB_VDOE         : OUT std_logic_vector(3 DOWNTO 0);
             SR_VDMP         : OUT std_logic_vector(7 DOWNTO 0);
-            VA : OUT std_logic_vector(12 DOWNTO 0);
-            VDM_SEL : OUT std_logic_vector(3 DOWNTO 0)
+            VA              : OUT std_logic_vector(12 DOWNTO 0);
+            VDM_SEL         : OUT std_logic_vector(3 DOWNTO 0)
         );
     END COMPONENT ddr_ctr;
     
@@ -1216,132 +1216,175 @@ BEGIN
     
     
     inst15 : lpm_ff0
-    PORT MAP(clock => DDR_SYNC_66M,
-             enable => FB_LE(2),
-             data => FB_AD,
-             q => FB_DDR(63 DOWNTO 32));
+        PORT MAP
+        (
+            clock => DDR_SYNC_66M,
+            enable => FB_LE(2),
+            data => FB_AD,
+            q => FB_DDR(63 DOWNTO 32)
+        );
     
     
     inst16 : lpm_ff0
-    PORT MAP(clock => DDR_SYNC_66M,
-             enable => FB_LE(3),
-             data => FB_AD,
-             q => FB_DDR(31 DOWNTO 0));
+        PORT MAP
+        (
+            clock => DDR_SYNC_66M,
+            enable => FB_LE(3),
+            data => FB_AD,
+            q => FB_DDR(31 DOWNTO 0)
+        );
     
     
     inst17 : lpm_ff0
-    PORT MAP(clock => DDRCLK(0),
-             enable => DDR_FB(1),
-             data => VDP_IN(31 DOWNTO 0),
-             q => SYNTHESIZED_WIRE_11);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            enable => DDR_FB(1),
+            data => VDP_IN(31 DOWNTO 0),
+            q => SYNTHESIZED_WIRE_11
+        );
     
     
     inst18 : lpm_ff0
-    PORT MAP(clock => DDRCLK(0),
-             enable => DDR_FB(0),
-             data => VDP_IN(63 DOWNTO 32),
-             q => SYNTHESIZED_WIRE_13);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            enable => DDR_FB(0),
+            data => VDP_IN(63 DOWNTO 32),
+            q => SYNTHESIZED_WIRE_13
+        );
     
     
     inst19 : lpm_ff0
-    PORT MAP(clock => DDRCLK(0),
-             enable => DDR_FB(0),
-             data => VDP_IN(31 DOWNTO 0),
-             q => SYNTHESIZED_WIRE_14);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            enable => DDR_FB(0),
+            data => VDP_IN(31 DOWNTO 0),
+            q => SYNTHESIZED_WIRE_14
+        );
     
     
     inst2 : altddio_out0
-    PORT MAP(outclock => DDRCLK(3),
-             datain_h => VDMP(7 DOWNTO 4),
-             datain_l => VDMP(3 DOWNTO 0),
-             dataout => VDM);
+        PORT MAP
+        (
+            outclock => DDRCLK(3),
+            datain_h => VDMP(7 DOWNTO 4),
+            datain_l => VDMP(3 DOWNTO 0),
+            dataout => VDM
+        );
     
     
     inst20 : lpm_ff1
-    PORT MAP(clock => DDRCLK(0),
-             data => VDVZ(31 DOWNTO 0),
-             q => VDVZ(95 DOWNTO 64));
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            data => VDVZ(31 DOWNTO 0),
+            q => VDVZ(95 DOWNTO 64)
+        );
     
     
     inst21 : lpm_mux0
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data0x => FIFO_D(127 DOWNTO 96),
-             data1x => FIFO_D(95 DOWNTO 64),
-             data2x => FIFO_D(63 DOWNTO 32),
-             data3x => FIFO_D(31 DOWNTO 0),
-             sel => CLUT_MUX_ADR(1 DOWNTO 0),
-             result => SYNTHESIZED_WIRE_48);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data0x => FIFO_D(127 DOWNTO 96),
+            data1x => FIFO_D(95 DOWNTO 64),
+            data2x => FIFO_D(63 DOWNTO 32),
+            data3x => FIFO_D(31 DOWNTO 0),
+            sel => CLUT_MUX_ADR(1 DOWNTO 0),
+            result => SYNTHESIZED_WIRE_48
+        );
     
     
     inst22 : lpm_mux5
-    PORT MAP(data0x => FB_DDR(127 DOWNTO 64),
-             data1x => FB_DDR(63 DOWNTO 0),
-             data2x => BLITTER_DOUT(127 DOWNTO 64),
-             data3x => BLITTER_DOUT(63 DOWNTO 0),
-             sel => DDRWR_D_SEL,
-             result => VDP_OUT);
+        PORT MAP
+        (
+            data0x => FB_DDR(127 DOWNTO 64),
+            data1x => FB_DDR(63 DOWNTO 0),
+            data2x => BLITTER_DOUT(127 DOWNTO 64),
+            data3x => BLITTER_DOUT(63 DOWNTO 0),
+            sel => DDRWR_D_SEL,
+            result => VDP_OUT
+        );
     
     
     inst23 : lpm_constant2
-    PORT MAP(		 result => GDFX_TEMP_SIGNAL_16);
+        PORT MAP
+        (
+            result => GDFX_TEMP_SIGNAL_16
+        );
     
     
     inst24 : lpm_mux1
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data0x => FIFO_D(127 DOWNTO 112),
-             data1x => FIFO_D(111 DOWNTO 96),
-             data2x => FIFO_D(95 DOWNTO 80),
-             data3x => FIFO_D(79 DOWNTO 64),
-             data4x => FIFO_D(63 DOWNTO 48),
-             data5x => FIFO_D(47 DOWNTO 32),
-             data6x => FIFO_D(31 DOWNTO 16),
-             data7x => FIFO_D(15 DOWNTO 0),
-             sel => CLUT_MUX_ADR(2 DOWNTO 0),
-             result => SYNTHESIZED_WIRE_7);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data0x => FIFO_D(127 DOWNTO 112),
+            data1x => FIFO_D(111 DOWNTO 96),
+            data2x => FIFO_D(95 DOWNTO 80),
+            data3x => FIFO_D(79 DOWNTO 64),
+            data4x => FIFO_D(63 DOWNTO 48),
+            data5x => FIFO_D(47 DOWNTO 32),
+            data6x => FIFO_D(31 DOWNTO 16),
+            data7x => FIFO_D(15 DOWNTO 0),
+            sel => CLUT_MUX_ADR(2 DOWNTO 0),
+            result => SYNTHESIZED_WIRE_7
+        );
     
     
     inst25 : lpm_mux2
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data0x => FIFO_D(127 DOWNTO 120),
-             data10x => FIFO_D(47 DOWNTO 40),
-             data11x => FIFO_D(39 DOWNTO 32),
-             data12x => FIFO_D(31 DOWNTO 24),
-             data13x => FIFO_D(23 DOWNTO 16),
-             data14x => FIFO_D(15 DOWNTO 8),
-             data15x => FIFO_D(7 DOWNTO 0),
-             data1x => FIFO_D(119 DOWNTO 112),
-             data2x => FIFO_D(111 DOWNTO 104),
-             data3x => FIFO_D(103 DOWNTO 96),
-             data4x => FIFO_D(95 DOWNTO 88),
-             data5x => FIFO_D(87 DOWNTO 80),
-             data6x => FIFO_D(79 DOWNTO 72),
-             data7x => FIFO_D(71 DOWNTO 64),
-             data8x => FIFO_D(63 DOWNTO 56),
-             data9x => FIFO_D(55 DOWNTO 48),
-             sel => CLUT_MUX_ADR,
-             result => SYNTHESIZED_WIRE_12);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data0x => FIFO_D(127 DOWNTO 120),
+            data10x => FIFO_D(47 DOWNTO 40),
+            data11x => FIFO_D(39 DOWNTO 32),
+            data12x => FIFO_D(31 DOWNTO 24),
+            data13x => FIFO_D(23 DOWNTO 16),
+            data14x => FIFO_D(15 DOWNTO 8),
+            data15x => FIFO_D(7 DOWNTO 0),
+            data1x => FIFO_D(119 DOWNTO 112),
+            data2x => FIFO_D(111 DOWNTO 104),
+            data3x => FIFO_D(103 DOWNTO 96),
+            data4x => FIFO_D(95 DOWNTO 88),
+            data5x => FIFO_D(87 DOWNTO 80),
+            data6x => FIFO_D(79 DOWNTO 72),
+            data7x => FIFO_D(71 DOWNTO 64),
+            data8x => FIFO_D(63 DOWNTO 56),
+            data9x => FIFO_D(55 DOWNTO 48),
+            sel => CLUT_MUX_ADR,
+            result => SYNTHESIZED_WIRE_12
+        );
     
     
     inst26 : lpm_shiftreg4
-    PORT MAP(clock => DDRCLK(0),
-             shiftin => SR_FIFO_WRE,
-             shiftout => FIFO_WRE);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            shiftin => SR_FIFO_WRE,
+            shiftout => FIFO_WRE
+        );
     
     
     inst27 : lpm_latch0
-    PORT MAP(gate => DDR_SYNC_66M,
-             data => SYNTHESIZED_WIRE_15,
-             q => VDR);
-    
-    
-    
+        PORT MAP
+        (
+            gate => DDR_SYNC_66M,
+            data => SYNTHESIZED_WIRE_15,
+            q => VDR
+        );
+
     CLUT_ADR(1) <= CLUT_ADR1A AND SYNTHESIZED_WIRE_16;
     
     
     inst3 : lpm_ff1
-    PORT MAP(clock => DDRCLK(0),
-             data => VDP_IN(63 DOWNTO 32),
-             q => VDVZ(63 DOWNTO 32));
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            data => VDP_IN(63 DOWNTO 32),
+            q => VDVZ(63 DOWNTO 32)
+        );
     
     CLUT_ADR(3) <= SYNTHESIZED_WIRE_61 AND CLUT_ADR3A;
     CLUT_ADR(5) <= CLUT_OFF(1) OR SYNTHESIZED_WIRE_18;
@@ -1349,244 +1392,323 @@ BEGIN
     SYNTHESIZED_WIRE_18 <= CLUT_ADR5A AND COLOR8;
     SYNTHESIZED_WIRE_9 <= CLUT_ADR6A AND COLOR8;
     SYNTHESIZED_WIRE_46 <= CLUT_ADR7A AND COLOR8;
-    
-    
+      
     inst36 : lpm_ff6
-    PORT MAP(clock => DDRCLK(0),
-             enable => BLITTER_DACK(0),
-             data => VDVZ,
-             q => BLITTER_DIN);
-    
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            enable => BLITTER_DACK(0),
+            data => VDVZ,
+            q => BLITTER_DIN
+        );
     
     VDOUT_OE <= DDR_WR OR SR_DDR_WR;
-    
-    
-    
     VIDEO_TA <= BLITTER_TA OR VIDEO_MOD_TA OR VIDEO_DDR_TA;
     
-    
     inst4 : lpm_ff1
-    PORT MAP(clock => DDRCLK(0),
-             data => VDVZ(63 DOWNTO 32),
-             q => VDVZ(127 DOWNTO 96));
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            data => VDVZ(63 DOWNTO 32),
+            q => VDVZ(127 DOWNTO 96)
+        );
     
     
     inst40 : mux41_0
-    PORT MAP(S0 => COLOR2,
-             S1 => COLOR4,
-             D0 => CLUT_ADR6A,
-             INH => SYNTHESIZED_WIRE_19,
-             D1 => CLUT_ADR7A,
-             Q => SYNTHESIZED_WIRE_54);
+        PORT MAP
+        (
+            S0 => COLOR2,
+            S1 => COLOR4,
+            D0 => CLUT_ADR6A,
+            INH => SYNTHESIZED_WIRE_19,
+            D1 => CLUT_ADR7A,
+            Q => SYNTHESIZED_WIRE_54
+        );
     
     
     inst41 : mux41_1
-    PORT MAP(S0 => COLOR2,
-             S1 => COLOR4,
-             D0 => CLUT_ADR5A,
-             INH => SYNTHESIZED_WIRE_20,
-             D1 => CLUT_ADR6A,
-             Q => SYNTHESIZED_WIRE_53);
+        PORT MAP
+        (
+            S0 => COLOR2,
+            S1 => COLOR4,
+            D0 => CLUT_ADR5A,
+            INH => SYNTHESIZED_WIRE_20,
+            D1 => CLUT_ADR6A,
+            Q => SYNTHESIZED_WIRE_53
+        );
     
     
     inst42 : mux41_2
-    PORT MAP(S0 => COLOR2,
-             D2 => CLUT_ADR7A,
-             S1 => COLOR4,
-             D0 => CLUT_ADR4A,
-             INH => SYNTHESIZED_WIRE_21,
-             D1 => CLUT_ADR5A,
-             Q => SYNTHESIZED_WIRE_52);
+        PORT MAP
+        (
+            S0 => COLOR2,
+            D2 => CLUT_ADR7A,
+            S1 => COLOR4,
+            D0 => CLUT_ADR4A,
+            INH => SYNTHESIZED_WIRE_21,
+            D1 => CLUT_ADR5A,
+            Q => SYNTHESIZED_WIRE_52
+        );
     
     
     inst43 : mux41_3
-    PORT MAP(S0 => COLOR2,
-             D2 => CLUT_ADR6A,
-             S1 => COLOR4,
-             D0 => CLUT_ADR3A,
-             INH => SYNTHESIZED_WIRE_22,
-             D1 => CLUT_ADR4A,
-             Q => SYNTHESIZED_WIRE_51);
+        PORT MAP
+        (
+            S0 => COLOR2,
+            D2 => CLUT_ADR6A,
+            S1 => COLOR4,
+            D0 => CLUT_ADR3A,
+            INH => SYNTHESIZED_WIRE_22,
+            D1 => CLUT_ADR4A,
+            Q => SYNTHESIZED_WIRE_51
+        );
     
     
     inst44 : mux41_4
-    PORT MAP(S0 => COLOR2,
-             D2 => CLUT_ADR5A,
-             S1 => COLOR4,
-             D0 => CLUT_ADR2A,
-             INH => SYNTHESIZED_WIRE_23,
-             D1 => CLUT_ADR3A,
-             Q => SYNTHESIZED_WIRE_50);
+        PORT MAP
+        (
+            S0 => COLOR2,
+            D2 => CLUT_ADR5A,
+            S1 => COLOR4,
+            D0 => CLUT_ADR2A,
+            INH => SYNTHESIZED_WIRE_23,
+            D1 => CLUT_ADR3A,
+            Q => SYNTHESIZED_WIRE_50
+        );
     
     
     inst45 : mux41_5
-    PORT MAP(S0 => COLOR2,
-             D2 => CLUT_ADR4A,
-             S1 => COLOR4,
-             D0 => CLUT_ADR1A,
-             INH => SYNTHESIZED_WIRE_24,
-             D1 => CLUT_ADR2A,
-             Q => SYNTHESIZED_WIRE_49);
+        PORT MAP
+        (
+            S0 => COLOR2,
+            D2 => CLUT_ADR4A,
+            S1 => COLOR4,
+            D0 => CLUT_ADR1A,
+            INH => SYNTHESIZED_WIRE_24,
+            D1 => CLUT_ADR2A,
+            Q => SYNTHESIZED_WIRE_49
+        );
     
     
     inst46 : lpm_ff3
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data => SYNTHESIZED_WIRE_25,
-             q => SYNTHESIZED_WIRE_43);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data => SYNTHESIZED_WIRE_25,
+            q => SYNTHESIZED_WIRE_43
+        );
     
     
     inst47 : lpm_ff3
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data => CCF,
-             q => SYNTHESIZED_WIRE_25);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data => CCF,
+            q => SYNTHESIZED_WIRE_25
+        );
     
     
     
     inst49 : lpm_ff3
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data => SYNTHESIZED_WIRE_26,
-             q => SYNTHESIZED_WIRE_42);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data => SYNTHESIZED_WIRE_26,
+            q => SYNTHESIZED_WIRE_42
+        );
     
     
     inst5 : altddio_out2
-    PORT MAP(outclock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             datain_h => SYNTHESIZED_WIRE_62,
-             datain_l => SYNTHESIZED_WIRE_62,
-             dataout => SYNTHESIZED_WIRE_65);
+        PORT MAP
+        (
+            outclock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            datain_h => SYNTHESIZED_WIRE_62,
+            datain_l => SYNTHESIZED_WIRE_62,
+            dataout => SYNTHESIZED_WIRE_65
+        );
     
     
     
     inst51 : lpm_bustri1
-    PORT MAP(enabledt => ST_CLUT_RD,
-             data => SYNTHESIZED_WIRE_29,
-             tridata => FB_AD(26 DOWNTO 24));
+        PORT MAP
+        (
+            enabledt => ST_CLUT_RD,
+            data => SYNTHESIZED_WIRE_29,
+            tridata => FB_AD(26 DOWNTO 24)
+        );
     
     
     inst52 : lpm_ff3
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data => CCS,
-             q => SYNTHESIZED_WIRE_26);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data => CCS,
+            q => SYNTHESIZED_WIRE_26
+        );
     
     
     inst53 : lpm_bustri_byt
-    PORT MAP(enabledt => ACP_CLUT_RD,
-             data => SYNTHESIZED_WIRE_30,
-             tridata => FB_AD(7 DOWNTO 0));
+        PORT MAP
+        (
+            enabledt => ACP_CLUT_RD,
+            data => SYNTHESIZED_WIRE_30,
+            tridata => FB_AD(7 DOWNTO 0)
+        );
     
     
     inst54 : lpm_constant0
-    PORT MAP(		 result => CCS(20 DOWNTO 16));
+        PORT MAP
+        (
+            result => CCS(20 DOWNTO 16)
+        );
     
     
     
     inst56 : lpm_bustri1
-    PORT MAP(enabledt => ST_CLUT_RD,
-             data => SYNTHESIZED_WIRE_31,
-             tridata => FB_AD(22 DOWNTO 20));
+        PORT MAP
+        (
+            enabledt => ST_CLUT_RD,
+            data => SYNTHESIZED_WIRE_31,
+            tridata => FB_AD(22 DOWNTO 20)
+        );
     
     
     inst57 : lpm_bustri_byt
-    PORT MAP(enabledt => ACP_CLUT_RD,
-             data => SYNTHESIZED_WIRE_32,
-             tridata => FB_AD(15 DOWNTO 8));
+        PORT MAP
+        (
+            enabledt => ACP_CLUT_RD,
+            data => SYNTHESIZED_WIRE_32,
+            tridata => FB_AD(15 DOWNTO 8)
+        );
     
     
     inst58 : lpm_bustri_byt
-    PORT MAP(enabledt => ACP_CLUT_RD,
-             data => SYNTHESIZED_WIRE_33,
-             tridata => FB_AD(23 DOWNTO 16));
+        PORT MAP
+        (
+            enabledt => ACP_CLUT_RD,
+            data => SYNTHESIZED_WIRE_33,
+            tridata => FB_AD(23 DOWNTO 16)
+        );
     
     
     inst59 : lpm_constant0
-    PORT MAP(		 result => CCS(12 DOWNTO 8));
+        PORT MAP
+        (
+            result => CCS(12 DOWNTO 8)
+        );
     
     
     
     
     inst61 : lpm_bustri1
-    PORT MAP(enabledt => ST_CLUT_RD,
-             data => SYNTHESIZED_WIRE_34,
-             tridata => FB_AD(18 DOWNTO 16));
+        PORT MAP
+        (
+            enabledt => ST_CLUT_RD,
+            data => SYNTHESIZED_WIRE_34,
+            tridata => FB_AD(18 DOWNTO 16)
+        );
     
     
     inst62 : lpm_muxdz
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             clken => FIFO_RDE,
-             sel => INTER_ZEI,
-             data0x => SYNTHESIZED_WIRE_63,
-             data1x => SYNTHESIZED_WIRE_36,
-             result => FIFO_D);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clken => FIFO_RDE,
+            sel => INTER_ZEI,
+            data0x => SYNTHESIZED_WIRE_63,
+            data1x => SYNTHESIZED_WIRE_36,
+            result => FIFO_D
+        );
     
     
     inst63 : lpm_fifodz
-    PORT MAP(wrreq => SYNTHESIZED_WIRE_60,
-             rdreq => SYNTHESIZED_WIRE_38,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             aclr => DOP_FIFO_CLR,
-             data => SYNTHESIZED_WIRE_63,
-             q => SYNTHESIZED_WIRE_36);
+        PORT MAP
+        (
+            wrreq => SYNTHESIZED_WIRE_60,
+            rdreq => SYNTHESIZED_WIRE_38,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            aclr => DOP_FIFO_CLR,
+            data => SYNTHESIZED_WIRE_63,
+            q => SYNTHESIZED_WIRE_36
+        );
     
     
     inst64 : lpm_constant0
-    PORT MAP(		 result => CCS(4 DOWNTO 0));
+        PORT MAP
+        (
+            result => CCS(4 DOWNTO 0)
+        );
     
     
     SYNTHESIZED_WIRE_60 <= FIFO_RDE AND SYNTHESIZED_WIRE_40;
     
     
     inst66 : lpm_bustri3
-    PORT MAP(enabledt => FALCON_CLUT_RDH,
-             data => SYNTHESIZED_WIRE_41,
-             tridata => FB_AD(31 DOWNTO 26));
+        PORT MAP
+        (
+            enabledt => FALCON_CLUT_RDH,
+            data => SYNTHESIZED_WIRE_41,
+            tridata => FB_AD(31 DOWNTO 26)
+        );
     
     
     SYNTHESIZED_WIRE_38 <= FIFO_RDE AND INTER_ZEI;
-    
-    
-    
     SYNTHESIZED_WIRE_40 <= NOT(INTER_ZEI);
     
-    
-    
     inst7 : lpm_mux6
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data0x => SYNTHESIZED_WIRE_42,
-             data1x => SYNTHESIZED_WIRE_43,
-             data2x => (OTHERS => '0'),
-             data3x => (OTHERS => '0'),
-             data4x => CCA,
-             data5x => CC16,
-             data6x => CC24(23 DOWNTO 0),
-             data7x => BORDER_COLOR,
-             sel => CCSEL,
-             result => SYNTHESIZED_WIRE_62);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data0x => SYNTHESIZED_WIRE_42,
+            data1x => SYNTHESIZED_WIRE_43,
+            data2x => (OTHERS => '0'),
+            data3x => (OTHERS => '0'),
+            data4x => CCA,
+            data5x => CC16,
+            data6x => CC24(23 DOWNTO 0),
+            data7x => BORDER_COLOR,
+            sel => CCSEL,
+            result => SYNTHESIZED_WIRE_62
+        );
     
     
     inst70 : lpm_bustri3
-    PORT MAP(enabledt => FALCON_CLUT_RDH,
-             data => SYNTHESIZED_WIRE_44,
-             tridata => FB_AD(23 DOWNTO 18));
+        PORT MAP
+        (
+            enabledt => FALCON_CLUT_RDH,
+            data => SYNTHESIZED_WIRE_44,
+            tridata => FB_AD(23 DOWNTO 18)
+        );
     
     
     inst71 : lpm_ff6
-    PORT MAP(clock => DDRCLK(0),
-             enable => FIFO_WRE,
-             data => VDVZ,
-             q => VDMA);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            enable => FIFO_WRE,
+            data => VDVZ,
+            q => VDMA
+        );
     
     
     
     
     inst74 : lpm_bustri3
-    PORT MAP(enabledt => FALCON_CLUT_RDL,
-             data => SYNTHESIZED_WIRE_45,
-             tridata => FB_AD(23 DOWNTO 18));
+        PORT MAP
+        (
+            enabledt => FALCON_CLUT_RDL,
+            data => SYNTHESIZED_WIRE_45,
+            tridata => FB_AD(23 DOWNTO 18)
+        );
     
     
     
     
     inst77 : lpm_constant1
-    PORT MAP(		 result => CCF(1 DOWNTO 0));
+        PORT MAP
+        (
+            result => CCF(1 DOWNTO 0)
+        );
     
     
     
@@ -1595,22 +1717,34 @@ BEGIN
     
     
     inst80 : lpm_constant1
-    PORT MAP(		 result => CCF(9 DOWNTO 8));
+        PORT MAP
+        (
+            result => CCF(9 DOWNTO 8)
+        );
     
     
     inst81 : lpm_mux4
-    PORT MAP(sel => COLOR1,
-             data0x => ZR_C8(7 DOWNTO 1),
-             data1x => SYNTHESIZED_WIRE_47,
-             result => ZR_C8B(7 DOWNTO 1));
+        PORT MAP
+        (
+            sel => COLOR1,
+            data0x => ZR_C8(7 DOWNTO 1),
+            data1x => SYNTHESIZED_WIRE_47,
+            result => ZR_C8B(7 DOWNTO 1)
+        );
     
     
     inst82 : lpm_constant3
-    PORT MAP(		 result => SYNTHESIZED_WIRE_47);
+        PORT MAP
+        (
+            result => SYNTHESIZED_WIRE_47
+        );
     
     
     inst83 : lpm_constant1
-    PORT MAP(		 result => CCF(17 DOWNTO 16));
+        PORT MAP
+        (
+            result => CCF(17 DOWNTO 16)
+        );
     
     
     PROCESS(DDRCLK(0), DDR_WR)
@@ -1633,214 +1767,265 @@ BEGIN
     
     
     inst89 : lpm_shiftreg6
-    PORT MAP(clock => DDRCLK(0),
-             shiftin => SR_BLITTER_DACK,
-             q => BLITTER_DACK);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            shiftin => SR_BLITTER_DACK,
+            q => BLITTER_DACK
+        );
     
     
     inst9 : lpm_ff1
-    PORT MAP(clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             data => SYNTHESIZED_WIRE_48,
-             q => CC24);
+        PORT MAP
+        (
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            data => SYNTHESIZED_WIRE_48,
+            q => CC24
+        );
     
         
     PROCESS(PIXEL_CLK_ALTERA_SYNTHESIZED)
     BEGIN
-    IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
-        DFF_inst91 <= CLUT_ADR(0);
-    END IF;
+        IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
+            DFF_inst91 <= CLUT_ADR(0);
+        END IF;
     END PROCESS;
     
     
     inst92 : lpm_shiftreg6
-    PORT MAP(clock => DDRCLK(0),
-             shiftin => SR_DDR_FB,
-             q => DDR_FB);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            shiftin => SR_DDR_FB,
+            q => DDR_FB
+        );
     
     
     PROCESS(PIXEL_CLK_ALTERA_SYNTHESIZED)
     BEGIN
-    IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
-        DFF_inst93 <= DFF_inst91;
-    END IF;
+        IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
+            DFF_inst93 <= DFF_inst91;
+        END IF;
     END PROCESS;
     
     
     inst94 : lpm_ff6
-    PORT MAP(clock => DDRCLK(0),
-             enable => FIFO_WRE,
-             data => VDMA,
-             q => VDMB);
+        PORT MAP
+        (
+            clock => DDRCLK(0),
+            enable => FIFO_WRE,
+            data => VDMA,
+            q => VDMB
+        );
     
     
     PROCESS(PIXEL_CLK_ALTERA_SYNTHESIZED)
     BEGIN
-    IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
-        SYNTHESIZED_WIRE_64 <= FIFO_RDE;
-    END IF;
+        IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
+            SYNTHESIZED_WIRE_64 <= FIFO_RDE;
+        END IF;
     END PROCESS;
     
     
     
     inst97 : lpm_ff5
-    PORT MAP(clock => DDRCLK(2),
-             data => SR_VDMP,
-             q => VDMP);
+        PORT MAP
+        (
+            clock => DDRCLK(2),
+            data => SR_VDMP,
+            q => VDMP
+        );
     
     
     sr0 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => SYNTHESIZED_WIRE_49,
-             data => FIFO_D(127 DOWNTO 112),
-             shiftout => CLUT_ADR(0));
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => SYNTHESIZED_WIRE_49,
+            data => FIFO_D(127 DOWNTO 112),
+            shiftout => CLUT_ADR(0)
+        );
     
     
     sr1 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => SYNTHESIZED_WIRE_50,
-             data => FIFO_D(111 DOWNTO 96),
-             shiftout => CLUT_ADR1A);
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => SYNTHESIZED_WIRE_50,
+            data => FIFO_D(111 DOWNTO 96),
+            shiftout => CLUT_ADR1A
+        );
     
     
     sr2 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => SYNTHESIZED_WIRE_51,
-             data => FIFO_D(95 DOWNTO 80),
-             shiftout => CLUT_ADR2A);
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => SYNTHESIZED_WIRE_51,
+            data => FIFO_D(95 DOWNTO 80),
+            shiftout => CLUT_ADR2A
+        );
     
     
     sr3 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => SYNTHESIZED_WIRE_52,
-             data => FIFO_D(79 DOWNTO 64),
-             shiftout => CLUT_ADR3A);
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => SYNTHESIZED_WIRE_52,
+            data => FIFO_D(79 DOWNTO 64),
+            shiftout => CLUT_ADR3A
+        );
     
     
     sr4 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => SYNTHESIZED_WIRE_53,
-             data => FIFO_D(63 DOWNTO 48),
-             shiftout => CLUT_ADR4A);
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => SYNTHESIZED_WIRE_53,
+            data => FIFO_D(63 DOWNTO 48),
+            shiftout => CLUT_ADR4A
+        );
     
     
     sr5 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => SYNTHESIZED_WIRE_54,
-             data => FIFO_D(47 DOWNTO 32),
-             shiftout => CLUT_ADR5A);
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => SYNTHESIZED_WIRE_54,
+            data => FIFO_D(47 DOWNTO 32),
+            shiftout => CLUT_ADR5A
+        );
     
     
     sr6 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => CLUT_ADR7A,
-             data => FIFO_D(31 DOWNTO 16),
-             shiftout => CLUT_ADR6A);
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => CLUT_ADR7A,
+            data => FIFO_D(31 DOWNTO 16),
+            shiftout => CLUT_ADR6A
+        );
     
     
     sr7 : lpm_shiftreg0
-    PORT MAP(load => SYNTHESIZED_WIRE_64,
-             clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             shiftin => CLUT_ADR(0),
-             data => FIFO_D(15 DOWNTO 0),
-             shiftout => CLUT_ADR7A);
+        PORT MAP
+        (
+            load => SYNTHESIZED_WIRE_64,
+            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            shiftin => CLUT_ADR(0),
+            data => FIFO_D(15 DOWNTO 0),
+            shiftout => CLUT_ADR7A
+        );
     
     
     ST_CLUT_BLUE : altdpram0
-    PORT MAP(wren_a => ST_CLUT_WR(1),
-             wren_b => SYNTHESIZED_WIRE_55,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(4 DOWNTO 1),
-             address_b => CLUT_ADR(3 DOWNTO 0),
-             data_a => FB_AD(18 DOWNTO 16),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_34,
-             q_b => CCS(7 DOWNTO 5));
+        PORT MAP
+        (
+            wren_a => ST_CLUT_WR(1),
+            wren_b => SYNTHESIZED_WIRE_55,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(4 DOWNTO 1),
+            address_b => CLUT_ADR(3 DOWNTO 0),
+            data_a => FB_AD(18 DOWNTO 16),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_34,
+            q_b => CCS(7 DOWNTO 5)
+        );
     
     
     ST_CLUT_GREEN : altdpram0
-    PORT MAP(wren_a => ST_CLUT_WR(1),
-             wren_b => SYNTHESIZED_WIRE_56,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(4 DOWNTO 1),
-             address_b => CLUT_ADR(3 DOWNTO 0),
-             data_a => FB_AD(22 DOWNTO 20),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_31,
-             q_b => CCS(15 DOWNTO 13));
+        PORT MAP
+        (
+            wren_a => ST_CLUT_WR(1),
+            wren_b => SYNTHESIZED_WIRE_56,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(4 DOWNTO 1),
+            address_b => CLUT_ADR(3 DOWNTO 0),
+            data_a => FB_AD(22 DOWNTO 20),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_31,
+            q_b => CCS(15 DOWNTO 13)
+        );
     
     
     ST_CLUT_RED : altdpram0
-    PORT MAP(wren_a => ST_CLUT_WR(0),
-             wren_b => SYNTHESIZED_WIRE_57,
-             clock_a => MAIN_CLK,
-             clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             address_a => FB_ADR(4 DOWNTO 1),
-             address_b => CLUT_ADR(3 DOWNTO 0),
-             data_a => FB_AD(26 DOWNTO 24),
-             data_b => (OTHERS => '0'),
-             q_a => SYNTHESIZED_WIRE_29,
-             q_b => CCS(23 DOWNTO 21));
+        PORT MAP
+        (
+            wren_a => ST_CLUT_WR(0),
+            wren_b => SYNTHESIZED_WIRE_57,
+            clock_a => MAIN_CLK,
+            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            address_a => FB_ADR(4 DOWNTO 1),
+            address_b => CLUT_ADR(3 DOWNTO 0),
+            data_a => FB_AD(26 DOWNTO 24),
+            data_b => (OTHERS => '0'),
+            q_a => SYNTHESIZED_WIRE_29,
+            q_b => CCS(23 DOWNTO 21)
+        );
     
     
     i_video_mod_mux_clutctr : video_mod_mux_clutctr
-    PORT MAP(nRSTO => nRSTO,
-             MAIN_CLK => MAIN_CLK,
-             nFB_CS1 => nFB_CS1,
-             nFB_CS2 => nFB_CS2,
-             nFB_CS3 => nFB_CS3,
-             nFB_WR => nFB_WR,
-             nFB_OE => nFB_OE,
-             FB_SIZE0 => FB_SIZE0,
-             FB_SIZE1 => FB_SIZE1,
-             nFB_BURST => nFB_BURST,
-             CLK33M => CLK33M,
-             CLK25M => CLK25M,
-             BLITTER_RUN => BLITTER_RUN,
-             CLK_VIDEO => CLK_VIDEO,
-             VR_BUSY => VR_BUSY,
-             FB_AD => FB_AD,
-             FB_ADR => FB_ADR,
-             VR_D => VR_D,
-             COLOR8 => COLOR8,
-             ACP_CLUT_RD => ACP_CLUT_RD,
-             COLOR1 => COLOR1,
-             FALCON_CLUT_RDH => FALCON_CLUT_RDH,
-             FALCON_CLUT_RDL => FALCON_CLUT_RDL,
-             ST_CLUT_RD => ST_CLUT_RD,
-             HSYNC => HSYNC,
-             VSYNC => VSYNC,
-             nBLANK => nBLANK,
-             nSYNC => nSYNC,
-             nPD_VGA => nPD_VGA,
-             FIFO_RDE => FIFO_RDE,
-             COLOR2 => COLOR2,
-             COLOR4 => COLOR4,
-             PIXEL_CLK => PIXEL_CLK_ALTERA_SYNTHESIZED,
-             BLITTER_ON => BLITTER_ON,
-             VIDEO_MOD_TA => VIDEO_MOD_TA,
-             INTER_ZEI => INTER_ZEI,
-             DOP_FIFO_CLR => DOP_FIFO_CLR,
-             VIDEO_RECONFIG => VIDEO_RECONFIG,
-             VR_WR => VR_WR,
-             VR_RD => VR_RD,
-             CLR_FIFO => CLR_FIFO,
-             ACP_CLUT_WR => ACP_CLUT_WR,
-             BORDER_COLOR => BORDER_COLOR,
-             CCSEL => CCSEL,
-             CLUT_MUX_ADR => CLUT_MUX_ADR,
-             CLUT_OFF => CLUT_OFF,
-             FALCON_CLUT_WR => FALCON_CLUT_WR,
-             ST_CLUT_WR => ST_CLUT_WR,
-             VIDEO_RAM_CTR => VIDEO_RAM_CTR);
+        PORT MAP
+        (
+            nRSTO => nRSTO,
+            MAIN_CLK => MAIN_CLK,
+            nFB_CS1 => nFB_CS1,
+            nFB_CS2 => nFB_CS2,
+            nFB_CS3 => nFB_CS3,
+            nFB_WR => nFB_WR,
+            nFB_OE => nFB_OE,
+            FB_SIZE0 => FB_SIZE0,
+            FB_SIZE1 => FB_SIZE1,
+            nFB_BURST => nFB_BURST,
+            CLK33M => CLK33M,
+            CLK25M => CLK25M,
+            BLITTER_RUN => BLITTER_RUN,
+            CLK_VIDEO => CLK_VIDEO,
+            VR_BUSY => VR_BUSY,
+            FB_AD => FB_AD,
+            FB_ADR => FB_ADR,
+            VR_D => VR_D,
+            COLOR8 => COLOR8,
+            ACP_CLUT_RD => ACP_CLUT_RD,
+            COLOR1 => COLOR1,
+            FALCON_CLUT_RDH => FALCON_CLUT_RDH,
+            FALCON_CLUT_RDL => FALCON_CLUT_RDL,
+            ST_CLUT_RD => ST_CLUT_RD,
+            HSYNC => HSYNC,
+            VSYNC => VSYNC,
+            nBLANK => nBLANK,
+            nSYNC => nSYNC,
+            nPD_VGA => nPD_VGA,
+            FIFO_RDE => FIFO_RDE,
+            COLOR2 => COLOR2,
+            COLOR4 => COLOR4,
+            PIXEL_CLK => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            BLITTER_ON => BLITTER_ON,
+            VIDEO_MOD_TA => VIDEO_MOD_TA,
+            INTER_ZEI => INTER_ZEI,
+            DOP_FIFO_CLR => DOP_FIFO_CLR,
+            VIDEO_RECONFIG => VIDEO_RECONFIG,
+            VR_WR => VR_WR,
+            VR_RD => VR_RD,
+            CLR_FIFO => CLR_FIFO,
+            ACP_CLUT_WR => ACP_CLUT_WR,
+            BORDER_COLOR => BORDER_COLOR,
+            CCSEL => CCSEL,
+            CLUT_MUX_ADR => CLUT_MUX_ADR,
+            CLUT_OFF => CLUT_OFF,
+            FALCON_CLUT_WR => FALCON_CLUT_WR,
+            ST_CLUT_WR => ST_CLUT_WR,
+            VIDEO_RAM_CTR => VIDEO_RAM_CTR
+        );
     
     PIXEL_CLK <= PIXEL_CLK_ALTERA_SYNTHESIZED;
 END rtl;
