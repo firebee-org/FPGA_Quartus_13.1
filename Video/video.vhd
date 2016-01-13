@@ -17,7 +17,7 @@
 -- CREATED		"Mon Jan 11 09:20:56 2016"
 
 LIBRARY ieee;
-USE ieee.std_logic_1164.all; 
+    USE ieee.std_logic_1164.all; 
 
 LIBRARY work;
 
@@ -1929,7 +1929,7 @@ BEGIN
         PORT MAP
         (
             wren_a => ST_CLUT_WR(1),
-            wren_b => SYNTHESIZED_WIRE_55,
+            wren_b => '0',
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
@@ -1945,7 +1945,7 @@ BEGIN
         PORT MAP
         (
             wren_a => ST_CLUT_WR(1),
-            wren_b => SYNTHESIZED_WIRE_56,
+            wren_b => '0',
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
@@ -1961,7 +1961,7 @@ BEGIN
         PORT MAP
         (
             wren_a => ST_CLUT_WR(0),
-            wren_b => SYNTHESIZED_WIRE_57,
+            wren_b => '0',
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),

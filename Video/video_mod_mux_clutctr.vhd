@@ -124,161 +124,185 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     --  VERTIKAL TIMING 320x240
     --  HORIZONTAL
     --  VERTIKAL
-    SIGNAL VR_DOUT: std_logic_vector(8 DOWNTO 0);
-    SIGNAL VR_DOUT_d: std_logic_vector(8 DOWNTO 0);
-    SIGNAL VR_DOUT_q: std_logic_vector(8 DOWNTO 0);
-    SIGNAL VR_FRQ: std_logic_vector(7 DOWNTO 0);
-    SIGNAL VR_FRQ_d: std_logic_vector(7 DOWNTO 0);
-    SIGNAL VR_FRQ_q: std_logic_vector(7 DOWNTO 0);
-    SIGNAL FB_B: std_logic_vector(3 DOWNTO 0);
-    SIGNAL FB_16B: std_logic_vector(1 DOWNTO 0);
-    SIGNAL ST_SHIFT_MODE: std_logic_vector(1 DOWNTO 0);
-    SIGNAL ST_SHIFT_MODE_d: std_logic_vector(1 DOWNTO 0);
-    SIGNAL ST_SHIFT_MODE_q: std_logic_vector(1 DOWNTO 0);
-    SIGNAL FALCON_SHIFT_MODE: std_logic_vector(10 DOWNTO 0);
-    SIGNAL FALCON_SHIFT_MODE_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL FALCON_SHIFT_MODE_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL CLUT_MUX_ADR_d: std_logic_vector(3 DOWNTO 0);
-    SIGNAL CLUT_MUX_ADR_q: std_logic_vector(3 DOWNTO 0);
-    SIGNAL CLUT_MUX_AV1: std_logic_vector(3 DOWNTO 0);
-    SIGNAL CLUT_MUX_AV1_d: std_logic_vector(3 DOWNTO 0);
-    SIGNAL CLUT_MUX_AV1_q: std_logic_vector(3 DOWNTO 0);
-    SIGNAL CLUT_MUX_AV0: std_logic_vector(3 DOWNTO 0);
-    SIGNAL CLUT_MUX_AV0_d: std_logic_vector(3 DOWNTO 0);
-    SIGNAL CLUT_MUX_AV0_q: std_logic_vector(3 DOWNTO 0);
-    SIGNAL ACP_VCTR: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ACP_VCTR_d: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ACP_VCTR_q: std_logic_vector(31 DOWNTO 0);
-    SIGNAL BORDER_COLOR_d: std_logic_vector(23 DOWNTO 0);
-    SIGNAL BORDER_COLOR_q: std_logic_vector(23 DOWNTO 0);
-    SIGNAL SYS_CTR: std_logic_vector(6 DOWNTO 0);
-    SIGNAL SYS_CTR_d: std_logic_vector(6 DOWNTO 0);
-    SIGNAL SYS_CTR_q: std_logic_vector(6 DOWNTO 0);
-    SIGNAL LOF: std_logic_vector(15 DOWNTO 0);
-    SIGNAL LOF_d: std_logic_vector(15 DOWNTO 0);
-    SIGNAL LOF_q: std_logic_vector(15 DOWNTO 0);
-    SIGNAL LWD: std_logic_vector(15 DOWNTO 0);
-    SIGNAL LWD_d: std_logic_vector(15 DOWNTO 0);
-    SIGNAL LWD_q: std_logic_vector(15 DOWNTO 0);
-    SIGNAL HSYNC_I: std_logic_vector(7 DOWNTO 0);
-    SIGNAL HSYNC_I_d: std_logic_vector(7 DOWNTO 0);
-    SIGNAL HSYNC_I_q: std_logic_vector(7 DOWNTO 0);
-    SIGNAL HSY_LEN: std_logic_vector(7 DOWNTO 0);
-    SIGNAL HSY_LEN_d: std_logic_vector(7 DOWNTO 0);
-    SIGNAL HSY_LEN_q: std_logic_vector(7 DOWNTO 0);
-    SIGNAL VSYNC_I: std_logic_vector(2 DOWNTO 0);
-    SIGNAL VSYNC_I_d: std_logic_vector(2 DOWNTO 0);
-    SIGNAL VSYNC_I_q: std_logic_vector(2 DOWNTO 0);
-    SIGNAL VHCNT: std_logic_vector(11 DOWNTO 0);
-    SIGNAL VHCNT_d: std_logic_vector(11 DOWNTO 0);
-    SIGNAL VHCNT_q: std_logic_vector(11 DOWNTO 0);
-    SIGNAL SUB_PIXEL_CNT: std_logic_vector(6 DOWNTO 0);
-    SIGNAL SUB_PIXEL_CNT_d: std_logic_vector(6 DOWNTO 0);
-    SIGNAL SUB_PIXEL_CNT_q: std_logic_vector(6 DOWNTO 0);
-    SIGNAL VVCNT: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VVCNT_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VVCNT_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VERZ2: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ2_d: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ2_q: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ1: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ1_d: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ1_q: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ0: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ0_d: std_logic_vector(9 DOWNTO 0);
-    SIGNAL VERZ0_q: std_logic_vector(9 DOWNTO 0);
-    SIGNAL RAND: std_logic_vector(6 DOWNTO 0);
-    SIGNAL RAND_d: std_logic_vector(6 DOWNTO 0);
-    SIGNAL RAND_q: std_logic_vector(6 DOWNTO 0);
-    SIGNAL CCSEL_d: std_logic_vector(2 DOWNTO 0);
-    SIGNAL CCSEL_q: std_logic_vector(2 DOWNTO 0);
-    SIGNAL ATARI_HH: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_HH_d: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_HH_q: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_VH: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_VH_d: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_VH_q: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_HL: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_HL_d: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_HL_q: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_VL: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_VL_d: std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_VL_q: std_logic_vector(31 DOWNTO 0);
-    SIGNAL RAND_LINKS: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDIS_START: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDIS_END: std_logic_vector(11 DOWNTO 0);
-    SIGNAL RAND_RECHTS: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HS_START: std_logic_vector(11 DOWNTO 0);
-    SIGNAL H_TOTAL: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDIS_LEN: std_logic_vector(11 DOWNTO 0);
-    SIGNAL MULF: std_logic_vector(5 DOWNTO 0);
-    SIGNAL HHT: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HHT_d: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HHT_q: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HBE: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HBE_d: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HBE_q: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDB: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDB_d: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDB_q: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDE: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDE_d: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HDE_q: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HBB: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HBB_d: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HBB_q: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HSS: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HSS_d: std_logic_vector(11 DOWNTO 0);
-    SIGNAL HSS_q: std_logic_vector(11 DOWNTO 0);
-    SIGNAL RAND_OBEN: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDIS_START: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDIS_END: std_logic_vector(10 DOWNTO 0);
-    SIGNAL RAND_UNTEN: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VS_START: std_logic_vector(10 DOWNTO 0);
-    SIGNAL V_TOTAL: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VBE: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VBE_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VBE_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDB: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDB_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDB_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDE: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDE_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VDE_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VBB: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VBB_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VBB_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VSS: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VSS_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VSS_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VFT: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VFT_d: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VFT_q: std_logic_vector(10 DOWNTO 0);
-    SIGNAL VCO: std_logic_vector(8 DOWNTO 0);
-    SIGNAL VCO_d: std_logic_vector(8 DOWNTO 0);
-    SIGNAL VCO_ena: std_logic_vector(8 DOWNTO 0);
-    SIGNAL VCO_q: std_logic_vector(8 DOWNTO 0);
-    SIGNAL VCNTRL: std_logic_vector(3 DOWNTO 0);
-    SIGNAL VCNTRL_d: std_logic_vector(3 DOWNTO 0);
-    SIGNAL VCNTRL_q: std_logic_vector(3 DOWNTO 0);
-    SIGNAL u0_data: std_logic_vector(15 DOWNTO 0);
-    SIGNAL u0_tridata: std_logic_vector(15 DOWNTO 0);
-    SIGNAL u1_data: std_logic_vector(15 DOWNTO 0);
-    SIGNAL u1_tridata: std_logic_vector(15 DOWNTO 0);
-    SIGNAL ST_SHIFT_MODE0_clk_ctrl, ST_SHIFT_MODE0_ena_ctrl,
- 	 FALCON_SHIFT_MODE0_clk_ctrl, FALCON_SHIFT_MODE8_ena_ctrl,
-	 FALCON_SHIFT_MODE0_ena_ctrl, ACP_VCTR0_clk_ctrl, ACP_VCTR24_ena_ctrl,
-	 ACP_VCTR16_ena_ctrl, ACP_VCTR8_ena_ctrl, ACP_VCTR0_ena_ctrl,
-	 ATARI_HH0_clk_ctrl, ATARI_HH24_ena_ctrl, ATARI_HH16_ena_ctrl,
-	 ATARI_HH8_ena_ctrl, ATARI_HH0_ena_ctrl, ATARI_VH0_clk_ctrl,
-	 ATARI_VH24_ena_ctrl, ATARI_VH16_ena_ctrl, ATARI_VH8_ena_ctrl,
-	 ATARI_VH0_ena_ctrl, ATARI_HL0_clk_ctrl, ATARI_HL24_ena_ctrl,
-	 ATARI_HL16_ena_ctrl, ATARI_HL8_ena_ctrl, ATARI_HL0_ena_ctrl,
-	 ATARI_VL0_clk_ctrl, ATARI_VL24_ena_ctrl, ATARI_VL16_ena_ctrl,
-	 ATARI_VL8_ena_ctrl, ATARI_VL0_ena_ctrl, VR_DOUT0_clk_ctrl,
-	 VR_DOUT0_ena_ctrl, VR_FRQ0_clk_ctrl, VR_FRQ0_ena_ctrl,
-	 ACP_VCTR6_ena_ctrl, CCSEL0_clk_ctrl, BORDER_COLOR0_clk_ctrl,
-	 BORDER_COLOR16_ena_ctrl, BORDER_COLOR8_ena_ctrl,
+    SIGNAL VR_DOUT                  : std_logic_vector(8 DOWNTO 0);
+    SIGNAL VR_DOUT_d                : std_logic_vector(8 DOWNTO 0);
+    SIGNAL VR_DOUT_q                : std_logic_vector(8 DOWNTO 0);
+    SIGNAL VR_FRQ                   : std_logic_vector(7 DOWNTO 0);
+    SIGNAL VR_FRQ_d                 : std_logic_vector(7 DOWNTO 0);
+    SIGNAL VR_FRQ_q                 : std_logic_vector(7 DOWNTO 0);
+    SIGNAL FB_B                     : std_logic_vector(3 DOWNTO 0);
+    SIGNAL FB_16B                   : std_logic_vector(1 DOWNTO 0);
+    SIGNAL ST_SHIFT_MODE            : std_logic_vector(1 DOWNTO 0);
+    SIGNAL ST_SHIFT_MODE_d          : std_logic_vector(1 DOWNTO 0);
+    SIGNAL ST_SHIFT_MODE_q          : std_logic_vector(1 DOWNTO 0);
+    SIGNAL FALCON_SHIFT_MODE        : std_logic_vector(10 DOWNTO 0);
+    SIGNAL FALCON_SHIFT_MODE_d      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL FALCON_SHIFT_MODE_q      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL CLUT_MUX_ADR_d           : std_logic_vector(3 DOWNTO 0);
+    SIGNAL CLUT_MUX_ADR_q           : std_logic_vector(3 DOWNTO 0);
+    SIGNAL CLUT_MUX_AV1             : std_logic_vector(3 DOWNTO 0);
+    SIGNAL CLUT_MUX_AV1_d           : std_logic_vector(3 DOWNTO 0);
+    SIGNAL CLUT_MUX_AV1_q           : std_logic_vector(3 DOWNTO 0);
+    SIGNAL CLUT_MUX_AV0             : std_logic_vector(3 DOWNTO 0);
+    SIGNAL CLUT_MUX_AV0_d           : std_logic_vector(3 DOWNTO 0);
+    SIGNAL CLUT_MUX_AV0_q           : std_logic_vector(3 DOWNTO 0);
+    SIGNAL ACP_VCTR                 : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ACP_VCTR_d               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ACP_VCTR_q               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL BORDER_COLOR_d           : std_logic_vector(23 DOWNTO 0);
+    SIGNAL BORDER_COLOR_q           : std_logic_vector(23 DOWNTO 0);
+    SIGNAL SYS_CTR                  : std_logic_vector(6 DOWNTO 0);
+    SIGNAL SYS_CTR_d                : std_logic_vector(6 DOWNTO 0);
+    SIGNAL SYS_CTR_q                : std_logic_vector(6 DOWNTO 0);
+    SIGNAL LOF                      : std_logic_vector(15 DOWNTO 0);
+    SIGNAL LOF_d                    : std_logic_vector(15 DOWNTO 0);
+    SIGNAL LOF_q                    : std_logic_vector(15 DOWNTO 0);
+    SIGNAL LWD                      : std_logic_vector(15 DOWNTO 0);
+    SIGNAL LWD_d                    : std_logic_vector(15 DOWNTO 0);
+    SIGNAL LWD_q                    : std_logic_vector(15 DOWNTO 0);
+    SIGNAL HSYNC_I                  : std_logic_vector(7 DOWNTO 0);
+    SIGNAL HSYNC_I_d                : std_logic_vector(7 DOWNTO 0);
+    SIGNAL HSYNC_I_q                : std_logic_vector(7 DOWNTO 0);
+    SIGNAL HSY_LEN                  : std_logic_vector(7 DOWNTO 0);
+    SIGNAL HSY_LEN_d                : std_logic_vector(7 DOWNTO 0);
+    SIGNAL HSY_LEN_q                : std_logic_vector(7 DOWNTO 0);
+    SIGNAL VSYNC_I                  : std_logic_vector(2 DOWNTO 0);
+    SIGNAL VSYNC_I_d                : std_logic_vector(2 DOWNTO 0);
+    SIGNAL VSYNC_I_q                : std_logic_vector(2 DOWNTO 0);
+    SIGNAL VHCNT                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL VHCNT_d                  : std_logic_vector(11 DOWNTO 0);
+    SIGNAL VHCNT_q                  : std_logic_vector(11 DOWNTO 0);
+    SIGNAL SUB_PIXEL_CNT            : std_logic_vector(6 DOWNTO 0);
+    SIGNAL SUB_PIXEL_CNT_d          : std_logic_vector(6 DOWNTO 0);
+    SIGNAL SUB_PIXEL_CNT_q          : std_logic_vector(6 DOWNTO 0);
+    SIGNAL VVCNT                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VVCNT_d                  : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VVCNT_q                  : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VERZ2                    : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ2_d                  : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ2_q                  : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ1                    : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ1_d                  : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ1_q                  : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ0                    : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ0_d                  : std_logic_vector(9 DOWNTO 0);
+    SIGNAL VERZ0_q                  : std_logic_vector(9 DOWNTO 0);
+    SIGNAL RAND                     : std_logic_vector(6 DOWNTO 0);
+    SIGNAL RAND_d                   : std_logic_vector(6 DOWNTO 0);
+    SIGNAL RAND_q                   : std_logic_vector(6 DOWNTO 0);
+    SIGNAL CCSEL_d                  : std_logic_vector(2 DOWNTO 0);
+    SIGNAL CCSEL_q                  : std_logic_vector(2 DOWNTO 0);
+    SIGNAL ATARI_HH                 : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_HH_d               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_HH_q               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_VH                 : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_VH_d               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_VH_q               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_HL                 : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_HL_d               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_HL_q               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_VL                 : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_VL_d               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_VL_q               : std_logic_vector(31 DOWNTO 0);
+    SIGNAL RAND_LINKS               : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDIS_START               : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDIS_END                 : std_logic_vector(11 DOWNTO 0);
+    SIGNAL RAND_RECHTS              : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HS_START                 : std_logic_vector(11 DOWNTO 0);
+    SIGNAL H_TOTAL                  : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDIS_LEN                 : std_logic_vector(11 DOWNTO 0);
+    SIGNAL MULF                     : std_logic_vector(5 DOWNTO 0);
+    SIGNAL HHT                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HHT_d                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HHT_q                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HBE                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HBE_d                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HBE_q                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDB                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDB_d                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDB_q                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDE                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDE_d                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HDE_q                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HBB                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HBB_d                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HBB_q                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HSS                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HSS_d                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HSS_q                    : std_logic_vector(11 DOWNTO 0);
+    SIGNAL RAND_OBEN                : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDIS_START               : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDIS_END                 : std_logic_vector(10 DOWNTO 0);
+    SIGNAL RAND_UNTEN               : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VS_START                 : std_logic_vector(10 DOWNTO 0);
+    SIGNAL V_TOTAL                  : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VBE                      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VBE_d                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VBE_q                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDB                      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDB_d                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDB_q                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDE                      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDE_d                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VDE_q                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VBB                      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VBB_d                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VBB_q                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VSS                      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VSS_d                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VSS_q                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VFT                      : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VFT_d                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VFT_q                    : std_logic_vector(10 DOWNTO 0);
+    SIGNAL VCO                      : std_logic_vector(8 DOWNTO 0);
+    SIGNAL VCO_d                    : std_logic_vector(8 DOWNTO 0);
+    SIGNAL VCO_ena                  : std_logic_vector(8 DOWNTO 0);
+    SIGNAL VCO_q                    : std_logic_vector(8 DOWNTO 0);
+    SIGNAL VCNTRL                   : std_logic_vector(3 DOWNTO 0);
+    SIGNAL VCNTRL_d                 : std_logic_vector(3 DOWNTO 0);
+    SIGNAL VCNTRL_q                 : std_logic_vector(3 DOWNTO 0);
+    SIGNAL u0_data                  : std_logic_vector(15 DOWNTO 0);
+    SIGNAL u0_tridata               : std_logic_vector(15 DOWNTO 0);
+    SIGNAL u1_data                  : std_logic_vector(15 DOWNTO 0);
+    SIGNAL u1_tridata               : std_logic_vector(15 DOWNTO 0);
+    SIGNAL ST_SHIFT_MODE0_clk_ctrl  : std_logic;
+    SIGNAL ST_SHIFT_MODE0_ena_ctrl  : std_logic;
+ 	SIGNAL FALCON_SHIFT_MODE0_clk_ctrl  : std_logic;
+    SIGNAL FALCON_SHIFT_MODE8_ena_ctrl  : std_logic;
+	SIGNAL FALCON_SHIFT_MODE0_ena_ctrl  : std_logic;
+    SIGNAL ACP_VCTR0_clk_ctrl       : std_logic;
+    SIGNAL ACP_VCTR24_ena_ctrl      : std_logic;
+	SIGNAL ACP_VCTR16_ena_ctrl      : std_logic;
+    SIGNAL ACP_VCTR8_ena_ctrl       : std_logic;
+    SIGNAL ACP_VCTR0_ena_ctrl       : std_logic;
+	SIGNAL ATARI_HH0_clk_ctrl       : std_logic;
+    SIGNAL ATARI_HH24_ena_ctrl      : std_logic;
+    SIGNAL ATARI_HH16_ena_ctrl      : std_logic;
+	SIGNAL ATARI_HH8_ena_ctrl       : std_logic;
+    SIGNAL ATARI_HH0_ena_ctrl       : std_logic;
+    SIGNAL ATARI_VH0_clk_ctrl       : std_logic;
+	SIGNAL ATARI_VH24_ena_ctrl      : std_logic;
+    SIGNAL ATARI_VH16_ena_ctrl      : std_logic;
+    SIGNAL ATARI_VH8_ena_ctrl       : std_logic;
+    SIGNAL ATARI_VH0_ena_ctrl       : std_logic;
+    SIGNAL ATARI_HL0_clk_ctrl       : std_logic;
+    SIGNAL ATARI_HL24_ena_ctrl      : std_logic;
+	SIGNAL ATARI_HL16_ena_ctrl      : std_logic;
+    SIGNAL ATARI_HL8_ena_ctrl       : std_logic;
+    SIGNAL ATARI_HL0_ena_ctrl       : std_logic;
+	SIGNAL ATARI_VL0_clk_ctrl       : std_logic;
+    SIGNAL ATARI_VL24_ena_ctrl      : std_logic;
+    SIGNAL ATARI_VL16_ena_ctrl      : std_logic;
+	SIGNAL ATARI_VL8_ena_ctrl       : std_logic;
+    SIGNAL ATARI_VL0_ena_ctrl       : std_logic;
+    SIGNAL VR_DOUT0_clk_ctrl        : std_logic;
+	SIGNAL VR_DOUT0_ena_ctrl        : std_logic;
+    SIGNAL VR_FRQ0_clk_ctrl         : std_logic;
+    SIGNAL VR_FRQ0_ena_ctrl         : std_logic;
+	SIGNAL ACP_VCTR6_ena_ctrl       : std_logic;
+    SIGNAL CCSEL0_clk_ctrl          : std_logic;
+    SIGNAL BORDER_COLOR0_clk_ctrl   : std_logic;
+	SIGNAL BORDER_COLOR16_ena_ctrl, BORDER_COLOR8_ena_ctrl,
 	 BORDER_COLOR0_ena_ctrl, SYS_CTR0_clk_ctrl, SYS_CTR0_ena_ctrl,
 	 LOF0_clk_ctrl, LOF8_ena_ctrl, LOF0_ena_ctrl, LWD0_clk_ctrl,
 	 LWD8_ena_ctrl, LWD0_ena_ctrl, HHT0_clk_ctrl, HHT8_ena_ctrl,
@@ -336,7 +360,7 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
             data        : IN std_logic_vector(15 DOWNTO 0);
             enabledt    : IN std_logic;
             tridata     : BUFFER std_logic_vector(15 DOWNTO 0)
-      );
+        );
     END COMPONENT lpm_bustri_WORD;
 
     FUNCTION to_std_logic(X : IN boolean) RETURN std_logic IS
@@ -1950,7 +1974,8 @@ begin
    nBLANK_clk <= PIXEL_CLK;
 
 --  nBLANK =  VERZ[0][8];
-   nBLANK_d <= DISP_ON_q;
+    nblank_d <= verz0_q(8);
+--  nBLANK_d <= DISP_ON_q;
    HSYNC_clk <= PIXEL_CLK;
 
 --  HSYNC  =  VERZ[1][9];
@@ -1962,23 +1987,24 @@ begin
 
 --  VSYNC  =  VERZ[2][9];
 --  NUR MÖGLICH WENN BEIDE
-   VSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1') and
+    VSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1') and
 	 VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
-   nSYNC <= gnd;
+    nSYNC <= gnd;
 
 --  RANDFARBE MACHEN ------------------------------------
-   RAND0_clk_ctrl <= PIXEL_CLK;
-   RAND_d(0) <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
-   RAND_d(1) <= RAND_q(0);
-   RAND_d(2) <= RAND_q(1);
-   RAND_d(3) <= RAND_q(2);
-   RAND_d(4) <= RAND_q(3);
-   RAND_d(5) <= RAND_q(4);
-   RAND_d(6) <= RAND_q(5);
-
+    RAND0_clk_ctrl <= PIXEL_CLK;
+    RAND_d(0) <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
+    RAND_d(1) <= RAND_q(0);
+    RAND_d(2) <= RAND_q(1);
+    RAND_d(3) <= RAND_q(2);
+    RAND_d(4) <= RAND_q(3);
+    RAND_d(5) <= RAND_q(4);
+    RAND_d(6) <= RAND_q(5);
+    
 --  RAND_ON = RAND[6];
-   RAND_ON <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
+    rand_on <= rand(6);
+    -- RAND_ON <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
 
 -- --------------------------------------------------------
    CLR_FIFO_clk <= PIXEL_CLK;

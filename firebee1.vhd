@@ -155,7 +155,7 @@ ARCHITECTURE rtl OF firebee1 IS
     SIGNAL CLK33M           : std_logic;
     SIGNAL CLK48M           : std_logic;
     SIGNAL CLK500k          : std_logic;
-    SIGNAL CLK_VIDEO        :  std_logic;
+    SIGNAL CLK_VIDEO        : std_logic;
     SIGNAL DDR_SYNC_66M     : std_logic;
     SIGNAL DDRCLK           : std_logic_vector(3 DOWNTO 0);
     SIGNAL DMA_DRQ          : std_logic;
