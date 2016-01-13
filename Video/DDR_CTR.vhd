@@ -228,16 +228,54 @@ ARCHITECTURE rtl OF ddr_ctr IS
     SIGNAL FIFO_AC_q                    : std_logic;
     SIGNAL FIFO_AC_clk                  : std_logic;
     SIGNAL FIFO_AC_d                    : std_logic;
-	SIGNAL FIFO_AC, FIFO_REQ_q, FIFO_REQ_clk, FIFO_REQ_d, FIFO_REQ, BLITTER_AC_q,
-	 BLITTER_AC_clk, BLITTER_AC_d, BLITTER_AC, BLITTER_REQ_q,
-	 BLITTER_REQ_clk, BLITTER_REQ_d, BLITTER_REQ, BUS_CYC_END, BUS_CYC_q,
-	 BUS_CYC_clk, BUS_CYC_d, BUS_CYC, CPU_AC_q, CPU_AC_clk, CPU_AC_d,
-	 CPU_AC, CPU_REQ_q, CPU_REQ_clk, CPU_REQ_d, CPU_REQ, CPU_SIG,
-	 SR_DDRWR_D_SEL_q, SR_DDRWR_D_SEL_clk, SR_DDRWR_D_SEL_d, SR_DDR_WR_q,
-	 SR_DDR_WR_clk, SR_DDR_WR_d, DDR_CONFIG, DDR_CS_q, DDR_CS_ena,
-	 DDR_CS_clk, DDR_CS_d, DDR_CS, DDR_SEL, CPU_DDR_SYNC_q,
-	 CPU_DDR_SYNC_clk, CPU_DDR_SYNC_d, CPU_DDR_SYNC, VWE, VRAS, VCAS, LINE:
-	 std_logic;
+	SIGNAL FIFO_AC                      : std_logic;
+    SIGNAL FIFO_REQ_q                   : std_logic;
+    SIGNAL FIFO_REQ_clk                 : std_logic;
+    SIGNAL FIFO_REQ_d                   : std_logic;
+    SIGNAL FIFO_REQ                     : std_logic;
+    SIGNAL BLITTER_AC_q                 : std_logic;
+    SIGNAL BLITTER_AC_clk               : std_logic;
+    SIGNAL BLITTER_AC_d                 : std_logic;
+    SIGNAL BLITTER_AC                   : std_logic;
+    SIGNAL BLITTER_REQ_q                : std_logic;
+	SIGNAL BLITTER_REQ_clk              : std_logic;
+    SIGNAL BLITTER_REQ_d                : std_logic;
+    SIGNAL BLITTER_REQ                  : std_logic;
+    SIGNAL BUS_CYC_END                  : std_logic;
+    SIGNAL BUS_CYC_q                    : std_logic;
+    SIGNAL BUS_CYC_clk                  : std_logic;
+    SIGNAL BUS_CYC_d                    : std_logic;
+    SIGNAL BUS_CYC                      : std_logic;
+    SIGNAL CPU_AC_q                     : std_logic;
+    SIGNAL CPU_AC_clk                   : std_logic;
+    SIGNAL CPU_AC_d                     : std_logic;
+	SIGNAL CPU_AC                       : std_logic;
+    SIGNAL CPU_REQ_q                    : std_logic;
+    SIGNAL CPU_REQ_clk                  : std_logic;
+    SIGNAL CPU_REQ_d                    : std_logic;
+    SIGNAL CPU_REQ                      : std_logic;
+    SIGNAL CPU_SIG                      : std_logic;
+    SIGNAL SR_DDRWR_D_SEL_q             : std_logic;
+    SIGNAL SR_DDRWR_D_SEL_clk           : std_logic;
+    SIGNAL SR_DDRWR_D_SEL_d             : std_logic;
+    SIGNAL SR_DDR_WR_q                  : std_logic;
+	SIGNAL SR_DDR_WR_clk                : std_logic;
+    SIGNAL SR_DDR_WR_d                  : std_logic;
+    SIGNAL DDR_CONFIG                   : std_logic;
+    SIGNAL DDR_CS_q                     : std_logic;
+    SIGNAL DDR_CS_ena                   : std_logic;
+	SIGNAL DDR_CS_clk                   : std_logic;
+    SIGNAL DDR_CS_d                     : std_logic;
+    SIGNAL DDR_CS                       : std_logic;
+    SIGNAL DDR_SEL                      : std_logic;
+    SIGNAL CPU_DDR_SYNC_q               : std_logic;
+	SIGNAL CPU_DDR_SYNC_clk             : std_logic;
+    SIGNAL CPU_DDR_SYNC_d               : std_logic;
+    SIGNAL CPU_DDR_SYNC                 : std_logic;
+    SIGNAL VWE                          : std_logic;
+    SIGNAL VRAS                         : std_logic;
+    SIGNAL VCAS                         : std_logic;
+    SIGNAL LINE                         : std_logic;
 
 -- Sub Module Interface Section
 
