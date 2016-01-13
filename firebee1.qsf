@@ -660,7 +660,7 @@ set_global_assignment -name MERCURY_OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name FLEX6K_OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name FLEX10K_OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name VERILOG_INPUT_VERSION VERILOG_2001
-set_global_assignment -name VHDL_INPUT_VERSION VHDL_1993
+set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
 set_global_assignment -name EDA_DESIGN_ENTRY_SYNTHESIS_TOOL "<None>"
 set_global_assignment -name EDA_INPUT_DATA_FORMAT EDIF -section_id eda_design_synthesis
 set_global_assignment -name TIMEQUEST_DO_REPORT_TIMING ON
@@ -668,6 +668,11 @@ set_global_assignment -name SYNCHRONIZER_IDENTIFICATION AUTO
 set_global_assignment -name TIMEQUEST_DO_CCPP_REMOVAL ON
 set_global_assignment -name SAVE_DISK_SPACE OFF
 set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to MAIN_CLK
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to DDR_CLK
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to nDDR_CLK
+set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name VHDL_FILE Video/video_mod_mux_clutctr.vhd
 set_global_assignment -name VHDL_FILE Video/DDR_CTR.vhd
 set_global_assignment -name SOURCE_FILE altpll_reconfig1.cmp
 set_global_assignment -name VHDL_FILE Interrupt_Handler/interrupt_handler.vhd
@@ -720,7 +725,6 @@ set_global_assignment -name VHDL_FILE Video/lpm_ff1.vhd
 set_global_assignment -name SOURCE_FILE Video/lpm_ff2.cmp
 set_global_assignment -name SOURCE_FILE Video/lpm_ff3.cmp
 set_global_assignment -name VHDL_FILE Video/lpm_ff3.vhd
-set_global_assignment -name AHDL_FILE Video/VIDEO_MOD_MUX_CLUTCTR.tdf
 set_global_assignment -name VHDL_FILE Video/lpm_ff2.vhd
 set_global_assignment -name SOURCE_FILE Video/lpm_fifo_dc0.cmp
 set_global_assignment -name SOURCE_FILE Video/lpm_mux3.cmp
@@ -850,7 +854,4 @@ set_global_assignment -name QIP_FILE lpm_mux0.qip
 set_global_assignment -name QIP_FILE lpm_shiftreg0.qip
 set_global_assignment -name QIP_FILE lpm_counter1.qip
 set_global_assignment -name QIP_FILE altiobuf_bidir0.qip
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to MAIN_CLK
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to DDR_CLK
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to nDDR_CLK
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

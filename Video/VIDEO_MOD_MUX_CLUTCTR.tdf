@@ -604,11 +604,11 @@ BEGIN
     DOP_FIFO_CLR.CLK = PIXEL_CLK;
 	DOP_FIFO_CLR = INTER_ZEI & HSYNC_START # SYNC_PIX;				-- DOPPELZEILENFIFO LÖSCHEN AM ENDE DER DOPPELZEILE UND BEI MAIN FIFO START
 					
-	RAND_LINKS[] 	=  HBE[] 									&  ACP_VIDEO_ON
+%	RAND_LINKS[] 	=  HBE[] 									&  ACP_VIDEO_ON
 					#  21										& !ACP_VIDEO_ON &  ATARI_SYNC &  VCNTRL2
 					#  42										& !ACP_VIDEO_ON &  ATARI_SYNC & !VCNTRL2
 					#  HBE[] * (0, MULF[5..1])					& !ACP_VIDEO_ON & !ATARI_SYNC; 			--
-                    
+%                    
 	HDIS_START[] 	=  HDB[] 									&  ACP_VIDEO_ON
 					#  RAND_LINKS[] + 1							& !ACP_VIDEO_ON;						--  
                     
@@ -618,16 +618,16 @@ BEGIN
 	RAND_RECHTS[] 	=  HBB[] 									&  ACP_VIDEO_ON
 					#  HDIS_END[] + 1							& !ACP_VIDEO_ON; 						--  
                     
-	HS_START[]		=  HSS[] 									&  ACP_VIDEO_ON
+%	HS_START[]		=  HSS[] 									&  ACP_VIDEO_ON
 					#  ATARI_HL[11..0]							& !ACP_VIDEO_ON &  ATARI_SYNC &  VCNTRL2
 					#  ATARI_HH[11..0]							& !ACP_VIDEO_ON &  ATARI_SYNC & !VCNTRL2
 					# (HHT[] + 1 + HSS[]) * (0, MULF[5..1])	    & !ACP_VIDEO_ON & !ATARI_SYNC; 			--  
-                    
-	H_TOTAL[] 		=  HHT[] 									&  ACP_VIDEO_ON
+ %                   
+%	H_TOTAL[] 		=  HHT[] 									&  ACP_VIDEO_ON
 					#  ATARI_HL[27..16]							& !ACP_VIDEO_ON &  ATARI_SYNC &  VCNTRL2
 					#  ATARI_HH[27..16]							& !ACP_VIDEO_ON &  ATARI_SYNC & !VCNTRL2
 					# (HHT[] + 2) * (0, MULF[])	 				& !ACP_VIDEO_ON & !ATARI_SYNC; 			--  
-					
+%					
 	RAND_OBEN[]		=  VBE[]					&  ACP_VIDEO_ON
 					#  31						& !ACP_VIDEO_ON &  ATARI_SYNC 
 					# (0, VBE[10..1]) 			& !ACP_VIDEO_ON & !ATARI_SYNC; 
