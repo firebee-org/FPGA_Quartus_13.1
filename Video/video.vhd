@@ -802,9 +802,6 @@ ARCHITECTURE rtl OF video IS
     SIGNAL	SYNTHESIZED_WIRE_52 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_53 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_54 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_55 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_56 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_57 :  std_logic;
     SIGNAL	SYNTHESIZED_WIRE_65 :  std_logic_vector(23 DOWNTO 0);
     
     SIGNAL	GDFX_TEMP_SIGNAL_16 :  std_logic_vector(7 DOWNTO 0);
