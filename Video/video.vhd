@@ -724,7 +724,7 @@ ARCHITECTURE rtl OF video IS
     SIGNAL	FIFO_WRE        :  std_logic;
     SIGNAL	INTER_ZEI       :  std_logic;
     SIGNAL	nFB_BURST       :  std_logic;
-    SIGNAL	PIXEL_CLK_ALTERA_SYNTHESIZED :  std_logic;
+    SIGNAL	pixel_clk_i :  std_logic;
     SIGNAL	SR_BLITTER_DACK :  std_logic;
     SIGNAL	SR_DDR_FB       :  std_logic;
     SIGNAL	SR_DDR_WR       :  std_logic;
@@ -895,7 +895,7 @@ BEGIN
             wren_a => ACP_CLUT_WR(3),
             wren_b => SYNTHESIZED_WIRE_0,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => ZR_C8B,
             data_a => FB_AD(7 DOWNTO 0),
@@ -911,7 +911,7 @@ BEGIN
             wren_a => ACP_CLUT_WR(2),
             wren_b => SYNTHESIZED_WIRE_1,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => ZR_C8B,
             data_a => FB_AD(15 DOWNTO 8),
@@ -927,7 +927,7 @@ BEGIN
             wren_a => ACP_CLUT_WR(1),
             wren_b => SYNTHESIZED_WIRE_2,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => ZR_C8B,
             data_a => FB_AD(23 DOWNTO 16),
@@ -1018,7 +1018,7 @@ BEGIN
             wren_a => FALCON_CLUT_WR(3),
             wren_b => SYNTHESIZED_WIRE_3,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => CLUT_ADR,
             data_a => FB_AD(23 DOWNTO 18),
@@ -1034,7 +1034,7 @@ BEGIN
             wren_a => FALCON_CLUT_WR(1),
             wren_b => SYNTHESIZED_WIRE_4,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => CLUT_ADR,
             data_a => FB_AD(23 DOWNTO 18),
@@ -1050,7 +1050,7 @@ BEGIN
             wren_a => FALCON_CLUT_WR(0),
             wren_b => SYNTHESIZED_WIRE_5,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => CLUT_ADR,
             data_a => FB_AD(31 DOWNTO 26),
@@ -1066,7 +1066,7 @@ BEGIN
             wrreq => FIFO_WRE,
             wrclk => DDRCLK(0),
             rdreq => SYNTHESIZED_WIRE_60,
-            rdclk => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            rdclk => pixel_clk_i,
             aclr => CLR_FIFO,
             data => VDMC,
             q => SYNTHESIZED_WIRE_63,
@@ -1092,7 +1092,7 @@ BEGIN
     inst10 : lpm_ff4
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_7,
             q => GDFX_TEMP_SIGNAL_0
         );
@@ -1162,7 +1162,7 @@ BEGIN
     inst11 : lpm_ff5
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_12,
             q => ZR_C8
         );
@@ -1287,7 +1287,7 @@ BEGIN
     inst21 : lpm_mux0
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data0x => FIFO_D(127 DOWNTO 96),
             data1x => FIFO_D(95 DOWNTO 64),
             data2x => FIFO_D(63 DOWNTO 32),
@@ -1319,7 +1319,7 @@ BEGIN
     inst24 : lpm_mux1
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data0x => FIFO_D(127 DOWNTO 112),
             data1x => FIFO_D(111 DOWNTO 96),
             data2x => FIFO_D(95 DOWNTO 80),
@@ -1336,7 +1336,7 @@ BEGIN
     inst25 : lpm_mux2
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data0x => FIFO_D(127 DOWNTO 120),
             data10x => FIFO_D(47 DOWNTO 40),
             data11x => FIFO_D(39 DOWNTO 32),
@@ -1493,7 +1493,7 @@ BEGIN
     inst46 : lpm_ff3
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_25,
             q => SYNTHESIZED_WIRE_43
         );
@@ -1502,7 +1502,7 @@ BEGIN
     inst47 : lpm_ff3
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data => CCF,
             q => SYNTHESIZED_WIRE_25
         );
@@ -1512,7 +1512,7 @@ BEGIN
     inst49 : lpm_ff3
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_26,
             q => SYNTHESIZED_WIRE_42
         );
@@ -1521,7 +1521,7 @@ BEGIN
     inst5 : altddio_out2
         PORT MAP
         (
-            outclock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            outclock => pixel_clk_i,
             datain_h => SYNTHESIZED_WIRE_62,
             datain_l => SYNTHESIZED_WIRE_62,
             dataout => SYNTHESIZED_WIRE_65
@@ -1541,7 +1541,7 @@ BEGIN
     inst52 : lpm_ff3
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data => CCS,
             q => SYNTHESIZED_WIRE_26
         );
@@ -1612,7 +1612,7 @@ BEGIN
     inst62 : lpm_muxdz
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             clken => FIFO_RDE,
             sel => INTER_ZEI,
             data0x => SYNTHESIZED_WIRE_63,
@@ -1626,7 +1626,7 @@ BEGIN
         (
             wrreq => SYNTHESIZED_WIRE_60,
             rdreq => SYNTHESIZED_WIRE_38,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             aclr => DOP_FIFO_CLR,
             data => SYNTHESIZED_WIRE_63,
             q => SYNTHESIZED_WIRE_36
@@ -1658,7 +1658,7 @@ BEGIN
     inst7 : lpm_mux6
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data0x => SYNTHESIZED_WIRE_42,
             data1x => SYNTHESIZED_WIRE_43,
             data2x => (OTHERS => '0'),
@@ -1778,15 +1778,15 @@ BEGIN
     inst9 : lpm_ff1
         PORT MAP
         (
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_48,
             q => CC24
         );
     
         
-    PROCESS(PIXEL_CLK_ALTERA_SYNTHESIZED)
+    PROCESS(pixel_clk_i)
     BEGIN
-        IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
+        IF (rising_edge(pixel_clk_i)) THEN
             DFF_inst91 <= CLUT_ADR(0);
         END IF;
     END PROCESS;
@@ -1801,9 +1801,9 @@ BEGIN
         );
     
     
-    PROCESS(PIXEL_CLK_ALTERA_SYNTHESIZED)
+    PROCESS(pixel_clk_i)
     BEGIN
-        IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
+        IF (rising_edge(pixel_clk_i)) THEN
             DFF_inst93 <= DFF_inst91;
         END IF;
     END PROCESS;
@@ -1819,9 +1819,9 @@ BEGIN
         );
     
     
-    PROCESS(PIXEL_CLK_ALTERA_SYNTHESIZED)
+    PROCESS(pixel_clk_i)
     BEGIN
-        IF (rising_edge(PIXEL_CLK_ALTERA_SYNTHESIZED)) THEN
+        IF (rising_edge(pixel_clk_i)) THEN
             SYNTHESIZED_WIRE_64 <= FIFO_RDE;
         END IF;
     END PROCESS;
@@ -1841,7 +1841,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_49,
             data => FIFO_D(127 DOWNTO 112),
             shiftout => CLUT_ADR(0)
@@ -1852,7 +1852,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_50,
             data => FIFO_D(111 DOWNTO 96),
             shiftout => CLUT_ADR1A
@@ -1863,7 +1863,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_51,
             data => FIFO_D(95 DOWNTO 80),
             shiftout => CLUT_ADR2A
@@ -1874,7 +1874,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_52,
             data => FIFO_D(79 DOWNTO 64),
             shiftout => CLUT_ADR3A
@@ -1885,7 +1885,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_53,
             data => FIFO_D(63 DOWNTO 48),
             shiftout => CLUT_ADR4A
@@ -1896,7 +1896,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_54,
             data => FIFO_D(47 DOWNTO 32),
             shiftout => CLUT_ADR5A
@@ -1907,7 +1907,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => CLUT_ADR7A,
             data => FIFO_D(31 DOWNTO 16),
             shiftout => CLUT_ADR6A
@@ -1918,7 +1918,7 @@ BEGIN
         PORT MAP
         (
             load => SYNTHESIZED_WIRE_64,
-            clock => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock => pixel_clk_i,
             shiftin => CLUT_ADR(0),
             data => FIFO_D(15 DOWNTO 0),
             shiftout => CLUT_ADR7A
@@ -1931,7 +1931,7 @@ BEGIN
             wren_a => ST_CLUT_WR(1),
             wren_b => SYNTHESIZED_WIRE_55,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
             address_b => CLUT_ADR(3 DOWNTO 0),
             data_a => FB_AD(18 DOWNTO 16),
@@ -1947,7 +1947,7 @@ BEGIN
             wren_a => ST_CLUT_WR(1),
             wren_b => SYNTHESIZED_WIRE_56,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
             address_b => CLUT_ADR(3 DOWNTO 0),
             data_a => FB_AD(22 DOWNTO 20),
@@ -1963,7 +1963,7 @@ BEGIN
             wren_a => ST_CLUT_WR(0),
             wren_b => SYNTHESIZED_WIRE_57,
             clock_a => MAIN_CLK,
-            clock_b => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
             address_b => CLUT_ADR(3 DOWNTO 0),
             data_a => FB_AD(26 DOWNTO 24),
@@ -2008,7 +2008,7 @@ BEGIN
             FIFO_RDE => FIFO_RDE,
             COLOR2 => COLOR2,
             COLOR4 => COLOR4,
-            PIXEL_CLK => PIXEL_CLK_ALTERA_SYNTHESIZED,
+            PIXEL_CLK => pixel_clk_i,
             BLITTER_ON => BLITTER_ON,
             VIDEO_MOD_TA => VIDEO_MOD_TA,
             INTER_ZEI => INTER_ZEI,
@@ -2027,5 +2027,5 @@ BEGIN
             VIDEO_RAM_CTR => VIDEO_RAM_CTR
         );
     
-    PIXEL_CLK <= PIXEL_CLK_ALTERA_SYNTHESIZED;
+    PIXEL_CLK <= pixel_clk_i;
 END rtl;
