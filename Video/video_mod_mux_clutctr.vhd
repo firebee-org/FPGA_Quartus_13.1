@@ -375,862 +375,866 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     END FUNCTION to_std_logic;
 
 
-   -- sizeIt replicates a value to an array of specific length.
-   Function sizeIt(a: std_Logic; len: integer) return std_logic_vector is
-      variable rep: std_logic_vector( len-1 DOWNTO 0);
-   begin for i in rep'range loop rep(i) := a;  end loop; return rep;
-   end sizeIt;
-begin
+    -- sizeIt replicates a value to an array of specific length.
+    FUNCTION sizeit(a : std_Logic; len : integer) RETURN std_logic_vector IS
+        VARIABLE rep: std_logic_vector(len - 1 DOWNTO 0);
+    BEGIN
+        FOR i IN rep'RANGE LOOP
+            rep(i) := a;
+        END LOOP;
+        RETURN rep;
+    END FUNCTION sizeit;
 
--- Sub Module Section
-   u0: lpm_bustri_WORD port map (data=>u0_data, enabledt=>u0_enabledt,
-	 tridata=>u0_tridata);
-   u1: lpm_bustri_WORD port map (data=>u1_data, enabledt=>u1_enabledt,
-	 tridata=>u1_tridata);
+BEGIN
 
--- Register Section
+    -- Sub Module Section
+    u0 : lpm_bustri_WORD
+        PORT MAP
+        (
+            data => u0_data,
+            enabledt => u0_enabledt,
+            tridata => u0_tridata
+        );
+        
+    u1 : lpm_bustri_WORD
+        PORT MAP
+        (
+            data => u1_data,
+            enabledt => u1_enabledt,
+            tridata => u1_tridata
+        );
 
-   CLUT_MUX_ADR <= CLUT_MUX_ADR_q;
-   process (CLUT_MUX_ADR0_clk_ctrl) begin
-      if CLUT_MUX_ADR0_clk_ctrl'event and CLUT_MUX_ADR0_clk_ctrl='1' then
-	 CLUT_MUX_ADR_q <= CLUT_MUX_ADR_d;
-      end if;
-   end process;
+    -- Register Section
 
-   HSYNC <= HSYNC_q;
-   process (HSYNC_clk) begin
-      if HSYNC_clk'event and HSYNC_clk='1' then
-	 HSYNC_q <= HSYNC_d;
-      end if;
-   end process;
+    CLUT_MUX_ADR <= CLUT_MUX_ADR_q;
+    
+    PROCESS (CLUT_MUX_ADR0_clk_ctrl)
+    BEGIN
+        IF CLUT_MUX_ADR0_clk_ctrl'EVENT and CLUT_MUX_ADR0_clk_ctrl = '1' THEN
+            CLUT_MUX_ADR_q <= CLUT_MUX_ADR_d;
+        END IF;
+    END PROCESS;
 
-   VSYNC <= VSYNC_q;
-   process (VSYNC_clk) begin
-      if VSYNC_clk'event and VSYNC_clk='1' then
-	 VSYNC_q <= VSYNC_d;
-      end if;
-   end process;
+    HSYNC <= HSYNC_q;
+    PROCESS (HSYNC_clk)
+    BEGIN
+        IF HSYNC_clk'EVENT and HSYNC_clk = '1' THEN
+            HSYNC_q <= HSYNC_d;
+        END IF;
+    END PROCESS;
 
-   nBLANK <= nBLANK_q;
-   process (nBLANK_clk) begin
-      if nBLANK_clk'event and nBLANK_clk='1' then
-	 nBLANK_q <= nBLANK_d;
-      end if;
-   end process;
+    VSYNC <= VSYNC_q;
+    PROCESS (VSYNC_clk)
+    BEGIN
+        IF VSYNC_clk'EVENT and VSYNC_clk = '1' THEN
+            VSYNC_q <= VSYNC_d;
+        END IF;
+    END PROCESS;
 
-   FIFO_RDE <= FIFO_RDE_q;
-   process (FIFO_RDE_clk) begin
-      if FIFO_RDE_clk'event and FIFO_RDE_clk='1' then
-	 FIFO_RDE_q <= FIFO_RDE_d;
-      end if;
-   end process;
+    nBLANK <= nBLANK_q;
+    PROCESS (nBLANK_clk)
+    BEGIN
+        IF nBLANK_clk'EVENT and nBLANK_clk = '1' THEN
+            nBLANK_q <= nBLANK_d;
+        END IF;
+    END PROCESS;
 
-   BORDER_COLOR(23 DOWNTO 16) <= BORDER_COLOR_q(23 DOWNTO 16);
-   process (BORDER_COLOR0_clk_ctrl) begin
-      if BORDER_COLOR0_clk_ctrl'event and BORDER_COLOR0_clk_ctrl='1' then
-	 if BORDER_COLOR16_ena_ctrl='1' then
-	    (BORDER_COLOR_q(23), BORDER_COLOR_q(22), BORDER_COLOR_q(21),
-		  BORDER_COLOR_q(20), BORDER_COLOR_q(19), BORDER_COLOR_q(18),
-		  BORDER_COLOR_q(17), BORDER_COLOR_q(16)) <= BORDER_COLOR_d(23
-		  DOWNTO 16);
-	 end if;
-      end if;
-   end process;
+    FIFO_RDE <= FIFO_RDE_q;
+    PROCESS (FIFO_RDE_clk)
+    BEGIN
+        IF FIFO_RDE_clk'EVENT and FIFO_RDE_clk = '1' THEN
+            FIFO_RDE_q <= FIFO_RDE_d;
+        END IF;
+    END PROCESS;
 
-   BORDER_COLOR(15 DOWNTO 8) <= BORDER_COLOR_q(15 DOWNTO 8);
-   process (BORDER_COLOR0_clk_ctrl) begin
-      if BORDER_COLOR0_clk_ctrl'event and BORDER_COLOR0_clk_ctrl='1' then
-	 if BORDER_COLOR8_ena_ctrl='1' then
-	    (BORDER_COLOR_q(15), BORDER_COLOR_q(14), BORDER_COLOR_q(13),
-		  BORDER_COLOR_q(12), BORDER_COLOR_q(11), BORDER_COLOR_q(10),
-		  BORDER_COLOR_q(9), BORDER_COLOR_q(8)) <= BORDER_COLOR_d(15
-		  DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+    BORDER_COLOR(23 DOWNTO 16) <= BORDER_COLOR_q(23 DOWNTO 16);
+    BORDER_COLOR(15 DOWNTO 8) <= BORDER_COLOR_q(15 DOWNTO 8);
+    BORDER_COLOR(7 DOWNTO 0) <= BORDER_COLOR_q(7 DOWNTO 0);
+    
+    PROCESS (BORDER_COLOR0_clk_ctrl) BEGIN
+        IF BORDER_COLOR0_clk_ctrl'EVENT and BORDER_COLOR0_clk_ctrl = '1' THEN
+            IF BORDER_COLOR16_ena_ctrl = '1' THEN
+                border_color_q(23 DOWNTO 16) <= border_color_d(23 DOWNTO 16);
+            END IF;
+            IF BORDER_COLOR8_ena_ctrl = '1' THEN
+                border_color_q(15 DOWNTO 8) <= border_color_d(15 DOWNTO 8);
+            END IF;
+            IF BORDER_COLOR0_ena_ctrl = '1' THEN
+                border_color_q(7 DOWNTO 0) <= border_color_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   BORDER_COLOR(7 DOWNTO 0) <= BORDER_COLOR_q(7 DOWNTO 0);
-   process (BORDER_COLOR0_clk_ctrl) begin
-      if BORDER_COLOR0_clk_ctrl'event and BORDER_COLOR0_clk_ctrl='1' then
-	 if BORDER_COLOR0_ena_ctrl='1' then
-	    (BORDER_COLOR_q(7), BORDER_COLOR_q(6), BORDER_COLOR_q(5),
-		  BORDER_COLOR_q(4), BORDER_COLOR_q(3), BORDER_COLOR_q(2),
-		  BORDER_COLOR_q(1), BORDER_COLOR_q(0)) <= BORDER_COLOR_d(7
-		  DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+    CCSEL <= CCSEL_q;
+    PROCESS (CCSEL0_clk_ctrl)
+    BEGIN
+        IF CCSEL0_clk_ctrl'EVENT and CCSEL0_clk_ctrl = '1' THEN
+            CCSEL_q <= CCSEL_d;
+        END IF;
+    END PROCESS;
 
-   CCSEL <= CCSEL_q;
-   process (CCSEL0_clk_ctrl) begin
-      if CCSEL0_clk_ctrl'event and CCSEL0_clk_ctrl='1' then
-	 CCSEL_q <= CCSEL_d;
-      end if;
-   end process;
+    INTER_ZEI <= INTER_ZEI_q;
+    PROCESS (INTER_ZEI_clk)
+    BEGIN
+        IF INTER_ZEI_clk'EVENT and INTER_ZEI_clk = '1' THEN
+            INTER_ZEI_q <= INTER_ZEI_d;
+        END IF;
+    END PROCESS;
 
-   INTER_ZEI <= INTER_ZEI_q;
-   process (INTER_ZEI_clk) begin
-      if INTER_ZEI_clk'event and INTER_ZEI_clk='1' then
-	 INTER_ZEI_q <= INTER_ZEI_d;
-      end if;
-   end process;
+    DOP_FIFO_CLR <= DOP_FIFO_CLR_q;
+    PROCESS (DOP_FIFO_CLR_clk)
+    BEGIN
+        IF DOP_FIFO_CLR_clk'EVENT and DOP_FIFO_CLR_clk = '1' THEN
+            DOP_FIFO_CLR_q <= DOP_FIFO_CLR_d;
+        END IF;
+    END PROCESS;
 
-   DOP_FIFO_CLR <= DOP_FIFO_CLR_q;
-   process (DOP_FIFO_CLR_clk) begin
-      if DOP_FIFO_CLR_clk'event and DOP_FIFO_CLR_clk='1' then
-	 DOP_FIFO_CLR_q <= DOP_FIFO_CLR_d;
-      end if;
-   end process;
+    VIDEO_RECONFIG <= VIDEO_RECONFIG_q;
+    PROCESS (VIDEO_RECONFIG_clk)
+    BEGIN
+        IF VIDEO_RECONFIG_clk'EVENT and VIDEO_RECONFIG_clk = '1' THEN
+            VIDEO_RECONFIG_q <= VIDEO_RECONFIG_d;
+        END IF;
+    END PROCESS;
 
-   VIDEO_RECONFIG <= VIDEO_RECONFIG_q;
-   process (VIDEO_RECONFIG_clk) begin
-      if VIDEO_RECONFIG_clk'event and VIDEO_RECONFIG_clk='1' then
-	 VIDEO_RECONFIG_q <= VIDEO_RECONFIG_d;
-      end if;
-   end process;
+    VR_WR <= VR_WR_q;
+    PROCESS (VR_WR_clk)
+    BEGIN
+        IF VR_WR_clk'EVENT and VR_WR_clk = '1' THEN
+            VR_WR_q <= VR_WR_d;
+        END IF;
+    END PROCESS;
 
-   VR_WR <= VR_WR_q;
-   process (VR_WR_clk) begin
-      if VR_WR_clk'event and VR_WR_clk='1' then
-	 VR_WR_q <= VR_WR_d;
-      end if;
-   end process;
+    CLR_FIFO <= CLR_FIFO_q;
+    PROCESS (CLR_FIFO_clk)
+    BEGIN
+        IF CLR_FIFO_clk'EVENT and CLR_FIFO_clk = '1' THEN
+            IF CLR_FIFO_ena = '1' THEN
+                CLR_FIFO_q <= CLR_FIFO_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   CLR_FIFO <= CLR_FIFO_q;
-   process (CLR_FIFO_clk) begin
-      if CLR_FIFO_clk'event and CLR_FIFO_clk='1' then
-	 if CLR_FIFO_ena='1' then
-	    CLR_FIFO_q <= CLR_FIFO_d;
-	 end if;
-      end if;
-   end process;
+    PROCESS (CLK17M_clk)
+    BEGIN
+        IF CLK17M_clk'EVENT and CLK17M_clk = '1' THEN
+            CLK17M_q <= CLK17M_d;
+        END IF;
+    END PROCESS;
 
-   process (CLK17M_clk) begin
-      if CLK17M_clk'event and CLK17M_clk='1' then
-	 CLK17M_q <= CLK17M_d;
-      end if;
-   end process;
+    PROCESS (CLK13M_clk)
+    BEGIN
+        IF CLK13M_clk'EVENT and CLK13M_clk = '1' THEN
+            CLK13M_q <= CLK13M_d;
+        END IF;
+    END PROCESS;
 
-   process (CLK13M_clk) begin
-      if CLK13M_clk'event and CLK13M_clk='1' then
-	 CLK13M_q <= CLK13M_d;
-      end if;
-   end process;
+    PROCESS (VR_DOUT0_clk_ctrl)
+    BEGIN
+        IF VR_DOUT0_clk_ctrl'EVENT and VR_DOUT0_clk_ctrl = '1' THEN
+            IF VR_DOUT0_ena_ctrl = '1' THEN
+                VR_DOUT_q <= VR_DOUT_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   process (VR_DOUT0_clk_ctrl) begin
-      if VR_DOUT0_clk_ctrl'event and VR_DOUT0_clk_ctrl='1' then
-	 if VR_DOUT0_ena_ctrl='1' then
-	    VR_DOUT_q <= VR_DOUT_d;
-	 end if;
-      end if;
-   end process;
+    PROCESS (VR_FRQ0_clk_ctrl)
+    BEGIN
+        IF VR_FRQ0_clk_ctrl'EVENT and VR_FRQ0_clk_ctrl = '1' THEN
+            IF VR_FRQ0_ena_ctrl = '1' THEN
+                VR_FRQ_q <= VR_FRQ_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   process (VR_FRQ0_clk_ctrl) begin
-      if VR_FRQ0_clk_ctrl'event and VR_FRQ0_clk_ctrl='1' then
-	 if VR_FRQ0_ena_ctrl='1' then
-	    VR_FRQ_q <= VR_FRQ_d;
-	 end if;
-      end if;
-   end process;
+    PROCESS (ST_SHIFT_MODE0_clk_ctrl)
+    BEGIN
+        IF ST_SHIFT_MODE0_clk_ctrl'EVENT and ST_SHIFT_MODE0_clk_ctrl = '1' THEN
+            IF ST_SHIFT_MODE0_ena_ctrl = '1' THEN
+                ST_SHIFT_MODE_q <= ST_SHIFT_MODE_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   process (ST_SHIFT_MODE0_clk_ctrl) begin
-      if ST_SHIFT_MODE0_clk_ctrl'event and ST_SHIFT_MODE0_clk_ctrl='1' then
-	 if ST_SHIFT_MODE0_ena_ctrl='1' then
-	    ST_SHIFT_MODE_q <= ST_SHIFT_MODE_d;
-	 end if;
-      end if;
-   end process;
+    PROCESS (FALCON_SHIFT_MODE0_clk_ctrl)
+    BEGIN
+        IF FALCON_SHIFT_MODE0_clk_ctrl'EVENT and FALCON_SHIFT_MODE0_clk_ctrl = '1' THEN
+            IF FALCON_SHIFT_MODE8_ena_ctrl = '1' THEN
+                falcon_shift_mode_q(10 DOWNTO 8) <= falcon_shift_mode_d(10 DOWNTO 8);
+            END IF;
+            IF FALCON_SHIFT_MODE0_ena_ctrl = '1' THEN
+                falcon_shift_mode_q(7 DOWNTO 0) <= falcon_shift_mode_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   process (FALCON_SHIFT_MODE0_clk_ctrl) begin
-      if FALCON_SHIFT_MODE0_clk_ctrl'event and FALCON_SHIFT_MODE0_clk_ctrl='1'
-	    then
-	 if FALCON_SHIFT_MODE8_ena_ctrl='1' then
-	    (FALCON_SHIFT_MODE_q(10), FALCON_SHIFT_MODE_q(9),
-		  FALCON_SHIFT_MODE_q(8)) <= FALCON_SHIFT_MODE_d(10 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
-
-   process (FALCON_SHIFT_MODE0_clk_ctrl) begin
-      if FALCON_SHIFT_MODE0_clk_ctrl'event and FALCON_SHIFT_MODE0_clk_ctrl='1'
-	    then
-	 if FALCON_SHIFT_MODE0_ena_ctrl='1' then
-	    (FALCON_SHIFT_MODE_q(7), FALCON_SHIFT_MODE_q(6),
-		  FALCON_SHIFT_MODE_q(5), FALCON_SHIFT_MODE_q(4),
-		  FALCON_SHIFT_MODE_q(3), FALCON_SHIFT_MODE_q(2),
-		  FALCON_SHIFT_MODE_q(1), FALCON_SHIFT_MODE_q(0)) <=
-		  FALCON_SHIFT_MODE_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
-
-   process (CLUT_MUX_AV1_0_clk_ctrl) begin
-      if CLUT_MUX_AV1_0_clk_ctrl'event and CLUT_MUX_AV1_0_clk_ctrl='1' then
+   PROCESS (CLUT_MUX_AV1_0_clk_ctrl) BEGIN
+      if CLUT_MUX_AV1_0_clk_ctrl'EVENT and CLUT_MUX_AV1_0_clk_ctrl='1' THEN
 	 CLUT_MUX_AV1_q <= CLUT_MUX_AV1_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (CLUT_MUX_AV0_0_clk_ctrl) begin
-      if CLUT_MUX_AV0_0_clk_ctrl'event and CLUT_MUX_AV0_0_clk_ctrl='1' then
+   PROCESS (CLUT_MUX_AV0_0_clk_ctrl) BEGIN
+      if CLUT_MUX_AV0_0_clk_ctrl'EVENT and CLUT_MUX_AV0_0_clk_ctrl='1' THEN
 	 CLUT_MUX_AV0_q <= CLUT_MUX_AV0_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (ACP_VCTR0_clk_ctrl) begin
-      if ACP_VCTR0_clk_ctrl'event and ACP_VCTR0_clk_ctrl='1' then
-	 if ACP_VCTR24_ena_ctrl='1' then
+   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
+      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
+	 if ACP_VCTR24_ena_ctrl='1' THEN
 	    (ACP_VCTR_q(31), ACP_VCTR_q(30), ACP_VCTR_q(29), ACP_VCTR_q(28),
 		  ACP_VCTR_q(27), ACP_VCTR_q(26), ACP_VCTR_q(25),
 		  ACP_VCTR_q(24)) <= ACP_VCTR_d(31 DOWNTO 24);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ACP_VCTR0_clk_ctrl) begin
-      if ACP_VCTR0_clk_ctrl'event and ACP_VCTR0_clk_ctrl='1' then
-	 if ACP_VCTR16_ena_ctrl='1' then
+   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
+      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
+	 if ACP_VCTR16_ena_ctrl='1' THEN
 	    (ACP_VCTR_q(23), ACP_VCTR_q(22), ACP_VCTR_q(21), ACP_VCTR_q(20),
 		  ACP_VCTR_q(19), ACP_VCTR_q(18), ACP_VCTR_q(17),
 		  ACP_VCTR_q(16)) <= ACP_VCTR_d(23 DOWNTO 16);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ACP_VCTR0_clk_ctrl) begin
-      if ACP_VCTR0_clk_ctrl'event and ACP_VCTR0_clk_ctrl='1' then
-	 if ACP_VCTR8_ena_ctrl='1' then
+   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
+      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
+	 if ACP_VCTR8_ena_ctrl='1' THEN
 	    (ACP_VCTR_q(15), ACP_VCTR_q(14), ACP_VCTR_q(13), ACP_VCTR_q(12),
 		  ACP_VCTR_q(11), ACP_VCTR_q(10), ACP_VCTR_q(9), ACP_VCTR_q(8))
 		  <= ACP_VCTR_d(15 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ACP_VCTR0_clk_ctrl) begin
-      if ACP_VCTR0_clk_ctrl'event and ACP_VCTR0_clk_ctrl='1' then
-	 if ACP_VCTR6_ena_ctrl='1' then
+   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
+      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
+	 if ACP_VCTR6_ena_ctrl='1' THEN
 	    (ACP_VCTR_q(7), ACP_VCTR_q(6)) <= ACP_VCTR_d(7 DOWNTO 6);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ACP_VCTR0_clk_ctrl) begin
-      if ACP_VCTR0_clk_ctrl'event and ACP_VCTR0_clk_ctrl='1' then
-	 if ACP_VCTR0_ena_ctrl='1' then
+   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
+      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
+	 if ACP_VCTR0_ena_ctrl='1' THEN
 	    (ACP_VCTR_q(5), ACP_VCTR_q(4), ACP_VCTR_q(3), ACP_VCTR_q(2),
 		  ACP_VCTR_q(1), ACP_VCTR_q(0)) <= ACP_VCTR_d(5 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (SYS_CTR0_clk_ctrl) begin
-      if SYS_CTR0_clk_ctrl'event and SYS_CTR0_clk_ctrl='1' then
-	 if SYS_CTR0_ena_ctrl='1' then
+   PROCESS (SYS_CTR0_clk_ctrl) BEGIN
+      if SYS_CTR0_clk_ctrl'EVENT and SYS_CTR0_clk_ctrl='1' THEN
+	 if SYS_CTR0_ena_ctrl='1' THEN
 	    SYS_CTR_q <= SYS_CTR_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (LOF0_clk_ctrl) begin
-      if LOF0_clk_ctrl'event and LOF0_clk_ctrl='1' then
-	 if LOF8_ena_ctrl='1' then
+   PROCESS (LOF0_clk_ctrl) BEGIN
+      if LOF0_clk_ctrl'EVENT and LOF0_clk_ctrl='1' THEN
+	 if LOF8_ena_ctrl='1' THEN
 	    (LOF_q(15), LOF_q(14), LOF_q(13), LOF_q(12), LOF_q(11), LOF_q(10),
 		  LOF_q(9), LOF_q(8)) <= LOF_d(15 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (LOF0_clk_ctrl) begin
-      if LOF0_clk_ctrl'event and LOF0_clk_ctrl='1' then
-	 if LOF0_ena_ctrl='1' then
+   PROCESS (LOF0_clk_ctrl) BEGIN
+      if LOF0_clk_ctrl'EVENT and LOF0_clk_ctrl='1' THEN
+	 if LOF0_ena_ctrl='1' THEN
 	    (LOF_q(7), LOF_q(6), LOF_q(5), LOF_q(4), LOF_q(3), LOF_q(2),
 		  LOF_q(1), LOF_q(0)) <= LOF_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (LWD0_clk_ctrl) begin
-      if LWD0_clk_ctrl'event and LWD0_clk_ctrl='1' then
-	 if LWD8_ena_ctrl='1' then
+   PROCESS (LWD0_clk_ctrl) BEGIN
+      if LWD0_clk_ctrl'EVENT and LWD0_clk_ctrl='1' THEN
+	 if LWD8_ena_ctrl='1' THEN
 	    (LWD_q(15), LWD_q(14), LWD_q(13), LWD_q(12), LWD_q(11), LWD_q(10),
 		  LWD_q(9), LWD_q(8)) <= LWD_d(15 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (LWD0_clk_ctrl) begin
-      if LWD0_clk_ctrl'event and LWD0_clk_ctrl='1' then
-	 if LWD0_ena_ctrl='1' then
+   PROCESS (LWD0_clk_ctrl) BEGIN
+      if LWD0_clk_ctrl'EVENT and LWD0_clk_ctrl='1' THEN
+	 if LWD0_ena_ctrl='1' THEN
 	    (LWD_q(7), LWD_q(6), LWD_q(5), LWD_q(4), LWD_q(3), LWD_q(2),
 		  LWD_q(1), LWD_q(0)) <= LWD_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (CLUT_TA_clk) begin
-      if CLUT_TA_clk'event and CLUT_TA_clk='1' then
+   PROCESS (CLUT_TA_clk) BEGIN
+      if CLUT_TA_clk'EVENT and CLUT_TA_clk='1' THEN
 	 CLUT_TA_q <= CLUT_TA_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (HSYNC_I0_clk_ctrl) begin
-      if HSYNC_I0_clk_ctrl'event and HSYNC_I0_clk_ctrl='1' then
+   PROCESS (HSYNC_I0_clk_ctrl) BEGIN
+      if HSYNC_I0_clk_ctrl'EVENT and HSYNC_I0_clk_ctrl='1' THEN
 	 HSYNC_I_q <= HSYNC_I_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (HSY_LEN0_clk_ctrl) begin
-      if HSY_LEN0_clk_ctrl'event and HSY_LEN0_clk_ctrl='1' then
+   PROCESS (HSY_LEN0_clk_ctrl) BEGIN
+      if HSY_LEN0_clk_ctrl'EVENT and HSY_LEN0_clk_ctrl='1' THEN
 	 HSY_LEN_q <= HSY_LEN_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (HSYNC_START_clk) begin
-      if HSYNC_START_clk'event and HSYNC_START_clk='1' then
+   PROCESS (HSYNC_START_clk) BEGIN
+      if HSYNC_START_clk'EVENT and HSYNC_START_clk='1' THEN
 	 HSYNC_START_q <= HSYNC_START_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (LAST_clk) begin
-      if LAST_clk'event and LAST_clk='1' then
+   PROCESS (LAST_clk) BEGIN
+      if LAST_clk'EVENT and LAST_clk='1' THEN
 	 LAST_q <= LAST_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VSYNC_START_clk) begin
-      if VSYNC_START_clk'event and VSYNC_START_clk='1' then
-	 if VSYNC_START_ena='1' then
+   PROCESS (VSYNC_START_clk) BEGIN
+      if VSYNC_START_clk'EVENT and VSYNC_START_clk='1' THEN
+	 if VSYNC_START_ena='1' THEN
 	    VSYNC_START_q <= VSYNC_START_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VSYNC_I0_clk_ctrl) begin
-      if VSYNC_I0_clk_ctrl'event and VSYNC_I0_clk_ctrl='1' then
-	 if VSYNC_I0_ena_ctrl='1' then
+   PROCESS (VSYNC_I0_clk_ctrl) BEGIN
+      if VSYNC_I0_clk_ctrl'EVENT and VSYNC_I0_clk_ctrl='1' THEN
+	 if VSYNC_I0_ena_ctrl='1' THEN
 	    VSYNC_I_q <= VSYNC_I_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (DISP_ON_clk) begin
-      if DISP_ON_clk'event and DISP_ON_clk='1' then
+   PROCESS (DISP_ON_clk) BEGIN
+      if DISP_ON_clk'EVENT and DISP_ON_clk='1' THEN
 	 DISP_ON_q <= DISP_ON_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (DPO_ZL_clk) begin
-      if DPO_ZL_clk'event and DPO_ZL_clk='1' then
-	 if DPO_ZL_ena='1' then
+   PROCESS (DPO_ZL_clk) BEGIN
+      if DPO_ZL_clk'EVENT and DPO_ZL_clk='1' THEN
+	 if DPO_ZL_ena='1' THEN
 	    DPO_ZL_q <= DPO_ZL_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (DPO_ON_clk) begin
-      if DPO_ON_clk'event and DPO_ON_clk='1' then
+   PROCESS (DPO_ON_clk) BEGIN
+      if DPO_ON_clk'EVENT and DPO_ON_clk='1' THEN
 	 DPO_ON_q <= DPO_ON_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (DPO_OFF_clk) begin
-      if DPO_OFF_clk'event and DPO_OFF_clk='1' then
+   PROCESS (DPO_OFF_clk) BEGIN
+      if DPO_OFF_clk'EVENT and DPO_OFF_clk='1' THEN
 	 DPO_OFF_q <= DPO_OFF_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VDTRON_clk) begin
-      if VDTRON_clk'event and VDTRON_clk='1' then
+   PROCESS (VDTRON_clk) BEGIN
+      if VDTRON_clk'EVENT and VDTRON_clk='1' THEN
 	 VDTRON_q <= VDTRON_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VCO_ZL_clk) begin
-      if VCO_ZL_clk'event and VCO_ZL_clk='1' then
-	 if VCO_ZL_ena='1' then
+   PROCESS (VCO_ZL_clk) BEGIN
+      if VCO_ZL_clk'EVENT and VCO_ZL_clk='1' THEN
+	 if VCO_ZL_ena='1' THEN
 	    VCO_ZL_q <= VCO_ZL_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VCO_ON_clk) begin
-      if VCO_ON_clk'event and VCO_ON_clk='1' then
+   PROCESS (VCO_ON_clk) BEGIN
+      if VCO_ON_clk'EVENT and VCO_ON_clk='1' THEN
 	 VCO_ON_q <= VCO_ON_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VCO_OFF_clk) begin
-      if VCO_OFF_clk'event and VCO_OFF_clk='1' then
+   PROCESS (VCO_OFF_clk) BEGIN
+      if VCO_OFF_clk'EVENT and VCO_OFF_clk='1' THEN
 	 VCO_OFF_q <= VCO_OFF_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VHCNT0_clk_ctrl) begin
-      if VHCNT0_clk_ctrl'event and VHCNT0_clk_ctrl='1' then
+   PROCESS (VHCNT0_clk_ctrl) BEGIN
+      if VHCNT0_clk_ctrl'EVENT and VHCNT0_clk_ctrl='1' THEN
 	 VHCNT_q <= VHCNT_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (SUB_PIXEL_CNT0_clk_ctrl) begin
-      if SUB_PIXEL_CNT0_clk_ctrl'event and SUB_PIXEL_CNT0_clk_ctrl='1' then
-	 if SUB_PIXEL_CNT0_ena_ctrl='1' then
+   PROCESS (SUB_PIXEL_CNT0_clk_ctrl) BEGIN
+      if SUB_PIXEL_CNT0_clk_ctrl'EVENT and SUB_PIXEL_CNT0_clk_ctrl='1' THEN
+	 if SUB_PIXEL_CNT0_ena_ctrl='1' THEN
 	    SUB_PIXEL_CNT_q <= SUB_PIXEL_CNT_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VVCNT0_clk_ctrl) begin
-      if VVCNT0_clk_ctrl'event and VVCNT0_clk_ctrl='1' then
-	 if VVCNT0_ena_ctrl='1' then
+   PROCESS (VVCNT0_clk_ctrl) BEGIN
+      if VVCNT0_clk_ctrl'EVENT and VVCNT0_clk_ctrl='1' THEN
+	 if VVCNT0_ena_ctrl='1' THEN
 	    VVCNT_q <= VVCNT_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VERZ2_0_clk_ctrl) begin
-      if VERZ2_0_clk_ctrl'event and VERZ2_0_clk_ctrl='1' then
+   PROCESS (VERZ2_0_clk_ctrl) BEGIN
+      if VERZ2_0_clk_ctrl'EVENT and VERZ2_0_clk_ctrl='1' THEN
 	 VERZ2_q <= VERZ2_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VERZ1_0_clk_ctrl) begin
-      if VERZ1_0_clk_ctrl'event and VERZ1_0_clk_ctrl='1' then
+   PROCESS (VERZ1_0_clk_ctrl) BEGIN
+      if VERZ1_0_clk_ctrl'EVENT and VERZ1_0_clk_ctrl='1' THEN
 	 VERZ1_q <= VERZ1_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VERZ0_0_clk_ctrl) begin
-      if VERZ0_0_clk_ctrl'event and VERZ0_0_clk_ctrl='1' then
+   PROCESS (VERZ0_0_clk_ctrl) BEGIN
+      if VERZ0_0_clk_ctrl'EVENT and VERZ0_0_clk_ctrl='1' THEN
 	 VERZ0_q <= VERZ0_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (RAND0_clk_ctrl) begin
-      if RAND0_clk_ctrl'event and RAND0_clk_ctrl='1' then
+   PROCESS (RAND0_clk_ctrl) BEGIN
+      if RAND0_clk_ctrl'EVENT and RAND0_clk_ctrl='1' THEN
 	 RAND_q <= RAND_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (START_ZEILE_clk) begin
-      if START_ZEILE_clk'event and START_ZEILE_clk='1' then
-	 if START_ZEILE_ena='1' then
+   PROCESS (START_ZEILE_clk) BEGIN
+      if START_ZEILE_clk'EVENT and START_ZEILE_clk='1' THEN
+	 if START_ZEILE_ena='1' THEN
 	    START_ZEILE_q <= START_ZEILE_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (SYNC_PIX_clk) begin
-      if SYNC_PIX_clk'event and SYNC_PIX_clk='1' then
+   PROCESS (SYNC_PIX_clk) BEGIN
+      if SYNC_PIX_clk'EVENT and SYNC_PIX_clk='1' THEN
 	 SYNC_PIX_q <= SYNC_PIX_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (SYNC_PIX1_clk) begin
-      if SYNC_PIX1_clk'event and SYNC_PIX1_clk='1' then
+   PROCESS (SYNC_PIX1_clk) BEGIN
+      if SYNC_PIX1_clk'EVENT and SYNC_PIX1_clk='1' THEN
 	 SYNC_PIX1_q <= SYNC_PIX1_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (SYNC_PIX2_clk) begin
-      if SYNC_PIX2_clk'event and SYNC_PIX2_clk='1' then
+   PROCESS (SYNC_PIX2_clk) BEGIN
+      if SYNC_PIX2_clk'EVENT and SYNC_PIX2_clk='1' THEN
 	 SYNC_PIX2_q <= SYNC_PIX2_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HH0_clk_ctrl) begin
-      if ATARI_HH0_clk_ctrl'event and ATARI_HH0_clk_ctrl='1' then
-	 if ATARI_HH24_ena_ctrl='1' then
+   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
+      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
+	 if ATARI_HH24_ena_ctrl='1' THEN
 	    (ATARI_HH_q(31), ATARI_HH_q(30), ATARI_HH_q(29), ATARI_HH_q(28),
 		  ATARI_HH_q(27), ATARI_HH_q(26), ATARI_HH_q(25),
 		  ATARI_HH_q(24)) <= ATARI_HH_d(31 DOWNTO 24);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HH0_clk_ctrl) begin
-      if ATARI_HH0_clk_ctrl'event and ATARI_HH0_clk_ctrl='1' then
-	 if ATARI_HH16_ena_ctrl='1' then
+   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
+      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
+	 if ATARI_HH16_ena_ctrl='1' THEN
 	    (ATARI_HH_q(23), ATARI_HH_q(22), ATARI_HH_q(21), ATARI_HH_q(20),
 		  ATARI_HH_q(19), ATARI_HH_q(18), ATARI_HH_q(17),
 		  ATARI_HH_q(16)) <= ATARI_HH_d(23 DOWNTO 16);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HH0_clk_ctrl) begin
-      if ATARI_HH0_clk_ctrl'event and ATARI_HH0_clk_ctrl='1' then
-	 if ATARI_HH8_ena_ctrl='1' then
+   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
+      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
+	 if ATARI_HH8_ena_ctrl='1' THEN
 	    (ATARI_HH_q(15), ATARI_HH_q(14), ATARI_HH_q(13), ATARI_HH_q(12),
 		  ATARI_HH_q(11), ATARI_HH_q(10), ATARI_HH_q(9), ATARI_HH_q(8))
 		  <= ATARI_HH_d(15 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HH0_clk_ctrl) begin
-      if ATARI_HH0_clk_ctrl'event and ATARI_HH0_clk_ctrl='1' then
-	 if ATARI_HH0_ena_ctrl='1' then
+   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
+      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
+	 if ATARI_HH0_ena_ctrl='1' THEN
 	    (ATARI_HH_q(7), ATARI_HH_q(6), ATARI_HH_q(5), ATARI_HH_q(4),
 		  ATARI_HH_q(3), ATARI_HH_q(2), ATARI_HH_q(1), ATARI_HH_q(0))
 		  <= ATARI_HH_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VH0_clk_ctrl) begin
-      if ATARI_VH0_clk_ctrl'event and ATARI_VH0_clk_ctrl='1' then
-	 if ATARI_VH24_ena_ctrl='1' then
+   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
+      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
+	 if ATARI_VH24_ena_ctrl='1' THEN
 	    (ATARI_VH_q(31), ATARI_VH_q(30), ATARI_VH_q(29), ATARI_VH_q(28),
 		  ATARI_VH_q(27), ATARI_VH_q(26), ATARI_VH_q(25),
 		  ATARI_VH_q(24)) <= ATARI_VH_d(31 DOWNTO 24);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VH0_clk_ctrl) begin
-      if ATARI_VH0_clk_ctrl'event and ATARI_VH0_clk_ctrl='1' then
-	 if ATARI_VH16_ena_ctrl='1' then
+   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
+      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
+	 if ATARI_VH16_ena_ctrl='1' THEN
 	    (ATARI_VH_q(23), ATARI_VH_q(22), ATARI_VH_q(21), ATARI_VH_q(20),
 		  ATARI_VH_q(19), ATARI_VH_q(18), ATARI_VH_q(17),
 		  ATARI_VH_q(16)) <= ATARI_VH_d(23 DOWNTO 16);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VH0_clk_ctrl) begin
-      if ATARI_VH0_clk_ctrl'event and ATARI_VH0_clk_ctrl='1' then
-	 if ATARI_VH8_ena_ctrl='1' then
+   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
+      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
+	 if ATARI_VH8_ena_ctrl='1' THEN
 	    (ATARI_VH_q(15), ATARI_VH_q(14), ATARI_VH_q(13), ATARI_VH_q(12),
 		  ATARI_VH_q(11), ATARI_VH_q(10), ATARI_VH_q(9), ATARI_VH_q(8))
 		  <= ATARI_VH_d(15 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VH0_clk_ctrl) begin
-      if ATARI_VH0_clk_ctrl'event and ATARI_VH0_clk_ctrl='1' then
-	 if ATARI_VH0_ena_ctrl='1' then
+   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
+      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
+	 if ATARI_VH0_ena_ctrl='1' THEN
 	    (ATARI_VH_q(7), ATARI_VH_q(6), ATARI_VH_q(5), ATARI_VH_q(4),
 		  ATARI_VH_q(3), ATARI_VH_q(2), ATARI_VH_q(1), ATARI_VH_q(0))
 		  <= ATARI_VH_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HL0_clk_ctrl) begin
-      if ATARI_HL0_clk_ctrl'event and ATARI_HL0_clk_ctrl='1' then
-	 if ATARI_HL24_ena_ctrl='1' then
+   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
+      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
+	 if ATARI_HL24_ena_ctrl='1' THEN
 	    (ATARI_HL_q(31), ATARI_HL_q(30), ATARI_HL_q(29), ATARI_HL_q(28),
 		  ATARI_HL_q(27), ATARI_HL_q(26), ATARI_HL_q(25),
 		  ATARI_HL_q(24)) <= ATARI_HL_d(31 DOWNTO 24);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HL0_clk_ctrl) begin
-      if ATARI_HL0_clk_ctrl'event and ATARI_HL0_clk_ctrl='1' then
-	 if ATARI_HL16_ena_ctrl='1' then
+   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
+      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
+	 if ATARI_HL16_ena_ctrl='1' THEN
 	    (ATARI_HL_q(23), ATARI_HL_q(22), ATARI_HL_q(21), ATARI_HL_q(20),
 		  ATARI_HL_q(19), ATARI_HL_q(18), ATARI_HL_q(17),
 		  ATARI_HL_q(16)) <= ATARI_HL_d(23 DOWNTO 16);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HL0_clk_ctrl) begin
-      if ATARI_HL0_clk_ctrl'event and ATARI_HL0_clk_ctrl='1' then
-	 if ATARI_HL8_ena_ctrl='1' then
+   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
+      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
+	 if ATARI_HL8_ena_ctrl='1' THEN
 	    (ATARI_HL_q(15), ATARI_HL_q(14), ATARI_HL_q(13), ATARI_HL_q(12),
 		  ATARI_HL_q(11), ATARI_HL_q(10), ATARI_HL_q(9), ATARI_HL_q(8))
 		  <= ATARI_HL_d(15 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_HL0_clk_ctrl) begin
-      if ATARI_HL0_clk_ctrl'event and ATARI_HL0_clk_ctrl='1' then
-	 if ATARI_HL0_ena_ctrl='1' then
+   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
+      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
+	 if ATARI_HL0_ena_ctrl='1' THEN
 	    (ATARI_HL_q(7), ATARI_HL_q(6), ATARI_HL_q(5), ATARI_HL_q(4),
 		  ATARI_HL_q(3), ATARI_HL_q(2), ATARI_HL_q(1), ATARI_HL_q(0))
 		  <= ATARI_HL_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VL0_clk_ctrl) begin
-      if ATARI_VL0_clk_ctrl'event and ATARI_VL0_clk_ctrl='1' then
-	 if ATARI_VL24_ena_ctrl='1' then
+   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
+      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
+	 if ATARI_VL24_ena_ctrl='1' THEN
 	    (ATARI_VL_q(31), ATARI_VL_q(30), ATARI_VL_q(29), ATARI_VL_q(28),
 		  ATARI_VL_q(27), ATARI_VL_q(26), ATARI_VL_q(25),
 		  ATARI_VL_q(24)) <= ATARI_VL_d(31 DOWNTO 24);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VL0_clk_ctrl) begin
-      if ATARI_VL0_clk_ctrl'event and ATARI_VL0_clk_ctrl='1' then
-	 if ATARI_VL16_ena_ctrl='1' then
+   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
+      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
+	 if ATARI_VL16_ena_ctrl='1' THEN
 	    (ATARI_VL_q(23), ATARI_VL_q(22), ATARI_VL_q(21), ATARI_VL_q(20),
 		  ATARI_VL_q(19), ATARI_VL_q(18), ATARI_VL_q(17),
 		  ATARI_VL_q(16)) <= ATARI_VL_d(23 DOWNTO 16);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VL0_clk_ctrl) begin
-      if ATARI_VL0_clk_ctrl'event and ATARI_VL0_clk_ctrl='1' then
-	 if ATARI_VL8_ena_ctrl='1' then
+   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
+      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
+	 if ATARI_VL8_ena_ctrl='1' THEN
 	    (ATARI_VL_q(15), ATARI_VL_q(14), ATARI_VL_q(13), ATARI_VL_q(12),
 		  ATARI_VL_q(11), ATARI_VL_q(10), ATARI_VL_q(9), ATARI_VL_q(8))
 		  <= ATARI_VL_d(15 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (ATARI_VL0_clk_ctrl) begin
-      if ATARI_VL0_clk_ctrl'event and ATARI_VL0_clk_ctrl='1' then
-	 if ATARI_VL0_ena_ctrl='1' then
+   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
+      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
+	 if ATARI_VL0_ena_ctrl='1' THEN
 	    (ATARI_VL_q(7), ATARI_VL_q(6), ATARI_VL_q(5), ATARI_VL_q(4),
 		  ATARI_VL_q(3), ATARI_VL_q(2), ATARI_VL_q(1), ATARI_VL_q(0))
 		  <= ATARI_VL_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HHT0_clk_ctrl) begin
-      if HHT0_clk_ctrl'event and HHT0_clk_ctrl='1' then
-	 if HHT8_ena_ctrl='1' then
+   PROCESS (HHT0_clk_ctrl) BEGIN
+      if HHT0_clk_ctrl'EVENT and HHT0_clk_ctrl='1' THEN
+	 if HHT8_ena_ctrl='1' THEN
 	    (HHT_q(11), HHT_q(10), HHT_q(9), HHT_q(8)) <= HHT_d(11 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HHT0_clk_ctrl) begin
-      if HHT0_clk_ctrl'event and HHT0_clk_ctrl='1' then
-	 if HHT0_ena_ctrl='1' then
+   PROCESS (HHT0_clk_ctrl) BEGIN
+      if HHT0_clk_ctrl'EVENT and HHT0_clk_ctrl='1' THEN
+	 if HHT0_ena_ctrl='1' THEN
 	    (HHT_q(7), HHT_q(6), HHT_q(5), HHT_q(4), HHT_q(3), HHT_q(2),
 		  HHT_q(1), HHT_q(0)) <= HHT_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HBE0_clk_ctrl) begin
-      if HBE0_clk_ctrl'event and HBE0_clk_ctrl='1' then
-	 if HBE8_ena_ctrl='1' then
+   PROCESS (HBE0_clk_ctrl) BEGIN
+      if HBE0_clk_ctrl'EVENT and HBE0_clk_ctrl='1' THEN
+	 if HBE8_ena_ctrl='1' THEN
 	    (HBE_q(11), HBE_q(10), HBE_q(9), HBE_q(8)) <= HBE_d(11 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HBE0_clk_ctrl) begin
-      if HBE0_clk_ctrl'event and HBE0_clk_ctrl='1' then
-	 if HBE0_ena_ctrl='1' then
+   PROCESS (HBE0_clk_ctrl) BEGIN
+      if HBE0_clk_ctrl'EVENT and HBE0_clk_ctrl='1' THEN
+	 if HBE0_ena_ctrl='1' THEN
 	    (HBE_q(7), HBE_q(6), HBE_q(5), HBE_q(4), HBE_q(3), HBE_q(2),
 		  HBE_q(1), HBE_q(0)) <= HBE_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HDB0_clk_ctrl) begin
-      if HDB0_clk_ctrl'event and HDB0_clk_ctrl='1' then
-	 if HDB8_ena_ctrl='1' then
+   PROCESS (HDB0_clk_ctrl) BEGIN
+      if HDB0_clk_ctrl'EVENT and HDB0_clk_ctrl='1' THEN
+	 if HDB8_ena_ctrl='1' THEN
 	    (HDB_q(11), HDB_q(10), HDB_q(9), HDB_q(8)) <= HDB_d(11 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HDB0_clk_ctrl) begin
-      if HDB0_clk_ctrl'event and HDB0_clk_ctrl='1' then
-	 if HDB0_ena_ctrl='1' then
+   PROCESS (HDB0_clk_ctrl) BEGIN
+      if HDB0_clk_ctrl'EVENT and HDB0_clk_ctrl='1' THEN
+	 if HDB0_ena_ctrl='1' THEN
 	    (HDB_q(7), HDB_q(6), HDB_q(5), HDB_q(4), HDB_q(3), HDB_q(2),
 		  HDB_q(1), HDB_q(0)) <= HDB_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HDE0_clk_ctrl) begin
-      if HDE0_clk_ctrl'event and HDE0_clk_ctrl='1' then
-	 if HDE8_ena_ctrl='1' then
+   PROCESS (HDE0_clk_ctrl) BEGIN
+      if HDE0_clk_ctrl'EVENT and HDE0_clk_ctrl='1' THEN
+	 if HDE8_ena_ctrl='1' THEN
 	    (HDE_q(11), HDE_q(10), HDE_q(9), HDE_q(8)) <= HDE_d(11 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HDE0_clk_ctrl) begin
-      if HDE0_clk_ctrl'event and HDE0_clk_ctrl='1' then
-	 if HDE0_ena_ctrl='1' then
+   PROCESS (HDE0_clk_ctrl) BEGIN
+      if HDE0_clk_ctrl'EVENT and HDE0_clk_ctrl='1' THEN
+	 if HDE0_ena_ctrl='1' THEN
 	    (HDE_q(7), HDE_q(6), HDE_q(5), HDE_q(4), HDE_q(3), HDE_q(2),
 		  HDE_q(1), HDE_q(0)) <= HDE_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HBB0_clk_ctrl) begin
-      if HBB0_clk_ctrl'event and HBB0_clk_ctrl='1' then
-	 if HBB8_ena_ctrl='1' then
+   PROCESS (HBB0_clk_ctrl) BEGIN
+      if HBB0_clk_ctrl'EVENT and HBB0_clk_ctrl='1' THEN
+	 if HBB8_ena_ctrl='1' THEN
 	    (HBB_q(11), HBB_q(10), HBB_q(9), HBB_q(8)) <= HBB_d(11 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HBB0_clk_ctrl) begin
-      if HBB0_clk_ctrl'event and HBB0_clk_ctrl='1' then
-	 if HBB0_ena_ctrl='1' then
+   PROCESS (HBB0_clk_ctrl) BEGIN
+      if HBB0_clk_ctrl'EVENT and HBB0_clk_ctrl='1' THEN
+	 if HBB0_ena_ctrl='1' THEN
 	    (HBB_q(7), HBB_q(6), HBB_q(5), HBB_q(4), HBB_q(3), HBB_q(2),
 		  HBB_q(1), HBB_q(0)) <= HBB_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HSS0_clk_ctrl) begin
-      if HSS0_clk_ctrl'event and HSS0_clk_ctrl='1' then
-	 if HSS8_ena_ctrl='1' then
+   PROCESS (HSS0_clk_ctrl) BEGIN
+      if HSS0_clk_ctrl'EVENT and HSS0_clk_ctrl='1' THEN
+	 if HSS8_ena_ctrl='1' THEN
 	    (HSS_q(11), HSS_q(10), HSS_q(9), HSS_q(8)) <= HSS_d(11 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (HSS0_clk_ctrl) begin
-      if HSS0_clk_ctrl'event and HSS0_clk_ctrl='1' then
-	 if HSS0_ena_ctrl='1' then
+   PROCESS (HSS0_clk_ctrl) BEGIN
+      if HSS0_clk_ctrl'EVENT and HSS0_clk_ctrl='1' THEN
+	 if HSS0_ena_ctrl='1' THEN
 	    (HSS_q(7), HSS_q(6), HSS_q(5), HSS_q(4), HSS_q(3), HSS_q(2),
 		  HSS_q(1), HSS_q(0)) <= HSS_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (DOP_ZEI_clk) begin
-      if DOP_ZEI_clk'event and DOP_ZEI_clk='1' then
+   PROCESS (DOP_ZEI_clk) BEGIN
+      if DOP_ZEI_clk'EVENT and DOP_ZEI_clk='1' THEN
 	 DOP_ZEI_q <= DOP_ZEI_d;
-      end if;
-   end process;
+      END IF;
+   END PROCESS;
 
-   process (VBE0_clk_ctrl) begin
-      if VBE0_clk_ctrl'event and VBE0_clk_ctrl='1' then
-	 if VBE8_ena_ctrl='1' then
+   PROCESS (VBE0_clk_ctrl) BEGIN
+      if VBE0_clk_ctrl'EVENT and VBE0_clk_ctrl='1' THEN
+	 if VBE8_ena_ctrl='1' THEN
 	    (VBE_q(10), VBE_q(9), VBE_q(8)) <= VBE_d(10 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VBE0_clk_ctrl) begin
-      if VBE0_clk_ctrl'event and VBE0_clk_ctrl='1' then
-	 if VBE0_ena_ctrl='1' then
+   PROCESS (VBE0_clk_ctrl) BEGIN
+      if VBE0_clk_ctrl'EVENT and VBE0_clk_ctrl='1' THEN
+	 if VBE0_ena_ctrl='1' THEN
 	    (VBE_q(7), VBE_q(6), VBE_q(5), VBE_q(4), VBE_q(3), VBE_q(2),
 		  VBE_q(1), VBE_q(0)) <= VBE_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VDB0_clk_ctrl) begin
-      if VDB0_clk_ctrl'event and VDB0_clk_ctrl='1' then
-	 if VDB8_ena_ctrl='1' then
+   PROCESS (VDB0_clk_ctrl) BEGIN
+      if VDB0_clk_ctrl'EVENT and VDB0_clk_ctrl='1' THEN
+	 if VDB8_ena_ctrl='1' THEN
 	    (VDB_q(10), VDB_q(9), VDB_q(8)) <= VDB_d(10 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VDB0_clk_ctrl) begin
-      if VDB0_clk_ctrl'event and VDB0_clk_ctrl='1' then
-	 if VDB0_ena_ctrl='1' then
+   PROCESS (VDB0_clk_ctrl) BEGIN
+      if VDB0_clk_ctrl'EVENT and VDB0_clk_ctrl='1' THEN
+	 if VDB0_ena_ctrl='1' THEN
 	    (VDB_q(7), VDB_q(6), VDB_q(5), VDB_q(4), VDB_q(3), VDB_q(2),
 		  VDB_q(1), VDB_q(0)) <= VDB_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VDE0_clk_ctrl) begin
-      if VDE0_clk_ctrl'event and VDE0_clk_ctrl='1' then
-	 if VDE8_ena_ctrl='1' then
+   PROCESS (VDE0_clk_ctrl) BEGIN
+      if VDE0_clk_ctrl'EVENT and VDE0_clk_ctrl='1' THEN
+	 if VDE8_ena_ctrl='1' THEN
 	    (VDE_q(10), VDE_q(9), VDE_q(8)) <= VDE_d(10 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VDE0_clk_ctrl) begin
-      if VDE0_clk_ctrl'event and VDE0_clk_ctrl='1' then
-	 if VDE0_ena_ctrl='1' then
+   PROCESS (VDE0_clk_ctrl) BEGIN
+      if VDE0_clk_ctrl'EVENT and VDE0_clk_ctrl='1' THEN
+	 if VDE0_ena_ctrl='1' THEN
 	    (VDE_q(7), VDE_q(6), VDE_q(5), VDE_q(4), VDE_q(3), VDE_q(2),
 		  VDE_q(1), VDE_q(0)) <= VDE_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VBB0_clk_ctrl) begin
-      if VBB0_clk_ctrl'event and VBB0_clk_ctrl='1' then
-	 if VBB8_ena_ctrl='1' then
+   PROCESS (VBB0_clk_ctrl) BEGIN
+      if VBB0_clk_ctrl'EVENT and VBB0_clk_ctrl='1' THEN
+	 if VBB8_ena_ctrl='1' THEN
 	    (VBB_q(10), VBB_q(9), VBB_q(8)) <= VBB_d(10 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VBB0_clk_ctrl) begin
-      if VBB0_clk_ctrl'event and VBB0_clk_ctrl='1' then
-	 if VBB0_ena_ctrl='1' then
+   PROCESS (VBB0_clk_ctrl) BEGIN
+      if VBB0_clk_ctrl'EVENT and VBB0_clk_ctrl='1' THEN
+	 if VBB0_ena_ctrl='1' THEN
 	    (VBB_q(7), VBB_q(6), VBB_q(5), VBB_q(4), VBB_q(3), VBB_q(2),
 		  VBB_q(1), VBB_q(0)) <= VBB_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VSS0_clk_ctrl) begin
-      if VSS0_clk_ctrl'event and VSS0_clk_ctrl='1' then
-	 if VSS8_ena_ctrl='1' then
+   PROCESS (VSS0_clk_ctrl) BEGIN
+      if VSS0_clk_ctrl'EVENT and VSS0_clk_ctrl='1' THEN
+	 if VSS8_ena_ctrl='1' THEN
 	    (VSS_q(10), VSS_q(9), VSS_q(8)) <= VSS_d(10 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VSS0_clk_ctrl) begin
-      if VSS0_clk_ctrl'event and VSS0_clk_ctrl='1' then
-	 if VSS0_ena_ctrl='1' then
+   PROCESS (VSS0_clk_ctrl) BEGIN
+      if VSS0_clk_ctrl'EVENT and VSS0_clk_ctrl='1' THEN
+	 if VSS0_ena_ctrl='1' THEN
 	    (VSS_q(7), VSS_q(6), VSS_q(5), VSS_q(4), VSS_q(3), VSS_q(2),
 		  VSS_q(1), VSS_q(0)) <= VSS_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VFT0_clk_ctrl) begin
-      if VFT0_clk_ctrl'event and VFT0_clk_ctrl='1' then
-	 if VFT8_ena_ctrl='1' then
+   PROCESS (VFT0_clk_ctrl) BEGIN
+      if VFT0_clk_ctrl'EVENT and VFT0_clk_ctrl='1' THEN
+	 if VFT8_ena_ctrl='1' THEN
 	    (VFT_q(10), VFT_q(9), VFT_q(8)) <= VFT_d(10 DOWNTO 8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VFT0_clk_ctrl) begin
-      if VFT0_clk_ctrl'event and VFT0_clk_ctrl='1' then
-	 if VFT0_ena_ctrl='1' then
+   PROCESS (VFT0_clk_ctrl) BEGIN
+      if VFT0_clk_ctrl'EVENT and VFT0_clk_ctrl='1' THEN
+	 if VFT0_ena_ctrl='1' THEN
 	    (VFT_q(7), VFT_q(6), VFT_q(5), VFT_q(4), VFT_q(3), VFT_q(2),
 		  VFT_q(1), VFT_q(0)) <= VFT_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VCO0_clk_ctrl) begin
-      if VCO0_clk_ctrl'event and VCO0_clk_ctrl='1' then
-	 if VCO_ena(8)='1' then
+   PROCESS (VCO0_clk_ctrl) BEGIN
+      if VCO0_clk_ctrl'EVENT and VCO0_clk_ctrl='1' THEN
+	 if VCO_ena(8)='1' THEN
 	    VCO_q(8) <= VCO_d(8);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VCO0_clk_ctrl) begin
-      if VCO0_clk_ctrl'event and VCO0_clk_ctrl='1' then
-	 if VCO0_ena_ctrl='1' then
+   PROCESS (VCO0_clk_ctrl) BEGIN
+      if VCO0_clk_ctrl'EVENT and VCO0_clk_ctrl='1' THEN
+	 if VCO0_ena_ctrl='1' THEN
 	    (VCO_q(7), VCO_q(6), VCO_q(5), VCO_q(4), VCO_q(3), VCO_q(2),
 		  VCO_q(1), VCO_q(0)) <= VCO_d(7 DOWNTO 0);
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
-   process (VCNTRL0_clk_ctrl) begin
-      if VCNTRL0_clk_ctrl'event and VCNTRL0_clk_ctrl='1' then
-	 if VCNTRL0_ena_ctrl='1' then
+   PROCESS (VCNTRL0_clk_ctrl) BEGIN
+      if VCNTRL0_clk_ctrl'EVENT and VCNTRL0_clk_ctrl='1' THEN
+	 if VCNTRL0_ena_ctrl='1' THEN
 	    VCNTRL_q <= VCNTRL_d;
-	 end if;
-      end if;
-   end process;
+	 END IF;
+      END IF;
+   END PROCESS;
 
 -- Start of original equations
 
@@ -1268,8 +1272,7 @@ begin
 
 --  ACP CLUT --
 --  0-3FF/1024
-   ACP_CLUT_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 10) =
-	 "000000000000000000");
+   ACP_CLUT_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 10) = "000000000000000000");
    ACP_CLUT_RD <= ACP_CLUT_CS and (not nFB_OE);
    ACP_CLUT_WR <= FB_B and sizeIt(ACP_CLUT_CS,4) and sizeIt(not nFB_WR,4);
    CLUT_TA_clk <= MAIN_CLK;
