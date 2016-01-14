@@ -876,7 +876,7 @@ BEGIN
             WHEN "010001" =>
                 CPU_AC_d <= CPU_AC_q;
                 BLITTER_AC_d <= BLITTER_AC_q;
-                VA_S_d(9 DOWNTO 0) <= (sizeIt(CPU_AC_q,10) and CPU_COL_ADR) or (sizeIt(BLITTER_AC_q,10) and BLITTER_COL_ADR);
+                VA_S_d(9 DOWNTO 0) <= (sizeIt(CPU_AC_q, 10) and CPU_COL_ADR) or (sizeIt(BLITTER_AC_q, 10) and BLITTER_COL_ADR);
 
                 --  AUTO PRECHARGE WENN NICHT FIFO PAGE
                 VA_S_d(10) <= VA_S_q(10);
