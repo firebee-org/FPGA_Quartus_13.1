@@ -313,181 +313,213 @@ ARCHITECTURE rtl OF ddr_ctr IS
 
 BEGIN
 
--- Sub Module Section
-   u0: lpm_bustri_BYT port map (data=>u0_data, enabledt=>u0_enabledt,
-	 tridata=>u0_tridata);
+    -- Sub Module Section
+    u0: lpm_bustri_BYT
+        port map
+        (
+            data=>u0_data,
+            enabledt=>u0_enabledt,
+            tridata=>u0_tridata
+        );
 
--- Register Section
+    -- Register Section
 
-   SR_FIFO_WRE <= SR_FIFO_WRE_q;
-   PROCESS (SR_FIFO_WRE_clk) BEGIN
-      IF SR_FIFO_WRE_clk'event and SR_FIFO_WRE_clk='1' THEN
-	 SR_FIFO_WRE_q <= SR_FIFO_WRE_d;
-      END IF;
-   END PROCESS;
+    SR_FIFO_WRE <= SR_FIFO_WRE_q;
+    PROCESS (SR_FIFO_WRE_clk)
+    BEGIN
+        IF SR_FIFO_WRE_clk'event and SR_FIFO_WRE_clk='1' THEN
+            SR_FIFO_WRE_q <= SR_FIFO_WRE_d;
+        END IF;
+    END PROCESS;
 
-   SR_DDR_WR <= SR_DDR_WR_q;
-   PROCESS (SR_DDR_WR_clk) BEGIN
-      IF SR_DDR_WR_clk'event and SR_DDR_WR_clk='1' THEN
-	 SR_DDR_WR_q <= SR_DDR_WR_d;
-      END IF;
-   END PROCESS;
+    SR_DDR_WR <= SR_DDR_WR_q;
+    PROCESS (SR_DDR_WR_clk)
+    BEGIN
+        IF SR_DDR_WR_clk'event and SR_DDR_WR_clk='1' THEN
+            SR_DDR_WR_q <= SR_DDR_WR_d;
+        END IF;
+    END PROCESS;
 
-   SR_DDRWR_D_SEL <= SR_DDRWR_D_SEL_q;
-   PROCESS (SR_DDRWR_D_SEL_clk) BEGIN
-      IF SR_DDRWR_D_SEL_clk'event and SR_DDRWR_D_SEL_clk='1' THEN
-	 SR_DDRWR_D_SEL_q <= SR_DDRWR_D_SEL_d;
-      END IF;
-   END PROCESS;
+    SR_DDRWR_D_SEL <= SR_DDRWR_D_SEL_q;
+    PROCESS (SR_DDRWR_D_SEL_clk)
+    BEGIN
+        IF SR_DDRWR_D_SEL_clk'event and SR_DDRWR_D_SEL_clk='1' THEN
+            SR_DDRWR_D_SEL_q <= SR_DDRWR_D_SEL_d;
+        END IF;
+    END PROCESS;
 
-   SR_VDMP <= SR_VDMP_q;
-   PROCESS (SR_VDMP0_clk_ctrl) BEGIN
-      IF SR_VDMP0_clk_ctrl'event and SR_VDMP0_clk_ctrl='1' THEN
-	 SR_VDMP_q <= SR_VDMP_d;
-      END IF;
-   END PROCESS;
+    SR_VDMP <= SR_VDMP_q;
+    PROCESS (SR_VDMP0_clk_ctrl)
+    BEGIN
+        IF SR_VDMP0_clk_ctrl'event and SR_VDMP0_clk_ctrl='1' THEN
+            SR_VDMP_q <= SR_VDMP_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (FB_REGDDR_0_clk_ctrl) BEGIN
-      IF FB_REGDDR_0_clk_ctrl'event and FB_REGDDR_0_clk_ctrl='1' THEN
-	 FB_REGDDR_q <= FB_REGDDR_d;
-      END IF;
-   END PROCESS;
+    PROCESS (FB_REGDDR_0_clk_ctrl)
+    BEGIN
+        IF FB_REGDDR_0_clk_ctrl'event and FB_REGDDR_0_clk_ctrl='1' THEN
+            FB_REGDDR_q <= FB_REGDDR_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (DDR_SM_0_clk_ctrl) BEGIN
-      IF DDR_SM_0_clk_ctrl'event and DDR_SM_0_clk_ctrl='1' THEN
-	 DDR_SM_q <= DDR_SM_d;
-      END IF;
-   END PROCESS;
+    PROCESS (DDR_SM_0_clk_ctrl)
+    BEGIN
+        IF DDR_SM_0_clk_ctrl'event and DDR_SM_0_clk_ctrl='1' THEN
+            DDR_SM_q <= DDR_SM_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (VA_P0_clk_ctrl) BEGIN
-      IF VA_P0_clk_ctrl'event and VA_P0_clk_ctrl='1' THEN
-	 VA_P_q <= VA_P_d;
-      END IF;
-   END PROCESS;
+    PROCESS (VA_P0_clk_ctrl)
+    BEGIN
+        IF VA_P0_clk_ctrl'event and VA_P0_clk_ctrl='1' THEN
+            VA_P_q <= VA_P_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (BA_P0_clk_ctrl) BEGIN
-      IF BA_P0_clk_ctrl'event and BA_P0_clk_ctrl='1' THEN
-	 BA_P_q <= BA_P_d;
-      END IF;
-   END PROCESS;
+    PROCESS (BA_P0_clk_ctrl)
+    BEGIN
+        IF BA_P0_clk_ctrl'event and BA_P0_clk_ctrl='1' THEN
+            BA_P_q <= BA_P_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (VA_S0_clk_ctrl) BEGIN
-      IF VA_S0_clk_ctrl'event and VA_S0_clk_ctrl='1' THEN
-	 VA_S_q <= VA_S_d;
-      END IF;
-   END PROCESS;
+    PROCESS (VA_S0_clk_ctrl)
+    BEGIN
+        IF VA_S0_clk_ctrl'event and VA_S0_clk_ctrl='1' THEN
+            VA_S_q <= VA_S_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (BA_S0_clk_ctrl) BEGIN
-      IF BA_S0_clk_ctrl'event and BA_S0_clk_ctrl='1' THEN
-	 BA_S_q <= BA_S_d;
-      END IF;
-   END PROCESS;
+    PROCESS (BA_S0_clk_ctrl)
+    BEGIN
+        IF BA_S0_clk_ctrl'event and BA_S0_clk_ctrl='1' THEN
+            BA_S_q <= BA_S_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (MCS0_clk_ctrl) BEGIN
-      IF MCS0_clk_ctrl'event and MCS0_clk_ctrl='1' THEN
-	 MCS_q <= MCS_d;
-      END IF;
-   END PROCESS;
+    PROCESS (MCS0_clk_ctrl)
+    BEGIN
+        IF MCS0_clk_ctrl'event and MCS0_clk_ctrl='1' THEN
+            MCS_q <= MCS_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (CPU_DDR_SYNC_clk) BEGIN
-      IF CPU_DDR_SYNC_clk'event and CPU_DDR_SYNC_clk='1' THEN
-	 CPU_DDR_SYNC_q <= CPU_DDR_SYNC_d;
-      END IF;
-   END PROCESS;
+    PROCESS (CPU_DDR_SYNC_clk)
+    BEGIN
+        IF CPU_DDR_SYNC_clk'event and CPU_DDR_SYNC_clk='1' THEN
+            CPU_DDR_SYNC_q <= CPU_DDR_SYNC_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (DDR_CS_clk) BEGIN
-      IF DDR_CS_clk'event and DDR_CS_clk='1' THEN
-	 IF DDR_CS_ena='1' THEN
-	    DDR_CS_q <= DDR_CS_d;
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (DDR_CS_clk)
+    BEGIN
+        IF DDR_CS_clk'event and DDR_CS_clk='1' THEN
+            IF DDR_CS_ena='1' THEN
+                DDR_CS_q <= DDR_CS_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (CPU_REQ_clk) BEGIN
-      IF CPU_REQ_clk'event and CPU_REQ_clk='1' THEN
-	 CPU_REQ_q <= CPU_REQ_d;
-      END IF;
-   END PROCESS;
+    PROCESS (CPU_REQ_clk)
+    BEGIN
+        IF CPU_REQ_clk'event and CPU_REQ_clk='1' THEN
+            CPU_REQ_q <= CPU_REQ_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (CPU_AC_clk) BEGIN
-      IF CPU_AC_clk'event and CPU_AC_clk='1' THEN
-	 CPU_AC_q <= CPU_AC_d;
-      END IF;
-   END PROCESS;
+    PROCESS (CPU_AC_clk)
+    BEGIN
+        IF CPU_AC_clk'event and CPU_AC_clk='1' THEN
+            CPU_AC_q <= CPU_AC_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (BUS_CYC_clk) BEGIN
-      IF BUS_CYC_clk'event and BUS_CYC_clk='1' THEN
-	 BUS_CYC_q <= BUS_CYC_d;
-      END IF;
-   END PROCESS;
+    PROCESS (BUS_CYC_clk)
+    BEGIN
+        IF BUS_CYC_clk'event and BUS_CYC_clk='1' THEN
+            BUS_CYC_q <= BUS_CYC_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (BLITTER_REQ_clk) BEGIN
-      IF BLITTER_REQ_clk'event and BLITTER_REQ_clk='1' THEN
-	 BLITTER_REQ_q <= BLITTER_REQ_d;
-      END IF;
-   END PROCESS;
+    PROCESS (BLITTER_REQ_clk)
+    BEGIN
+        IF BLITTER_REQ_clk'event and BLITTER_REQ_clk='1' THEN
+            BLITTER_REQ_q <= BLITTER_REQ_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (BLITTER_AC_clk) BEGIN
-      IF BLITTER_AC_clk'event and BLITTER_AC_clk='1' THEN
-	 BLITTER_AC_q <= BLITTER_AC_d;
-      END IF;
-   END PROCESS;
+    PROCESS (BLITTER_AC_clk)
+    BEGIN
+        IF BLITTER_AC_clk'event and BLITTER_AC_clk='1' THEN
+            BLITTER_AC_q <= BLITTER_AC_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (FIFO_REQ_clk) BEGIN
-      IF FIFO_REQ_clk'event and FIFO_REQ_clk='1' THEN
-	 FIFO_REQ_q <= FIFO_REQ_d;
-      END IF;
-   END PROCESS;
+    PROCESS (FIFO_REQ_clk)
+    BEGIN
+        IF FIFO_REQ_clk'event and FIFO_REQ_clk='1' THEN
+            FIFO_REQ_q <= FIFO_REQ_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (FIFO_AC_clk) BEGIN
-      IF FIFO_AC_clk'event and FIFO_AC_clk='1' THEN
-	 FIFO_AC_q <= FIFO_AC_d;
-      END IF;
-   END PROCESS;
+    PROCESS (FIFO_AC_clk)
+    BEGIN
+        IF FIFO_AC_clk'event and FIFO_AC_clk='1' THEN
+            FIFO_AC_q <= FIFO_AC_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (CLR_FIFO_SYNC_clk) BEGIN
-      IF CLR_FIFO_SYNC_clk'event and CLR_FIFO_SYNC_clk='1' THEN
-	 CLR_FIFO_SYNC_q <= CLR_FIFO_SYNC_d;
-      END IF;
-   END PROCESS;
+    PROCESS (CLR_FIFO_SYNC_clk)
+    BEGIN
+        IF CLR_FIFO_SYNC_clk'event and CLR_FIFO_SYNC_clk='1' THEN
+            CLR_FIFO_SYNC_q <= CLR_FIFO_SYNC_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (CLEAR_FIFO_CNT_clk) BEGIN
-      IF CLEAR_FIFO_CNT_clk'event and CLEAR_FIFO_CNT_clk='1' THEN
-	 CLEAR_FIFO_CNT_q <= CLEAR_FIFO_CNT_d;
-      END IF;
-   END PROCESS;
+    PROCESS (CLEAR_FIFO_CNT_clk)
+    BEGIN
+        IF CLEAR_FIFO_CNT_clk'event and CLEAR_FIFO_CNT_clk='1' THEN
+            CLEAR_FIFO_CNT_q <= CLEAR_FIFO_CNT_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (STOP_clk) BEGIN
-      IF STOP_clk'event and STOP_clk='1' THEN
-	 STOP_q <= STOP_d;
-      END IF;
-   END PROCESS;
+    PROCESS (STOP_clk)
+    BEGIN
+        IF STOP_clk'event and STOP_clk='1' THEN
+            STOP_q <= STOP_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (FIFO_BANK_OK_clk) BEGIN
-      IF FIFO_BANK_OK_clk'event and FIFO_BANK_OK_clk='1' THEN
-	 FIFO_BANK_OK_q <= FIFO_BANK_OK_d;
-      END IF;
-   END PROCESS;
+    PROCESS (FIFO_BANK_OK_clk)
+    BEGIN
+        IF FIFO_BANK_OK_clk'event and FIFO_BANK_OK_clk='1' THEN
+            FIFO_BANK_OK_q <= FIFO_BANK_OK_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (DDR_REFRESH_CNT0_clk_ctrl) BEGIN
-      IF DDR_REFRESH_CNT0_clk_ctrl'event and DDR_REFRESH_CNT0_clk_ctrl='1' THEN
-	 DDR_REFRESH_CNT_q <= DDR_REFRESH_CNT_d;
-      END IF;
-   END PROCESS;
+    PROCESS (DDR_REFRESH_CNT0_clk_ctrl)
+    BEGIN
+        IF DDR_REFRESH_CNT0_clk_ctrl'event and DDR_REFRESH_CNT0_clk_ctrl='1' THEN
+            DDR_REFRESH_CNT_q <= DDR_REFRESH_CNT_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (DDR_REFRESH_REQ_clk) BEGIN
-      IF DDR_REFRESH_REQ_clk'event and DDR_REFRESH_REQ_clk='1' THEN
-	 DDR_REFRESH_REQ_q <= DDR_REFRESH_REQ_d;
-      END IF;
-   END PROCESS;
+    PROCESS (DDR_REFRESH_REQ_clk)
+    BEGIN
+        IF DDR_REFRESH_REQ_clk'event and DDR_REFRESH_REQ_clk='1' THEN
+            DDR_REFRESH_REQ_q <= DDR_REFRESH_REQ_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (DDR_REFRESH_SIG0_clk_ctrl) BEGIN
-      IF DDR_REFRESH_SIG0_clk_ctrl'event and DDR_REFRESH_SIG0_clk_ctrl='1' THEN
-	 IF DDR_REFRESH_SIG0_ena_ctrl='1' THEN
-	    DDR_REFRESH_SIG_q <= DDR_REFRESH_SIG_d;
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (DDR_REFRESH_SIG0_clk_ctrl)
+    BEGIN
+        IF DDR_REFRESH_SIG0_clk_ctrl'event and DDR_REFRESH_SIG0_clk_ctrl='1' THEN
+            IF DDR_REFRESH_SIG0_ena_ctrl='1' THEN
+                DDR_REFRESH_SIG_q <= DDR_REFRESH_SIG_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
    PROCESS (REFRESH_TIME_clk) BEGIN
       IF REFRESH_TIME_clk'event and REFRESH_TIME_clk='1' THEN
