@@ -521,82 +521,82 @@ BEGIN
         END IF;
     END PROCESS;
 
-   PROCESS (REFRESH_TIME_clk) BEGIN
-      IF REFRESH_TIME_clk'event and REFRESH_TIME_clk='1' THEN
-	 REFRESH_TIME_q <= REFRESH_TIME_d;
-      END IF;
-   END PROCESS;
+    PROCESS (REFRESH_TIME_clk)
+    BEGIN
+        IF REFRESH_TIME_clk'event and REFRESH_TIME_clk = '1' THEN
+            REFRESH_TIME_q <= REFRESH_TIME_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (VIDEO_BASE_L_D0_clk_ctrl) BEGIN
-      IF VIDEO_BASE_L_D0_clk_ctrl'event and VIDEO_BASE_L_D0_clk_ctrl='1' THEN
-	 IF VIDEO_BASE_L_D0_ena_ctrl='1' THEN
-	    VIDEO_BASE_L_D_q <= VIDEO_BASE_L_D_d;
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (VIDEO_BASE_L_D0_clk_ctrl)
+    BEGIN
+        IF VIDEO_BASE_L_D0_clk_ctrl'event and VIDEO_BASE_L_D0_clk_ctrl='1' THEN
+            IF VIDEO_BASE_L_D0_ena_ctrl='1' THEN
+                VIDEO_BASE_L_D_q <= VIDEO_BASE_L_D_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (VIDEO_BASE_M_D0_clk_ctrl) BEGIN
-      IF VIDEO_BASE_M_D0_clk_ctrl'event and VIDEO_BASE_M_D0_clk_ctrl='1' THEN
-	 IF VIDEO_BASE_M_D0_ena_ctrl='1' THEN
-	    VIDEO_BASE_M_D_q <= VIDEO_BASE_M_D_d;
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (VIDEO_BASE_M_D0_clk_ctrl)
+    BEGIN
+        IF VIDEO_BASE_M_D0_clk_ctrl'event and VIDEO_BASE_M_D0_clk_ctrl='1' THEN
+            IF VIDEO_BASE_M_D0_ena_ctrl='1' THEN
+                VIDEO_BASE_M_D_q <= VIDEO_BASE_M_D_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (VIDEO_BASE_H_D0_clk_ctrl) BEGIN
-      IF VIDEO_BASE_H_D0_clk_ctrl'event and VIDEO_BASE_H_D0_clk_ctrl='1' THEN
-	 IF VIDEO_BASE_H_D0_ena_ctrl='1' THEN
-	    VIDEO_BASE_H_D_q <= VIDEO_BASE_H_D_d;
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (VIDEO_BASE_H_D0_clk_ctrl)
+    BEGIN
+        IF VIDEO_BASE_H_D0_clk_ctrl'event and VIDEO_BASE_H_D0_clk_ctrl='1' THEN
+            IF VIDEO_BASE_H_D0_ena_ctrl='1' THEN
+                VIDEO_BASE_H_D_q <= VIDEO_BASE_H_D_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (VIDEO_BASE_X_D0_clk_ctrl) BEGIN
-      IF VIDEO_BASE_X_D0_clk_ctrl'event and VIDEO_BASE_X_D0_clk_ctrl='1' THEN
-	 IF VIDEO_BASE_X_D0_ena_ctrl='1' THEN
-	    VIDEO_BASE_X_D_q <= VIDEO_BASE_X_D_d;
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (VIDEO_BASE_X_D0_clk_ctrl)
+    BEGIN
+        IF VIDEO_BASE_X_D0_clk_ctrl'event and VIDEO_BASE_X_D0_clk_ctrl='1' THEN
+            IF VIDEO_BASE_X_D0_ena_ctrl='1' THEN
+                VIDEO_BASE_X_D_q <= VIDEO_BASE_X_D_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (VIDEO_ADR_CNT0_clk_ctrl) BEGIN
-      IF VIDEO_ADR_CNT0_clk_ctrl'event and VIDEO_ADR_CNT0_clk_ctrl='1' THEN
-	 IF VIDEO_ADR_CNT0_ena_ctrl='1' THEN
-	    VIDEO_ADR_CNT_q <= VIDEO_ADR_CNT_d;
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (VIDEO_ADR_CNT0_clk_ctrl)
+    BEGIN
+        IF VIDEO_ADR_CNT0_clk_ctrl'event and VIDEO_ADR_CNT0_clk_ctrl='1' THEN
+            IF VIDEO_ADR_CNT0_ena_ctrl='1' THEN
+                VIDEO_ADR_CNT_q <= VIDEO_ADR_CNT_d;
+            END IF;
+        END IF;
+    END PROCESS;
 
--- Start of original equations
-   LINE <= FB_SIZE0 and FB_SIZE1;
+    -- Start of original equations
+    LINE <= FB_SIZE0 and FB_SIZE1;
 
---  BYT SELECT
---  ADR==0
---  LONG UND LINE
-   FB_B(0) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "00") or (FB_SIZE1 and
-	 FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
+    --  BYT SELECT
+    --  ADR==0
+    --  LONG UND LINE
+    FB_B(0) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "00") or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
 
---  ADR==1
---  HIGH WORD
---  LONG UND LINE
-   FB_B(1) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "01") or (FB_SIZE1 and (not
-	 FB_SIZE0) and (not FB_ADR(1))) or (FB_SIZE1 and FB_SIZE0) or ((not
-	 FB_SIZE1) and (not FB_SIZE0));
+    --  ADR==1
+    --  HIGH WORD
+    --  LONG UND LINE
+    FB_B(1) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "01") or (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
 
---  ADR==2
---  LONG UND LINE
-   FB_B(2) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "10") or (FB_SIZE1 and
-	 FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
+    --  ADR==2
+    --  LONG UND LINE
+    FB_B(2) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "10") or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
 
---  ADR==3
---  LOW WORD
---  LONG UND LINE
-   FB_B(3) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "11") or (FB_SIZE1 and (not
-	 FB_SIZE0) and FB_ADR(1)) or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1)
-	 and (not FB_SIZE0));
+    --  ADR==3
+    --  LOW WORD
+    --  LONG UND LINE
+    FB_B(3) <= to_std_logic(FB_ADR(1 DOWNTO 0) = "11") or (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
 
---  CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR)  --------------------------------------------------
-   FB_REGDDR_0_clk_ctrl <= MAIN_CLK;
+    --  CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR)  --------------------------------------------------
+    FB_REGDDR_0_clk_ctrl <= MAIN_CLK;
 
 
     PROCESS (FB_REGDDR_q, DDR_SEL, BUS_CYC_q, LINE, DDR_CS_q, nFB_OE, MAIN_CLK, DDR_CONFIG, nFB_WR, vcc)
@@ -1331,17 +1331,21 @@ BEGIN
     --  8204,5/2
     VIDEO_CNT_H <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 DOWNTO 1) = "1111100000100000010");
 
---  FB_AD[31..24] = lpm_bustri_BYT(
---                         VIDEO_BASE_H  & (0, VIDEO_BASE_X_D[])
---                       # VIDEO_CNT_H   & (0, VIDEO_ACT_ADR[26..24]),
---                        (VIDEO_BASE_H # VIDEO_CNT_H) & !nFB_OE); 
-   u0_data <= (sizeIt(VIDEO_BASE_L,8) and VIDEO_BASE_L_D_q) or
+    --  FB_AD[31..24] = lpm_bustri_BYT(
+    --                         VIDEO_BASE_H  & (0, VIDEO_BASE_X_D[])
+    --                       # VIDEO_CNT_H   & (0, VIDEO_ACT_ADR[26..24]),
+    --                        (VIDEO_BASE_H # VIDEO_CNT_H) & !nFB_OE); 
+    fb_ad(31 DOWNTO 24) <= "00000" & video_base_x_d_d WHEN video_base_h and not nfb_oe ELSE
+                           "00000" & video_act_adr(26 DOWNTO 24) WHEN video_cnt_h and not nfb_oe ELSE
+                           (OTHERS => 'Z');
+                           
+    u0_data <= (sizeIt(VIDEO_BASE_L,8) and VIDEO_BASE_L_D_q) or
 	 (sizeIt(VIDEO_BASE_M,8) and VIDEO_BASE_M_D_q) or
 	 (sizeIt(VIDEO_BASE_H,8) and VIDEO_BASE_H_D_q) or
 	 (sizeIt(VIDEO_CNT_L,8) and VIDEO_ACT_ADR(7 DOWNTO 0)) or
 	 (sizeIt(VIDEO_CNT_M,8) and VIDEO_ACT_ADR(15 DOWNTO 8)) or
 	 (sizeIt(VIDEO_CNT_H,8) and VIDEO_ACT_ADR(23 DOWNTO 16));
-   u0_enabledt <= (VIDEO_BASE_L or VIDEO_BASE_M or VIDEO_BASE_H or VIDEO_CNT_L
+    u0_enabledt <= (VIDEO_BASE_L or VIDEO_BASE_M or VIDEO_BASE_H or VIDEO_CNT_L
 	 or VIDEO_CNT_M or VIDEO_CNT_H) and (not nFB_OE);
     FB_AD(23 DOWNTO 16) <= u0_tridata;
 
