@@ -603,25 +603,27 @@ BEGIN
         VARIABLE stdVec3: std_logic_vector(2 DOWNTO 0);
     BEGIN
         FB_REGDDR_d <= FB_REGDDR_q;
-        (FB_VDOE(0), FB_VDOE(1)) <= std_logic_vector'("00");
-        (FB_LE(0), FB_LE(1), FB_VDOE(2), FB_LE(2), FB_VDOE(3), FB_LE(3),
-        VIDEO_DDR_TA, BUS_CYC_END) <= std_logic_vector'("00000000");
+        fb_vdoe <= (OTHERS => '0');
+        fb_le <= (OTHERS => '0');
+        video_ddr_ta <= '0';
+        bus_cyc_end <= '0';
+        
         stdVec3 := FB_REGDDR_q;
         CASE stdVec3 IS
             WHEN "000" =>
                 FB_LE(0) <= not nFB_WR;
                 --  LOS WENN BEREIT ODER IMMER BEI LINE WRITE
-                IF (BUS_CYC_q or (DDR_SEL and LINE and (not nFB_WR)))='1' THEN
+                IF (BUS_CYC_q or (DDR_SEL and LINE and (not nFB_WR))) = '1' THEN
                     FB_REGDDR_d <= "001";
                 ELSE
                     FB_REGDDR_d <= "000";
                 END IF;
             
             WHEN "001" =>
-                IF (DDR_CS_q)='1' THEN
+                IF DDR_CS_q = '1' THEN
                     FB_LE(0) <= not nFB_WR;
                     VIDEO_DDR_TA <= vcc;
-                    IF (LINE)='1' THEN
+                    IF LINE ='1' THEN
                         FB_VDOE(0) <= (not nFB_OE) and (not DDR_CONFIG);
                         FB_REGDDR_d <= "010";
                     ELSE
@@ -634,7 +636,7 @@ BEGIN
                 END IF;
             
             WHEN "010" =>
-                IF (DDR_CS_q)='1' THEN
+                IF DDR_CS_q = '1' THEN
                     FB_VDOE(1) <= (not nFB_OE) and (not DDR_CONFIG);
                     FB_LE(1) <= not nFB_WR;
                     VIDEO_DDR_TA <= vcc;
@@ -644,12 +646,12 @@ BEGIN
                 END IF;
             
             WHEN "011" =>
-                IF (DDR_CS_q)='1' THEN
+                IF DDR_CS_q ='1' THEN
                     FB_VDOE(2) <= (not nFB_OE) and (not DDR_CONFIG);
                     FB_LE(2) <= not nFB_WR;
 
                     --  BEI LINE WRITE EVT. WARTEN
-                    IF ((not BUS_CYC_q) and LINE and (not nFB_WR))='1' THEN
+                    IF ((not BUS_CYC_q) and LINE and (not nFB_WR)) = '1' THEN
                         FB_REGDDR_d <= "011";
                     ELSE
                         VIDEO_DDR_TA <= vcc;
@@ -660,7 +662,7 @@ BEGIN
                 END IF;
     
             WHEN "100" =>
-                IF (DDR_CS_q)='1' THEN
+                IF DDR_CS_q = '1' THEN
                     FB_VDOE(3) <= (not nFB_OE) and (not MAIN_CLK) and (not DDR_CONFIG);
                     FB_LE(3) <= not nFB_WR;
                     VIDEO_DDR_TA <= vcc;
@@ -672,7 +674,7 @@ BEGIN
             
             WHEN others =>
         END CASE;
-        stdVec3 := (others=>'0');  -- no storage needed
+        stdVec3 := (OTHERS => '0');  -- no storage needed
     END PROCESS;
 
     --  DDR STEUERUNG -----------------------------------------------------
@@ -690,6 +692,7 @@ BEGIN
     nVRAS <= not VRAS;
     nVCAS <= not VCAS;
     nVWE <= not VWE;
+    
     SR_DDR_WR_clk <= DDRCLK0;
     SR_DDRWR_D_SEL_clk <= DDRCLK0;
     SR_VDMP0_clk_ctrl <= DDRCLK0;
@@ -697,6 +700,7 @@ BEGIN
     CPU_AC_clk <= DDRCLK0;
     FIFO_AC_clk <= DDRCLK0;
     BLITTER_AC_clk <= DDRCLK0;
+    
     DDRWR_D_SEL1 <= BLITTER_AC_q;
 
     --  SELECT LOGIC
