@@ -723,8 +723,8 @@ ARCHITECTURE rtl OF video IS
     SIGNAL	FIFO_RDE        :  std_logic;
     SIGNAL	FIFO_WRE        :  std_logic;
     SIGNAL	INTER_ZEI       :  std_logic;
-    SIGNAL	nFB_BURST       :  std_logic;
-    SIGNAL	pixel_clk_i :  std_logic;
+    SIGNAL	nFB_BURST       :  std_logic := '0';
+    SIGNAL	pixel_clk_i     :  std_logic;
     SIGNAL	SR_BLITTER_DACK :  std_logic;
     SIGNAL	SR_DDR_FB       :  std_logic;
     SIGNAL	SR_DDR_WR       :  std_logic;

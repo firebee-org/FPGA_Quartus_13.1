@@ -187,18 +187,18 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL VERZ0                    : std_logic_vector(9 DOWNTO 0);
     SIGNAL VERZ0_d                  : std_logic_vector(9 DOWNTO 0);
     SIGNAL VERZ0_q                  : std_logic_vector(9 DOWNTO 0);
-    SIGNAL RAND                     : std_logic_vector(6 DOWNTO 0);
+    SIGNAL RAND                     : std_logic_vector(6 DOWNTO 0) := (OTHERS => '0');
     SIGNAL RAND_d                   : std_logic_vector(6 DOWNTO 0);
     SIGNAL RAND_q                   : std_logic_vector(6 DOWNTO 0);
     SIGNAL CCSEL_d                  : std_logic_vector(2 DOWNTO 0);
     SIGNAL CCSEL_q                  : std_logic_vector(2 DOWNTO 0);
-    SIGNAL ATARI_HH                 : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_HH                 : std_logic_vector(31 DOWNTO 0) := (OTHERS => '0');
     SIGNAL ATARI_HH_d               : std_logic_vector(31 DOWNTO 0);
     SIGNAL ATARI_HH_q               : std_logic_vector(31 DOWNTO 0);
     SIGNAL ATARI_VH                 : std_logic_vector(31 DOWNTO 0);
     SIGNAL ATARI_VH_d               : std_logic_vector(31 DOWNTO 0);
     SIGNAL ATARI_VH_q               : std_logic_vector(31 DOWNTO 0);
-    SIGNAL ATARI_HL                 : std_logic_vector(31 DOWNTO 0);
+    SIGNAL ATARI_HL                 : std_logic_vector(31 DOWNTO 0) := (OTHERS => '0');
     SIGNAL ATARI_HL_d               : std_logic_vector(31 DOWNTO 0);
     SIGNAL ATARI_HL_q               : std_logic_vector(31 DOWNTO 0);
     SIGNAL ATARI_VL                 : std_logic_vector(31 DOWNTO 0);
@@ -212,10 +212,10 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL H_TOTAL                  : std_logic_vector(11 DOWNTO 0);
     SIGNAL HDIS_LEN                 : std_logic_vector(11 DOWNTO 0);
     SIGNAL MULF                     : std_logic_vector(5 DOWNTO 0);
-    SIGNAL HHT                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HHT                      : std_logic_vector(11 DOWNTO 0) := (OTHERS => '0');
     SIGNAL HHT_d                    : std_logic_vector(11 DOWNTO 0);
     SIGNAL HHT_q                    : std_logic_vector(11 DOWNTO 0);
-    SIGNAL HBE                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HBE                      : std_logic_vector(11 DOWNTO 0) := (OTHERS => '0');
     SIGNAL HBE_d                    : std_logic_vector(11 DOWNTO 0);
     SIGNAL HBE_q                    : std_logic_vector(11 DOWNTO 0);
     SIGNAL HDB                      : std_logic_vector(11 DOWNTO 0);
@@ -227,7 +227,7 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL HBB                      : std_logic_vector(11 DOWNTO 0);
     SIGNAL HBB_d                    : std_logic_vector(11 DOWNTO 0);
     SIGNAL HBB_q                    : std_logic_vector(11 DOWNTO 0);
-    SIGNAL HSS                      : std_logic_vector(11 DOWNTO 0);
+    SIGNAL HSS                      : std_logic_vector(11 DOWNTO 0) := (OTHERS => '0');
     SIGNAL HSS_d                    : std_logic_vector(11 DOWNTO 0);
     SIGNAL HSS_q                    : std_logic_vector(11 DOWNTO 0);
     SIGNAL RAND_OBEN                : std_logic_vector(10 DOWNTO 0);
@@ -258,7 +258,7 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL VCO_d                    : std_logic_vector(8 DOWNTO 0);
     SIGNAL VCO_ena                  : std_logic_vector(8 DOWNTO 0);
     SIGNAL VCO_q                    : std_logic_vector(8 DOWNTO 0);
-    SIGNAL VCNTRL                   : std_logic_vector(3 DOWNTO 0);
+    SIGNAL VCNTRL                   : std_logic_vector(3 DOWNTO 0) := (OTHERS => '0');
     SIGNAL VCNTRL_d                 : std_logic_vector(3 DOWNTO 0);
     SIGNAL VCNTRL_q                 : std_logic_vector(3 DOWNTO 0);
     SIGNAL u0_data                  : std_logic_vector(15 DOWNTO 0);
@@ -1825,17 +1825,17 @@ BEGIN
    RAND_RECHTS <= (HBB_q and sizeIt(ACP_VIDEO_ON,12)) or
 	              ((std_logic_vector(unsigned(HDIS_END) + 1)) and sizeIt(not ACP_VIDEO_ON, 12));
 
-   hs_start <= hss WHEN acp_video_on ELSE
-               atari_hl(11 DOWNTO 0) WHEN not(acp_video_on) and atari_sync and vcntrl(2) ELSE
-               atari_hh(11 DOWNTO 0) WHEN not(acp_video_on) and atari_sync and not vcntrl(2) ELSE
-               std_logic_vector(resize(unsigned(hht) + 1 + unsigned(hss) * unsigned(mulf(5 DOWNTO 1)), 12)) WHEN not acp_video_on and not atari_sync;
+    hs_start <= hss_q WHEN acp_video_on ELSE
+                atari_hl(11 DOWNTO 0) WHEN not(acp_video_on) and atari_sync and vcntrl(2) ELSE
+                atari_hh(11 DOWNTO 0) WHEN not(acp_video_on) and atari_sync and not vcntrl(2) ELSE
+                std_logic_vector(resize(unsigned(hht) + 1 + unsigned(hss) * unsigned(mulf(5 DOWNTO 1)), 12)) WHEN not acp_video_on and not atari_sync;
             
 --    HS_START[]      =  HSS[]                                    &  ACP_VIDEO_ON
 --                     #  ATARI_HL[11..0]                          & !ACP_VIDEO_ON &  ATARI_SYNC &  VCNTRL2
 --                     #  ATARI_HH[11..0]                          & !ACP_VIDEO_ON &  ATARI_SYNC & !VCNTRL2
 --                     # (HHT[] + 1 + HSS[]) * (0, MULF[5..1])     & !ACP_VIDEO_ON & !ATARI_SYNC;          --
 --  
-    h_total <= hht WHEN acp_video_on ELSE
+    h_total <= hht_q WHEN acp_video_on ELSE
                atari_hl(27 DOWNTO 16) WHEN not acp_video_on and atari_sync and vcntrl(2) ELSE
                atari_hh(27 DOWNTO 16) WHEN not acp_video_on and atari_sync and not vcntrl(2) ELSE
                std_logic_vector(resize((unsigned(hht) + 2) * unsigned(mulf), 12)) WHEN not acp_video_on and not atari_sync;
@@ -1844,158 +1844,160 @@ BEGIN
 --                     #  ATARI_HL[27..16]                         & !ACP_VIDEO_ON &  ATARI_SYNC &  VCNTRL2
 --                     #  ATARI_HH[27..16]                         & !ACP_VIDEO_ON &  ATARI_SYNC & !VCNTRL2
 --                     # (HHT[] + 2) * (0, MULF[])                 & !ACP_VIDEO_ON & !ATARI_SYNC;          --
-   RAND_OBEN <= (VBE_q and sizeIt(ACP_VIDEO_ON,11)) or ("00000011111" and
+    RAND_OBEN <= (VBE_q and sizeIt(ACP_VIDEO_ON,11)) or ("00000011111" and
 	 sizeIt(not ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11)) or
 	 (std_logic_vector'('0' & VBE_q(10 DOWNTO 1)) and sizeIt(not
 	 ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
-   VDIS_START <= (VDB_q and sizeIt(ACP_VIDEO_ON,11)) or 
+    
+    VDIS_START <= (VDB_q and sizeIt(ACP_VIDEO_ON,11)) or 
                  ("00000100000" and sizeIt(not ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11)) or
                  ((std_logic_vector(unsigned(std_logic_vector('0' & VDB_q(10 DOWNTO 1))) + 1)) and sizeIt(not ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
                  
-   VDIS_END <= (VDE_q and sizeIt(ACP_VIDEO_ON,11)) or ("00110101111" and
+    VDIS_END <= (VDE_q and sizeIt(ACP_VIDEO_ON,11)) or ("00110101111" and
 	 sizeIt(not ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11) and
 	 sizeIt(ST_VIDEO,11)) or ("00111111111" and sizeIt(not ACP_VIDEO_ON,11)
 	 and sizeIt(ATARI_SYNC,11) and sizeIt(not ST_VIDEO,11)) or
 	 (std_logic_vector'('0' & VDE_q(10 DOWNTO 1)) and sizeIt(not
 	 ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
-   RAND_UNTEN <= (VBB_q and sizeIt(ACP_VIDEO_ON,11)) or
+    RAND_UNTEN <= (VBB_q and sizeIt(ACP_VIDEO_ON,11)) or
 	 ((std_logic_vector(unsigned(VDIS_END) + 1)) and sizeIt(not ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11)) or
 	 ((std_logic_vector(unsigned(std_logic_vector('0' & VBB_q(10 DOWNTO 1))) + 1)) and sizeIt(not ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
      
-   VS_START <= (VSS_q and sizeIt(ACP_VIDEO_ON,11)) or (ATARI_VL_q(10 DOWNTO 0)
+    VS_START <= (VSS_q and sizeIt(ACP_VIDEO_ON,11)) or (ATARI_VL_q(10 DOWNTO 0)
 	 and sizeIt(not ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11) and
 	 sizeIt(VCNTRL_q(2),11)) or (ATARI_VH_q(10 DOWNTO 0) and sizeIt(not
 	 ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11) and sizeIt(not
 	 VCNTRL_q(2),11)) or (std_logic_vector'('0' & VSS_q(10 DOWNTO 1)) and
 	 sizeIt(not ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
-   V_TOTAL <= (VFT_q and sizeIt(ACP_VIDEO_ON,11)) or (ATARI_VL_q(26 DOWNTO 16)
+    V_TOTAL <= (VFT_q and sizeIt(ACP_VIDEO_ON,11)) or (ATARI_VL_q(26 DOWNTO 16)
 	 and sizeIt(not ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11) and
 	 sizeIt(VCNTRL_q(2),11)) or (ATARI_VH_q(26 DOWNTO 16) and sizeIt(not
 	 ACP_VIDEO_ON,11) and sizeIt(ATARI_SYNC,11) and sizeIt(not
 	 VCNTRL_q(2),11)) or (std_logic_vector'('0' & VFT_q(10 DOWNTO 1)) and
 	 sizeIt(not ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
 
---  ZÄHLER
-   LAST_clk <= PIXEL_CLK;
-   LAST_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(H_TOTAL) - 2)));
-   VHCNT0_clk_ctrl <= PIXEL_CLK;
-   VHCNT_d <= (std_logic_vector(unsigned(VHCNT_q) + 1)) and sizeIt(not LAST_q,12);
-   VVCNT0_clk_ctrl <= PIXEL_CLK;
-   VVCNT0_ena_ctrl <= LAST_q;
-   VVCNT_d <= (std_logic_vector(unsigned(VVCNT_q) + 1)) and sizeIt(to_std_logic(VVCNT_q /= (std_logic_vector(unsigned(V_TOTAL) - 1))), 11);
+    --  ZÄHLER
+    LAST_clk <= PIXEL_CLK;
+    LAST_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(H_TOTAL) - 2)));
+    VHCNT0_clk_ctrl <= PIXEL_CLK;
+    VHCNT_d <= (std_logic_vector(unsigned(VHCNT_q) + 1)) and sizeIt(not LAST_q,12);
+    VVCNT0_clk_ctrl <= PIXEL_CLK;
+    VVCNT0_ena_ctrl <= LAST_q;
+    VVCNT_d <= (std_logic_vector(unsigned(VVCNT_q) + 1)) and sizeIt(to_std_logic(VVCNT_q /= (std_logic_vector(unsigned(V_TOTAL) - 1))), 11);
 
---  DISPLAY ON OFF
-   DPO_ZL_clk <= PIXEL_CLK;
+    --  DISPLAY ON OFF
+    DPO_ZL_clk <= PIXEL_CLK;
 
---  1 ZEILE DAVOR ON OFF
-   DPO_ZL_d <= to_std_logic((unsigned(VVCNT_q) > unsigned(std_logic_vector(unsigned(RAND_OBEN) - 1))) and (unsigned(VVCNT_q) < unsigned(std_logic_vector(unsigned(RAND_UNTEN) - 1))));
+    --  1 ZEILE DAVOR ON OFF
+    DPO_ZL_d <= to_std_logic((unsigned(VVCNT_q) > unsigned(std_logic_vector(unsigned(RAND_OBEN) - 1))) and (unsigned(VVCNT_q) < unsigned(std_logic_vector(unsigned(RAND_UNTEN) - 1))));
 
---  AM ZEILENENDE ÜBERNEHMEN
-   DPO_ZL_ena <= LAST_q;
-   DPO_ON_clk <= PIXEL_CLK;
+    --  AM ZEILENENDE ÜBERNEHMEN
+    DPO_ZL_ena <= LAST_q;
+    DPO_ON_clk <= PIXEL_CLK;
 
---  BESSER EINZELN WEGEN TIMING
-   DPO_ON_d <= to_std_logic(VHCNT_q = RAND_LINKS);
-   DPO_OFF_clk <= PIXEL_CLK;
-   DPO_OFF_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(RAND_RECHTS) - 1)));
-   DISP_ON_clk <= PIXEL_CLK;
-   DISP_ON_d <= (DISP_ON_q and (not DPO_OFF_q)) or (DPO_ON_q and DPO_ZL_q);
+    --  BESSER EINZELN WEGEN TIMING
+    DPO_ON_d <= to_std_logic(VHCNT_q = RAND_LINKS);
+    DPO_OFF_clk <= PIXEL_CLK;
+    DPO_OFF_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(RAND_RECHTS) - 1)));
+    DISP_ON_clk <= PIXEL_CLK;
+    DISP_ON_d <= (DISP_ON_q and (not DPO_OFF_q)) or (DPO_ON_q and DPO_ZL_q);
 
---  DATENTRANSFER ON OFF
-   VCO_ON_clk <= PIXEL_CLK;
+    --  DATENTRANSFER ON OFF
+    VCO_ON_clk <= PIXEL_CLK;
 
---  BESSER EINZELN WEGEN TIMING
-   VCO_ON_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HDIS_START) - 1)));
-   VCO_OFF_clk <= PIXEL_CLK;
-   VCO_OFF_d <= to_std_logic(VHCNT_q = HDIS_END);
-   VCO_ZL_clk <= PIXEL_CLK;
+    --  BESSER EINZELN WEGEN TIMING
+    VCO_ON_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HDIS_START) - 1)));
+    VCO_OFF_clk <= PIXEL_CLK;
+    VCO_OFF_d <= to_std_logic(VHCNT_q = HDIS_END);
+    VCO_ZL_clk <= PIXEL_CLK;
 
---  AM ZEILENENDE ÜBERNEHMEN
-   VCO_ZL_ena <= LAST_q;
+    --  AM ZEILENENDE ÜBERNEHMEN
+    VCO_ZL_ena <= LAST_q;
 
---  1 ZEILE DAVOR ON OFF
-   VCO_ZL_d <= to_std_logic((unsigned(VVCNT_q) >= unsigned(std_logic_vector(unsigned(VDIS_START) - 1))) and (unsigned(VVCNT_q) < unsigned(VDIS_END)));
-   VDTRON_clk <= PIXEL_CLK;
-   VDTRON_d <= (VDTRON_q and (not VCO_OFF_q)) or (VCO_ON_q and VCO_ZL_q);
+    --  1 ZEILE DAVOR ON OFF
+    VCO_ZL_d <= to_std_logic((unsigned(VVCNT_q) >= unsigned(std_logic_vector(unsigned(VDIS_START) - 1))) and (unsigned(VVCNT_q) < unsigned(VDIS_END)));
+    VDTRON_clk <= PIXEL_CLK;
+    VDTRON_d <= (VDTRON_q and (not VCO_OFF_q)) or (VCO_ON_q and VCO_ZL_q);
 
---  VERZÖGERUNG UND SYNC
-   HSYNC_START_clk <= PIXEL_CLK;
-   HSYNC_START_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HS_START) - 3)));
-   HSYNC_I0_clk_ctrl <= PIXEL_CLK;
-   HSYNC_I_d <= (HSY_LEN_q and sizeIt(HSYNC_START_q,8)) or
+    --  VERZÖGERUNG UND SYNC
+    HSYNC_START_clk <= PIXEL_CLK;
+    HSYNC_START_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HS_START) - 3)));
+    HSYNC_I0_clk_ctrl <= PIXEL_CLK;
+    HSYNC_I_d <= (HSY_LEN_q and sizeIt(HSYNC_START_q,8)) or
                 ((std_logic_vector(unsigned(HSYNC_I_q) - 1)) and
 	 sizeIt(not HSYNC_START_q,8) and sizeIt(to_std_logic(HSYNC_I_q /=
 	 "00000000"),8));
-   VSYNC_START_clk <= PIXEL_CLK;
-   VSYNC_START_ena <= LAST_q;
+    VSYNC_START_clk <= PIXEL_CLK;
+    VSYNC_START_ena <= LAST_q;
 
---  start am ende der Zeile vor dem vsync
-   VSYNC_START_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(VS_START) - 3)));
-   VSYNC_I0_clk_ctrl <= PIXEL_CLK;
+    --  start am ende der Zeile vor dem vsync
+    VSYNC_START_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(VS_START) - 3)));
+    VSYNC_I0_clk_ctrl <= PIXEL_CLK;
 
---  start am ende der Zeile vor dem vsync
-   VSYNC_I0_ena_ctrl <= LAST_q;
+    --  start am ende der Zeile vor dem vsync
+    VSYNC_I0_ena_ctrl <= LAST_q;
 
---  3 zeilen vsync length
---  runterzählen bis 0
-   VSYNC_I_d <= ("011" and sizeIt(VSYNC_START_q,3)) or
+    --  3 zeilen vsync length
+    --  runterzählen bis 0
+    VSYNC_I_d <= ("011" and sizeIt(VSYNC_START_q,3)) or
 	 ((std_logic_vector(unsigned(VSYNC_I_q) - 1)) and sizeIt(not VSYNC_START_q,3) and sizeIt(to_std_logic(VSYNC_I_q /= "000"),3));
-   VERZ2_0_clk_ctrl <= PIXEL_CLK;
-   VERZ1_0_clk_ctrl <= PIXEL_CLK;
-   VERZ0_0_clk_ctrl <= PIXEL_CLK;
+    VERZ2_0_clk_ctrl <= PIXEL_CLK;
+    VERZ1_0_clk_ctrl <= PIXEL_CLK;
+    VERZ0_0_clk_ctrl <= PIXEL_CLK;
    
-   (VERZ2_d(1), VERZ1_d(1), VERZ0_d(1)) <= std_logic_vector'(VERZ2_q(0) &
+    (VERZ2_d(1), VERZ1_d(1), VERZ0_d(1)) <= std_logic_vector'(VERZ2_q(0) &
 	 VERZ1_q(0) & VERZ0_q(0));
-   (VERZ2_d(2), VERZ1_d(2), VERZ0_d(2)) <= std_logic_vector'(VERZ2_q(1) &
+    (VERZ2_d(2), VERZ1_d(2), VERZ0_d(2)) <= std_logic_vector'(VERZ2_q(1) &
 	 VERZ1_q(1) & VERZ0_q(1));
-   (VERZ2_d(3), VERZ1_d(3), VERZ0_d(3)) <= std_logic_vector'(VERZ2_q(2) &
+    (VERZ2_d(3), VERZ1_d(3), VERZ0_d(3)) <= std_logic_vector'(VERZ2_q(2) &
 	 VERZ1_q(2) & VERZ0_q(2));
-   (VERZ2_d(4), VERZ1_d(4), VERZ0_d(4)) <= std_logic_vector'(VERZ2_q(3) &
+    (VERZ2_d(4), VERZ1_d(4), VERZ0_d(4)) <= std_logic_vector'(VERZ2_q(3) &
 	 VERZ1_q(3) & VERZ0_q(3));
-   (VERZ2_d(5), VERZ1_d(5), VERZ0_d(5)) <= std_logic_vector'(VERZ2_q(4) &
+    (VERZ2_d(5), VERZ1_d(5), VERZ0_d(5)) <= std_logic_vector'(VERZ2_q(4) &
 	 VERZ1_q(4) & VERZ0_q(4));
-   (VERZ2_d(6), VERZ1_d(6), VERZ0_d(6)) <= std_logic_vector'(VERZ2_q(5) &
+    (VERZ2_d(6), VERZ1_d(6), VERZ0_d(6)) <= std_logic_vector'(VERZ2_q(5) &
 	 VERZ1_q(5) & VERZ0_q(5));
-   (VERZ2_d(7), VERZ1_d(7), VERZ0_d(7)) <= std_logic_vector'(VERZ2_q(6) &
+    (VERZ2_d(7), VERZ1_d(7), VERZ0_d(7)) <= std_logic_vector'(VERZ2_q(6) &
 	 VERZ1_q(6) & VERZ0_q(6));
-   (VERZ2_d(8), VERZ1_d(8), VERZ0_d(8)) <= std_logic_vector'(VERZ2_q(7) &
+    (VERZ2_d(8), VERZ1_d(8), VERZ0_d(8)) <= std_logic_vector'(VERZ2_q(7) &
 	 VERZ1_q(7) & VERZ0_q(7));
-   (VERZ2_d(9), VERZ1_d(9), VERZ0_d(9)) <= std_logic_vector'(VERZ2_q(8) &
+    (VERZ2_d(9), VERZ1_d(9), VERZ0_d(9)) <= std_logic_vector'(VERZ2_q(8) &
 	 VERZ1_q(8) & VERZ0_q(8));
-   VERZ0_d(0) <= DISP_ON_q;
+    VERZ0_d(0) <= DISP_ON_q;
 
---   VERZ[1][0] = HSYNC_I[] != 0;
---  NUR MÖGLICH WENN BEIDE
-   VERZ1_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1')
+    --   VERZ[1][0] = HSYNC_I[] != 0;
+    --  NUR MÖGLICH WENN BEIDE
+    VERZ1_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1')
 	 and HSYNC_I_q /= "00000000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(6))='1' and HSYNC_I_q = "00000000"));
 
---  NUR MÖGLICH WENN BEIDE
-   VERZ2_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1')
+    --  NUR MÖGLICH WENN BEIDE
+    VERZ2_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1')
 	 and VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
-   nBLANK_clk <= PIXEL_CLK;
+    nBLANK_clk <= PIXEL_CLK;
 
---  nBLANK =  VERZ[0][8];
+    --  nBLANK =  VERZ[0][8];
     nblank_d <= verz0_q(8);
---  nBLANK_d <= DISP_ON_q;
-   HSYNC_clk <= PIXEL_CLK;
+    
+    --  nBLANK_d <= DISP_ON_q;
+    HSYNC_clk <= PIXEL_CLK;
 
---  HSYNC  =  VERZ[1][9];
---  NUR MÖGLICH WENN BEIDE
-   HSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1') and
+    --  HSYNC  =  VERZ[1][9];
+    --  NUR MÖGLICH WENN BEIDE
+    HSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1') and
 	 HSYNC_I_q /= "00000000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(6))='1' and HSYNC_I_q = "00000000"));
-   VSYNC_clk <= PIXEL_CLK;
+    VSYNC_clk <= PIXEL_CLK;
 
---  VSYNC  =  VERZ[2][9];
---  NUR MÖGLICH WENN BEIDE
+    --  VSYNC  =  VERZ[2][9];
+    --  NUR MÖGLICH WENN BEIDE
     VSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1') and
 	 VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
     nSYNC <= gnd;
 
---  RANDFARBE MACHEN ------------------------------------
+    --  RANDFARBE MACHEN ------------------------------------
     RAND0_clk_ctrl <= PIXEL_CLK;
     RAND_d(0) <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
     RAND_d(1) <= RAND_q(0);
@@ -2005,63 +2007,63 @@ BEGIN
     RAND_d(5) <= RAND_q(4);
     RAND_d(6) <= RAND_q(5);
     
---  RAND_ON = RAND[6];
+    --  RAND_ON = RAND[6];
     rand_on <= rand(6);
     -- RAND_ON <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
 
--- --------------------------------------------------------
-   CLR_FIFO_clk <= PIXEL_CLK;
-   CLR_FIFO_ena <= LAST_q;
+    -- --------------------------------------------------------
+    CLR_FIFO_clk <= PIXEL_CLK;
+    CLR_FIFO_ena <= LAST_q;
 
---  IN LETZTER ZEILE LÖSCHEN
-   CLR_FIFO_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(V_TOTAL) - 2)));
-   START_ZEILE_clk <= PIXEL_CLK;
-   START_ZEILE_ena <= LAST_q;
+    --  IN LETZTER ZEILE LÖSCHEN
+    CLR_FIFO_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(V_TOTAL) - 2)));
+    START_ZEILE_clk <= PIXEL_CLK;
+    START_ZEILE_ena <= LAST_q;
 
---  ZEILE 1
-   START_ZEILE_d <= to_std_logic(VVCNT_q = "00000000000");
-   SYNC_PIX_clk <= PIXEL_CLK;
+    --  ZEILE 1
+    START_ZEILE_d <= to_std_logic(VVCNT_q = "00000000000");
+    SYNC_PIX_clk <= PIXEL_CLK;
 
---  SUB PIXEL ZÄHLER SYNCHRONISIEREN
-   SYNC_PIX_d <= to_std_logic(VHCNT_q = "000000000011") and START_ZEILE_q;
-   SYNC_PIX1_clk <= PIXEL_CLK;
+    --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
+    SYNC_PIX_d <= to_std_logic(VHCNT_q = "000000000011") and START_ZEILE_q;
+    SYNC_PIX1_clk <= PIXEL_CLK;
 
---  SUB PIXEL ZÄHLER SYNCHRONISIEREN
-   SYNC_PIX1_d <= to_std_logic(VHCNT_q = "000000000101") and START_ZEILE_q;
-   SYNC_PIX2_clk <= PIXEL_CLK;
+    --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
+    SYNC_PIX1_d <= to_std_logic(VHCNT_q = "000000000101") and START_ZEILE_q;
+    SYNC_PIX2_clk <= PIXEL_CLK;
 
---  SUB PIXEL ZÄHLER SYNCHRONISIEREN
-   SYNC_PIX2_d <= to_std_logic(VHCNT_q = "000000000111") and START_ZEILE_q;
-   SUB_PIXEL_CNT0_clk_ctrl <= PIXEL_CLK;
-   SUB_PIXEL_CNT0_ena_ctrl <= VDTRON_q or SYNC_PIX_q;
+    --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
+    SYNC_PIX2_d <= to_std_logic(VHCNT_q = "000000000111") and START_ZEILE_q;
+    SUB_PIXEL_CNT0_clk_ctrl <= PIXEL_CLK;
+    SUB_PIXEL_CNT0_ena_ctrl <= VDTRON_q or SYNC_PIX_q;
 
--- count up if display on sonst clear bei sync pix
-   SUB_PIXEL_CNT_d <= (std_logic_vector(unsigned(SUB_PIXEL_CNT_q) + 1)) and sizeIt(not SYNC_PIX_q,7);
-   FIFO_RDE_clk <= PIXEL_CLK;
+    -- count up if display on sonst clear bei sync pix
+    SUB_PIXEL_CNT_d <= (std_logic_vector(unsigned(SUB_PIXEL_CNT_q) + 1)) and sizeIt(not SYNC_PIX_q,7);
+    FIFO_RDE_clk <= PIXEL_CLK;
 
---  3 CLOCK ZUSÄTZLICH FÜR FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
-   FIFO_RDE_d <= (((to_std_logic(SUB_PIXEL_CNT_q = "0000001") and COLOR1) or
+    --  3 CLOCK ZUSÄTZLICH FÜR FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
+    FIFO_RDE_d <= (((to_std_logic(SUB_PIXEL_CNT_q = "0000001") and COLOR1) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(5 DOWNTO 0) = "000001") and COLOR2) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(4 DOWNTO 0) = "00001") and COLOR4) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(3 DOWNTO 0) = "0001") and COLOR8) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(2 DOWNTO 0) = "001") and COLOR16) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(1 DOWNTO 0) = "01") and COLOR24)) and
 	 VDTRON_q) or SYNC_PIX_q or SYNC_PIX1_q or SYNC_PIX2_q;
-   CLUT_MUX_ADR0_clk_ctrl <= PIXEL_CLK;
-   CLUT_MUX_AV1_0_clk_ctrl <= PIXEL_CLK;
-   CLUT_MUX_AV0_0_clk_ctrl <= PIXEL_CLK;
-   CLUT_MUX_AV0_d <= SUB_PIXEL_CNT_q(3 DOWNTO 0);
-   CLUT_MUX_AV1_d <= CLUT_MUX_AV0_q;
-   CLUT_MUX_ADR_d <= CLUT_MUX_AV1_q;
+    CLUT_MUX_ADR0_clk_ctrl <= PIXEL_CLK;
+    CLUT_MUX_AV1_0_clk_ctrl <= PIXEL_CLK;
+    CLUT_MUX_AV0_0_clk_ctrl <= PIXEL_CLK;
+    CLUT_MUX_AV0_d <= SUB_PIXEL_CNT_q(3 DOWNTO 0);
+    CLUT_MUX_AV1_d <= CLUT_MUX_AV0_q;
+    CLUT_MUX_ADR_d <= CLUT_MUX_AV1_q;
 
 
--- Assignments added to explicitly combine the
--- effects of multiple drivers in the source
-   COLOR16 <= COLOR16_1 or COLOR16_2;
-   COLOR4 <= COLOR4_1 or COLOR4_2;
-   COLOR1 <= COLOR1_1 or COLOR1_2 or COLOR1_3;
-   COLOR8 <= COLOR8_1 or COLOR8_2;
+    -- Assignments added to explicitly combine the
+    -- effects of multiple drivers in the source
+    COLOR16 <= COLOR16_1 or COLOR16_2;
+    COLOR4 <= COLOR4_1 or COLOR4_2;
+    COLOR1 <= COLOR1_1 or COLOR1_2 or COLOR1_3;
+    COLOR8 <= COLOR8_1 or COLOR8_2;
 
--- Define power SIGNAL(s)
-   gnd <= '0';
+    -- Define power SIGNAL(s)
+    gnd <= '0';
 END ARCHITECTURE rtl;

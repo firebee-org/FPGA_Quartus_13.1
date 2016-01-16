@@ -109,8 +109,8 @@ derive_pll_clocks
 # Set Clock Uncertainty
 #**************************************************************
 
-set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -rise_to [get_clocks {MAIN_CLK}]  2.00  
-set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -fall_to [get_clocks {MAIN_CLK}]  2.00  
+#set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -rise_to [get_clocks {MAIN_CLK}]  2.00  
+#set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -fall_to [get_clocks {MAIN_CLK}]  2.00  
 derive_clock_uncertainty
 
 
@@ -118,8 +118,8 @@ derive_clock_uncertainty
 # Set Input Delay
 #**************************************************************
 
-set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 2.500 [all_inputs]
-set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 2.500 [all_inputs]
+# set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 2.500 [all_inputs]
+# set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 2.500 [all_inputs]
 
 #set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 1.500 [get_ports {FB*}]
 #set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 1.500 {nFB_CS1 nFB_CS2 nFB_CS3 nFB_OE}
@@ -130,8 +130,8 @@ set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 2.500 [all_inputs
 # Set Output Delay
 #**************************************************************
 
-set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 2.500 [all_outputs]
-set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 2.500 [all_outputs]
+# set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 2.500 [all_outputs]
+# set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 2.500 [all_outputs]
 
 #set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -min 1.500 [get_ports {FB*}]
 #set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}]  -min 1.500 {nFB_TA}

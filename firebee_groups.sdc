@@ -91,6 +91,9 @@ create_clock -name {MAIN_CLK} -period 30.303 -waveform { 0.000 15.151 } [get_por
 
 derive_pll_clocks
 
+create_generated_clock -divide_by 2 -source MAIN_CLK i_video|i_video_mod_mux_clutctr|CLK17M_q
+create_generated_clock -divide_by 2 -source i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[2] i_video|i_video_mod_mux_clutctr|CLK13M_q
+
 # PIXEL_CLK is either
 # CLK13M, CLK17M, CLK25M, CLK33M or CLK_VIDEO
 # where CLK13M is half of CLK25M,
@@ -109,8 +112,8 @@ derive_pll_clocks
 # Set Clock Uncertainty
 #**************************************************************
 
-set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -rise_to [get_clocks {MAIN_CLK}]  2.0  
-set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -fall_to [get_clocks {MAIN_CLK}]  2.0  
+set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -rise_to [get_clocks {MAIN_CLK}]  0.5  
+set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -fall_to [get_clocks {MAIN_CLK}]  0.5  
 derive_clock_uncertainty
 
 
@@ -133,38 +136,43 @@ set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 0.500 [all_outpu
 #**************************************************************
 # Set Clock Groups
 #**************************************************************
-
+                   
 set_clock_groups -asynchronous -group [get_clocks {MAIN_CLK}] \
                                       [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] \
                                -group [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] \
-                                       [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[1]}] \
-                                       [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[2]}] \
-                                       [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[3]}] \
-                               -group  [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] \
+                                      [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[1]}] \
+                                      [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[2]}] \
+                                      [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[3]}] \
+                               -group [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] \
                                -group [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[1]}] \
                                -group [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[2]}] \
                                -group [get_clocks {i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[3]}] \
                                -group [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] \
                                -group [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[1]}] \
                                -group [get_clocks {i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[2]}] \
-                               -group [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}]
-
+                               -group [get_clocks {i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]}] \
+                               -group [get_clocks {video:i_video|video_mod_mux_clutctr:i_video_mod_mux_clutctr|CLK17M_q}] \
+                               -group [get_clocks {video:i_video|video_mod_mux_clutctr:i_video_mod_mux_clutctr|CLK13M_q}]
+                               
+                                
 #**************************************************************
 # Set False Path
 #**************************************************************
-
-set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_id9:dffpipe17|dffe18a*}]
-set_false_path -from [get_keepers {*delayed_wrptr_g*}] -to [get_keepers {*rs_dgwp|dffpipe_hd9:dffpipe12|dffe13a*}]
-set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_kd9:dffpipe15|dffe16a*}]
-set_false_path -from [get_keepers {*delayed_wrptr_g*}] -to [get_keepers {*rs_dgwp|dffpipe_jd9:dffpipe12|dffe13a*}]
-set_false_path -from [get_keepers {*rdptr_g*}] -to [get_keepers {*ws_dgrp|dffpipe_re9:dffpipe19|dffe20a*}]
-
 
 #**************************************************************
 # Set Multicycle Path
 #**************************************************************
 
-set_multicycle_path -start -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] 2
+#set_multicycle_path -start -from video:i_video|video_mod_mux_clutctr:i_video_mod_mux_clutctr|CLK17M_q -to i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0] 2
+#set_multicycle_path -start -from video:i_video|video_mod_mux_clutctr:i_video_mod_mux_clutctr|CLK13M_q -to i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0] 2
+
+#set_multicycle_path -end -from video:i_video|video_mod_mux_clutctr:i_video_mod_mux_clutctr|CLK13M_q -to MAIN_CLK 2
+
+#set_multicycle_path -start -from MAIN_CLK -to i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0] 2
+#set_multicycle_path -start -from MAIN_CLK -to i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[1] 2
+#set_multicycle_path -start -from MAIN_CLK -to i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0] 2
+
+# set_multicycle_path -start -from [get_clocks {MAIN_CLK}] -to [get_clocks {i_ddr_clk_pll|altpll_component|auto_generated|pll1|clk[4]}] 2
 
 #**************************************************************
 # Set Maximum Delay
