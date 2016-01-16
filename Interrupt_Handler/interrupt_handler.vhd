@@ -795,149 +795,137 @@ BEGIN
       END IF;
    END PROCESS;
 
-   PROCESS (INT_LATCH0_clk_1, INT_LATCH_clrn) BEGIN
-      IF INT_LATCH_clrn(0)='0' THEN
-	 INT_LATCH_q(0) <= '0';
-      ELSIF INT_LATCH0_clk_1'event and INT_LATCH0_clk_1='1' THEN
-	 INT_LATCH_q(0) <= INT_LATCH_d(0);
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LATCH0_clk_1, INT_LATCH_clrn)
+    BEGIN
+        IF INT_LATCH_clrn(0)='0' THEN
+            INT_LATCH_q(0) <= '0';
+        ELSIF INT_LATCH0_clk_1'event and INT_LATCH0_clk_1='1' THEN
+            INT_LATCH_q(0) <= INT_LATCH_d(0);
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_CLEAR0_clk_ctrl) BEGIN
-      IF INT_CLEAR0_clk_ctrl'event and INT_CLEAR0_clk_ctrl='1' THEN
-	 INT_CLEAR_q <= INT_CLEAR_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_CLEAR0_clk_ctrl)
+    BEGIN
+        IF INT_CLEAR0_clk_ctrl'event and INT_CLEAR0_clk_ctrl='1' THEN
+            INT_CLEAR_q <= INT_CLEAR_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl) BEGIN
-      IF INT_ENA0_clrn_ctrl='0' THEN
-	 (INT_ENA_q(31), INT_ENA_q(30), INT_ENA_q(29), INT_ENA_q(28),
-	       INT_ENA_q(27), INT_ENA_q(26), INT_ENA_q(25), INT_ENA_q(24)) <=
-	       std_logic_vector'("00000000");
-      ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
-	 IF INT_ENA24_ena_ctrl='1' THEN
-	    (INT_ENA_q(31), INT_ENA_q(30), INT_ENA_q(29), INT_ENA_q(28),
-		  INT_ENA_q(27), INT_ENA_q(26), INT_ENA_q(25), INT_ENA_q(24))
-		  <= INT_ENA_d(31 DOWNTO 24);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl)
+    BEGIN
+        IF INT_ENA0_clrn_ctrl='0' THEN
+            (INT_ENA_q(31), INT_ENA_q(30), INT_ENA_q(29), INT_ENA_q(28),
+                    INT_ENA_q(27), INT_ENA_q(26), INT_ENA_q(25), INT_ENA_q(24)) <= std_logic_vector'("00000000");
+        ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
+            IF INT_ENA24_ena_ctrl='1' THEN
+                (INT_ENA_q(31), INT_ENA_q(30), INT_ENA_q(29), INT_ENA_q(28), INT_ENA_q(27), INT_ENA_q(26), INT_ENA_q(25), INT_ENA_q(24)) <= INT_ENA_d(31 DOWNTO 24);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl) BEGIN
-      IF INT_ENA0_clrn_ctrl='0' THEN
-	 (INT_ENA_q(23), INT_ENA_q(22), INT_ENA_q(21), INT_ENA_q(20),
-	       INT_ENA_q(19), INT_ENA_q(18), INT_ENA_q(17), INT_ENA_q(16)) <=
-	       std_logic_vector'("00000000");
-      ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
-	 IF INT_ENA16_ena_ctrl='1' THEN
-	    (INT_ENA_q(23), INT_ENA_q(22), INT_ENA_q(21), INT_ENA_q(20),
-		  INT_ENA_q(19), INT_ENA_q(18), INT_ENA_q(17), INT_ENA_q(16))
-		  <= INT_ENA_d(23 DOWNTO 16);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl) BEGIN
+        IF INT_ENA0_clrn_ctrl='0' THEN
+            (INT_ENA_q(23), INT_ENA_q(22), INT_ENA_q(21), INT_ENA_q(20), INT_ENA_q(19), INT_ENA_q(18), INT_ENA_q(17), INT_ENA_q(16)) <= std_logic_vector'("00000000");
+        ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
+            IF INT_ENA16_ena_ctrl='1' THEN
+                (INT_ENA_q(23), INT_ENA_q(22), INT_ENA_q(21), INT_ENA_q(20), INT_ENA_q(19), INT_ENA_q(18), INT_ENA_q(17), INT_ENA_q(16)) <= INT_ENA_d(23 DOWNTO 16);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl) BEGIN
-      IF INT_ENA0_clrn_ctrl='0' THEN
-	 (INT_ENA_q(15), INT_ENA_q(14), INT_ENA_q(13), INT_ENA_q(12),
-	       INT_ENA_q(11), INT_ENA_q(10), INT_ENA_q(9), INT_ENA_q(8)) <=
-	       std_logic_vector'("00000000");
-      ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
-	 IF INT_ENA8_ena_ctrl='1' THEN
-	    (INT_ENA_q(15), INT_ENA_q(14), INT_ENA_q(13), INT_ENA_q(12),
-		  INT_ENA_q(11), INT_ENA_q(10), INT_ENA_q(9), INT_ENA_q(8)) <=
-		  INT_ENA_d(15 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl) BEGIN
+        IF INT_ENA0_clrn_ctrl='0' THEN
+            (INT_ENA_q(15), INT_ENA_q(14), INT_ENA_q(13), INT_ENA_q(12), INT_ENA_q(11), INT_ENA_q(10), INT_ENA_q(9), INT_ENA_q(8)) <= std_logic_vector'("00000000");
+        ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
+            IF INT_ENA8_ena_ctrl='1' THEN
+                (INT_ENA_q(15), INT_ENA_q(14), INT_ENA_q(13), INT_ENA_q(12), INT_ENA_q(11), INT_ENA_q(10), INT_ENA_q(9), INT_ENA_q(8)) <=  INT_ENA_d(15 DOWNTO 8);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl) BEGIN
-      IF INT_ENA0_clrn_ctrl='0' THEN
-	 (INT_ENA_q(7), INT_ENA_q(6), INT_ENA_q(5), INT_ENA_q(4), INT_ENA_q(3),
-	       INT_ENA_q(2), INT_ENA_q(1), INT_ENA_q(0)) <=
-	       std_logic_vector'("00000000");
-      ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
-	 IF INT_ENA0_ena_ctrl='1' THEN
-	    (INT_ENA_q(7), INT_ENA_q(6), INT_ENA_q(5), INT_ENA_q(4),
-		  INT_ENA_q(3), INT_ENA_q(2), INT_ENA_q(1), INT_ENA_q(0)) <=
-		  INT_ENA_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_ENA0_clk_ctrl, INT_ENA0_clrn_ctrl) BEGIN
+        IF INT_ENA0_clrn_ctrl='0' THEN
+            (INT_ENA_q(7), INT_ENA_q(6), INT_ENA_q(5), INT_ENA_q(4), INT_ENA_q(3), INT_ENA_q(2), INT_ENA_q(1), INT_ENA_q(0)) <= std_logic_vector'("00000000");
+        ELSIF INT_ENA0_clk_ctrl'event and INT_ENA0_clk_ctrl='1' THEN
+            IF INT_ENA0_ena_ctrl='1' THEN
+                (INT_ENA_q(7), INT_ENA_q(6), INT_ENA_q(5), INT_ENA_q(4), INT_ENA_q(3), INT_ENA_q(2), INT_ENA_q(1), INT_ENA_q(0)) <= INT_ENA_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_L0_clk_ctrl, INT_L0_clrn_ctrl) BEGIN
-      IF INT_L0_clrn_ctrl='0' THEN
-	 INT_L_q <= std_logic_vector'("0000000000");
-      ELSIF INT_L0_clk_ctrl'event and INT_L0_clk_ctrl='1' THEN
-	 INT_L_q <= INT_L_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_L0_clk_ctrl, INT_L0_clrn_ctrl) BEGIN
+        IF INT_L0_clrn_ctrl='0' THEN
+            INT_L_q <= std_logic_vector'("0000000000");
+        ELSIF INT_L0_clk_ctrl'event and INT_L0_clk_ctrl='1' THEN
+            INT_L_q <= INT_L_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA9_0_clk_ctrl, INT_LA9_0_clrn_ctrl) BEGIN
-      IF INT_LA9_0_clrn_ctrl='0' THEN
-	 INT_LA9_q <= std_logic_vector'("0000");
-      ELSIF INT_LA9_0_clk_ctrl'event and INT_LA9_0_clk_ctrl='1' THEN
-	 INT_LA9_q <= INT_LA9_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA9_0_clk_ctrl, INT_LA9_0_clrn_ctrl) BEGIN
+        IF INT_LA9_0_clrn_ctrl='0' THEN
+            INT_LA9_q <= std_logic_vector'("0000");
+        ELSIF INT_LA9_0_clk_ctrl'event and INT_LA9_0_clk_ctrl='1' THEN
+            INT_LA9_q <= INT_LA9_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA8_0_clk_ctrl, INT_LA8_0_clrn_ctrl) BEGIN
-      IF INT_LA8_0_clrn_ctrl='0' THEN
-	 INT_LA8_q <= std_logic_vector'("0000");
-      ELSIF INT_LA8_0_clk_ctrl'event and INT_LA8_0_clk_ctrl='1' THEN
-	 INT_LA8_q <= INT_LA8_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA8_0_clk_ctrl, INT_LA8_0_clrn_ctrl) BEGIN
+        IF INT_LA8_0_clrn_ctrl='0' THEN
+            INT_LA8_q <= std_logic_vector'("0000");
+        ELSIF INT_LA8_0_clk_ctrl'event and INT_LA8_0_clk_ctrl='1' THEN
+            INT_LA8_q <= INT_LA8_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA7_0_clk_ctrl, INT_LA7_0_clrn_ctrl) BEGIN
-      IF INT_LA7_0_clrn_ctrl='0' THEN
-	 INT_LA7_q <= std_logic_vector'("0000");
-      ELSIF INT_LA7_0_clk_ctrl'event and INT_LA7_0_clk_ctrl='1' THEN
-	 INT_LA7_q <= INT_LA7_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA7_0_clk_ctrl, INT_LA7_0_clrn_ctrl) BEGIN
+        IF INT_LA7_0_clrn_ctrl='0' THEN
+            INT_LA7_q <= std_logic_vector'("0000");
+        ELSIF INT_LA7_0_clk_ctrl'event and INT_LA7_0_clk_ctrl='1' THEN
+            INT_LA7_q <= INT_LA7_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA6_0_clk_ctrl, INT_LA6_0_clrn_ctrl) BEGIN
-      IF INT_LA6_0_clrn_ctrl='0' THEN
-	 INT_LA6_q <= std_logic_vector'("0000");
-      ELSIF INT_LA6_0_clk_ctrl'event and INT_LA6_0_clk_ctrl='1' THEN
-	 INT_LA6_q <= INT_LA6_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA6_0_clk_ctrl, INT_LA6_0_clrn_ctrl) BEGIN
+        IF INT_LA6_0_clrn_ctrl='0' THEN
+            INT_LA6_q <= std_logic_vector'("0000");
+        ELSIF INT_LA6_0_clk_ctrl'event and INT_LA6_0_clk_ctrl='1' THEN
+            INT_LA6_q <= INT_LA6_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA5_0_clk_ctrl, INT_LA5_0_clrn_ctrl) BEGIN
-      IF INT_LA5_0_clrn_ctrl='0' THEN
-	 INT_LA5_q <= std_logic_vector'("0000");
-      ELSIF INT_LA5_0_clk_ctrl'event and INT_LA5_0_clk_ctrl='1' THEN
-	 INT_LA5_q <= INT_LA5_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA5_0_clk_ctrl, INT_LA5_0_clrn_ctrl) BEGIN
+        IF INT_LA5_0_clrn_ctrl='0' THEN
+            INT_LA5_q <= std_logic_vector'("0000");
+        ELSIF INT_LA5_0_clk_ctrl'event and INT_LA5_0_clk_ctrl='1' THEN
+            INT_LA5_q <= INT_LA5_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA4_0_clk_ctrl, INT_LA4_0_clrn_ctrl) BEGIN
-      IF INT_LA4_0_clrn_ctrl='0' THEN
-	 INT_LA4_q <= std_logic_vector'("0000");
-      ELSIF INT_LA4_0_clk_ctrl'event and INT_LA4_0_clk_ctrl='1' THEN
-	 INT_LA4_q <= INT_LA4_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA4_0_clk_ctrl, INT_LA4_0_clrn_ctrl) BEGIN
+        IF INT_LA4_0_clrn_ctrl='0' THEN
+            INT_LA4_q <= std_logic_vector'("0000");
+        ELSIF INT_LA4_0_clk_ctrl'event and INT_LA4_0_clk_ctrl='1' THEN
+            INT_LA4_q <= INT_LA4_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA3_0_clk_ctrl, INT_LA3_0_clrn_ctrl) BEGIN
-      IF INT_LA3_0_clrn_ctrl='0' THEN
-	 INT_LA3_q <= std_logic_vector'("0000");
-      ELSIF INT_LA3_0_clk_ctrl'event and INT_LA3_0_clk_ctrl='1' THEN
-	 INT_LA3_q <= INT_LA3_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA3_0_clk_ctrl, INT_LA3_0_clrn_ctrl) BEGIN
+        IF INT_LA3_0_clrn_ctrl='0' THEN
+            INT_LA3_q <= std_logic_vector'("0000");
+        ELSIF INT_LA3_0_clk_ctrl'event and INT_LA3_0_clk_ctrl='1' THEN
+            INT_LA3_q <= INT_LA3_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA2_0_clk_ctrl, INT_LA2_0_clrn_ctrl) BEGIN
-      IF INT_LA2_0_clrn_ctrl='0' THEN
-	 INT_LA2_q <= std_logic_vector'("0000");
-      ELSIF INT_LA2_0_clk_ctrl'event and INT_LA2_0_clk_ctrl='1' THEN
-	 INT_LA2_q <= INT_LA2_d;
-      END IF;
-   END PROCESS;
+    PROCESS (INT_LA2_0_clk_ctrl, INT_LA2_0_clrn_ctrl) BEGIN
+        IF INT_LA2_0_clrn_ctrl='0' THEN
+            INT_LA2_q <= std_logic_vector'("0000");
+        ELSIF INT_LA2_0_clk_ctrl'event and INT_LA2_0_clk_ctrl='1' THEN
+            INT_LA2_q <= INT_LA2_d;
+        END IF;
+    END PROCESS;
 
-   PROCESS (INT_LA1_0_clk_ctrl, INT_LA1_0_clrn_ctrl) BEGIN
+    PROCESS (INT_LA1_0_clk_ctrl, INT_LA1_0_clrn_ctrl) BEGIN
       IF INT_LA1_0_clrn_ctrl='0' THEN
 	 INT_LA1_q <= std_logic_vector'("0000");
       ELSIF INT_LA1_0_clk_ctrl'event and INT_LA1_0_clk_ctrl='1' THEN
