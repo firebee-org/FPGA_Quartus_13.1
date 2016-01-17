@@ -1486,8 +1486,7 @@ BEGIN
    BORDER_COLOR0_clk_ctrl <= MAIN_CLK;
 
 --  $404/4
-   BORDER_COLOR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2)
-	 = "00000000000000000100000001");
+   BORDER_COLOR_CS <= to_std_logic(((not nFB_CS2) = '1') and FB_ADR(27 DOWNTO 2) = "00000000000000000100000001");
    BORDER_COLOR_d <= FB_AD(23 DOWNTO 0);
    BORDER_COLOR16_ena_ctrl <= BORDER_COLOR_CS and FB_B(1) and (not nFB_WR);
    BORDER_COLOR8_ena_ctrl <= BORDER_COLOR_CS and FB_B(2) and (not nFB_WR);

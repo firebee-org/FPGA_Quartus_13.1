@@ -92,7 +92,7 @@ create_clock -name {MAIN_CLK} -period 30.303 -waveform { 0.000 15.151 } [get_por
 derive_pll_clocks
 
 create_generated_clock -divide_by 2 -source MAIN_CLK i_video|i_video_mod_mux_clutctr|CLK17M_q
-create_generated_clock -divide_by 2 -source i_mfp_acia_clk_pll|altpll_component|auto_generated|pll1|clk[2] i_video|i_video_mod_mux_clutctr|CLK13M_q
+create_generated_clock -divide_by 2 -source i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0] i_video|i_video_mod_mux_clutctr|CLK13M_q
 
 # PIXEL_CLK is either
 # CLK13M, CLK17M, CLK25M, CLK33M or CLK_VIDEO
@@ -121,16 +121,16 @@ derive_clock_uncertainty
 # Set Input Delay
 #**************************************************************
 
-set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.500 [all_inputs]
-set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 0.500 [all_inputs]
+#set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 1.500 [all_inputs]
+#set_input_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 0.500 [all_inputs]
 
 
 #**************************************************************
 # Set Output Delay
 #**************************************************************
 
-set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 2.500 [all_outputs]
-set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 0.500 [all_outputs]
+#set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -max 2.500 [all_outputs]
+#set_output_delay -add_delay -clock [get_clocks {MAIN_CLK}] -min 0.500 [all_outputs]
 
 
 #**************************************************************
