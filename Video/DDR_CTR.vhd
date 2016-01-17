@@ -276,7 +276,8 @@ ARCHITECTURE rtl OF ddr_ctr IS
     SIGNAL VRAS                         : std_logic;
     SIGNAL VCAS                         : std_logic;
     SIGNAL LINE                         : std_logic;
-
+    SIGNAL v_bash                       : std_logic_vector(7 DOWNTO 0);
+    SIGNAL v_bash_cs                    : std_logic;
 -- Sub Module Interface Section
 
 
@@ -573,6 +574,25 @@ BEGIN
         END IF;
     END PROCESS;
 
+    i_vbash : work.flexbus_register
+        GENERIC MAP
+        (
+            reg_width => 8,
+            match_address => x"ffff8604",
+            match_mask => x"0000fffe",      -- byte register
+            match_fbcs => 1
+        )
+        PORT MAP
+        (
+            clk => clk33m,
+            fb_addr => fb_adr,
+            fb_data => fb_ad,
+            fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
+            fb_wr_n => nfb_wr,
+            data => v_bash,
+            cs => v_bash_cs
+        );
+        
     -- Start of original equations
     LINE <= FB_SIZE0 and FB_SIZE1;
 

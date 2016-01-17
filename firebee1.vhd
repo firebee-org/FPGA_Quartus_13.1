@@ -205,90 +205,90 @@ ARCHITECTURE rtl OF firebee1 IS
     COMPONENT altpll_reconfig1
         PORT
         (
-            clock		        : IN STD_LOGIC ;
-            counter_param		: IN STD_LOGIC_VECTOR (2 DOWNTO 0);
-            counter_type		: IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-            data_in		        : IN STD_LOGIC_VECTOR (8 DOWNTO 0);
-            pll_areset_in		: IN STD_LOGIC  := '0';
-            pll_scandataout		: IN STD_LOGIC ;
-            pll_scandone		: IN STD_LOGIC ;
-            read_param		    : IN STD_LOGIC ;
-            reconfig		    : IN STD_LOGIC ;
-            reset		        : IN STD_LOGIC ;
-            write_param		    : IN STD_LOGIC ;
-            busy		        : OUT STD_LOGIC ;
-            data_out		    : OUT STD_LOGIC_VECTOR (8 DOWNTO 0);
-            pll_areset		    : OUT STD_LOGIC ;
-            pll_configupdate	: OUT STD_LOGIC ;
-            pll_scanclk		    : OUT STD_LOGIC ;
-            pll_scanclkena		: OUT STD_LOGIC ;
-            pll_scandata		: OUT STD_LOGIC 
+            clock		        : IN std_logic ;
+            counter_param		: IN std_logic_vector (2 DOWNTO 0);
+            counter_type		: IN std_logic_vector (3 DOWNTO 0);
+            data_in		        : IN std_logic_vector (8 DOWNTO 0);
+            pll_areset_in		: IN std_logic  := '0';
+            pll_scandataout		: IN std_logic ;
+            pll_scandone		: IN std_logic ;
+            read_param		    : IN std_logic ;
+            reconfig		    : IN std_logic ;
+            reset		        : IN std_logic ;
+            write_param		    : IN std_logic ;
+            busy		        : OUT std_logic ;
+            data_out		    : OUT std_logic_vector (8 DOWNTO 0);
+            pll_areset		    : OUT std_logic ;
+            pll_configupdate	: OUT std_logic ;
+            pll_scanclk		    : OUT std_logic ;
+            pll_scanclkena		: OUT std_logic ;
+            pll_scandata		: OUT std_logic 
         );
     END COMPONENT altpll_reconfig1;
     
     COMPONENT altpll4
         PORT
         (
-            areset		    : IN STD_LOGIC  := '0';
-            configupdate	: IN STD_LOGIC  := '0';
-            inclk0		    : IN STD_LOGIC  := '0';
-            scanclk		    : IN STD_LOGIC  := '1';
-            scanclkena		: IN STD_LOGIC  := '0';
-            scandata		: IN STD_LOGIC  := '0';
-            c0		        : OUT STD_LOGIC ;
-            locked		    : OUT STD_LOGIC ;
-            scandataout		: OUT STD_LOGIC ;
-            scandone		: OUT STD_LOGIC 
+            areset		    : IN std_logic  := '0';
+            configupdate	: IN std_logic  := '0';
+            inclk0		    : IN std_logic  := '0';
+            scanclk		    : IN std_logic  := '1';
+            scanclkena		: IN std_logic  := '0';
+            scandata		: IN std_logic  := '0';
+            c0		        : OUT std_logic ;
+            locked		    : OUT std_logic ;
+            scandataout		: OUT std_logic ;
+            scandone		: OUT std_logic 
         );
     END COMPONENT altpll4;
 
-    COMPONENT Video
+    COMPONENT video
 	PORT
 	(
-		FB_ADR		:	 IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-		MAIN_CLK		:	 IN STD_LOGIC;
-		nFB_CS1		:	 IN STD_LOGIC;
-		nFB_CS2		:	 IN STD_LOGIC;
-		nFB_CS3		:	 IN STD_LOGIC;
-		nFB_WR		:	 IN STD_LOGIC;
-		FB_SIZE0		:	 IN STD_LOGIC;
-		FB_SIZE1		:	 IN STD_LOGIC;
-		nRSTO		:	 IN STD_LOGIC;
-		nFB_OE		:	 IN STD_LOGIC;
-		FB_ALE		:	 IN STD_LOGIC;
-		DDRCLK		:	 IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-		DDR_SYNC_66M		:	 IN STD_LOGIC;
-		CLK33M		:	 IN STD_LOGIC;
-		CLK25M		:	 IN STD_LOGIC;
-		CLK_VIDEO		:	 IN STD_LOGIC;
-		VR_D		:	 IN STD_LOGIC_VECTOR(8 DOWNTO 0);
-		VR_BUSY		:	 IN STD_LOGIC;
-		VG		:	 OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		VB		:	 OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		VR		:	 OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		nBLANK		:	 OUT STD_LOGIC;
-		VA		:	 OUT STD_LOGIC_VECTOR(12 DOWNTO 0);
-		nVWE		:	 OUT STD_LOGIC;
-		nVCAS		:	 OUT STD_LOGIC;
-		nVRAS		:	 OUT STD_LOGIC;
-		nVCS		:	 OUT STD_LOGIC;
-		VDM		:	 OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-		nPD_VGA		:	 OUT STD_LOGIC;
-		VCKE		:	 OUT STD_LOGIC;
-		VSYNC		:	 OUT STD_LOGIC;
-		HSYNC		:	 OUT STD_LOGIC;
-		nSYNC		:	 OUT STD_LOGIC;
-		VIDEO_TA		:	 OUT STD_LOGIC;
-		PIXEL_CLK		:	 OUT STD_LOGIC;
-		BA		:	 OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
-		VIDEO_RECONFIG		:	 OUT STD_LOGIC;
-		VR_WR		:	 OUT STD_LOGIC;
-		VR_RD		:	 OUT STD_LOGIC;
-		VDQS		:	 INOUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-		FB_AD		:	 INOUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-		VD		:	 INOUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+		FB_ADR		    : IN std_logic_vector(31 DOWNTO 0);
+		MAIN_CLK	    : IN std_logic;
+		nFB_CS1		    : IN std_logic;
+		nFB_CS2		    : IN std_logic;
+		nFB_CS3		    : IN std_logic;
+		nFB_WR		    : IN std_logic;
+		FB_SIZE0	    : IN std_logic;
+		FB_SIZE1	    : IN std_logic;
+		nRSTO		    : IN std_logic;
+		nFB_OE		    : IN std_logic;
+		FB_ALE		    : IN std_logic;
+		DDRCLK		    : IN std_logic_vector(3 DOWNTO 0);
+		DDR_SYNC_66M	: IN std_logic;
+		CLK33M		    : IN std_logic;
+		CLK25M		    : IN std_logic;
+		CLK_VIDEO		: IN std_logic;
+		VR_D		    : IN std_logic_vector(8 DOWNTO 0);
+		VR_BUSY		    : IN std_logic;
+		VG		        : OUT std_logic_vector(7 DOWNTO 0);
+		VB		        : OUT std_logic_vector(7 DOWNTO 0);
+		VR		        : OUT std_logic_vector(7 DOWNTO 0);
+		nBLANK		    : OUT std_logic;
+		VA		        : OUT std_logic_vector(12 DOWNTO 0);
+		nVWE		    : OUT std_logic;
+		nVCAS		    : OUT std_logic;
+		nVRAS		    : OUT std_logic;
+		nVCS		    : OUT std_logic;
+		VDM		        : OUT std_logic_vector(3 DOWNTO 0);
+		nPD_VGA		    : OUT std_logic;
+		VCKE		    : OUT std_logic;
+		VSYNC		    : OUT std_logic;
+		HSYNC		    : OUT std_logic;
+		nSYNC		    : OUT std_logic;
+		VIDEO_TA		: OUT std_logic;
+		PIXEL_CLK		: OUT std_logic;
+		BA		        : OUT std_logic_vector(1 DOWNTO 0);
+		VIDEO_RECONFIG	: OUT std_logic;
+		VR_WR		    : OUT std_logic;
+		VR_RD		    : OUT std_logic;
+		VDQS		    : INOUT std_logic_vector(3 DOWNTO 0);
+		FB_AD		    : INOUT std_logic_vector(31 DOWNTO 0);
+		VD		        : INOUT std_logic_vector(31 DOWNTO 0)
 	);
-END COMPONENT;
+    END COMPONENT video;
 BEGIN 
     nDREQ1 <= nDACK1;
     

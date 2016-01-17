@@ -270,12 +270,15 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
  	SIGNAL FALCON_SHIFT_MODE0_clk_ctrl  : std_logic;
     SIGNAL FALCON_SHIFT_MODE8_ena_ctrl  : std_logic;
 	SIGNAL FALCON_SHIFT_MODE0_ena_ctrl  : std_logic;
+    
     SIGNAL ACP_VCTR0_clk_ctrl       : std_logic;
     SIGNAL ACP_VCTR24_ena_ctrl      : std_logic;
 	SIGNAL ACP_VCTR16_ena_ctrl      : std_logic;
     SIGNAL ACP_VCTR8_ena_ctrl       : std_logic;
+	SIGNAL ACP_VCTR6_ena_ctrl       : std_logic;
     SIGNAL ACP_VCTR0_ena_ctrl       : std_logic;
-	SIGNAL ATARI_HH0_clk_ctrl       : std_logic;
+	
+    SIGNAL ATARI_HH0_clk_ctrl       : std_logic;
     SIGNAL ATARI_HH24_ena_ctrl      : std_logic;
     SIGNAL ATARI_HH16_ena_ctrl      : std_logic;
 	SIGNAL ATARI_HH8_ena_ctrl       : std_logic;
@@ -299,7 +302,6 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
 	SIGNAL VR_DOUT0_ena_ctrl        : std_logic;
     SIGNAL VR_FRQ0_clk_ctrl         : std_logic;
     SIGNAL VR_FRQ0_ena_ctrl         : std_logic;
-	SIGNAL ACP_VCTR6_ena_ctrl       : std_logic;
     SIGNAL CCSEL0_clk_ctrl          : std_logic;
     SIGNAL BORDER_COLOR0_clk_ctrl   : std_logic;
 	SIGNAL BORDER_COLOR16_ena_ctrl, BORDER_COLOR8_ena_ctrl,
@@ -580,52 +582,26 @@ BEGIN
       END IF;
    END PROCESS;
 
-   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
-      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
-	 if ACP_VCTR24_ena_ctrl='1' THEN
-	    (ACP_VCTR_q(31), ACP_VCTR_q(30), ACP_VCTR_q(29), ACP_VCTR_q(28),
-		  ACP_VCTR_q(27), ACP_VCTR_q(26), ACP_VCTR_q(25),
-		  ACP_VCTR_q(24)) <= ACP_VCTR_d(31 DOWNTO 24);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
-      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
-	 if ACP_VCTR16_ena_ctrl='1' THEN
-	    (ACP_VCTR_q(23), ACP_VCTR_q(22), ACP_VCTR_q(21), ACP_VCTR_q(20),
-		  ACP_VCTR_q(19), ACP_VCTR_q(18), ACP_VCTR_q(17),
-		  ACP_VCTR_q(16)) <= ACP_VCTR_d(23 DOWNTO 16);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
-      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
-	 if ACP_VCTR8_ena_ctrl='1' THEN
-	    (ACP_VCTR_q(15), ACP_VCTR_q(14), ACP_VCTR_q(13), ACP_VCTR_q(12),
-		  ACP_VCTR_q(11), ACP_VCTR_q(10), ACP_VCTR_q(9), ACP_VCTR_q(8))
-		  <= ACP_VCTR_d(15 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
-      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
-	 if ACP_VCTR6_ena_ctrl='1' THEN
-	    (ACP_VCTR_q(7), ACP_VCTR_q(6)) <= ACP_VCTR_d(7 DOWNTO 6);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ACP_VCTR0_clk_ctrl) BEGIN
-      if ACP_VCTR0_clk_ctrl'EVENT and ACP_VCTR0_clk_ctrl='1' THEN
-	 if ACP_VCTR0_ena_ctrl='1' THEN
-	    (ACP_VCTR_q(5), ACP_VCTR_q(4), ACP_VCTR_q(3), ACP_VCTR_q(2),
-		  ACP_VCTR_q(1), ACP_VCTR_q(0)) <= ACP_VCTR_d(5 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (ACP_VCTR0_clk_ctrl)
+    BEGIN
+        IF rising_edge(ACP_VCTR0_clk_ctrl) THEN
+            IF ACP_VCTR24_ena_ctrl = '1' THEN
+                ACP_VCTR_q(31 DOWNTO 24) <= ACP_VCTR_d(31 DOWNTO 24);
+            END IF;
+            IF ACP_VCTR16_ena_ctrl = '1' THEN
+                ACP_VCTR_q(23 DOWNTO 16) <= ACP_VCTR_d(23 DOWNTO 16);
+            END IF;
+            IF ACP_VCTR8_ena_ctrl = '1' THEN
+                ACP_VCTR_q(15 DOWNTO 8) <= ACP_VCTR_d(15 DOWNTO 8);
+            END IF;
+            IF ACP_VCTR6_ena_ctrl = '1' THEN
+                ACP_VCTR_q(7 DOWNTO 6) <= ACP_VCTR_d(7 DOWNTO 6);
+            END IF;
+            IF ACP_VCTR0_ena_ctrl = '1' THEN
+                ACP_VCTR_q(5 DOWNTO 0) <= ACP_VCTR_d(5 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
    PROCESS (SYS_CTR0_clk_ctrl) BEGIN
       if SYS_CTR0_clk_ctrl'EVENT and SYS_CTR0_clk_ctrl='1' THEN
@@ -841,218 +817,116 @@ BEGIN
       END IF;
    END PROCESS;
 
-   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
-      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
-	 if ATARI_HH24_ena_ctrl='1' THEN
-	    (ATARI_HH_q(31), ATARI_HH_q(30), ATARI_HH_q(29), ATARI_HH_q(28),
-		  ATARI_HH_q(27), ATARI_HH_q(26), ATARI_HH_q(25),
-		  ATARI_HH_q(24)) <= ATARI_HH_d(31 DOWNTO 24);
-	 END IF;
-      END IF;
+    PROCESS (ATARI_HH0_clk_ctrl)
+    BEGIN
+        IF rising_edge(ATARI_HH0_clk_ctrl) THEN
+            IF ATARI_HH24_ena_ctrl = '1' THEN
+                ATARI_HH_q(31 DOWNTO 24) <= ATARI_HH_d(31 DOWNTO 24);
+            END IF;
+            IF ATARI_HH16_ena_ctrl = '1' THEN
+                ATARI_HH_q(23 DOWNTO 16) <= ATARI_HH_d(23 DOWNTO 16);
+            END IF;
+            IF ATARI_HH8_ena_ctrl = '1' THEN
+                ATARI_HH_q(15 DOWNTO 8) <= ATARI_HH_d(15 DOWNTO 8);
+            END IF;
+            IF ATARI_HH0_ena_ctrl = '1' THEN
+                ATARI_HH_q(7 DOWNTO 0) <= ATARI_HH_d(7 DOWNTO 0);
+            END IF;
+        END IF;
    END PROCESS;
 
-   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
-      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
-	 if ATARI_HH16_ena_ctrl='1' THEN
-	    (ATARI_HH_q(23), ATARI_HH_q(22), ATARI_HH_q(21), ATARI_HH_q(20),
-		  ATARI_HH_q(19), ATARI_HH_q(18), ATARI_HH_q(17),
-		  ATARI_HH_q(16)) <= ATARI_HH_d(23 DOWNTO 16);
-	 END IF;
-      END IF;
-   END PROCESS;
+   PROCESS (ATARI_VH0_clk_ctrl)
+   BEGIN
+        IF rising_edge(ATARI_VH0_clk_ctrl) THEN
+            IF ATARI_VH24_ena_ctrl = '1' THEN
+                ATARI_VH_q(31 DOWNTO 24) <= ATARI_VH_d(31 DOWNTO 24);
+            END IF;
+            IF ATARI_VH16_ena_ctrl = '1' THEN
+                ATARI_VH_q(23 DOWNTO 16) <= ATARI_VH_d(23 DOWNTO 16);
+            END IF;
+            IF ATARI_VH8_ena_ctrl = '1' THEN
+                ATARI_VH_q(15 DOWNTO 8) <= ATARI_VH_d(15 DOWNTO 8);
+            END IF;
+            IF ATARI_VH0_ena_ctrl='1' THEN
+                ATARI_VH_q(7 DOWNTO 0) <= ATARI_VH_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
-      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
-	 if ATARI_HH8_ena_ctrl='1' THEN
-	    (ATARI_HH_q(15), ATARI_HH_q(14), ATARI_HH_q(13), ATARI_HH_q(12),
-		  ATARI_HH_q(11), ATARI_HH_q(10), ATARI_HH_q(9), ATARI_HH_q(8))
-		  <= ATARI_HH_d(15 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (ATARI_HL0_clk_ctrl) BEGIN
+        IF rising_edge(ATARI_HL0_clk_ctrl) THEN
+            IF ATARI_HL24_ena_ctrl = '1' THEN
+                ATARI_HL_q(31 DOWNTO 24) <= ATARI_HL_d(31 DOWNTO 24);
+            END IF;
+            IF ATARI_HL16_ena_ctrl = '1' THEN
+                ATARI_HL_q(23 DOWNTO 16) <= ATARI_HL_d(23 DOWNTO 16);
+            END IF;
+            IF ATARI_HL8_ena_ctrl = '1' THEN
+                ATARI_HL_q(15 DOWNTO 8) <= ATARI_HL_d(15 DOWNTO 8);
+            END IF;
+            IF ATARI_HL0_ena_ctrl = '1' THEN
+                ATARI_HL_q(7 DOWNTO 0) <= ATARI_HL_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (ATARI_HH0_clk_ctrl) BEGIN
-      if ATARI_HH0_clk_ctrl'EVENT and ATARI_HH0_clk_ctrl='1' THEN
-	 if ATARI_HH0_ena_ctrl='1' THEN
-	    (ATARI_HH_q(7), ATARI_HH_q(6), ATARI_HH_q(5), ATARI_HH_q(4),
-		  ATARI_HH_q(3), ATARI_HH_q(2), ATARI_HH_q(1), ATARI_HH_q(0))
-		  <= ATARI_HH_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (ATARI_VL0_clk_ctrl)
+    BEGIN
+        IF rising_edge(ATARI_VL0_clk_ctrl) THEN
+            IF ATARI_VL24_ena_ctrl = '1' THEN
+                ATARI_VL_q(31 DOWNTO 24) <= ATARI_VL_d(31 DOWNTO 24);
+            END IF;
+            IF ATARI_VL16_ena_ctrl = '1' THEN
+                ATARI_VL_q(23 DOWNTO 16) <= ATARI_VL_d(23 DOWNTO 16);
+            END IF;
+            IF ATARI_VL8_ena_ctrl = '1' THEN
+                ATARI_VL_q(15 DOWNTO 8) <= ATARI_VL_d(15 DOWNTO 8);
+            END IF;
+            IF ATARI_VL0_ena_ctrl = '1' THEN
+                ATARI_VL_q(7 DOWNTO 0) <= ATARI_VL_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
-      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
-	 if ATARI_VH24_ena_ctrl='1' THEN
-	    (ATARI_VH_q(31), ATARI_VH_q(30), ATARI_VH_q(29), ATARI_VH_q(28),
-		  ATARI_VH_q(27), ATARI_VH_q(26), ATARI_VH_q(25),
-		  ATARI_VH_q(24)) <= ATARI_VH_d(31 DOWNTO 24);
-	 END IF;
-      END IF;
-   END PROCESS;
 
-   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
-      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
-	 if ATARI_VH16_ena_ctrl='1' THEN
-	    (ATARI_VH_q(23), ATARI_VH_q(22), ATARI_VH_q(21), ATARI_VH_q(20),
-		  ATARI_VH_q(19), ATARI_VH_q(18), ATARI_VH_q(17),
-		  ATARI_VH_q(16)) <= ATARI_VH_d(23 DOWNTO 16);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (HHT0_clk_ctrl)
+    BEGIN
+        IF rising_edge(HHT0_clk_ctrl) THEN
+            IF HHT8_ena_ctrl = '1' THEN
+                HHT_q(11 DOWNTO 8) <= HHT_d(11 DOWNTO 8);
+            END IF;
+            IF HHT0_ena_ctrl = '1' THEN
+                HHT_q(7 DOWNTO 0) <= HHT_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
-      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
-	 if ATARI_VH8_ena_ctrl='1' THEN
-	    (ATARI_VH_q(15), ATARI_VH_q(14), ATARI_VH_q(13), ATARI_VH_q(12),
-		  ATARI_VH_q(11), ATARI_VH_q(10), ATARI_VH_q(9), ATARI_VH_q(8))
-		  <= ATARI_VH_d(15 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (HBE0_clk_ctrl)
+    BEGIN
+        IF rising_edge(HBE0_clk_ctrl) THEN
+            IF HBE8_ena_ctrl = '1' THEN
+                HBE_q(11 DOWNTO 8) <= HBE_d(11 DOWNTO 8);
+            END IF;
+            IF HBE0_ena_ctrl = '1' THEN
+                HBE_q(7 DOWNTO 0) <= HBE_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (ATARI_VH0_clk_ctrl) BEGIN
-      if ATARI_VH0_clk_ctrl'EVENT and ATARI_VH0_clk_ctrl='1' THEN
-	 if ATARI_VH0_ena_ctrl='1' THEN
-	    (ATARI_VH_q(7), ATARI_VH_q(6), ATARI_VH_q(5), ATARI_VH_q(4),
-		  ATARI_VH_q(3), ATARI_VH_q(2), ATARI_VH_q(1), ATARI_VH_q(0))
-		  <= ATARI_VH_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
+    PROCESS (HDB0_clk_ctrl)
+    BEGIN
+        IF rising_edge(HDB0_clk_ctrl) THEN
+            IF HDB8_ena_ctrl = '1' THEN
+                HDB_q(11 DOWNTO 8) <= HDB_d(11 DOWNTO 8);
+            END IF;
+            IF HDB0_ena_ctrl = '1' THEN
+                HDB_q(7 DOWNTO 0) <= HDB_d(7 DOWNTO 0);
+            END IF;
+        END IF;
+    END PROCESS;
 
-   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
-      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
-	 if ATARI_HL24_ena_ctrl='1' THEN
-	    (ATARI_HL_q(31), ATARI_HL_q(30), ATARI_HL_q(29), ATARI_HL_q(28),
-		  ATARI_HL_q(27), ATARI_HL_q(26), ATARI_HL_q(25),
-		  ATARI_HL_q(24)) <= ATARI_HL_d(31 DOWNTO 24);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
-      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
-	 if ATARI_HL16_ena_ctrl='1' THEN
-	    (ATARI_HL_q(23), ATARI_HL_q(22), ATARI_HL_q(21), ATARI_HL_q(20),
-		  ATARI_HL_q(19), ATARI_HL_q(18), ATARI_HL_q(17),
-		  ATARI_HL_q(16)) <= ATARI_HL_d(23 DOWNTO 16);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
-      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
-	 if ATARI_HL8_ena_ctrl='1' THEN
-	    (ATARI_HL_q(15), ATARI_HL_q(14), ATARI_HL_q(13), ATARI_HL_q(12),
-		  ATARI_HL_q(11), ATARI_HL_q(10), ATARI_HL_q(9), ATARI_HL_q(8))
-		  <= ATARI_HL_d(15 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ATARI_HL0_clk_ctrl) BEGIN
-      if ATARI_HL0_clk_ctrl'EVENT and ATARI_HL0_clk_ctrl='1' THEN
-	 if ATARI_HL0_ena_ctrl='1' THEN
-	    (ATARI_HL_q(7), ATARI_HL_q(6), ATARI_HL_q(5), ATARI_HL_q(4),
-		  ATARI_HL_q(3), ATARI_HL_q(2), ATARI_HL_q(1), ATARI_HL_q(0))
-		  <= ATARI_HL_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
-      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
-	 if ATARI_VL24_ena_ctrl='1' THEN
-	    (ATARI_VL_q(31), ATARI_VL_q(30), ATARI_VL_q(29), ATARI_VL_q(28),
-		  ATARI_VL_q(27), ATARI_VL_q(26), ATARI_VL_q(25),
-		  ATARI_VL_q(24)) <= ATARI_VL_d(31 DOWNTO 24);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
-      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
-	 if ATARI_VL16_ena_ctrl='1' THEN
-	    (ATARI_VL_q(23), ATARI_VL_q(22), ATARI_VL_q(21), ATARI_VL_q(20),
-		  ATARI_VL_q(19), ATARI_VL_q(18), ATARI_VL_q(17),
-		  ATARI_VL_q(16)) <= ATARI_VL_d(23 DOWNTO 16);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
-      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
-	 if ATARI_VL8_ena_ctrl='1' THEN
-	    (ATARI_VL_q(15), ATARI_VL_q(14), ATARI_VL_q(13), ATARI_VL_q(12),
-		  ATARI_VL_q(11), ATARI_VL_q(10), ATARI_VL_q(9), ATARI_VL_q(8))
-		  <= ATARI_VL_d(15 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (ATARI_VL0_clk_ctrl) BEGIN
-      if ATARI_VL0_clk_ctrl'EVENT and ATARI_VL0_clk_ctrl='1' THEN
-	 if ATARI_VL0_ena_ctrl='1' THEN
-	    (ATARI_VL_q(7), ATARI_VL_q(6), ATARI_VL_q(5), ATARI_VL_q(4),
-		  ATARI_VL_q(3), ATARI_VL_q(2), ATARI_VL_q(1), ATARI_VL_q(0))
-		  <= ATARI_VL_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (HHT0_clk_ctrl) BEGIN
-      if HHT0_clk_ctrl'EVENT and HHT0_clk_ctrl='1' THEN
-	 if HHT8_ena_ctrl='1' THEN
-	    (HHT_q(11), HHT_q(10), HHT_q(9), HHT_q(8)) <= HHT_d(11 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (HHT0_clk_ctrl) BEGIN
-      if HHT0_clk_ctrl'EVENT and HHT0_clk_ctrl='1' THEN
-	 if HHT0_ena_ctrl='1' THEN
-	    (HHT_q(7), HHT_q(6), HHT_q(5), HHT_q(4), HHT_q(3), HHT_q(2),
-		  HHT_q(1), HHT_q(0)) <= HHT_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (HBE0_clk_ctrl) BEGIN
-      if HBE0_clk_ctrl'EVENT and HBE0_clk_ctrl='1' THEN
-	 if HBE8_ena_ctrl='1' THEN
-	    (HBE_q(11), HBE_q(10), HBE_q(9), HBE_q(8)) <= HBE_d(11 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (HBE0_clk_ctrl) BEGIN
-      if HBE0_clk_ctrl'EVENT and HBE0_clk_ctrl='1' THEN
-	 if HBE0_ena_ctrl='1' THEN
-	    (HBE_q(7), HBE_q(6), HBE_q(5), HBE_q(4), HBE_q(3), HBE_q(2),
-		  HBE_q(1), HBE_q(0)) <= HBE_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (HDB0_clk_ctrl) BEGIN
-      if HDB0_clk_ctrl'EVENT and HDB0_clk_ctrl='1' THEN
-	 if HDB8_ena_ctrl='1' THEN
-	    (HDB_q(11), HDB_q(10), HDB_q(9), HDB_q(8)) <= HDB_d(11 DOWNTO 8);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (HDB0_clk_ctrl) BEGIN
-      if HDB0_clk_ctrl'EVENT and HDB0_clk_ctrl='1' THEN
-	 if HDB0_ena_ctrl='1' THEN
-	    (HDB_q(7), HDB_q(6), HDB_q(5), HDB_q(4), HDB_q(3), HDB_q(2),
-		  HDB_q(1), HDB_q(0)) <= HDB_d(7 DOWNTO 0);
-	 END IF;
-      END IF;
-   END PROCESS;
-
-   PROCESS (HDE0_clk_ctrl) BEGIN
+    PROCESS (HDE0_clk_ctrl)
+    BEGIN
       if HDE0_clk_ctrl'EVENT and HDE0_clk_ctrl='1' THEN
 	 if HDE8_ena_ctrl='1' THEN
 	    (HDE_q(11), HDE_q(10), HDE_q(9), HDE_q(8)) <= HDE_d(11 DOWNTO 8);
@@ -1362,10 +1236,11 @@ BEGIN
    ACP_VCTR0_clk_ctrl <= MAIN_CLK;
 
 --  $400/4
-   ACP_VCTR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
-	 "00000000000000000100000000");
+   ACP_VCTR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) = "00000000000000000100000000");
+   
    ACP_VCTR_d(31 DOWNTO 8) <= FB_AD(31 DOWNTO 8);
    ACP_VCTR_d(5 DOWNTO 0) <= FB_AD(5 DOWNTO 0);
+   
    ACP_VCTR24_ena_ctrl <= ACP_VCTR_CS and FB_B(0) and (not nFB_WR);
    ACP_VCTR16_ena_ctrl <= ACP_VCTR_CS and FB_B(1) and (not nFB_WR);
    ACP_VCTR8_ena_ctrl <= ACP_VCTR_CS and FB_B(2) and (not nFB_WR);
@@ -1465,9 +1340,8 @@ BEGIN
    ACP_VCTR_d(7) <= FALCON_SHIFT_MODE_CS and (not nFB_WR) and (not
 	 ACP_VIDEO_ON);
    ACP_VCTR_d(6) <= ST_SHIFT_MODE_CS and (not nFB_WR) and (not ACP_VIDEO_ON);
-   ACP_VCTR6_ena_ctrl <= (FALCON_SHIFT_MODE_CS and (not nFB_WR)) or
-	 (ST_SHIFT_MODE_CS and (not nFB_WR)) or (ACP_VCTR_CS and FB_B(3) and
-	 (not nFB_WR) and FB_AD(0));
+   
+   ACP_VCTR6_ena_ctrl <= (FALCON_SHIFT_MODE_CS and (not nFB_WR)) or (ST_SHIFT_MODE_CS and (not nFB_WR)) or (ACP_VCTR_CS and FB_B(3) and (not nFB_WR) and FB_AD(0));
    FALCON_VIDEO <= ACP_VCTR_q(7);
    FALCON_CLUT <= FALCON_VIDEO and (not ACP_VIDEO_ON) and (not COLOR16);
    ST_VIDEO <= ACP_VCTR_q(6);
@@ -1661,103 +1535,91 @@ BEGIN
 
 --  VCNTRL
 --  $82C2 / 2 Falcon resolution control register VCNTRL
-   VCNTRL_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 DOWNTO 1) =
-	 "1111100000101100001");
-   VCNTRL0_clk_ctrl <= MAIN_CLK;
-   VCNTRL_d <= FB_AD(19 DOWNTO 16);
-   VCNTRL0_ena_ctrl <= VCNTRL_CS and (not nFB_WR) and FB_B(3);
+    VCNTRL_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 DOWNTO 1) = "1111100000101100001");
+    VCNTRL0_clk_ctrl <= MAIN_CLK;
+    VCNTRL_d <= FB_AD(19 DOWNTO 16);
+    VCNTRL0_ena_ctrl <= VCNTRL_CS and (not nFB_WR) and FB_B(3);
 
 -- - REGISTER OUT
 --  low word register access
-   u0_data <= (sizeIt(ST_SHIFT_MODE_CS,16) and std_logic_vector'("000000" &
-	 ST_SHIFT_MODE_q & "00000000")) or (sizeIt(FALCON_SHIFT_MODE_CS,16) and
-	 std_logic_vector'("00000" & FALCON_SHIFT_MODE_q)) or
-	 (sizeIt(SYS_CTR_CS,16) and std_logic_vector'("100000000" & SYS_CTR_q(6
-	 DOWNTO 4) & (not BLITTER_RUN) & SYS_CTR_q(2 DOWNTO 0))) or
-	 (sizeIt(LOF_CS,16) and LOF_q) or (sizeIt(LWD_CS,16) and LWD_q) or
-	 (sizeIt(HBE_CS,16) and std_logic_vector'("0000" & HBE_q)) or
-	 (sizeIt(HDB_CS,16) and std_logic_vector'("0000" & HDB_q)) or
-	 (sizeIt(HDE_CS,16) and std_logic_vector'("0000" & HDE_q)) or
-	 (sizeIt(HBB_CS,16) and std_logic_vector'("0000" & HBB_q)) or
-	 (sizeIt(HSS_CS,16) and std_logic_vector'("0000" & HSS_q)) or
-	 (sizeIt(HHT_CS,16) and std_logic_vector'("0000" & HHT_q)) or
-	 (sizeIt(VBE_CS,16) and std_logic_vector'("00000" & VBE_q)) or
-	 (sizeIt(VDB_CS,16) and std_logic_vector'("00000" & VDB_q)) or
-	 (sizeIt(VDE_CS,16) and std_logic_vector'("00000" & VDE_q)) or
-	 (sizeIt(VBB_CS,16) and std_logic_vector'("00000" & VBB_q)) or
-	 (sizeIt(VSS_CS,16) and std_logic_vector'("00000" & VSS_q)) or
-	 (sizeIt(VFT_CS,16) and std_logic_vector'("00000" & VFT_q)) or
-	 (sizeIt(VCO_CS,16) and std_logic_vector'("0000000" & VCO_q)) or
-	 (sizeIt(VCNTRL_CS,16) and std_logic_vector'("000000000000" &
-	 VCNTRL_q)) or (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(31 DOWNTO 16)) or
-	 (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(31 DOWNTO 16)) or
-	 (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(31 DOWNTO 16)) or
-	 (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(31 DOWNTO 16)) or
-	 (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(31 DOWNTO 16)) or
-	 (sizeIt(BORDER_COLOR_CS,16) and std_logic_vector'("00000000" &
-	 BORDER_COLOR_q(23 DOWNTO 16))) or (sizeIt(VIDEO_PLL_CONFIG_CS,16) and
-	 std_logic_vector'("0000000" & VR_DOUT_q)) or
-	 (sizeIt(VIDEO_PLL_RECONFIG_CS,16) and std_logic_vector'(VR_BUSY &
-	 "0000" & VR_WR_q & VR_RD & VIDEO_RECONFIG_q & "11111010"));
-   u0_enabledt <= (ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or
-	 BORDER_COLOR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS
-	 or HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS
-	 or ATARI_HL_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
-	 VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
-	 VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS) and (not nFB_OE);
-   FB_AD(31 DOWNTO 16) <= u0_tridata;
+   u0_data <= (sizeIt(ST_SHIFT_MODE_CS,16) and std_logic_vector'("000000" & ST_SHIFT_MODE_q & "00000000")) or
+              (sizeIt(FALCON_SHIFT_MODE_CS,16) and std_logic_vector'("00000" & FALCON_SHIFT_MODE_q)) or
+              (sizeIt(SYS_CTR_CS,16) and std_logic_vector'("100000000" & SYS_CTR_q(6 DOWNTO 4) & (not BLITTER_RUN) & SYS_CTR_q(2 DOWNTO 0))) or
+              (sizeIt(LOF_CS,16) and LOF_q) or (sizeIt(LWD_CS,16) and LWD_q) or
+              (sizeIt(HBE_CS,16) and std_logic_vector'("0000" & HBE_q)) or
+              (sizeIt(HDB_CS,16) and std_logic_vector'("0000" & HDB_q)) or
+              (sizeIt(HDE_CS,16) and std_logic_vector'("0000" & HDE_q)) or
+              (sizeIt(HBB_CS,16) and std_logic_vector'("0000" & HBB_q)) or
+              (sizeIt(HSS_CS,16) and std_logic_vector'("0000" & HSS_q)) or
+              (sizeIt(HHT_CS,16) and std_logic_vector'("0000" & HHT_q)) or
+              (sizeIt(VBE_CS,16) and std_logic_vector'("00000" & VBE_q)) or
+              (sizeIt(VDB_CS,16) and std_logic_vector'("00000" & VDB_q)) or
+              (sizeIt(VDE_CS,16) and std_logic_vector'("00000" & VDE_q)) or
+              (sizeIt(VBB_CS,16) and std_logic_vector'("00000" & VBB_q)) or
+              (sizeIt(VSS_CS,16) and std_logic_vector'("00000" & VSS_q)) or
+              (sizeIt(VFT_CS,16) and std_logic_vector'("00000" & VFT_q)) or
+              (sizeIt(VCO_CS,16) and std_logic_vector'("0000000" & VCO_q)) or
+              (sizeIt(VCNTRL_CS,16) and std_logic_vector'("000000000000" & VCNTRL_q)) or
+              (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(31 DOWNTO 16)) or
+              (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(31 DOWNTO 16)) or
+              (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(31 DOWNTO 16)) or
+              (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(31 DOWNTO 16)) or
+              (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(31 DOWNTO 16)) or
+              (sizeIt(BORDER_COLOR_CS,16) and std_logic_vector'("00000000" & BORDER_COLOR_q(23 DOWNTO 16))) or
+              (sizeIt(VIDEO_PLL_CONFIG_CS,16) and std_logic_vector'("0000000" & VR_DOUT_q)) or
+              (sizeIt(VIDEO_PLL_RECONFIG_CS,16) and std_logic_vector'(VR_BUSY & "0000" & VR_WR_q & VR_RD & VIDEO_RECONFIG_q & "11111010"));
+    
+    u0_enabledt <= (ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or BORDER_COLOR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
+	                HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
+                    VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS) and (not nFB_OE);
+    FB_AD(31 DOWNTO 16) <= u0_tridata;
 
 --  high word register access
-   u1_data <= (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(15 DOWNTO 0)) or
-	 (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(15 DOWNTO 0)) or
-	 (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(15 DOWNTO 0)) or
-	 (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(15 DOWNTO 0)) or
-	 (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(15 DOWNTO 0)) or
-	 (sizeIt(BORDER_COLOR_CS,16) and BORDER_COLOR_q(15 DOWNTO 0));
-   u1_enabledt <= (ACP_VCTR_CS or BORDER_COLOR_CS or ATARI_HH_CS or ATARI_VH_CS
-	 or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
-   FB_AD(15 DOWNTO 0) <= u1_tridata;
-   VIDEO_MOD_TA <= CLUT_TA_q or ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or
-	 ACP_VCTR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
-	 HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or
-	 ATARI_HL_CS or ATARI_VL_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
-	 VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS;
+    u1_data <= (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(15 DOWNTO 0)) or
+               (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(15 DOWNTO 0)) or
+               (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(15 DOWNTO 0)) or
+               (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(15 DOWNTO 0)) or
+               (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(15 DOWNTO 0)) or
+               (sizeIt(BORDER_COLOR_CS,16) and BORDER_COLOR_q(15 DOWNTO 0));
+    u1_enabledt <= (ACP_VCTR_CS or BORDER_COLOR_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
+    FB_AD(15 DOWNTO 0) <= u1_tridata;
 
---  VIDEO AUSGABE SETZEN
-   CLK17M_clk <= CLK33M;
-   CLK17M_d <= not CLK17M_q;
-   CLK13M_clk <= CLK25M;
-   CLK13M_d <= not CLK13M_q;
+    VIDEO_MOD_TA <= CLUT_TA_q or ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
+                    HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
+                    VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS;
 
---  320 pixels, 32 MHz,
---  320 pixels, 25.175 MHz,
---  640 pixels, 32 MHz, VGA monitor
---  640 pixels, 25.175 MHz, VGA monitor
-   PIXEL_CLK <= (CLK13M_q and (not ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO)
-	 and ((VCNTRL_q(2) and VCO_q(2)) or VCO_q(0))) or (CLK17M_q and (not
-	 ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and ((VCNTRL_q(2) and
-	 (not VCO_q(2))) or VCO_q(0))) or (CLK25M and (not ACP_VIDEO_ON) and
-	 (FALCON_VIDEO or ST_VIDEO) and (not VCNTRL_q(2)) and VCO_q(2) and (not
-	 VCO_q(0))) or (CLK33M and (not ACP_VIDEO_ON) and (FALCON_VIDEO or
-	 ST_VIDEO) and (not VCNTRL_q(2)) and (not VCO_q(2)) and (not VCO_q(0)))
-	 or (to_std_logic((CLK25M and ACP_VIDEO_ON)='1' and ACP_VCTR_q(9 DOWNTO
-	 8) = "00")) or (to_std_logic((CLK33M and ACP_VIDEO_ON)='1' and
-	 ACP_VCTR_q(9 DOWNTO 8) = "01")) or (CLK_VIDEO and ACP_VIDEO_ON and
-	 ACP_VCTR_q(9));
+    --  VIDEO AUSGABE SETZEN
+    CLK17M_clk <= CLK33M;
+    CLK17M_d <= not CLK17M_q;
+    
+    CLK13M_clk <= CLK25M;
+    CLK13M_d <= not CLK13M_q;
 
--- ------------------------------------------------------------
---  HORIZONTALE SYNC LÄNGE in PIXEL_CLK
--- --------------------------------------------------------------
---  HSY_LEN[].CLK = MAIN_CLK;
---  check if this is better (mfro)
-   HSY_LEN0_clk_ctrl <= PIXEL_CLK;
+    --  320 pixels, 32 MHz,
+    --  320 pixels, 25.175 MHz,
+    --  640 pixels, 32 MHz, VGA monitor
+    --  640 pixels, 25.175 MHz, VGA monitor
+    PIXEL_CLK <= (CLK13M_q and (not ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and ((VCNTRL_q(2) and VCO_q(2)) or VCO_q(0))) or
+                 (CLK17M_q and (not	 ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and ((VCNTRL_q(2) and (not VCO_q(2))) or VCO_q(0))) or
+                 (CLK25M and (not ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and (not VCNTRL_q(2)) and VCO_q(2) and (not VCO_q(0))) or
+                 (CLK33M and (not ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and (not VCNTRL_q(2)) and (not VCO_q(2)) and (not VCO_q(0))) or
+                 (to_std_logic((CLK25M and ACP_VIDEO_ON)='1' and ACP_VCTR_q(9 DOWNTO 8) = "00")) or
+                 (to_std_logic((CLK33M and ACP_VIDEO_ON)='1' and ACP_VCTR_q(9 DOWNTO 8) = "01")) or
+                 (CLK_VIDEO and ACP_VIDEO_ON and ACP_VCTR_q(9));
 
---  320 pixels, 32 MHz, RGB
---  320 pixels, 25.175 MHz, VGA
---  640 pixels, 32 MHz, RGB
---  640 pixels, 25.175 MHz, VGA
---  hsync pulse length in pixeln = frequenz / = 500ns
-   HSY_LEN_d <= ("00001110" and sizeIt(not ACP_VIDEO_ON,8) and
+    -- ------------------------------------------------------------
+    --  HORIZONTALE SYNC LÄNGE in PIXEL_CLK
+    -- --------------------------------------------------------------
+    --  HSY_LEN[].CLK = MAIN_CLK;
+    --  check if this is better (mfro)
+    HSY_LEN0_clk_ctrl <= PIXEL_CLK;
+
+    --  320 pixels, 32 MHz, RGB
+    --  320 pixels, 25.175 MHz, VGA
+    --  640 pixels, 32 MHz, RGB
+    --  640 pixels, 25.175 MHz, VGA
+    --  hsync pulse length in pixeln = frequenz / = 500ns
+    HSY_LEN_d <= ("00001110" and sizeIt(not ACP_VIDEO_ON,8) and
 	 (sizeIt(FALCON_VIDEO,8) or sizeIt(ST_VIDEO,8)) and
 	 ((sizeIt(VCNTRL_q(2),8) and sizeIt(VCO_q(2),8)) or
 	 sizeIt(VCO_q(0),8))) or ("00010000" and sizeIt(not ACP_VIDEO_ON,8) and

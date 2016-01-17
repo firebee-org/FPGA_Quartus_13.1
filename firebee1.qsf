@@ -675,6 +675,9 @@ set_global_assignment -name OPTIMIZE_HOLD_TIMING "IO PATHS AND MINIMUM TPD PATHS
 set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
 set_global_assignment -name AUTO_DELAY_CHAINS_FOR_HIGH_FANOUT_INPUT_PINS OFF
 set_global_assignment -name OPTIMIZE_FOR_METASTABILITY OFF
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK13M_q
+set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK17M_q
+set_global_assignment -name AHDL_FILE altpll4.tdf
 set_global_assignment -name SDC_FILE firebee_groups.sdc
 set_global_assignment -name VHDL_FILE Video/video.vhd
 set_global_assignment -name VHDL_FILE Video/video_mod_mux_clutctr.vhd
@@ -857,6 +860,5 @@ set_global_assignment -name QIP_FILE lpm_mux0.qip
 set_global_assignment -name QIP_FILE lpm_shiftreg0.qip
 set_global_assignment -name QIP_FILE lpm_counter1.qip
 set_global_assignment -name QIP_FILE altiobuf_bidir0.qip
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK13M_q
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK17M_q
+set_global_assignment -name VHDL_FILE flexbus_register.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
