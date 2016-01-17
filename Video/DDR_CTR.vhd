@@ -278,6 +278,7 @@ ARCHITECTURE rtl OF ddr_ctr IS
     SIGNAL LINE                         : std_logic;
     SIGNAL v_bash                       : std_logic_vector(7 DOWNTO 0);
     SIGNAL v_bash_cs                    : std_logic;
+    SIGNAL reg_ta                       : std_logic;
 -- Sub Module Interface Section
 
 
@@ -588,8 +589,9 @@ BEGIN
             fb_addr => fb_adr,
             fb_data => fb_ad,
             fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
+            fb_ta_n => reg_ta,
             fb_wr_n => nfb_wr,
-            data => v_bash,
+            reg_value => v_bash,
             cs => v_bash_cs
         );
         
