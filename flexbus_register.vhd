@@ -2,25 +2,25 @@ LIBRARY ieee;
     USE ieee.std_logic_1164.all;
     USE ieee.numeric_std.all;
 
-    ENTITY flexbus_register IS
-        GENERIC
-        (
-            reg_width       : integer := 11;
-            match_address   : std_logic_vector(31 DOWNTO 0) := (OTHERS => '0');
-            match_mask      : std_logic_vector(31 DOWNTO 0) := (OTHERS => '1');
-            match_fbcs      : integer := 0
-        );
-        PORT
-        (
-            clk             : IN std_logic;
-            fb_addr         : IN std_logic_vector(31 DOWNTO 0);
-            fb_data         : IN std_logic_vector(31 DOWNTO 0);
-            fb_cs           : IN std_logic_vector(5 DOWNTO 1);
-            fb_wr_n         : IN std_logic;
-            data            : OUT std_logic_vector(reg_width - 1 DOWNTO 0);
-            cs              : OUT std_logic := '0'
-        );
-    END ENTITY flexbus_register;
+ENTITY flexbus_register IS
+    GENERIC
+    (
+        reg_width       : integer := 11;
+        match_address   : std_logic_vector(31 DOWNTO 0) := (OTHERS => '0');
+        match_mask      : std_logic_vector(31 DOWNTO 0) := (OTHERS => '1');
+        match_fbcs      : integer := 0
+    );
+    PORT
+    (
+        clk             : IN std_logic;
+        fb_addr         : IN std_logic_vector(31 DOWNTO 0);
+        fb_data         : IN std_logic_vector(31 DOWNTO 0);
+        fb_cs           : IN std_logic_vector(5 DOWNTO 1);
+        fb_wr_n         : IN std_logic;
+        data            : OUT std_logic_vector(reg_width - 1 DOWNTO 0);
+        cs              : OUT std_logic := '0'
+    );
+END ENTITY flexbus_register;
     
 ARCHITECTURE rtl OF flexbus_register IS
     SIGNAL fbcs_match       : std_logic;
