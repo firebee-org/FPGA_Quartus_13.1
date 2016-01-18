@@ -276,8 +276,13 @@ ARCHITECTURE rtl OF ddr_ctr IS
     SIGNAL VRAS                         : std_logic;
     SIGNAL VCAS                         : std_logic;
     SIGNAL LINE                         : std_logic;
+
+    SIGNAL v_basx                       : std_logic_vector(1 DOWNTO 0);
+    SIGNAL v_basx_cs                    : std_logic;
+
     SIGNAL v_bash                       : std_logic_vector(7 DOWNTO 0);
     SIGNAL v_bash_cs                    : std_logic;
+    
     SIGNAL reg_ta                       : std_logic;
 -- Sub Module Interface Section
 
@@ -574,6 +579,26 @@ BEGIN
             END IF;
         END IF;
     END PROCESS;
+
+    i_vbasx : work.flexbus_register
+        GENERIC MAP
+        (
+            reg_width => 2,
+            match_address => x"ffff8603",
+            match_mask => x"0000ffff",      -- byte register
+            match_fbcs => 1
+        )
+        PORT MAP
+        (
+            clk => clk33m,
+            fb_addr => fb_adr,
+            fb_data => fb_ad,
+            fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
+            fb_ta_n => reg_ta,
+            fb_wr_n => nfb_wr,
+            reg_value => v_basx,
+            cs => v_basx_cs
+        );
 
     i_vbash : work.flexbus_register
         GENERIC MAP
