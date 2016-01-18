@@ -91,6 +91,7 @@ create_clock -name {MAIN_CLK} -period 30.303 -waveform { 0.000 15.151 } [get_por
 
 derive_pll_clocks
 
+# two (video) clocks created by logic
 create_generated_clock -divide_by 2 -source MAIN_CLK i_video|i_video_mod_mux_clutctr|CLK17M_q
 create_generated_clock -divide_by 2 -source i_atari_clk_pll|altpll_component|auto_generated|pll1|clk[0] i_video|i_video_mod_mux_clutctr|CLK13M_q
 
@@ -101,6 +102,13 @@ create_generated_clock -divide_by 2 -source i_atari_clk_pll|altpll_component|aut
 # clock of i_video_clk_pll
 #
 
+# virtual clocks for i/o constraints
+create_clock -name virt_main_clk -period 30.303 -waveform { 0.000 15.151 }
+
+create_clock -name virt_ddr_clk0 -period 7.575 -waveform { 0.666 4.456 }
+create_clock -name virt_ddr_clk1 -period 7.575 -waveform { 0.0 3.788 }
+create_clock -name virt_ddr_clk2 -period 7.575 -waveform { 0.5 4.288 }
+create_clock -name virt_ddr_clk3 -period 7.575 -waveform { 0.291 4.080 }
 
 #**************************************************************
 # Set Clock Latency
@@ -112,8 +120,8 @@ create_generated_clock -divide_by 2 -source i_atari_clk_pll|altpll_component|aut
 # Set Clock Uncertainty
 #**************************************************************
 
-set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -rise_to [get_clocks {MAIN_CLK}]  4.5  
-set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -fall_to [get_clocks {MAIN_CLK}]  4.5  
+# set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -rise_to [get_clocks {MAIN_CLK}]  4.5  
+# set_clock_uncertainty -rise_from [get_clocks {MAIN_CLK}] -fall_to [get_clocks {MAIN_CLK}]  4.5  
 derive_clock_uncertainty
 
 
