@@ -76,38 +76,38 @@ ENTITY video_mod_mux_clutctr IS
         CLK_VIDEO       : IN std_logic;
         VR_D            : IN std_logic_vector(8 DOWNTO 0);
         VR_BUSY         : IN std_logic;
-        COLOR8          : BUFFER std_logic;
-        ACP_CLUT_RD     : BUFFER std_logic;
-        COLOR1          : BUFFER std_logic;
-        FALCON_CLUT_RDH : BUFFER std_logic;
-        FALCON_CLUT_RDL : BUFFER std_logic;
-        FALCON_CLUT_WR  : BUFFER std_logic_vector(3 DOWNTO 0);
-        ST_CLUT_RD      : BUFFER std_logic;
-        ST_CLUT_WR      : BUFFER std_logic_vector(1 DOWNTO 0);
-        CLUT_MUX_ADR    : BUFFER std_logic_vector(3 DOWNTO 0);
-        HSYNC           : BUFFER std_logic;
-        VSYNC           : BUFFER std_logic;
-        nBLANK          : BUFFER std_logic;
-        nSYNC           : BUFFER std_logic;
-        nPD_VGA         : BUFFER std_logic;
-        FIFO_RDE        : BUFFER std_logic;
-        COLOR2          : BUFFER std_logic;
-        COLOR4          : BUFFER std_logic;
-	    PIXEL_CLK       : BUFFER std_logic;
-        CLUT_OFF        : BUFFER std_logic_vector(3 DOWNTO 0);
-        BLITTER_ON      : BUFFER std_logic;
-        VIDEO_RAM_CTR   : BUFFER std_logic_vector(15 DOWNTO 0);
-        VIDEO_MOD_TA    : BUFFER std_logic;
-        BORDER_COLOR    : BUFFER std_logic_vector(23 DOWNTO 0);
-        CCSEL           : BUFFER std_logic_vector(2 DOWNTO 0);
-        ACP_CLUT_WR     : BUFFER std_logic_vector(3 DOWNTO 0);
-        INTER_ZEI       : BUFFER std_logic;
-        DOP_FIFO_CLR    : BUFFER std_logic;
-        VIDEO_RECONFIG  : BUFFER std_logic;
-        VR_WR           : BUFFER std_logic;
-        VR_RD           : BUFFER std_logic;
-        CLR_FIFO        : BUFFER std_logic;
-        FB_AD           : INOUT std_logic_vector(31 DOWNTO 0)
+        COLOR8          : OUT std_logic;
+        ACP_CLUT_RD     : OUT std_logic;
+        COLOR1          : OUT std_logic;
+        FALCON_CLUT_RDH : OUT std_logic;
+        FALCON_CLUT_RDL : OUT std_logic;
+        FALCON_CLUT_WR  : OUT std_logic_vector(3 DOWNTO 0);
+        ST_CLUT_RD      : OUT std_logic;
+        ST_CLUT_WR      : OUT std_logic_vector(1 DOWNTO 0);
+        CLUT_MUX_ADR    : OUT std_logic_vector(3 DOWNTO 0);
+        HSYNC           : OUT std_logic;
+        VSYNC           : OUT std_logic;
+        nBLANK          : OUT std_logic;
+        nSYNC           : OUT std_logic;
+        nPD_VGA         : OUT std_logic;
+        FIFO_RDE        : OUT std_logic;
+        COLOR2          : OUT std_logic;
+        color4          : OUT std_logic;
+	    PIXEL_CLK       : OUT std_logic;
+        CLUT_OFF        : OUT std_logic_vector(3 DOWNTO 0);
+        BLITTER_ON      : OUT std_logic;
+        VIDEO_RAM_CTR   : OUT std_logic_vector(15 DOWNTO 0);
+        VIDEO_MOD_TA    : OUT std_logic;
+        BORDER_COLOR    : OUT std_logic_vector(23 DOWNTO 0);
+        CCSEL           : OUT std_logic_vector(2 DOWNTO 0);
+        ACP_CLUT_WR     : OUT std_logic_vector(3 DOWNTO 0);
+        INTER_ZEI       : OUT std_logic;
+        DOP_FIFO_CLR    : OUT std_logic;
+        VIDEO_RECONFIG  : OUT std_logic;
+        VR_WR           : OUT std_logic;
+        VR_RD           : OUT std_logic;
+        CLR_FIFO        : OUT std_logic;
+        FB_AD           : OUT std_logic_vector(31 DOWNTO 0)
    );
 END video_mod_mux_clutctr;
 
@@ -353,6 +353,8 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
 	 VIDEO_PLL_CONFIG_CS, ACP_CLUT, ACP_CLUT_CS, CLK13M_q, CLK13M_clk,
 	 CLK13M_d, CLK13M, CLK17M_q, CLK17M_clk, CLK17M_d, CLK17M: std_logic;
 
+     SIGNAL color4_i            : std_logic;
+     
 -- Sub Module Interface Section
 
 
@@ -448,19 +450,10 @@ BEGIN
             FIFO_RDE_q <= FIFO_RDE_d;
         END IF;
     END PROCESS;
-
-    -- try if an aditional FF will help hold timing
-    PROCESS
-    BEGIN
-        WAIT UNTIL rising_edge(main_clk);
-        BORDER_COLOR(23 DOWNTO 16) <= BORDER_COLOR_q(23 DOWNTO 16);
-        BORDER_COLOR(15 DOWNTO 8) <= BORDER_COLOR_q(15 DOWNTO 8);
-        BORDER_COLOR(7 DOWNTO 0) <= BORDER_COLOR_q(7 DOWNTO 0);
-    END PROCESS;
     
-    -- BORDER_COLOR(23 DOWNTO 16) <= BORDER_COLOR_q(23 DOWNTO 16);
-    -- BORDER_COLOR(15 DOWNTO 8) <= BORDER_COLOR_q(15 DOWNTO 8);
-    -- BORDER_COLOR(7 DOWNTO 0) <= BORDER_COLOR_q(7 DOWNTO 0);
+    BORDER_COLOR(23 DOWNTO 16) <= BORDER_COLOR_q(23 DOWNTO 16);
+    BORDER_COLOR(15 DOWNTO 8) <= BORDER_COLOR_q(15 DOWNTO 8);
+    BORDER_COLOR(7 DOWNTO 0) <= BORDER_COLOR_q(7 DOWNTO 0);
     
     PROCESS (BORDER_COLOR0_clk_ctrl) BEGIN
         IF BORDER_COLOR0_clk_ctrl'EVENT and BORDER_COLOR0_clk_ctrl = '1' THEN
@@ -1219,7 +1212,7 @@ BEGIN
 	 FB_B(2);
    FALCON_SHIFT_MODE0_ena_ctrl <= FALCON_SHIFT_MODE_CS and (not nFB_WR) and
 	 FB_B(3);
-   CLUT_OFF <= FALCON_SHIFT_MODE_q(3 DOWNTO 0) and sizeIt(COLOR4,4);
+   CLUT_OFF <= FALCON_SHIFT_MODE_q(3 DOWNTO 0) and sizeIt(COLOR4_i, 4);
    COLOR1_2 <= FALCON_SHIFT_MODE_q(10) and (not COLOR16) and (not COLOR8) and
 	 FALCON_VIDEO and (not ACP_VIDEO_ON);
    COLOR8_1 <= FALCON_SHIFT_MODE_q(4) and (not COLOR16) and FALCON_VIDEO and
@@ -1914,7 +1907,7 @@ BEGIN
     --  3 CLOCK ZUSÄTZLICH FÜR FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
     FIFO_RDE_d <= (((to_std_logic(SUB_PIXEL_CNT_q = "0000001") and COLOR1) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(5 DOWNTO 0) = "000001") and COLOR2) or
-	 (to_std_logic(SUB_PIXEL_CNT_q(4 DOWNTO 0) = "00001") and COLOR4) or
+	 (to_std_logic(SUB_PIXEL_CNT_q(4 DOWNTO 0) = "00001") and color4_i) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(3 DOWNTO 0) = "0001") and COLOR8) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(2 DOWNTO 0) = "001") and COLOR16) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(1 DOWNTO 0) = "01") and COLOR24)) and
@@ -1930,7 +1923,8 @@ BEGIN
     -- Assignments added to explicitly combine the
     -- effects of multiple drivers in the source
     COLOR16 <= COLOR16_1 or COLOR16_2;
-    COLOR4 <= COLOR4_1 or COLOR4_2;
+    color4_i <= COLOR4_1 or COLOR4_2;
+    color4 <= color4_i;
     COLOR1 <= COLOR1_1 or COLOR1_2 or COLOR1_3;
     COLOR8 <= COLOR8_1 or COLOR8_2;
 

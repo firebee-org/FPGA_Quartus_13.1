@@ -620,61 +620,6 @@ ARCHITECTURE rtl OF video IS
         );
     END COMPONENT;
     
-    COMPONENT video_mod_mux_clutctr
-        PORT
-        (
-            nRSTO           : IN std_logic;
-            MAIN_CLK        : IN std_logic;
-            nFB_CS1         : IN std_logic;
-            nFB_CS2         : IN std_logic;
-            nFB_CS3         : IN std_logic;
-            nFB_WR          : IN std_logic;
-            nFB_OE          : IN std_logic;
-            FB_SIZE0        : IN std_logic;
-            FB_SIZE1        : IN std_logic;
-            nFB_BURST       : IN std_logic;
-            CLK33M          : IN std_logic;
-            CLK25M          : IN std_logic;
-            BLITTER_RUN     : IN std_logic;
-            CLK_VIDEO       : IN std_logic;
-            VR_BUSY         : IN std_logic;
-            FB_AD           : INOUT std_logic_vector(31 DOWNTO 0);
-            FB_ADR          : IN std_logic_vector(31 DOWNTO 0);
-            VR_D            : IN std_logic_vector(8 DOWNTO 0);
-            COLOR8          : OUT std_logic;
-            ACP_CLUT_RD     : OUT std_logic;
-            COLOR1          : OUT std_logic;
-            FALCON_CLUT_RDH : OUT std_logic;
-            FALCON_CLUT_RDL : OUT std_logic;
-            ST_CLUT_RD      : OUT std_logic;
-            HSYNC           : OUT std_logic;
-            VSYNC           : OUT std_logic;
-            nBLANK          : OUT std_logic;
-            nSYNC           : OUT std_logic;
-            nPD_VGA         : OUT std_logic;
-            FIFO_RDE        : OUT std_logic;
-            COLOR2          : OUT std_logic;
-            COLOR4          : OUT std_logic;
-            PIXEL_CLK       : OUT std_logic;
-            BLITTER_ON      : OUT std_logic;
-            VIDEO_MOD_TA    : OUT std_logic;
-            INTER_ZEI       : OUT std_logic;
-            DOP_FIFO_CLR    : OUT std_logic;
-            VIDEO_RECONFIG  : OUT std_logic;
-            VR_WR           : OUT std_logic;
-            VR_RD           : OUT std_logic;
-            CLR_FIFO        : OUT std_logic;
-            ACP_CLUT_WR     : OUT std_logic_vector(3 DOWNTO 0);
-            BORDER_COLOR    : OUT std_logic_vector(23 DOWNTO 0);
-            CCSEL           : OUT std_logic_vector(2 DOWNTO 0);
-            CLUT_MUX_ADR    : OUT std_logic_vector(3 DOWNTO 0);
-            CLUT_OFF        : OUT std_logic_vector(3 DOWNTO 0);
-            FALCON_CLUT_WR  : OUT std_logic_vector(3 DOWNTO 0);
-            ST_CLUT_WR      : OUT std_logic_vector(1 DOWNTO 0);
-            VIDEO_RAM_CTR   : OUT std_logic_vector(15 DOWNTO 0)
-        );
-    END COMPONENT;
-    
     SIGNAL	ACP_CLUT_RD     :  std_logic;
     SIGNAL	ACP_CLUT_WR     :  std_logic_vector(3 DOWNTO 0);
     SIGNAL	BLITTER_ADR     :  std_logic_vector(31 DOWNTO 0);
@@ -1967,7 +1912,7 @@ BEGIN
         );
     
     
-    i_video_mod_mux_clutctr : video_mod_mux_clutctr
+    i_video_mod_mux_clutctr : work.video_mod_mux_clutctr
         PORT MAP
         (
             nRSTO => nRSTO,
