@@ -356,36 +356,120 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL VBE_CS                   : std_logic;
     SIGNAL DOP_FIFO_CLR_q           : std_logic;
     SIGNAL DOP_FIFO_CLR_d           : std_logic;
-	SIGNAL DOP_ZEI_q, DOP_ZEI_clk, DOP_ZEI_d, DOP_ZEI, INTER_ZEI_q,
-	 INTER_ZEI_clk, INTER_ZEI_d, ST_VIDEO, FALCON_VIDEO, HSS_CS, HBB_CS,
-	 HDE_CS, HDB_CS, HBE_CS, HHT_CS, ATARI_VL_CS, ATARI_HL_CS, ATARI_VH_CS,
-	 ATARI_HH_CS, ATARI_SYNC, COLOR24, COLOR16, SYNC_PIX2_q, SYNC_PIX2_clk,
-	 SYNC_PIX2_d, SYNC_PIX2, SYNC_PIX1_q, SYNC_PIX1_clk, SYNC_PIX1_d,
-	 SYNC_PIX1, SYNC_PIX_q, SYNC_PIX_clk, SYNC_PIX_d, SYNC_PIX,
-	 START_ZEILE_q, START_ZEILE_ena, START_ZEILE_clk, START_ZEILE_d,
-	 START_ZEILE, CLR_FIFO_q, CLR_FIFO_ena, CLR_FIFO_clk, CLR_FIFO_d,
-	 FIFO_RDE_q, FIFO_RDE_clk, FIFO_RDE_d, RAND_ON, VCO_OFF_q, VCO_OFF_clk,
-	 VCO_OFF_d, VCO_OFF, VCO_ON_q, VCO_ON_clk, VCO_ON_d, VCO_ON, VCO_ZL_q,
-	 VCO_ZL_ena, VCO_ZL_clk, VCO_ZL_d, VCO_ZL, VDTRON_q, VDTRON_clk,
-	 VDTRON_d, VDTRON, DPO_OFF_q, DPO_OFF_clk, DPO_OFF_d, DPO_OFF,
-	 DPO_ON_q, DPO_ON_clk, DPO_ON_d, DPO_ON, DPO_ZL_q, DPO_ZL_ena,
-	 DPO_ZL_clk, DPO_ZL_d, DPO_ZL, DISP_ON_q, DISP_ON_clk, DISP_ON_d,
-	 DISP_ON, nBLANK_q, nBLANK_clk, nBLANK_d, VSYNC_START_q,
-	 VSYNC_START_ena, VSYNC_START_clk, VSYNC_START_d, VSYNC_START, VSYNC_q,
-	 VSYNC_clk, VSYNC_d, LAST_q, LAST_clk, LAST_d, LAST, HSYNC_START_q,
-	 HSYNC_START_clk, HSYNC_START_d, HSYNC_START, HSYNC_q, HSYNC_clk,
-	 HSYNC_d, CLUT_TA_q, CLUT_TA_clk, CLUT_TA_d, CLUT_TA, LWD_CS, LOF_CS,
-	 SYS_CTR_CS, ACP_VIDEO_ON, BORDER_COLOR_CS, ACP_VCTR_CS,
-	 FALCON_SHIFT_MODE_CS, ST_SHIFT_MODE_CS, ST_CLUT, ST_CLUT_CS,
-	 FALCON_CLUT, FALCON_CLUT_CS, VIDEO_RECONFIG_q, VIDEO_RECONFIG_clk,
-	 VIDEO_RECONFIG_d, VIDEO_PLL_RECONFIG_CS, VR_WR_q, VR_WR_clk, VR_WR_d,
-	 VIDEO_PLL_CONFIG_CS, ACP_CLUT, ACP_CLUT_CS, CLK13M_q, CLK13M_clk,
-	 CLK13M_d, CLK13M, CLK17M_q, CLK17M_clk, CLK17M_d, CLK17M: std_logic;
-
-     SIGNAL color4_i            : std_logic;
-     SIGNAL pixel_clk_i         : std_logic;
+	SIGNAL DOP_ZEI_q                : std_logic;
+    SIGNAL DOP_ZEI_d                : std_logic;
+    SIGNAL DOP_ZEI                  : std_logic;
+    SIGNAL INTER_ZEI_q              : std_logic;
+	SIGNAL INTER_ZEI_d              : std_logic;
+    SIGNAL ST_VIDEO                 : std_logic;
+    SIGNAL FALCON_VIDEO             : std_logic;
+    SIGNAL HSS_CS                   : std_logic;
+    SIGNAL HBB_CS                   : std_logic;
+	SIGNAL HDE_CS                   : std_logic;
+    SIGNAL HDB_CS                   : std_logic;
+    SIGNAL HBE_CS                   : std_logic;
+    SIGNAL HHT_CS                   : std_logic;
+    SIGNAL ATARI_VL_CS              : std_logic;
+    SIGNAL ATARI_HL_CS              : std_logic;
+    SIGNAL ATARI_VH_CS              : std_logic;
+    SIGNAL ATARI_HH_CS              : std_logic;
+    SIGNAL ATARI_SYNC               : std_logic;
+    SIGNAL COLOR24                  : std_logic;
+    SIGNAL COLOR16                  : std_logic;
+    SIGNAL SYNC_PIX2_q              : std_logic;
+    SIGNAL SYNC_PIX2_d              : std_logic;
+    SIGNAL SYNC_PIX2                : std_logic;
+    SIGNAL SYNC_PIX1_q              : std_logic;
+    SIGNAL SYNC_PIX1_d              : std_logic;
+	SIGNAL SYNC_PIX1                : std_logic;
+    SIGNAL SYNC_PIX_q               : std_logic;
+    SIGNAL SYNC_PIX_d               : std_logic;
+    SIGNAL SYNC_PIX                 : std_logic;
+	SIGNAL START_ZEILE_q            : std_logic;
+    SIGNAL START_ZEILE_ena          : std_logic;
+    SIGNAL START_ZEILE_d            : std_logic;
+	SIGNAL START_ZEILE              : std_logic;
+    SIGNAL CLR_FIFO_q               : std_logic;
+    SIGNAL CLR_FIFO_ena             : std_logic;
+    SIGNAL CLR_FIFO_d               : std_logic;
+	SIGNAL FIFO_RDE_q               : std_logic;
+    SIGNAL FIFO_RDE_d               : std_logic;
+    SIGNAL RAND_ON                  : std_logic;
+    SIGNAL VCO_OFF_q                : std_logic;
+    SIGNAL VCO_OFF_d                : std_logic;
+    SIGNAL VCO_OFF                  : std_logic;
+    SIGNAL VCO_ON_q                 : std_logic;
+    SIGNAL VCO_ON_d                 : std_logic;
+    SIGNAL VCO_ON                   : std_logic;
+    SIGNAL VCO_ZL_q                 : std_logic;
+	SIGNAL VCO_ZL_ena               : std_logic;
+    SIGNAL VCO_ZL_d                 : std_logic;
+    SIGNAL VCO_ZL                   : std_logic;
+    SIGNAL VDTRON_q                 : std_logic;
+    SIGNAL VDTRON_d                 : std_logic;
+    SIGNAL VDTRON                   : std_logic;
+    SIGNAL DPO_OFF_q                : std_logic;
+    SIGNAL DPO_OFF_d                : std_logic;
+    SIGNAL DPO_OFF                  : std_logic;
+	SIGNAL DPO_ON_q                 : std_logic;
+    SIGNAL DPO_ON_d                 : std_logic;
+    SIGNAL DPO_ON                   : std_logic;
+    SIGNAL DPO_ZL_q                 : std_logic;
+    SIGNAL DPO_ZL_ena               : std_logic;
+	SIGNAL DPO_ZL_d                 : std_logic;
+    SIGNAL DPO_ZL                   : std_logic;
+    SIGNAL DISP_ON_q                : std_logic;
+    SIGNAL DISP_ON_d                : std_logic;
+	SIGNAL DISP_ON                  : std_logic;
+    SIGNAL nBLANK_q                 : std_logic;
+    SIGNAL nBLANK_d                 : std_logic;
+    SIGNAL VSYNC_START_q            : std_logic;
+    SIGNAL VSYNC_START_ena          : std_logic;
+    SIGNAL VSYNC_START_d            : std_logic;
+    SIGNAL VSYNC_START              : std_logic;
+    SIGNAL VSYNC_q                  : std_logic;
+    SIGNAL VSYNC_d                  : std_logic;
+    SIGNAL LAST_q                   : std_logic;
+    SIGNAL LAST_d                   : std_logic;
+    SIGNAL LAST                     : std_logic;
+    SIGNAL HSYNC_START_q            : std_logic;
+	SIGNAL HSYNC_START_d            : std_logic;
+    SIGNAL HSYNC_START              : std_logic;
+    SIGNAL HSYNC_q                  : std_logic;
+    SIGNAL HSYNC_d                  : std_logic;
+    SIGNAL CLUT_TA_q                : std_logic;
+    SIGNAL CLUT_TA_d                : std_logic;
+    SIGNAL CLUT_TA                  : std_logic;
+    SIGNAL LWD_CS                   : std_logic;
+    SIGNAL LOF_CS                   : std_logic;
+	SIGNAL SYS_CTR_CS               : std_logic;
+    SIGNAL ACP_VIDEO_ON             : std_logic;
+    SIGNAL BORDER_COLOR_CS          : std_logic;
+    SIGNAL ACP_VCTR_CS              : std_logic;
+	SIGNAL FALCON_SHIFT_MODE_CS     : std_logic;
+    SIGNAL ST_SHIFT_MODE_CS         : std_logic;
+    SIGNAL ST_CLUT                  : std_logic;
+    SIGNAL ST_CLUT_CS               : std_logic;
+	SIGNAL FALCON_CLUT              : std_logic;
+    SIGNAL FALCON_CLUT_CS           : std_logic;
+    SIGNAL VIDEO_RECONFIG_q         : std_logic;
+    SIGNAL VIDEO_RECONFIG_d         : std_logic;
+    SIGNAL VIDEO_PLL_RECONFIG_CS    : std_logic;
+    SIGNAL VR_WR_q                  : std_logic;
+    SIGNAL VR_WR_d                  : std_logic;
+	SIGNAL VIDEO_PLL_CONFIG_CS      : std_logic;
+    SIGNAL ACP_CLUT                 : std_logic;
+    SIGNAL ACP_CLUT_CS              : std_logic;
+    SIGNAL CLK13M_q                 : std_logic;
+    SIGNAL CLK13M_d                 : std_logic;
+    SIGNAL CLK13M                   : std_logic;
+    SIGNAL CLK17M_q                 : std_logic;
+    SIGNAL CLK17M_d                 : std_logic;
+    SIGNAL CLK17M                   : std_logic;
+    SIGNAL color4_i                 : std_logic;
+    SIGNAL pixel_clk_i              : std_logic;
      
--- Sub Module Interface Section
+    -- Sub Module Interface Section
 
 
     COMPONENT lpm_bustri_WORD
@@ -1426,10 +1510,7 @@ BEGIN
                     VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS;
 
     --  VIDEO AUSGABE SETZEN
-    CLK17M_clk <= CLK33M;
     CLK17M_d <= not CLK17M_q;
-    
-    CLK13M_clk <= CLK25M;
     CLK13M_d <= not CLK13M_q;
 
     --  320 pixels, 32 MHz,
@@ -1453,22 +1534,21 @@ BEGIN
     --  640 pixels, 32 MHz, RGB
     --  640 pixels, 25.175 MHz, VGA
     --  hsync pulse length in pixeln = frequenz / = 500ns
-    HSY_LEN_d <= ("00001110" and sizeIt(not ACP_VIDEO_ON,8) and
-	 (sizeIt(FALCON_VIDEO,8) or sizeIt(ST_VIDEO,8)) and
-	 ((sizeIt(VCNTRL_q(2),8) and sizeIt(VCO_q(2),8)) or
-	 sizeIt(VCO_q(0),8))) or ("00010000" and sizeIt(not ACP_VIDEO_ON,8) and
-	 (sizeIt(FALCON_VIDEO,8) or sizeIt(ST_VIDEO,8)) and
-	 ((sizeIt(VCNTRL_q(2),8) and sizeIt(not VCO_q(2),8)) or
-	 sizeIt(VCO_q(0),8))) or ("00011100" and sizeIt(not ACP_VIDEO_ON,8) and
-	 (sizeIt(FALCON_VIDEO,8) or sizeIt(ST_VIDEO,8)) and sizeIt(not
-	 VCNTRL_q(2),8) and sizeIt(VCO_q(2),8) and sizeIt(not VCO_q(0),8)) or
-	 ("00100000" and sizeIt(not ACP_VIDEO_ON,8) and (sizeIt(FALCON_VIDEO,8)
-	 or sizeIt(ST_VIDEO,8)) and sizeIt(not VCNTRL_q(2),8) and sizeIt(not
-	 VCO_q(2),8) and sizeIt(not VCO_q(0),8)) or ("00011100" and
-	 sizeIt(ACP_VIDEO_ON,8) and sizeIt(to_std_logic(ACP_VCTR_q(9 DOWNTO 8)
-	 = "00"),8)) or ("00100000" and sizeIt(ACP_VIDEO_ON,8) and
-	 sizeIt(to_std_logic(ACP_VCTR_q(9 DOWNTO 8) = "01"),8)) or
-	 ((std_logic_vector(to_unsigned(16, HSY_LEN_d'LENGTH) + unsigned(std_logic_vector('0' & VR_FRQ_q(7 DOWNTO 1))))) and sizeIt(ACP_VIDEO_ON,8) and sizeIt(ACP_VCTR_q(9),8));
+    HSY_LEN_d <= std_logic_vector'(d"14") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '1' or vco(0) = '1') ELSE
+                 std_logic_vector'(d"16") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '0' or vco(0) = '1') ELSE
+                 std_logic_vector'(d"28") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '1' and vco(0) = '0' ELSE
+                 std_logic_vector'(d"32") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '0' and vco(0) = '0' ELSE
+                 std_logic_vector'(d"28") WHEN acp_video_on = '1' and acp_vctr(9 DOWNTO 8) = "00" ELSE
+                 std_logic_vector'(d"32") WHEN acp_video_on = '1' and acp_vctr(9 DOWNTO 8) = "01" ELSE
+                 std_logic_vector(16 + unsigned("0" & vr_frq(7 DOWNTO 1))) WHEN acp_video_on and acp_vctr(9);
+                 
+                 -- ("00001110" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(VCO_q(2), 8)) or sizeIt(VCO_q(0), 8))) or
+                 -- ("00010000" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(not VCO_q(2), 8)) or sizeIt(VCO_q(0),8))) or
+                 -- ("00011100" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and sizeIt(not VCNTRL_q(2), 8) and sizeIt(VCO_q(2), 8) and sizeIt(not VCO_q(0), 8)) or
+                 -- ("00100000" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and sizeIt(not VCNTRL_q(2), 8) and sizeIt(not VCO_q(2), 8) and sizeIt(not VCO_q(0), 8)) or
+                 -- ("00011100" and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(to_std_logic(ACP_VCTR_q(9 DOWNTO 8) = "00"), 8)) or
+                 -- ("00100000" and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(to_std_logic(ACP_VCTR_q(9 DOWNTO 8) = "01"), 8)) or
+                 -- ((std_logic_vector(to_unsigned(16, HSY_LEN_d'LENGTH) + unsigned(std_logic_vector('0' & VR_FRQ_q(7 DOWNTO 1))))) and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(ACP_VCTR_q(9), 8));
 
 --  MULTIPLIKATIONS FAKTOR
    MULF <= ("000010" and sizeIt(not ST_VIDEO,6) and sizeIt(VCNTRL_q(2),6)) or
@@ -1481,11 +1561,8 @@ BEGIN
 	 and sizeIt(not VCNTRL_q(2),12));
 
 --  DOPPELZEILENMODUS
-   DOP_ZEI_clk <= MAIN_CLK;
-
 --  ZEILENVERDOPPELUNG EIN AUS
    DOP_ZEI_d <= VCNTRL_q(0) and (FALCON_VIDEO or ST_VIDEO);
-   INTER_ZEI_clk <= PIXEL_CLK;
 
 --  EINSCHIEBEZEILE AUF "DOPPEL" ZEILEN UND ZEILE NULL WEGEN SYNC
 --  EINSCHIEBEZEILE AUF "NORMAL" ZEILEN UND ZEILE NULL WEGEN SYNC
@@ -1571,7 +1648,6 @@ BEGIN
 	 sizeIt(not ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
 
     --  ZÄHLER
-    LAST_clk <= PIXEL_CLK;
     LAST_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(H_TOTAL) - 2)));
 
     VHCNT_d <= (std_logic_vector(unsigned(VHCNT_q) + 1)) and sizeIt(not LAST_q,12);
@@ -1580,20 +1656,15 @@ BEGIN
     VVCNT_d <= (std_logic_vector(unsigned(VVCNT_q) + 1)) and sizeIt(to_std_logic(VVCNT_q /= (std_logic_vector(unsigned(V_TOTAL) - 1))), 11);
 
     --  DISPLAY ON OFF
-    DPO_ZL_clk <= PIXEL_CLK;
-
     --  1 ZEILE DAVOR ON OFF
     DPO_ZL_d <= to_std_logic((unsigned(VVCNT_q) > unsigned(std_logic_vector(unsigned(RAND_OBEN) - 1))) and (unsigned(VVCNT_q) < unsigned(std_logic_vector(unsigned(RAND_UNTEN) - 1))));
 
     --  AM ZEILENENDE ÜBERNEHMEN
     DPO_ZL_ena <= LAST_q;
-    DPO_ON_clk <= PIXEL_CLK;
 
     --  BESSER EINZELN WEGEN TIMING
     DPO_ON_d <= to_std_logic(VHCNT_q = RAND_LINKS);
-    DPO_OFF_clk <= PIXEL_CLK;
     DPO_OFF_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(RAND_RECHTS) - 1)));
-    DISP_ON_clk <= PIXEL_CLK;
     DISP_ON_d <= (DISP_ON_q and (not DPO_OFF_q)) or (DPO_ON_q and DPO_ZL_q);
 
     --  DATENTRANSFER ON OFF
@@ -1601,7 +1672,6 @@ BEGIN
     
     --  BESSER EINZELN WEGEN TIMING
     VCO_ON_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HDIS_START) - 1)));
-    VCO_OFF_clk <= PIXEL_CLK;
     VCO_OFF_d <= to_std_logic(VHCNT_q = HDIS_END);
 
     
@@ -1665,7 +1735,6 @@ BEGIN
     VERZ2_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1')
 	 and VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
-    nBLANK_clk <= PIXEL_CLK;
 
     --  nBLANK =  VERZ[0][8];
     nblank_d <= verz0_q(8);
@@ -1677,7 +1746,6 @@ BEGIN
     HSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1') and
 	 HSYNC_I_q /= "00000000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(6))='1' and HSYNC_I_q = "00000000"));
-    VSYNC_clk <= PIXEL_CLK;
 
     --  VSYNC  =  VERZ[2][9];
     --  NUR MÖGLICH WENN BEIDE
@@ -1704,7 +1772,6 @@ BEGIN
 
     --  IN LETZTER ZEILE LÖSCHEN
     CLR_FIFO_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(V_TOTAL) - 2)));
-    START_ZEILE_clk <= PIXEL_CLK;
     START_ZEILE_ena <= LAST_q;
 
     --  ZEILE 1
