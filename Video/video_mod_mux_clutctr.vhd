@@ -265,9 +265,9 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL u0_tridata               : std_logic_vector(15 DOWNTO 0);
     SIGNAL u1_data                  : std_logic_vector(15 DOWNTO 0);
     SIGNAL u1_tridata               : std_logic_vector(15 DOWNTO 0);
-    SIGNAL ST_SHIFT_MODE0_clk_ctrl  : std_logic;
+    -- SIGNAL ST_SHIFT_MODE0_clk_ctrl  : std_logic;
     SIGNAL ST_SHIFT_MODE0_ena_ctrl  : std_logic;
- 	SIGNAL FALCON_SHIFT_MODE0_clk_ctrl  : std_logic;
+ 	-- SIGNAL FALCON_SHIFT_MODE0_clk_ctrl  : std_logic;
     SIGNAL FALCON_SHIFT_MODE8_ena_ctrl  : std_logic;
 	SIGNAL FALCON_SHIFT_MODE0_ena_ctrl  : std_logic;
     
@@ -1540,7 +1540,7 @@ BEGIN
                  std_logic_vector'(d"32") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '0' and vco(0) = '0' ELSE
                  std_logic_vector'(d"28") WHEN acp_video_on = '1' and acp_vctr(9 DOWNTO 8) = "00" ELSE
                  std_logic_vector'(d"32") WHEN acp_video_on = '1' and acp_vctr(9 DOWNTO 8) = "01" ELSE
-                 std_logic_vector(16 + unsigned("0" & vr_frq(7 DOWNTO 1))) WHEN acp_video_on and acp_vctr(9);
+                 std_logic_vector'(d"16" + unsigned("0" & vr_frq(7 DOWNTO 1))) WHEN acp_video_on = '1' and acp_vctr(9) = '1'           ;
                  
                  -- ("00001110" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(VCO_q(2), 8)) or sizeIt(VCO_q(0), 8))) or
                  -- ("00010000" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(not VCO_q(2), 8)) or sizeIt(VCO_q(0),8))) or
