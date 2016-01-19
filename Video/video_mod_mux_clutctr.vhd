@@ -635,48 +635,23 @@ BEGIN
             IF ACP_VCTR0_ena_ctrl = '1' THEN
                 ACP_VCTR_q(5 DOWNTO 0) <= ACP_VCTR_d(5 DOWNTO 0);
             END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
+    
             IF SYS_CTR0_ena_ctrl='1' THEN
                 SYS_CTR_q <= SYS_CTR_d;
             END IF;
-        END IF;
-    END PROCESS;
 
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
             IF LOF8_ena_ctrl = '1' THEN
                 LOF_q(15 DOWNTO 8) <= LOF_d(15 DOWNTO 8);
             END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
+ 
             IF LOF0_ena_ctrl = '1' THEN
                 LOF_q(7 DOWNTO 0) <= LOF_d(7 DOWNTO 0);
             END IF;
-        END IF;
-    END PROCESS;
 
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
             IF LWD8_ena_ctrl = '1' THEN
                 LWD_q(15 DOWNTO 8) <= LWD_d(15 DOWNTO 8);
             END IF;
-        END IF;
-    END PROCESS;
 
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
             IF LWD0_ena_ctrl = '1' THEN
                 LWD_q(7 DOWNTO 0) <= LWD_d(7 DOWNTO 0);
             END IF;
@@ -697,9 +672,9 @@ BEGIN
         END IF;
     END PROCESS;
 
-    PROCESS (main_clk)
+    PROCESS (pixel_clk_i)
     BEGIN
-        IF rising_edge(main_clk) THEN
+        IF rising_edge(pixel_clk_i) THEN
             HSY_LEN_q <= HSY_LEN_d;
         END IF;
     END PROCESS;
@@ -1622,32 +1597,32 @@ BEGIN
     DISP_ON_d <= (DISP_ON_q and (not DPO_OFF_q)) or (DPO_ON_q and DPO_ZL_q);
 
     --  DATENTRANSFER ON OFF
-    VCO_ON_clk <= PIXEL_CLK;
-
+    
+    
     --  BESSER EINZELN WEGEN TIMING
     VCO_ON_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HDIS_START) - 1)));
     VCO_OFF_clk <= PIXEL_CLK;
     VCO_OFF_d <= to_std_logic(VHCNT_q = HDIS_END);
-    VCO_ZL_clk <= PIXEL_CLK;
 
+    
     --  AM ZEILENENDE ÜBERNEHMEN
     VCO_ZL_ena <= LAST_q;
 
     --  1 ZEILE DAVOR ON OFF
     VCO_ZL_d <= to_std_logic((unsigned(VVCNT_q) >= unsigned(std_logic_vector(unsigned(VDIS_START) - 1))) and (unsigned(VVCNT_q) < unsigned(VDIS_END)));
-    VDTRON_clk <= PIXEL_CLK;
+
     VDTRON_d <= (VDTRON_q and (not VCO_OFF_q)) or (VCO_ON_q and VCO_ZL_q);
 
     --  VERZÖGERUNG UND SYNC
-    HSYNC_START_clk <= PIXEL_CLK;
+
     HSYNC_START_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HS_START) - 3)));
 
     HSYNC_I_d <= (HSY_LEN_q and sizeIt(HSYNC_START_q,8)) or
                 ((std_logic_vector(unsigned(HSYNC_I_q) - 1)) and
 	 sizeIt(not HSYNC_START_q,8) and sizeIt(to_std_logic(HSYNC_I_q /=
 	 "00000000"),8));
-    VSYNC_START_clk <= PIXEL_CLK;
-    VSYNC_START_ena <= LAST_q;
+
+     VSYNC_START_ena <= LAST_q;
 
     --  start am ende der Zeile vor dem vsync
     VSYNC_START_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(VS_START) - 3)));
@@ -1696,7 +1671,6 @@ BEGIN
     nblank_d <= verz0_q(8);
     
     --  nBLANK_d <= DISP_ON_q;
-    HSYNC_clk <= PIXEL_CLK;
 
     --  HSYNC  =  VERZ[1][9];
     --  NUR MÖGLICH WENN BEIDE
@@ -1726,7 +1700,6 @@ BEGIN
     -- RAND_ON <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
 
     -- --------------------------------------------------------
-    CLR_FIFO_clk <= PIXEL_CLK;
     CLR_FIFO_ena <= LAST_q;
 
     --  IN LETZTER ZEILE LÖSCHEN
@@ -1736,15 +1709,12 @@ BEGIN
 
     --  ZEILE 1
     START_ZEILE_d <= to_std_logic(VVCNT_q = "00000000000");
-    SYNC_PIX_clk <= PIXEL_CLK;
 
     --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
     SYNC_PIX_d <= to_std_logic(VHCNT_q = "000000000011") and START_ZEILE_q;
-    SYNC_PIX1_clk <= PIXEL_CLK;
 
     --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
     SYNC_PIX1_d <= to_std_logic(VHCNT_q = "000000000101") and START_ZEILE_q;
-    SYNC_PIX2_clk <= PIXEL_CLK;
 
     --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
     SYNC_PIX2_d <= to_std_logic(VHCNT_q = "000000000111") and START_ZEILE_q;
@@ -1753,7 +1723,6 @@ BEGIN
 
     -- count up if display on sonst clear bei sync pix
     SUB_PIXEL_CNT_d <= (std_logic_vector(unsigned(SUB_PIXEL_CNT_q) + 1)) and sizeIt(not SYNC_PIX_q,7);
-    FIFO_RDE_clk <= PIXEL_CLK;
 
     --  3 CLOCK ZUSÄTZLICH FÜR FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
     FIFO_RDE_d <= (((to_std_logic(SUB_PIXEL_CNT_q = "0000001") and COLOR1) or
