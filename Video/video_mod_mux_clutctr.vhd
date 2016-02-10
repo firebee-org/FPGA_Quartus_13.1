@@ -468,6 +468,7 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL CLK17M                   : std_logic;
     SIGNAL color4_i                 : std_logic;
     SIGNAL pixel_clk_i              : std_logic;
+	 SIGNAL calc_freq						: unsigned(7 DOWNTO 0);
      
     -- Sub Module Interface Section
 
@@ -1372,7 +1373,7 @@ BEGIN
 
     --  HBE
     --  $8286/2
-    HBE_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 DOWNTO 1) = "1111100000101000011");
+    HBE_CS <= '1' WHEN nFB_CS1 ='0' and FB_ADR(19 DOWNTO 1) = "1111100000101000011" ELSE '0';
     HBE_d <= FB_AD(27 DOWNTO 16);
     HBE8_ena_ctrl <= HBE_CS and (not nFB_WR) and FB_B(2);
     HBE0_ena_ctrl <= HBE_CS and (not nFB_WR) and FB_B(3);
@@ -1534,13 +1535,14 @@ BEGIN
     --  640 pixels, 32 MHz, RGB
     --  640 pixels, 25.175 MHz, VGA
     --  hsync pulse length in pixeln = frequenz / = 500ns
+	 calc_freq <= 8d"16" + unsigned("0" & vr_frq(7 DOWNTO 1));
     HSY_LEN_d <= std_logic_vector'(d"14") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '1' or vco(0) = '1') ELSE
                  std_logic_vector'(d"16") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '0' or vco(0) = '1') ELSE
                  std_logic_vector'(d"28") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '1' and vco(0) = '0' ELSE
                  std_logic_vector'(d"32") WHEN acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '0' and vco(0) = '0' ELSE
                  std_logic_vector'(d"28") WHEN acp_video_on = '1' and acp_vctr(9 DOWNTO 8) = "00" ELSE
                  std_logic_vector'(d"32") WHEN acp_video_on = '1' and acp_vctr(9 DOWNTO 8) = "01" ELSE
-                 std_logic_vector'(d"16" + unsigned("0" & vr_frq(7 DOWNTO 1))) WHEN acp_video_on = '1' and acp_vctr(9) = '1'           ;
+                 std_logic_vector(calc_freq) WHEN acp_video_on = '1' and acp_vctr(9) = '1'           ;
                  
                  -- ("00001110" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(VCO_q(2), 8)) or sizeIt(VCO_q(0), 8))) or
                  -- ("00010000" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(not VCO_q(2), 8)) or sizeIt(VCO_q(0),8))) or
