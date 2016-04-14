@@ -621,7 +621,7 @@ BEGIN
         );
         
     -- Start of original equations
-    LINE <= FB_SIZE0 and FB_SIZE1;
+    line <= fb_size0 and fb_size1;
 
     --  BYT SELECT
     --  ADR==0
