@@ -468,7 +468,6 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
     SIGNAL CLK17M                   : std_logic;
     SIGNAL color4_i                 : std_logic;
     SIGNAL pixel_clk_i              : std_logic;
-    signal fbee_pxl_half            : unsigned(7 downto 0);
      
     -- Sub Module Interface Section
 
@@ -507,7 +506,7 @@ ARCHITECTURE rtl OF video_mod_mux_clutctr IS
 BEGIN
 
     -- Sub Module Section
-    u0 : lpm_bustri_WORD
+    u0 : entity work.lpm_bustri_WORD
         PORT MAP
         (
             data => u0_data,
@@ -570,9 +569,9 @@ BEGIN
     BORDER_COLOR(15 downto 8) <= BORDER_COLOR_q(15 downto 8);
     BORDER_COLOR(7 downto 0) <= BORDER_COLOR_q(7 downto 0);
     
-    PROCESS (main_clk)
+    PROCESS (pixel_clk_i)
     BEGIN
-        IF rising_edge(main_clk) THEN
+        IF rising_edge(pixel_clk_i) THEN
             IF BORDER_COLOR16_ena_ctrl = '1' THEN
                 border_color_q(23 downto 16) <= border_color_d(23 downto 16);
             END IF;
@@ -1536,15 +1535,13 @@ BEGIN
     --  640 pixels, 25.175 MHz, VGA
     --  hsync pulse length in pixeln = frequenz / = 500ns
     
-    fbee_pxl_half <= d"16" + ("0" & vr_frq(7 downto 1));
     HSY_LEN_d <= std_logic_vector'(d"14") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '1' or vco(0) = '1') else
                  std_logic_vector'(d"16") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '0' or vco(0) = '1') else
                  std_logic_vector'(d"28") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '1' and vco(0) = '0' else
                  std_logic_vector'(d"32") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '0' and vco(0) = '0' else
                  std_logic_vector'(d"28") when acp_video_on = '1' and acp_vctr(9 downto 8) = "00" else
                  std_logic_vector'(d"32") when acp_video_on = '1' and acp_vctr(9 downto 8) = "01" else
-                 std_logic_vector(fbee_pxl_half) when acp_video_on = '1' and acp_vctr(9) = '1';
-                 -- std_logic_vector'(vr_frq(7 downto 1) + unsigned'(8d"16")) when acp_video_on = '1' and acp_vctr(9) = '1'           ;
+                 std_logic_vector(d"16" + ("0" & vr_frq(7 downto 1))) when acp_video_on = '1' and acp_vctr(9) = '1';
                  
                  -- ("00001110" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(VCO_q(2), 8)) or sizeIt(VCO_q(0), 8))) or
                  -- ("00010000" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(not VCO_q(2), 8)) or sizeIt(VCO_q(0),8))) or
