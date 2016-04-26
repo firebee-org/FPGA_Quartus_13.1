@@ -496,7 +496,7 @@ architecture rtl of video_mod_mux_clutctr is
     
     -- f_addr_cmp() compares addr against addr_const (only counting from the highest significant bit of the smaller
     -- number, ignoring ignore least significant bits) and returns true if both addresses match, false otherwise
-    function f_addr_cmp(addr_const : std_logic_vector; addr : std_logic_vector; ignore : integer) return boolean is
+    function f_addr_cmp(signal addr : std_logic_vector; constant addr_const : std_logic_vector; constant ignore : integer) return boolean is
         variable c_len  : integer := addr_const'high;
         variable a_len  : integer := addr'high;
         variable len    : integer;
@@ -628,7 +628,7 @@ begin
             IF FALCON_SHIFT_MODE0_ena_ctrl = '1' THEN
                 falcon_shift_mode_q(7 downto 0) <= falcon_shift_mode_d(7 downto 0);
             END IF;
-                        IF ACP_VCTR24_ena_ctrl = '1' THEN
+            IF ACP_VCTR24_ena_ctrl = '1' THEN
                 ACP_VCTR_q(31 downto 24) <= ACP_VCTR_d(31 downto 24);
             END IF;
             
@@ -1394,8 +1394,8 @@ begin
 
 --	HDIS_START[] 	=  HDB[] 									&  ACP_VIDEO_ON
 --					#  RAND_LINKS[] + 1							& !ACP_VIDEO_ON;						--  
-    HDIS_START <= (HDB_q and sizeIt(ACP_VIDEO_ON,12)) or ((std_logic_vector(unsigned(RAND_LINKS) + 1)) and sizeIt(not ACP_VIDEO_ON,12));
-    HDIS_END <= (HDE_q and sizeIt(ACP_VIDEO_ON,12)) or
+    HDIS_START <= (HDB_q and sizeIt(ACP_VIDEO_ON, 12)) or ((std_logic_vector(unsigned(RAND_LINKS) + 1)) and sizeIt(not ACP_VIDEO_ON,12));
+    HDIS_END <= (HDE_q and sizeIt(ACP_VIDEO_ON, 12)) or
                ((std_logic_vector(unsigned(RAND_LINKS) + unsigned(HDIS_LEN))) and sizeIt(not ACP_VIDEO_ON,12)); 
     RAND_RECHTS <= (HBB_q and sizeIt(ACP_VIDEO_ON,12)) or
 	              ((std_logic_vector(unsigned(HDIS_END) + 1)) and sizeIt(not ACP_VIDEO_ON, 12));
@@ -1508,8 +1508,12 @@ begin
 
     --  3 zeilen vsync length
     --  runterzählen bis 0
-    VSYNC_I_d <= ("011" and sizeIt(VSYNC_START_q,3)) or
-	 ((std_logic_vector(unsigned(VSYNC_I_q) - 1)) and sizeIt(not VSYNC_START_q,3) and sizeIt(to_std_logic(VSYNC_I_q /= "000"),3));
+    VSYNC_I_d <= x"3" when VSYNC_START_q = '1' else
+                 std_logic_vector(unsigned(VSYNC_I_q) - 1) when VSYNC_START_q = '0' and VSYNC_I_q /= '0' else
+                 (others => '0');
+                 
+    -- VSYNC_I_d <= ("011" and sizeIt(VSYNC_START_q,3)) or
+	--  ((std_logic_vector(unsigned(VSYNC_I_q) - 1)) and sizeIt(not VSYNC_START_q,3) and sizeIt(to_std_logic(VSYNC_I_q /= "000"),3));
    
     (VERZ2_d(1), VERZ1_d(1), VERZ0_d(1)) <= std_logic_vector'(VERZ2_q(0) & VERZ1_q(0) & VERZ0_q(0));
     (VERZ2_d(2), VERZ1_d(2), VERZ0_d(2)) <= std_logic_vector'(VERZ2_q(1) & VERZ1_q(1) & VERZ0_q(1));
