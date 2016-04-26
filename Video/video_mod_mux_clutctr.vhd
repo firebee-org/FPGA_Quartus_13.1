@@ -493,6 +493,24 @@ architecture rtl of video_mod_mux_clutctr is
         end loop;
         return rep;
     end function sizeit;
+    
+    function f_addr_cmp(addr_const : std_logic_vector; addr : std_logic_vector; ignore : integer) return boolean is
+        variable c_len  : integer := addr_const'high;
+        variable a_len  : integer := addr'high;
+        variable len    : integer;
+        variable result : boolean := false;
+    begin
+        if c_len < a_len then
+            len := c_len;
+        else
+            len := a_len;
+        end if;
+        for i in len downto len - ignore loop
+            result := addr_const(i) = addr(i);
+            exit when result = false;
+        end loop;
+        return result;
+    end function f_addr_cmp;
 
 begin
     -- Sub Module Section
@@ -1333,7 +1351,10 @@ begin
     --                               10 VGA
     --                               11 TV
     --  $8006/2
-    SYS_CTR_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000000000011");
+    sys_ctr_cs <= '1' when nFB_CS1 = '0' and f_addr_cmp(FB_ADR, 20x"f8006", 1);
+            -- FB_ADR(19 downto 1) = std_logic_vector'(20x"f8006")(19 downto 1) else '0';
+    
+    -- SYS_CTR_CS <= to_std_logic(((not nFB_CS1) = '1') and FB_ADR(19 downto 1) = "1111100000000000011");
     SYS_CTR_d <= FB_AD(22 downto 16);
     SYS_CTR0_ena_ctrl <= SYS_CTR_CS and (not nFB_WR) and FB_B(3);
     BLITTER_ON <= not SYS_CTR_q(3);
