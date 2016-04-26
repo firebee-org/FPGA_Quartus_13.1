@@ -494,6 +494,8 @@ architecture rtl of video_mod_mux_clutctr is
         return rep;
     end function sizeit;
     
+    -- f_addr_cmp() compares addr against addr_const (only counting from the highest significant bit of the smaller
+    -- number, ignoring ignore least significant bits) and returns true if both addresses match, false otherwise
     function f_addr_cmp(addr_const : std_logic_vector; addr : std_logic_vector; ignore : integer) return boolean is
         variable c_len  : integer := addr_const'high;
         variable a_len  : integer := addr'high;
@@ -533,53 +535,25 @@ begin
     -- Register Section
 
     CLUT_MUX_ADR <= CLUT_MUX_ADR_q;
+    HSYNC <= HSYNC_q;
+    VSYNC <= VSYNC_q;
+    nBLANK <= nBLANK_q;
+    FIFO_RDE <= FIFO_RDE_q;
+    BORDER_COLOR(23 downto 16) <= BORDER_COLOR_q(23 downto 16);
+    BORDER_COLOR(15 downto 8) <= BORDER_COLOR_q(15 downto 8);
+    BORDER_COLOR(7 downto 0) <= BORDER_COLOR_q(7 downto 0);
+    CCSEL <= CCSEL_q;
+    INTER_ZEI <= INTER_ZEI_q;
+    DOP_FIFO_CLR <= DOP_FIFO_CLR_q;
     
     process (pixel_clk_i)
     begin
         if rising_edge(pixel_clk_i) then
             CLUT_MUX_ADR_q <= CLUT_MUX_ADR_d;
-        end if;
-    end process;
-
-    HSYNC <= HSYNC_q;
-    process (pixel_clk_i)
-    begin
-        if rising_edge(pixel_clk_i) then
             HSYNC_q <= HSYNC_d;
-        end if;
-    end process;
-
-    VSYNC <= VSYNC_q;
-    process (pixel_clk_i)
-    begin
-        if rising_edge(pixel_clk_i) then
             VSYNC_q <= VSYNC_d;
-        end if;
-    end process;
-
-    nBLANK <= nBLANK_q;
-    process (pixel_clk_i)
-    begin
-        if rising_edge(pixel_clk_i) then
             nBLANK_q <= nBLANK_d;
-        end if;
-    end process;
-
-    FIFO_RDE <= FIFO_RDE_q;
-    process (pixel_clk_i)
-    begin
-        if rising_edge(pixel_clk_i) then
             FIFO_RDE_q <= FIFO_RDE_d;
-        end if;
-    end process;
-    
-    BORDER_COLOR(23 downto 16) <= BORDER_COLOR_q(23 downto 16);
-    BORDER_COLOR(15 downto 8) <= BORDER_COLOR_q(15 downto 8);
-    BORDER_COLOR(7 downto 0) <= BORDER_COLOR_q(7 downto 0);
-    
-    process (pixel_clk_i)
-    begin
-        if rising_edge(pixel_clk_i) then
             if BORDER_COLOR16_ena_ctrl = '1' then
                 border_color_q(23 downto 16) <= border_color_d(23 downto 16);
             end if;
@@ -589,29 +563,8 @@ begin
             IF BORDER_COLOR0_ena_ctrl = '1' THEN
                 border_color_q(7 downto 0) <= border_color_d(7 downto 0);
             END IF;
-        END IF;
-    END PROCESS;
-
-    CCSEL <= CCSEL_q;
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
             CCSEL_q <= CCSEL_d;
-        END IF;
-    END PROCESS;
-
-    INTER_ZEI <= INTER_ZEI_q;
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
             INTER_ZEI_q <= INTER_ZEI_d;
-        END IF;
-    END PROCESS;
-
-    DOP_FIFO_CLR <= DOP_FIFO_CLR_q;
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
             DOP_FIFO_CLR_q <= DOP_FIFO_CLR_d;
         END IF;
     END PROCESS;
@@ -642,13 +595,6 @@ begin
         END IF;
     END PROCESS;
 
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            CLK17M_q <= CLK17M_d;
-        END IF;
-    END PROCESS;
-
     PROCESS (clk25m)
     BEGIN
         IF rising_edge(clk25m) THEN
@@ -656,74 +602,48 @@ begin
         END IF;
     END PROCESS;
 
+    VR_FRQ <= unsigned(VR_FRQ_q);
+    
     PROCESS (main_clk)
     BEGIN
         IF rising_edge(main_clk) THEN
+            CLK17M_q <= CLK17M_d;
+
             IF VR_DOUT0_ena_ctrl = '1' THEN
                 VR_DOUT_q <= VR_DOUT_d;
             END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
+            
             IF VR_FRQ0_ena_ctrl = '1' THEN
                 VR_FRQ_q <= VR_FRQ_d;
             END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
+            
             IF ST_SHIFT_MODE0_ena_ctrl = '1' THEN
                 ST_SHIFT_MODE_q <= ST_SHIFT_MODE_d;
             END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
+            
             IF FALCON_SHIFT_MODE8_ena_ctrl = '1' THEN
                 falcon_shift_mode_q(10 downto 8) <= falcon_shift_mode_d(10 downto 8);
             END IF;
+            
             IF FALCON_SHIFT_MODE0_ena_ctrl = '1' THEN
                 falcon_shift_mode_q(7 downto 0) <= falcon_shift_mode_d(7 downto 0);
             END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
-            CLUT_MUX_AV1_q <= CLUT_MUX_AV1_d;
-        END IF;
-    END PROCESS;
-
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
-            CLUT_MUX_AV0_q <= CLUT_MUX_AV0_d;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF ACP_VCTR24_ena_ctrl = '1' THEN
+                        IF ACP_VCTR24_ena_ctrl = '1' THEN
                 ACP_VCTR_q(31 downto 24) <= ACP_VCTR_d(31 downto 24);
             END IF;
+            
             IF ACP_VCTR16_ena_ctrl = '1' THEN
                 ACP_VCTR_q(23 downto 16) <= ACP_VCTR_d(23 downto 16);
             END IF;
+            
             IF ACP_VCTR8_ena_ctrl = '1' THEN
                 ACP_VCTR_q(15 downto 8) <= ACP_VCTR_d(15 downto 8);
             END IF;
+            
             IF ACP_VCTR6_ena_ctrl = '1' THEN
                 ACP_VCTR_q(7 downto 6) <= ACP_VCTR_d(7 downto 6);
             END IF;
+            
             IF ACP_VCTR0_ena_ctrl = '1' THEN
                 ACP_VCTR_q(5 downto 0) <= ACP_VCTR_d(5 downto 0);
             END IF;
@@ -747,35 +667,112 @@ begin
             IF LWD0_ena_ctrl = '1' THEN
                 LWD_q(7 downto 0) <= LWD_d(7 downto 0);
             END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
-            CLUT_TA_q <= CLUT_TA_d;
-        END IF;
-    END PROCESS;
-
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
-            HSYNC_I_q <= HSYNC_I_d;
-        END IF;
-    END PROCESS;
-
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
-            HSY_LEN_q <= HSY_LEN_d;
-        END IF;
-    END PROCESS;
-
-    PROCESS (pixel_clk_i)
-    BEGIN
-        IF rising_edge(pixel_clk_i) THEN
-            HSYNC_START_q <= HSYNC_START_d;
+ 
+            IF HDB8_ena_ctrl = '1' THEN
+                HDB_q(11 downto 8) <= HDB_d(11 downto 8);
+            END IF;
             
+            IF HDB0_ena_ctrl = '1' THEN
+                HDB_q(7 downto 0) <= HDB_d(7 downto 0);
+            END IF;
+
+            IF HDE8_ena_ctrl = '1' THEN
+                HDE_q(11 downto 8) <= HDE_d(11 downto 8);
+            END IF;
+
+            IF HDE0_ena_ctrl = '1' THEN
+                HDE_q(7 downto 0) <= HDE_d(7 downto 0);
+            END IF;
+
+            IF HBB8_ena_ctrl = '1' THEN
+                HBB_q(11 downto 8) <= HBB_d(11 downto 8);
+            END IF;
+
+            IF HBB0_ena_ctrl = '1' THEN
+                HBB_q(7 downto 0) <= HBB_d(7 downto 0);
+            END IF;
+
+            IF HSS8_ena_ctrl = '1' THEN
+                HSS_q(11 downto 8) <= HSS_d(11 downto 8);
+            END IF;
+
+            IF HSS0_ena_ctrl='1' THEN
+                HSS_q(7 downto 0) <= HSS_d(7 downto 0);
+            END IF;
+
+            DOP_ZEI_q <= DOP_ZEI_d;
+
+            IF VBE8_ena_ctrl = '1' THEN
+                VBE_q(10 downto 8) <= VBE_d(10 downto 8);
+            END IF;
+
+            IF VBE0_ena_ctrl = '1' THEN
+                VBE_q(7 downto 0) <= VBE_d(7 downto 0);
+            END IF;
+
+            IF VDB8_ena_ctrl = '1' THEN
+                VDB_q(10 downto 8) <= VDB_d(10 downto 8);
+            END IF;
+
+            IF VDB0_ena_ctrl = '1' THEN
+                VDB_q(7 downto 0) <= VDB_d(7 downto 0);
+            END IF;
+
+            IF VDE8_ena_ctrl = '1' THEN
+                VDE_q(10 downto 8) <= VDE_d(10 downto 8);
+            END IF;
+
+            IF VDE0_ena_ctrl = '1' THEN
+                VDE_q(7 downto 0) <= VDE_d(7 downto 0);
+            END IF;
+
+            IF VBB8_ena_ctrl = '1' THEN
+                VBB_q(10 downto 8) <= VBB_d(10 downto 8);
+            END IF;
+
+            IF VBB0_ena_ctrl = '1' THEN
+                VBB_q(7 downto 0) <= VBB_d(7 downto 0);
+            END IF;
+
+            IF VSS8_ena_ctrl = '1' THEN
+                VSS_q(10 downto 8) <= VSS_d(10 downto 8);
+            END IF;
+
+            IF VSS0_ena_ctrl = '1' THEN
+                VSS_q(7 downto 0) <= VSS_d(7 downto 0);
+            END IF;
+
+            IF VFT8_ena_ctrl = '1' THEN
+                VFT_q(10 downto 8) <= VFT_d(10 downto 8);
+            END IF;
+
+            IF VFT0_ena_ctrl = '1' THEN
+                VFT_q(7 downto 0) <= VFT_d(7 downto 0);
+            END IF;
+
+            IF VCO_ena(8) = '1' THEN
+                VCO_q(8) <= VCO_d(8);
+            END IF;
+
+            IF VCO0_ena_ctrl = '1' THEN
+                VCO_q(7 downto 0) <= VCO_d(7 downto 0);
+            END IF;
+
+            IF VCNTRL0_ena_ctrl = '1' THEN
+                VCNTRL_q <= VCNTRL_d;
+            END IF;
+        END IF;
+    END PROCESS;
+
+    PROCESS (pixel_clk_i)
+    BEGIN
+        IF rising_edge(pixel_clk_i) THEN
+            CLUT_MUX_AV1_q <= CLUT_MUX_AV1_d;
+            CLUT_MUX_AV0_q <= CLUT_MUX_AV0_d;
+            CLUT_TA_q <= CLUT_TA_d;
+            HSYNC_I_q <= HSYNC_I_d;
+            HSY_LEN_q <= HSY_LEN_d;
+            HSYNC_START_q <= HSYNC_START_d;
             LAST_q <= LAST_d;
             
             IF VSYNC_START_ena = '1' THEN
@@ -907,213 +904,6 @@ begin
         END IF;
     END PROCESS;
 
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF HDB8_ena_ctrl = '1' THEN
-                HDB_q(11 downto 8) <= HDB_d(11 downto 8);
-            END IF;
-            IF HDB0_ena_ctrl = '1' THEN
-                HDB_q(7 downto 0) <= HDB_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF HDE8_ena_ctrl = '1' THEN
-                HDE_q(11 downto 8) <= HDE_d(11 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF HDE0_ena_ctrl = '1' THEN
-                HDE_q(7 downto 0) <= HDE_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF HBB8_ena_ctrl = '1' THEN
-                HBB_q(11 downto 8) <= HBB_d(11 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF HBB0_ena_ctrl = '1' THEN
-                HBB_q(7 downto 0) <= HBB_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF HSS8_ena_ctrl = '1' THEN
-                HSS_q(11 downto 8) <= HSS_d(11 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF HSS0_ena_ctrl='1' THEN
-                HSS_q(7 downto 0) <= HSS_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            DOP_ZEI_q <= DOP_ZEI_d;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VBE8_ena_ctrl = '1' THEN
-                VBE_q(10 downto 8) <= VBE_d(10 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VBE0_ena_ctrl = '1' THEN
-                VBE_q(7 downto 0) <= VBE_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VDB8_ena_ctrl = '1' THEN
-                VDB_q(10 downto 8) <= VDB_d(10 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VDB0_ena_ctrl = '1' THEN
-                VDB_q(7 downto 0) <= VDB_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VDE8_ena_ctrl = '1' THEN
-                VDE_q(10 downto 8) <= VDE_d(10 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VDE0_ena_ctrl = '1' THEN
-                VDE_q(7 downto 0) <= VDE_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VBB8_ena_ctrl = '1' THEN
-                VBB_q(10 downto 8) <= VBB_d(10 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VBB0_ena_ctrl = '1' THEN
-                VBB_q(7 downto 0) <= VBB_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VSS8_ena_ctrl = '1' THEN
-                VSS_q(10 downto 8) <= VSS_d(10 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VSS0_ena_ctrl = '1' THEN
-                VSS_q(7 downto 0) <= VSS_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VFT8_ena_ctrl = '1' THEN
-                VFT_q(10 downto 8) <= VFT_d(10 downto 8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VFT0_ena_ctrl = '1' THEN
-                VFT_q(7 downto 0) <= VFT_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VCO_ena(8) = '1' THEN
-                VCO_q(8) <= VCO_d(8);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VCO0_ena_ctrl = '1' THEN
-                VCO_q(7 downto 0) <= VCO_d(7 downto 0);
-            END IF;
-        END IF;
-    END PROCESS;
-
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            IF VCNTRL0_ena_ctrl = '1' THEN
-                VCNTRL_q <= VCNTRL_d;
-            END IF;
-        END IF;
-    END PROCESS;
 
 -- Start of original equations
 
@@ -1604,16 +1394,17 @@ begin
 
 --	HDIS_START[] 	=  HDB[] 									&  ACP_VIDEO_ON
 --					#  RAND_LINKS[] + 1							& !ACP_VIDEO_ON;						--  
-   HDIS_START <= (HDB_q and sizeIt(ACP_VIDEO_ON,12)) or ((std_logic_vector(unsigned(RAND_LINKS) + 1)) and sizeIt(not ACP_VIDEO_ON,12));
-   HDIS_END <= (HDE_q and sizeIt(ACP_VIDEO_ON,12)) or
-               ((std_logic_vector(unsigned(RAND_LINKS) + unsigned(HDIS_LEN))) and sizeIt(not ACP_VIDEO_ON,12));
-   RAND_RECHTS <= (HBB_q and sizeIt(ACP_VIDEO_ON,12)) or
+    HDIS_START <= (HDB_q and sizeIt(ACP_VIDEO_ON,12)) or ((std_logic_vector(unsigned(RAND_LINKS) + 1)) and sizeIt(not ACP_VIDEO_ON,12));
+    HDIS_END <= (HDE_q and sizeIt(ACP_VIDEO_ON,12)) or
+               ((std_logic_vector(unsigned(RAND_LINKS) + unsigned(HDIS_LEN))) and sizeIt(not ACP_VIDEO_ON,12)); 
+    RAND_RECHTS <= (HBB_q and sizeIt(ACP_VIDEO_ON,12)) or
 	              ((std_logic_vector(unsigned(HDIS_END) + 1)) and sizeIt(not ACP_VIDEO_ON, 12));
 
     hs_start <= hss_q when acp_video_on else
                 atari_hl(11 downto 0) when not(acp_video_on) and atari_sync and vcntrl(2) else
                 atari_hh(11 downto 0) when not(acp_video_on) and atari_sync and not vcntrl(2) else
-                std_logic_vector(resize(unsigned(hht) + 1 + unsigned(hss) * unsigned(mulf(5 downto 1)), 12)) when not acp_video_on and not atari_sync;
+                std_logic_vector(resize(unsigned(hht) + 1 + unsigned(hss) * unsigned(mulf(5 downto 1)), 12)) when not acp_video_on and not atari_sync else
+                (others => '0');
             
 --    HS_START[]      =  HSS[]                                    &  ACP_VIDEO_ON
 --                     #  ATARI_HL[11..0]                          & !ACP_VIDEO_ON &  ATARI_SYNC &  VCNTRL2
@@ -1623,7 +1414,8 @@ begin
     h_total <= hht_q when acp_video_on else
                atari_hl(27 downto 16) when not acp_video_on and atari_sync and vcntrl(2) else
                atari_hh(27 downto 16) when not acp_video_on and atari_sync and not vcntrl(2) else
-               std_logic_vector(resize((unsigned(hht) + 2) * unsigned(mulf), 12)) when not acp_video_on and not atari_sync;
+               std_logic_vector(resize((unsigned(hht) + 2) * unsigned(mulf), 12)) when not acp_video_on and not atari_sync else
+               (others => '0');
                
 --    H_TOTAL[]       =  HHT[]                                    &  ACP_VIDEO_ON
 --                     #  ATARI_HL[27..16]                         & !ACP_VIDEO_ON &  ATARI_SYNC &  VCNTRL2

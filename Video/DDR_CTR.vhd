@@ -287,14 +287,14 @@ architecture rtl of ddr_ctr is
 -- Sub Module Interface Section
 
 
-    component lpm_bustri_BYT
-        port
-        (
-            data        : in std_logic_vector(7 downto 0);
-            enabledt    : in std_logic;
-            tridata     : buffer std_logic_vector(7 downto 0)
-        );
-    end component lpm_bustri_BYT;
+--    component lpm_bustri_BYT
+--        port
+--        (
+--            data        : in std_logic_vector(7 downto 0);
+--            enabledt    : in std_logic;
+--            tridata     : buffer std_logic_vector(7 downto 0)
+--        );
+--    end component lpm_bustri_BYT;
 
     function to_std_logic(X : in boolean) return std_logic is
         variable ret : std_logic;
@@ -321,7 +321,7 @@ architecture rtl of ddr_ctr is
 begin
 
     -- Sub Module Section
-    u0 : lpm_bustri_BYT
+    u0 : entity work.lpm_bustri_BYT
         port map
         (
             data => u0_data,
