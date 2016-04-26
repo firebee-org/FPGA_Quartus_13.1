@@ -570,20 +570,8 @@ begin
     END PROCESS;
 
     VIDEO_RECONFIG <= VIDEO_RECONFIG_q;
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            VIDEO_RECONFIG_q <= VIDEO_RECONFIG_d;
-        END IF;
-    END PROCESS;
 
     VR_WR <= VR_WR_q;
-    PROCESS (main_clk)
-    BEGIN
-        IF rising_edge(main_clk) THEN
-            VR_WR_q <= VR_WR_d;
-        END IF;
-    END PROCESS;
 
     CLR_FIFO <= CLR_FIFO_q;
     PROCESS (pixel_clk_i)
@@ -607,6 +595,10 @@ begin
     PROCESS (main_clk)
     BEGIN
         IF rising_edge(main_clk) THEN
+            VR_WR_q <= VR_WR_d;
+
+            VIDEO_RECONFIG_q <= VIDEO_RECONFIG_d;
+
             CLK17M_q <= CLK17M_d;
 
             IF VR_DOUT0_ena_ctrl = '1' THEN
@@ -1508,8 +1500,8 @@ begin
 
     --  3 zeilen vsync length
     --  runterzählen bis 0
-    VSYNC_I_d <= x"3" when VSYNC_START_q = '1' else
-                 std_logic_vector(unsigned(VSYNC_I_q) - 1) when VSYNC_START_q = '0' and VSYNC_I_q /= '0' else
+    VSYNC_I_d <= 3x"3" when VSYNC_START_q = '1' else
+                 std_logic_vector(unsigned(VSYNC_I_q) - 1) when VSYNC_START_q = '0' and VSYNC_I_q /= x"0" else
                  (others => '0');
                  
     -- VSYNC_I_d <= ("011" and sizeIt(VSYNC_START_q,3)) or
