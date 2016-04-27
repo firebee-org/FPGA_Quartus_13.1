@@ -1512,9 +1512,9 @@ begin
     VSYNC_I0_ena_ctrl <= LAST_q;
 
     --  3 zeilen vsync length
-    --  runterzÃ¤hlen bis 0
+    --  runterzählen bis 0
     VSYNC_I_d <= 3x"3" when VSYNC_START_q = '1' else
-                 std_logic_vector(unsigned(VSYNC_I_q) - 1) when VSYNC_START_q = '0' and VSYNC_I_q /= x"0" else
+                 std_logic_vector(unsigned(VSYNC_I_q) - 1) when VSYNC_START_q = '0' and VSYNC_I_q /= 3x"0" else
                  (others => '0');
                  
     -- VSYNC_I_d <= ("011" and sizeIt(VSYNC_START_q,3)) or

@@ -794,7 +794,7 @@ BEGIN
         );
     
     VDOUT_OE <= DDR_WR OR SR_DDR_WR;
-    video_ta <= blitter_ta or video_mod_ta or video_ddr_ta;
+    video_ta <= blitter_ta /* or video_mod_ta */ or video_ddr_ta;
     
     inst4 : entity work.lpm_ff1
         PORT MAP

@@ -394,9 +394,12 @@ ARCHITECTURE rtl OF interrupt_handler IS
 	 UPDATE_ON_2, UPDATE_ON_1, u3_enabledt, u2_enabledt, u1_enabledt,
 	 u0_enabledt, vcc, gnd, UPDATE_ON, INC_JAHR, INC_MONAT, SOMMERZEIT,
 	 WINTERZEIT, INC_TAG, INC_STD, INC_MIN, INC_SEC, UHR_DS, UHR_AS,
-	 PSEUDO_BUS_ERROR, ACP_CONF_CS, INT_ENA_CS, INT_CLEAR_CS, INT_LATCH_CS,
+	 PSEUDO_BUS_ERROR, ACP_CONF_CS,
 	 INT_CTR_CS: std_logic;
-
+    signal INT_ENA_CS   : std_logic := '0';
+    signal INT_CLEAR_CS : std_logic := '0';
+    signal INT_LATCH_CS : std_logic := '0';
+    
     FUNCTION to_std_logic(X: IN boolean) RETURN std_logic IS
         VARIABLE ret : std_logic;
     BEGIN
@@ -5096,7 +5099,7 @@ BEGIN
    INT_CTR0_clk_ctrl <= MAIN_CLK;
 
 --  $10000/4
-   INT_CTR_CS <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4000" else '0';
+   INT_CTR_CS <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4000" else '0';
    INT_CTR_d <= FB_AD;
    INT_CTR24_ena_ctrl <= INT_CTR_CS and FB_B(0) and (not nFB_WR);
    INT_CTR16_ena_ctrl <= INT_CTR_CS and FB_B(1) and (not nFB_WR);
@@ -5108,7 +5111,7 @@ BEGIN
    INT_ENA0_clrn_ctrl <= nRSTO;
 
 --  $10004/4
-    int_ena_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4001";
+    int_ena_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4001";
     
     -- INT_ENA_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
     -- "00000000000100000000000001");
@@ -5122,7 +5125,7 @@ BEGIN
    INT_CLEAR0_clk_ctrl <= MAIN_CLK;
 
 --  $10008/4
-    int_clear_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4002" else '0';
+    int_clear_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4002" else '0';
     -- INT_CLEAR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) = "00000000000100000000000010");
    INT_CLEAR_d(31 DOWNTO 24) <= FB_AD(31 DOWNTO 24) and sizeIt(INT_CLEAR_CS,8)
 	 and sizeIt(FB_B(0),8) and sizeIt(not nFB_WR,8);
@@ -5136,7 +5139,7 @@ BEGIN
 --  INTERRUPT LATCH REGISTER READ ONLY
 --  $1000C/4
 
-    int_latch_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4003";
+    int_latch_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4003";
     -- INT_LATCH_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
 	--  "00000000000100000000000011");
 
