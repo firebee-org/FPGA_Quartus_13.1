@@ -535,7 +535,18 @@ begin
     -- Register Section
 
     CLUT_MUX_ADR <= CLUT_MUX_ADR_q;
+    
+    -- missing signals that seem to got lost during conversion
     HSYNC <= HSYNC_q;
+    ACP_VCTR <= ACP_VCTR_q;
+    RAND <= RAND_q;
+    ATARI_HH <= ATARI_HH_q;
+    ATARI_HL <= ATARI_HL_q;
+    HBE <= HBE_q;
+    HSS <= HSS_q;
+    VCO <= VCO_q;
+    VCNTRL <= VCNTRL_q;
+    
     VSYNC <= VSYNC_q;
     nBLANK <= nBLANK_q;
     FIFO_RDE <= FIFO_RDE_q;
@@ -545,6 +556,7 @@ begin
     CCSEL <= CCSEL_q;
     INTER_ZEI <= INTER_ZEI_q;
     DOP_FIFO_CLR <= DOP_FIFO_CLR_q;
+    HHT <= HHT_q;
     
     process (pixel_clk_i)
     begin
@@ -1328,13 +1340,13 @@ begin
     --  640 pixels, 25.175 MHz, VGA
     --  hsync pulse length in pixeln = frequenz / = 500ns
     
-    HSY_LEN_d <= std_logic_vector'(d"14") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '1' or vco(0) = '1') else
-                 std_logic_vector'(d"16") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '0' or vco(0) = '1') else
-                 std_logic_vector'(d"28") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '1' and vco(0) = '0' else
-                 std_logic_vector'(d"32") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '0' and vco(0) = '0' else
-                 std_logic_vector'(d"28") when acp_video_on = '1' and acp_vctr(9 downto 8) = "00" else
-                 std_logic_vector'(d"32") when acp_video_on = '1' and acp_vctr(9 downto 8) = "01" else
-                 std_logic_vector(d"16" + ("0" & vr_frq(7 downto 1))) when acp_video_on = '1' and acp_vctr(9) = '1' else
+    HSY_LEN_d <= std_logic_vector'(8d"14") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '1' or vco(0) = '1') else
+                 std_logic_vector'(8d"16") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '1' and (vco(2) = '0' or vco(0) = '1') else
+                 std_logic_vector'(8d"28") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '1' and vco(0) = '0' else
+                 std_logic_vector'(8d"32") when acp_video_on = '0' and (falcon_video = '1' or st_video = '1') and vcntrl(2) = '0' and vco(2) = '0' and vco(0) = '0' else
+                 std_logic_vector'(8d"28") when acp_video_on = '1' and acp_vctr(9 downto 8) = "00" else
+                 std_logic_vector'(8d"32") when acp_video_on = '1' and acp_vctr(9 downto 8) = "01" else
+                 std_logic_vector(8d"16" + ("0" & vr_frq(7 downto 1))) when acp_video_on = '1' and acp_vctr(9) = '1' else
                  (others => '0');
                  
                  -- ("00001110" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(VCO_q(2), 8)) or sizeIt(VCO_q(0), 8))) or
