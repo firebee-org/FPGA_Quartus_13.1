@@ -604,9 +604,9 @@ BEGIN
         );
     
     
-    nWR_GATE <= NOT(WR_GATE);
+    nWR_GATE <= not(WR_GATE);
 
-    nFB_TA <= NOT(Video_TA OR INT_HANDLER_TA OR DSP_TA OR FALCON_IO_TA);
+    nFB_TA <= not(Video_TA or INT_HANDLER_TA or DSP_TA or FALCON_IO_TA);
     
     CLK33M <= MAIN_CLK;
 

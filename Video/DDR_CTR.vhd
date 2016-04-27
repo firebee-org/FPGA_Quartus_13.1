@@ -187,8 +187,6 @@ architecture rtl of ddr_ctr is
 	signal FIFO_BANK_OK_d_2             : std_logic;
     signal FIFO_BANK_OK_d_1             : std_logic;
     signal u0_enabledt                  : std_logic;
-    SiGNAL gnd                          : std_logic;
-    signal vcc                          : std_logic;
 	signal VIDEO_CNT_H                  : std_logic;
     signal VIDEO_CNT_M                  : std_logic;
     signal VIDEO_CNT_L                  : std_logic;
@@ -646,7 +644,7 @@ begin
     FB_REGDDR_0_clk_ctrl <= MAIN_CLK;
 
 
-    process (FB_REGDDR_q, DDR_SEL, BUS_CYC_q, LINE, DDR_CS_q, nFB_OE, MAIN_CLK, DDR_CONFIG, nFB_WR, vcc)
+    process (FB_REGDDR_q, DDR_SEL, BUS_CYC_q, LINE, DDR_CS_q, nFB_OE, MAIN_CLK, DDR_CONFIG, nFB_WR)
         variable stdVec3: std_logic_vector(2 downto 0);
     begin
         FB_REGDDR_d <= FB_REGDDR_q;
@@ -669,12 +667,12 @@ begin
             when "001" =>
                 if DDR_CS_q = '1' then
                     FB_LE(0) <= not nFB_WR;
-                    VIDEO_DDR_TA <= vcc;
+                    VIDEO_DDR_TA <= '1';
                     if LINE ='1' then
                         FB_VDOE(0) <= (not nFB_OE) and (not DDR_CONFIG);
                         FB_REGDDR_d <= "010";
                     else
-                        BUS_CYC_END <= vcc;
+                        BUS_CYC_END <= '1';
                         FB_VDOE(0) <= (not nFB_OE) and (not MAIN_CLK) and (not DDR_CONFIG);
                         FB_REGDDR_d <= "000";
                     end if;
@@ -686,7 +684,7 @@ begin
                 if DDR_CS_q = '1' then
                     FB_VDOE(1) <= (not nFB_OE) and (not DDR_CONFIG);
                     FB_LE(1) <= not nFB_WR;
-                    VIDEO_DDR_TA <= vcc;
+                    VIDEO_DDR_TA <= '1';
                     FB_REGDDR_d <= "011";
                 else
                     FB_REGDDR_d <= "000";
@@ -701,7 +699,7 @@ begin
                     if ((not BUS_CYC_q) and LINE and (not nFB_WR)) = '1' then
                         FB_REGDDR_d <= "011";
                     else
-                        VIDEO_DDR_TA <= vcc;
+                        VIDEO_DDR_TA <= '1';
                         FB_REGDDR_d <= "100";
                     end if;
                 else
@@ -712,14 +710,15 @@ begin
                 if DDR_CS_q = '1' then
                     FB_VDOE(3) <= (not nFB_OE) and (not MAIN_CLK) and (not DDR_CONFIG);
                     FB_LE(3) <= not nFB_WR;
-                    VIDEO_DDR_TA <= vcc;
-                    BUS_CYC_END <= vcc;
+                    VIDEO_DDR_TA <= '1';
+                    BUS_CYC_END <= '1';
                     FB_REGDDR_d <= "000";
                 else
                     FB_REGDDR_d <= "000";
                 end if;
             
             when others =>
+                video_ddr_ta <= '0';
         end case;
         stdVec3 := (others => '0');  -- no storage needed
     end process;
@@ -796,9 +795,9 @@ begin
 	 CPU_ROW_ADR, FIFO_ROW_ADR, BLITTER_ROW_ADR, BLITTER_REQ_q, BLITTER_WR,
 	 FIFO_AC_q, CPU_COL_ADR, BLITTER_COL_ADR, VA_S_q, CPU_BA, BLITTER_BA,
 	 FB_B, CPU_AC_q, BLITTER_AC_q, FIFO_BANK_OK_q, FIFO_MW, FIFO_REQ_q,
-	 VIDEO_ADR_CNT_q, FIFO_COL_ADR, gnd, DDR_SEL, LINE, FIFO_BA, VA_P_q,
+	 VIDEO_ADR_CNT_q, FIFO_COL_ADR, DDR_SEL, LINE, FIFO_BA, VA_P_q,
 	 BA_P_q, CPU_REQ_q, FB_AD, nFB_WR, FB_SIZE0, FB_SIZE1,
-	 DDR_REFRESH_SIG_q, vcc)
+	 DDR_REFRESH_SIG_q)
         variable stdVec6: std_logic_vector(5 downto 0);
     begin
         DDR_SM_d <= DDR_SM_q;
@@ -831,8 +830,8 @@ begin
                     elsif (CPU_REQ_q)='1' then
                         VA_S_d <= CPU_ROW_ADR;
                         BA_S_d <= CPU_BA;
-                        CPU_AC_d <= vcc;
-                        BUS_CYC_d_2 <= vcc;
+                        CPU_AC_d <= '1';
+                        BUS_CYC_d_2 <= '1';
                         DDR_SM_d <= "000010";
                     else
                         --  FIFO IST DEFAULT
@@ -840,12 +839,12 @@ begin
                             VA_P_d <= FIFO_ROW_ADR;
                             BA_P_d <= FIFO_BA;
                             --  VORBESETZEN
-                            FIFO_AC_d <= vcc;
+                            FIFO_AC_d <= '1';
                         else
                             VA_P_d <= BLITTER_ROW_ADR;
                             BA_P_d <= BLITTER_BA;
                             --  VORBESETZEN
-                            BLITTER_AC_d <= vcc;
+                            BLITTER_AC_d <= '1';
                         end if;
                         DDR_SM_d <= "000001";
                     end if;
@@ -857,14 +856,14 @@ begin
             when "000001" =>
                 --  SCHNELLZUGRIFF *** HIER IST PAGE IMMER NOT OK ***
                 if (DDR_SEL and (nFB_WR or (not LINE)))='1' then
-                    VRAS <= vcc;
+                    VRAS <= '1';
                     (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= FB_AD(26 downto 14);
                     (BA1_2, BA0_2) <= FB_AD(13 downto 12);
                     --  AUTO PRECHARGE DA NICHT FIFO PAGE
-                    VA_S_d(10) <= vcc;
-                    CPU_AC_d <= vcc;
+                    VA_S_d(10) <= '1';
+                    CPU_AC_d <= '1';
                     --  BUS CYCLUS LOSTRETEN
-                    BUS_CYC_d_2 <= vcc;
+                    BUS_CYC_d_2 <= '1';
                 else
                     VRAS <= (FIFO_AC_q and FIFO_REQ_q) or (BLITTER_AC_q and BLITTER_REQ_q);
                     (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= VA_P_q;
@@ -877,12 +876,12 @@ begin
                 DDR_SM_d <= "000011";
             
             when "000010" =>
-                VRAS <= vcc;
-                FIFO_BANK_NOT_OK <= vcc;
-                CPU_AC_d <= vcc;
+                VRAS <= '1';
+                FIFO_BANK_NOT_OK <= '1';
+                CPU_AC_d <= '1';
 
                 --  BUS CYCLUS LOSTRETEN
-                BUS_CYC_d_2 <= vcc;
+                BUS_CYC_d_2 <= '1';
                 DDR_SM_d <= "000011";
       
             when "000011" =>
@@ -917,7 +916,7 @@ begin
             when "001110" =>
                 CPU_AC_d <= CPU_AC_q;
                 BLITTER_AC_d <= BLITTER_AC_q;
-                VCAS <= vcc;
+                VCAS <= '1';
 
                 --  READ DATEN FÜR CPU
                 SR_DDR_FB <= CPU_AC_q;
@@ -935,12 +934,12 @@ begin
                     VA_S_d(9 downto 0) <= FIFO_COL_ADR;         
                     
                     --  MANUELL PRECHARGE
-                    VA_S_d(10) <= gnd;
+                    VA_S_d(10) <= '0';
                     BA_S_d <= FIFO_BA;
                     DDR_SM_d <= "011000";
                 else
                     --  ALLE PAGES SCHLIESSEN
-                    VA_S_d(10) <= vcc;
+                    VA_S_d(10) <= '1';
                     --  WRITE
                     DDR_SM_d <= "011101";
                 end if;
@@ -975,14 +974,14 @@ begin
             when "010010" =>
                 CPU_AC_d <= CPU_AC_q;
                 BLITTER_AC_d <= BLITTER_AC_q;
-                VCAS <= vcc;
-                VWE <= vcc;
+                VCAS <= '1';
+                VWE <= '1';
 
                 --  WRITE COMMAND CPU UND BLITTER if WRITER
-                SR_DDR_WR_d <= vcc;
+                SR_DDR_WR_d <= '1';
 
                 --  2. HÄLFTE WRITE DATEN SELEKTIEREN
-                SR_DDRWR_D_SEL_d <= vcc;
+                SR_DDRWR_D_SEL_d <= '1';
 
                 --  WENN LINE DANN ACTIV
                 SR_VDMP_d <= sizeIt(LINE,8) and "11111111";
@@ -993,10 +992,10 @@ begin
                 BLITTER_AC_d <= BLITTER_AC_q;
 
                 --  WRITE COMMAND CPU UND BLITTER if WRITE
-                SR_DDR_WR_d <= vcc;
+                SR_DDR_WR_d <= '1';
 
                 --  2. HÄLFTE WRITE DATEN SELEKTIEREN
-                SR_DDRWR_D_SEL_d <= vcc;
+                SR_DDRWR_D_SEL_d <= '1';
                 DDR_SM_d <= "010100";
       
             when "010100" =>
@@ -1007,21 +1006,21 @@ begin
                     VA_S_d(9 downto 0) <= FIFO_COL_ADR;
                     
                     --  NON AUTO PRECHARGE
-                    VA_S_d(10) <= gnd;
+                    VA_S_d(10) <= '0';
                     BA_S_d <= FIFO_BA;
                     DDR_SM_d <= "011000";
                 else
                     --  ALLE PAGES SCHLIESSEN
-                    VA_S_d(10) <= vcc;
+                    VA_S_d(10) <= '1';
                     --  FIFO READ
                     DDR_SM_d <= "011101";
                 end if;
             
             when "010110" =>
-                VCAS <= vcc;
+                VCAS <= '1';
 
                 --  DATEN WRITE FIFO
-                SR_FIFO_WRE_d <= vcc;
+                SR_FIFO_WRE_d <= '1';
                 DDR_SM_d <= "010111";
             
             when "010111" =>
@@ -1031,7 +1030,7 @@ begin
                     if VIDEO_ADR_CNT_q(7 downto 0) = "11111111" then
 
                         --  ALLE PAGES SCHLIESSEN
-                        VA_S_d(10) <= vcc;
+                        VA_S_d(10) <= '1';
 
                         --  BANK SCHLIESSEN
                         DDR_SM_d <= "011101";
@@ -1039,31 +1038,31 @@ begin
                         VA_S_d(9 downto 0) <= std_logic_vector'(unsigned(FIFO_COL_ADR) + unsigned'("0000000100"));
 
                         --  NON AUTO PRECHARGE
-                        VA_S_d(10) <= gnd;
+                        VA_S_d(10) <= '0';
                         BA_S_d <= FIFO_BA;
                         DDR_SM_d <= "011000";
                     end if;
                 else
 
                     --  ALLE PAGES SCHLIESSEN
-                    VA_S_d(10) <= vcc;
+                    VA_S_d(10) <= '1';
 
                     --  NOCH OFFEN LASSEN
                     DDR_SM_d <= "011101";
                 end if;
       
             when "011000" =>
-                VCAS <= vcc;
+                VCAS <= '1';
 
                 --  DATEN WRITE FIFO
-                SR_FIFO_WRE_d <= vcc;
+                SR_FIFO_WRE_d <= '1';
                 DDR_SM_d <= "011001";
             
             when "011001" =>
                 if CPU_REQ_q='1' and (unsigned(FIFO_MW) > unsigned'("000000000")) then
 
                     --  ALLE PAGES SCHLIESEN
-                    VA_S_d(10) <= vcc;
+                    VA_S_d(10) <= '1';
 
                     --  BANK SCHLIESSEN
                     DDR_SM_d <= "011110";
@@ -1073,7 +1072,7 @@ begin
                     if VIDEO_ADR_CNT_q(7 downto 0) = "11111111" then
 
                         --  ALLE PAGES SCHLIESSEN
-                        VA_S_d(10) <= vcc;
+                        VA_S_d(10) <= '1';
 
                         --  BANK SCHLIESSEN
                         DDR_SM_d <= "011110";
@@ -1081,24 +1080,24 @@ begin
                         VA_S_d(9 downto 0) <= std_logic_vector'(unsigned(FIFO_COL_ADR) + unsigned'("0000000100"));
 
                         --  NON AUTO PRECHARGE
-                        VA_S_d(10) <= gnd;
+                        VA_S_d(10) <= '0';
                         BA_S_d <= FIFO_BA;
                         DDR_SM_d <= "011010";
                     end if;
                 else
 
                     --  ALLE PAGES SCHLIESEN
-                    VA_S_d(10) <= vcc;
+                    VA_S_d(10) <= '1';
 
                     --  BANK SCHLIESSEN
                     DDR_SM_d <= "011110";
                 end if;
             
             when "011010" =>
-                VCAS <= vcc;
+                VCAS <= '1';
 
                 --  DATEN WRITE FIFO
-                SR_FIFO_WRE_d <= vcc;
+                SR_FIFO_WRE_d <= '1';
 
                 --  NOTFALL?
                 if (unsigned(FIFO_MW) < unsigned'("000000000")) then
@@ -1116,7 +1115,7 @@ begin
                     if VIDEO_ADR_CNT_q(7 downto 0) = "11111111" then
 
                         --  ALLE BANKS SCHLIESEN
-                        VA_S_d(10) <= vcc;
+                        VA_S_d(10) <= '1';
 
                         --  BANK SCHLIESSEN
                         DDR_SM_d <= "011101";
@@ -1124,14 +1123,14 @@ begin
                         VA_P_d(9 downto 0) <= std_logic_vector'(unsigned(FIFO_COL_ADR) + unsigned'("0000000100"));
 
                         --  NON AUTO PRECHARGE
-                        VA_P_d(10) <= gnd;
+                        VA_P_d(10) <= '0';
                         BA_P_d <= FIFO_BA;
                         DDR_SM_d <= "011100";
                     end if;
                 else
 
                     --  ALLE BANKS SCHLIESEN
-                    VA_S_d(10) <= vcc;
+                    VA_S_d(10) <= '1';
 
                     --  BANK SCHLIESSEN
                     DDR_SM_d <= "011101";
@@ -1139,24 +1138,24 @@ begin
       
             when "011100" =>
                 if (DDR_SEL and (nFB_WR or (not LINE)))='1' and FB_AD(13 downto 12) /= FIFO_BA then
-                    VRAS <= vcc;
+                    VRAS <= '1';
                     (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= FB_AD(26 downto 14);
                     (BA1_2, BA0_2) <= FB_AD(13 downto 12);
-                    CPU_AC_d <= vcc;
+                    CPU_AC_d <= '1';
 
                     --  BUS CYCLUS LOSTRETEN
-                    BUS_CYC_d_2 <= vcc;
+                    BUS_CYC_d_2 <= '1';
 
                     --  AUTO PRECHARGE DA NICHT FIFO BANK
-                    VA_S_d(10) <= vcc;
+                    VA_S_d(10) <= '1';
                     DDR_SM_d <= "000011";
                 else
-                    VCAS <= vcc;
+                    VCAS <= '1';
                     (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= VA_P_q;
                     (BA1_2, BA0_2) <= BA_P_q;
 
                     --  DATEN WRITE FIFO
-                    SR_FIFO_WRE_d <= vcc;
+                    SR_FIFO_WRE_d <= '1';
 
                     --  CONFIG CYCLUS
                     DDR_SM_d <= "011001";
@@ -1201,20 +1200,20 @@ begin
             when "011101" =>
 
                 --  AUF NOT OK
-                FIFO_BANK_NOT_OK <= vcc;
+                FIFO_BANK_NOT_OK <= '1';
 
                 --  BÄNKE SCHLIESSEN
-                VRAS <= vcc;
-                VWE <= vcc;
+                VRAS <= '1';
+                VWE <= '1';
                 DDR_SM_d <= "000110";
             
             when "011110" =>
                 --  AUF NOT OK
-                FIFO_BANK_NOT_OK <= vcc;
+                FIFO_BANK_NOT_OK <= '1';
 
                 --  BÄNKE SCHLIESSEN
-                VRAS <= vcc;
-                VWE <= vcc;
+                VRAS <= '1';
+                VWE <= '1';
 
                 --  REFRESH 70NS = 10 ZYCLEN
                 DDR_SM_d <= "000000";
@@ -1225,14 +1224,14 @@ begin
                 if DDR_REFRESH_SIG_q = "1001" then
 
                     --  ALLE BANKS SCHLIESSEN
-                    VRAS <= vcc;
-                    VWE <= vcc;
-                    VA10_2 <= vcc;
-                    FIFO_BANK_NOT_OK <= vcc;
+                    VRAS <= '1';
+                    VWE <= '1';
+                    VA10_2 <= '1';
+                    FIFO_BANK_NOT_OK <= '1';
                     DDR_SM_d <= "100001";
                 else
-                    VCAS <= vcc;
-                    VRAS <= vcc;
+                    VCAS <= '1';
+                    VRAS <= '1';
                     DDR_SM_d <= "100000";
                 end if;
             
@@ -1421,7 +1420,4 @@ begin
     VA(11) <= VA11_1 or VA11_2;
     VA(12) <= VA12_1 or VA12_2;
 
--- Define power signal(s)
-    vcc <= '1';
-    gnd <= '0';
 end architecture rtl;
