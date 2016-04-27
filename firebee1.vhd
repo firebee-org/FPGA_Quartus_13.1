@@ -242,53 +242,53 @@ ARCHITECTURE rtl OF firebee1 IS
         );
     END COMPONENT altpll4;
 
-    COMPONENT video
-	PORT
-	(
-		FB_ADR		    : IN std_logic_vector(31 DOWNTO 0);
-		MAIN_CLK	    : IN std_logic;
-		nFB_CS1		    : IN std_logic;
-		nFB_CS2		    : IN std_logic;
-		nFB_CS3		    : IN std_logic;
-		nFB_WR		    : IN std_logic;
-		FB_SIZE0	    : IN std_logic;
-		FB_SIZE1	    : IN std_logic;
-		nRSTO		    : IN std_logic;
-		nFB_OE		    : IN std_logic;
-		FB_ALE		    : IN std_logic;
-		DDRCLK		    : IN std_logic_vector(3 DOWNTO 0);
-		DDR_SYNC_66M	: IN std_logic;
-		CLK33M		    : IN std_logic;
-		CLK25M		    : IN std_logic;
-		CLK_VIDEO		: IN std_logic;
-		VR_D		    : IN std_logic_vector(8 DOWNTO 0);
-		VR_BUSY		    : IN std_logic;
-		VG		        : OUT std_logic_vector(7 DOWNTO 0);
-		VB		        : OUT std_logic_vector(7 DOWNTO 0);
-		VR		        : OUT std_logic_vector(7 DOWNTO 0);
-		nBLANK		    : OUT std_logic;
-		VA		        : OUT std_logic_vector(12 DOWNTO 0);
-		nVWE		    : OUT std_logic;
-		nVCAS		    : OUT std_logic;
-		nVRAS		    : OUT std_logic;
-		nVCS		    : OUT std_logic;
-		VDM		        : OUT std_logic_vector(3 DOWNTO 0);
-		nPD_VGA		    : OUT std_logic;
-		VCKE		    : OUT std_logic;
-		VSYNC		    : OUT std_logic;
-		HSYNC		    : OUT std_logic;
-		nSYNC		    : OUT std_logic;
-		VIDEO_TA		: OUT std_logic;
-		PIXEL_CLK		: OUT std_logic;
-		BA		        : OUT std_logic_vector(1 DOWNTO 0);
-		VIDEO_RECONFIG	: OUT std_logic;
-		VR_WR		    : OUT std_logic;
-		VR_RD		    : OUT std_logic;
-		VDQS		    : INOUT std_logic_vector(3 DOWNTO 0);
-		FB_AD		    : INOUT std_logic_vector(31 DOWNTO 0);
-		VD		        : INOUT std_logic_vector(31 DOWNTO 0)
-	);
-    END COMPONENT video;
+--    COMPONENT video
+--	PORT
+--	(
+--		FB_ADR		    : IN std_logic_vector(31 DOWNTO 0);
+--		MAIN_CLK	    : IN std_logic;
+--		nFB_CS1		    : IN std_logic;
+--		nFB_CS2		    : IN std_logic;
+--		nFB_CS3		    : IN std_logic;
+--		nFB_WR		    : IN std_logic;
+--		FB_SIZE0	    : IN std_logic;
+--		FB_SIZE1	    : IN std_logic;
+--		nRSTO		    : IN std_logic;
+--		nFB_OE		    : IN std_logic;
+--		FB_ALE		    : IN std_logic;
+--		DDRCLK		    : IN std_logic_vector(3 DOWNTO 0);
+--		DDR_SYNC_66M	: IN std_logic;
+--		CLK33M		    : IN std_logic;
+--		CLK25M		    : IN std_logic;
+--		CLK_VIDEO		: IN std_logic;
+--		VR_D		    : IN std_logic_vector(8 DOWNTO 0);
+--		VR_BUSY		    : IN std_logic;
+--		VG		        : OUT std_logic_vector(7 DOWNTO 0);
+--		VB		        : OUT std_logic_vector(7 DOWNTO 0);
+--		VR		        : OUT std_logic_vector(7 DOWNTO 0);
+--		nBLANK		    : OUT std_logic;
+--		VA		        : OUT std_logic_vector(12 DOWNTO 0);
+--		nVWE		    : OUT std_logic;
+--		nVCAS		    : OUT std_logic;
+--		nVRAS		    : OUT std_logic;
+--		nVCS		    : OUT std_logic;
+--		VDM		        : OUT std_logic_vector(3 DOWNTO 0);
+--		nPD_VGA		    : OUT std_logic;
+--		VCKE		    : OUT std_logic;
+--		VSYNC		    : OUT std_logic;
+--		HSYNC		    : OUT std_logic;
+--		nSYNC		    : OUT std_logic;
+--		VIDEO_TA		: OUT std_logic;
+--		PIXEL_CLK		: OUT std_logic;
+--		BA		        : OUT std_logic_vector(1 DOWNTO 0);
+--		VIDEO_RECONFIG	: OUT std_logic;
+--		VR_WR		    : OUT std_logic;
+--		VR_RD		    : OUT std_logic;
+--		VDQS		    : INOUT std_logic_vector(3 DOWNTO 0);
+--		FB_AD		    : INOUT std_logic_vector(31 DOWNTO 0);
+--		VD		        : INOUT std_logic_vector(31 DOWNTO 0)
+--	);
+--    END COMPONENT video;
 BEGIN 
     nDREQ1 <= nDACK1;
     
@@ -519,7 +519,7 @@ BEGIN
         );
     
     
-    i_video : video
+    i_video : entity work.video
         PORT MAP
         (
             MAIN_CLK => MAIN_CLK,
@@ -606,7 +606,7 @@ BEGIN
     
     nWR_GATE <= not(WR_GATE);
 
-    nFB_TA <= not(Video_TA or INT_HANDLER_TA or DSP_TA or FALCON_IO_TA);
+    nFB_TA <= not(video_ta or int_handler_ta or dsp_ta or falcon_io_ta);
     
     CLK33M <= MAIN_CLK;
 

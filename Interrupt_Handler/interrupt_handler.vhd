@@ -5096,8 +5096,7 @@ BEGIN
    INT_CTR0_clk_ctrl <= MAIN_CLK;
 
 --  $10000/4
-   INT_CTR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
-	 "00000000000100000000000000");
+   INT_CTR_CS <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4000" else '0';
    INT_CTR_d <= FB_AD;
    INT_CTR24_ena_ctrl <= INT_CTR_CS and FB_B(0) and (not nFB_WR);
    INT_CTR16_ena_ctrl <= INT_CTR_CS and FB_B(1) and (not nFB_WR);
@@ -5109,8 +5108,10 @@ BEGIN
    INT_ENA0_clrn_ctrl <= nRSTO;
 
 --  $10004/4
-   INT_ENA_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
-	 "00000000000100000000000001");
+    int_ena_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4001";
+    
+    -- INT_ENA_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
+    -- "00000000000100000000000001");
    INT_ENA_d <= FB_AD;
    INT_ENA24_ena_ctrl <= INT_ENA_CS and FB_B(0) and (not nFB_WR);
    INT_ENA16_ena_ctrl <= INT_ENA_CS and FB_B(1) and (not nFB_WR);
@@ -5121,8 +5122,8 @@ BEGIN
    INT_CLEAR0_clk_ctrl <= MAIN_CLK;
 
 --  $10008/4
-   INT_CLEAR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
-	 "00000000000100000000000010");
+    int_clear_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4002" else '0';
+    -- INT_CLEAR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) = "00000000000100000000000010");
    INT_CLEAR_d(31 DOWNTO 24) <= FB_AD(31 DOWNTO 24) and sizeIt(INT_CLEAR_CS,8)
 	 and sizeIt(FB_B(0),8) and sizeIt(not nFB_WR,8);
    INT_CLEAR_d(23 DOWNTO 16) <= FB_AD(23 DOWNTO 16) and sizeIt(INT_CLEAR_CS,8)
@@ -5134,8 +5135,10 @@ BEGIN
 
 --  INTERRUPT LATCH REGISTER READ ONLY
 --  $1000C/4
-   INT_LATCH_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
-	 "00000000000100000000000011");
+
+    int_latch_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = x"4003";
+    -- INT_LATCH_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
+	--  "00000000000100000000000011");
 
 --  INTERRUPT
    nIRQ(2) <= not (HSYNC and INT_ENA_q(26));
@@ -6238,7 +6241,7 @@ BEGIN
    u3_enabledt <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or
 	 ACP_CONF_CS) and (not nFB_OE);
    FB_AD(7 DOWNTO 0) <= u3_tridata;
-   INT_HANDLER_TA <= INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS;
+   INT_HANDLER_TA <= int_ctr_cs or int_ena_cs or int_latch_cs or int_clear_cs;
 
 
 -- Assignments added to explicitly combine the

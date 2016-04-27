@@ -116,7 +116,7 @@ end video_mod_mux_clutctr;
 architecture rtl of video_mod_mux_clutctr is
     --  DIV. CONTROL REGISTER
     --  BRAUCHT EIN WAITSTAT
-    --  LÄNGE HSYNC PULS IN PIXEL_CLK
+    --  LÃ„NGE HSYNC PULS IN PIXEL_CLK
     --  LETZTES PIXEL EINER ZEILE ERREICHT
     --  ATARI RESOLUTION
     --  HORIZONTAL TIMING 640x480
@@ -971,7 +971,8 @@ begin
     --  ST SHIFT MODE
 
     --  $F8260/2
-    ST_SHIFT_MODE_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100110000");
+    st_shift_mode_cs <= '1' when nFB_CS1 = '0' and FB_ADR(19 downto 1) = 19x"7c130" else '0';
+    -- ST_SHIFT_MODE_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100110000");
     ST_SHIFT_MODE_d <= FB_AD(25 downto 24);
     ST_SHIFT_MODE0_ena_ctrl <= ST_SHIFT_MODE_CS and (not nFB_WR) and FB_B(0);
 
@@ -1027,7 +1028,7 @@ begin
     nPD_VGA <= ACP_VCTR_q(1);
 
     --  ATARI MODUS
-    --  WENN 1 AUTOMATISCHE AUFLÖSUNG
+    --  WENN 1 AUTOMATISCHE AUFLÃ–SUNG
     ATARI_SYNC <= ACP_VCTR_q(26);
 
     --  HORIZONTAL TIMING 640x480
@@ -1310,7 +1311,7 @@ begin
     u1_enabledt <= (ACP_VCTR_CS or BORDER_COLOR_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
     FB_AD(15 downto 0) <= u1_tridata;
 
-    VIDEO_MOD_TA <= CLUT_TA_q or ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
+    video_mod_ta <= clut_ta_q or ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
                     HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
                     VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS;
 
@@ -1331,7 +1332,7 @@ begin
                  (CLK_VIDEO and ACP_VIDEO_ON and ACP_VCTR_q(9));
 
     -- ------------------------------------------------------------
-    --  HORIZONTALE SYNC LÄNGE in PIXEL_CLK
+    --  HORIZONTALE SYNC LÃ„NGE in PIXEL_CLK
     -- --------------------------------------------------------------
 
     --  320 pixels, 32 MHz, RGB
@@ -1378,7 +1379,7 @@ begin
 	 VVCNT_q(0) = VDIS_START(0) and VVCNT_q /= "00000000000" and
 	 (unsigned(VHCNT_q) > unsigned(std_logic_vector(unsigned(HDIS_END) - 2)))));
 
---  DOPPELZEILENFIFO LÖSCHEN AM ENDE DER DOPPELZEILE UND BEI MAIN FIFO START
+--  DOPPELZEILENFIFO LÃ–SCHEN AM ENDE DER DOPPELZEILE UND BEI MAIN FIFO START
    DOP_FIFO_CLR_d <= (INTER_ZEI_q and HSYNC_START_q) or SYNC_PIX_q;
 
 --    RAND_LINKS[]    =  HBE[]                                    &  ACP_VIDEO_ON
@@ -1457,7 +1458,7 @@ begin
 	 VCNTRL_q(2),11)) or (std_logic_vector'('0' & VFT_q(10 downto 1)) and
 	 sizeIt(not ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
 
-    --  ZÄHLER
+    --  ZÃ„HLER
     LAST_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(H_TOTAL) - 2)));
 
     VHCNT_d <= (std_logic_vector(unsigned(VHCNT_q) + 1)) and sizeIt(not LAST_q,12);
@@ -1469,7 +1470,7 @@ begin
     --  1 ZEILE DAVOR ON OFF
     DPO_ZL_d <= to_std_logic((unsigned(VVCNT_q) > unsigned(std_logic_vector(unsigned(RAND_OBEN) - 1))) and (unsigned(VVCNT_q) < unsigned(std_logic_vector(unsigned(RAND_UNTEN) - 1))));
 
-    --  AM ZEILENENDE ÜBERNEHMEN
+    --  AM ZEILENENDE ÃœBERNEHMEN
     DPO_ZL_ena <= LAST_q;
 
     --  BESSER EINZELN WEGEN TIMING
@@ -1485,7 +1486,7 @@ begin
     VCO_OFF_d <= to_std_logic(VHCNT_q = HDIS_END);
 
     
-    --  AM ZEILENENDE ÜBERNEHMEN
+    --  AM ZEILENENDE ÃœBERNEHMEN
     VCO_ZL_ena <= LAST_q;
 
     --  1 ZEILE DAVOR ON OFF
@@ -1493,7 +1494,7 @@ begin
 
     VDTRON_d <= (VDTRON_q and (not VCO_OFF_q)) or (VCO_ON_q and VCO_ZL_q);
 
-    --  VERZÖGERUNG UND SYNC
+    --  VERZÃ–GERUNG UND SYNC
 
     HSYNC_START_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HS_START) - 3)));
 
@@ -1511,7 +1512,7 @@ begin
     VSYNC_I0_ena_ctrl <= LAST_q;
 
     --  3 zeilen vsync length
-    --  runterzählen bis 0
+    --  runterzÃ¤hlen bis 0
     VSYNC_I_d <= 3x"3" when VSYNC_START_q = '1' else
                  std_logic_vector(unsigned(VSYNC_I_q) - 1) when VSYNC_START_q = '0' and VSYNC_I_q /= x"0" else
                  (others => '0');
@@ -1531,12 +1532,12 @@ begin
     VERZ0_d(0) <= DISP_ON_q;
 
     --   VERZ[1][0] = HSYNC_I[] != 0;
-    --  NUR MÖGLICH WENN BEIDE
+    --  NUR MÃ–GLICH WENN BEIDE
     VERZ1_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1')
 	 and HSYNC_I_q /= "00000000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(6))='1' and HSYNC_I_q = "00000000"));
 
-    --  NUR MÖGLICH WENN BEIDE
+    --  NUR MÃ–GLICH WENN BEIDE
     VERZ2_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1')
 	 and VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
@@ -1547,13 +1548,13 @@ begin
     --  nBLANK_d <= DISP_ON_q;
 
     --  HSYNC  =  VERZ[1][9];
-    --  NUR MÖGLICH WENN BEIDE
+    --  NUR MÃ–GLICH WENN BEIDE
     HSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1') and
 	 HSYNC_I_q /= "00000000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(6))='1' and HSYNC_I_q = "00000000"));
 
     --  VSYNC  =  VERZ[2][9];
-    --  NUR MÖGLICH WENN BEIDE
+    --  NUR MÃ–GLICH WENN BEIDE
     VSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1') and
 	 VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
@@ -1575,20 +1576,20 @@ begin
     -- --------------------------------------------------------
     CLR_FIFO_ena <= LAST_q;
 
-    --  IN LETZTER ZEILE LÖSCHEN
+    --  IN LETZTER ZEILE LÃ–SCHEN
     CLR_FIFO_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(V_TOTAL) - 2)));
     START_ZEILE_ena <= LAST_q;
 
     --  ZEILE 1
     START_ZEILE_d <= to_std_logic(VVCNT_q = "00000000000");
 
-    --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
+    --  SUB PIXEL ZÃ„HLER SYNCHRONISIEREN
     SYNC_PIX_d <= to_std_logic(VHCNT_q = "000000000011") and START_ZEILE_q;
 
-    --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
+    --  SUB PIXEL ZÃ„HLER SYNCHRONISIEREN
     SYNC_PIX1_d <= to_std_logic(VHCNT_q = "000000000101") and START_ZEILE_q;
 
-    --  SUB PIXEL ZÄHLER SYNCHRONISIEREN
+    --  SUB PIXEL ZÃ„HLER SYNCHRONISIEREN
     SYNC_PIX2_d <= to_std_logic(VHCNT_q = "000000000111") and START_ZEILE_q;
 
     SUB_PIXEL_CNT0_ena_ctrl <= VDTRON_q or SYNC_PIX_q;
@@ -1596,7 +1597,7 @@ begin
     -- count up if display on sonst clear bei sync pix
     SUB_PIXEL_CNT_d <= (std_logic_vector(unsigned(SUB_PIXEL_CNT_q) + 1)) and sizeIt(not SYNC_PIX_q,7);
 
-    --  3 CLOCK ZUSÄTZLICH FÜR FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
+    --  3 CLOCK ZUSÃ„TZLICH FÃœR FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
     FIFO_RDE_d <= (((to_std_logic(SUB_PIXEL_CNT_q = "0000001") and COLOR1) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(5 downto 0) = "000001") and COLOR2) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(4 downto 0) = "00001") and color4_i) or
