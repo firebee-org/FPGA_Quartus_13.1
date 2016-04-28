@@ -281,18 +281,11 @@ architecture rtl of ddr_ctr is
     signal v_bash                       : std_logic_vector(7 downto 0);
     signal v_bash_cs                    : std_logic;
     
-    signal reg_ta                       : std_logic;
+    signal reg_ta                       : std_logic := '0';
+    
+    type flexbus_states is (FR_WAIT, FR_S0, FR_S1, FR_S2, FR_S3);
+    
 -- Sub Module Interface Section
-
-
---    component lpm_bustri_BYT
---        port
---        (
---            data        : in std_logic_vector(7 downto 0);
---            enabledt    : in std_logic;
---            tridata     : buffer std_logic_vector(7 downto 0)
---        );
---    end component lpm_bustri_BYT;
 
     function to_std_logic(X : in boolean) return std_logic is
         variable ret : std_logic;
@@ -578,45 +571,45 @@ begin
         end if;
     end process;
 
-    i_vbasx : work.flexbus_register
-        generic map
-        (
-            reg_width => 2,
-            match_address => x"ffff8603",
-            match_mask => x"0000ffff",      -- byte register
-            match_fbcs => 1
-        )
-        port map
-        (
-            clk => clk33m,
-            fb_addr => fb_adr,
-            fb_data => fb_ad,
-            fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
-            fb_ta_n => reg_ta,
-            fb_wr_n => nfb_wr,
-            reg_value => v_basx,
-            cs => v_basx_cs
-        );
-
-    i_vbash : work.flexbus_register
-        generic map
-        (
-            reg_width => 8,
-            match_address => x"ffff8604",
-            match_mask => x"0000fffe",      -- byte register
-            match_fbcs => 1
-        )
-        port map
-        (
-            clk => clk33m,
-            fb_addr => fb_adr,
-            fb_data => fb_ad,
-            fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
-            fb_ta_n => reg_ta,
-            fb_wr_n => nfb_wr,
-            reg_value => v_bash,
-            cs => v_bash_cs
-        );
+--    i_vbasx : work.flexbus_register
+--        generic map
+--        (
+--            reg_width => 2,
+--            match_address => x"ffff8603",
+--            match_mask => x"0000ffff",      -- byte register
+--            match_fbcs => 1
+--        )
+--        port map
+--        (
+--            clk => clk33m,
+--            fb_addr => fb_adr,
+--            fb_data => fb_ad,
+--            fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
+--            fb_ta_n => reg_ta,
+--            fb_wr_n => nfb_wr,
+--            reg_value => v_basx,
+--            cs => v_basx_cs
+--        );
+--
+--    i_vbash : work.flexbus_register
+--        generic map
+--        (
+--            reg_width => 8,
+--            match_address => x"ffff8604",
+--            match_mask => x"0000fffe",      -- byte register
+--            match_fbcs => 1
+--        )
+--        port map
+--        (
+--            clk => clk33m,
+--            fb_addr => fb_adr,
+--            fb_data => fb_ad,
+--            fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
+--            fb_ta_n => V,
+--            fb_wr_n => nfb_wr,
+--            reg_value => v_bash,
+--            cs => v_bash_cs
+--        );
         
     -- Start of original equations
     line <= fb_size0 and fb_size1;
@@ -654,6 +647,7 @@ begin
         bus_cyc_end <= '0';
         
         stdVec3 := FB_REGDDR_q;
+        
         case stdVec3 is
             when "000" =>
                 FB_LE(0) <= not nFB_WR;
@@ -718,7 +712,7 @@ begin
                 end if;
             
             when others =>
-                video_ddr_ta <= '0';
+                
         end case;
         stdVec3 := (others => '0');  -- no storage needed
     end process;

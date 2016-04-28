@@ -545,7 +545,7 @@ begin
     HBE <= HBE_q;
     HSS <= HSS_q;
     VCO <= VCO_q;
-    VCNTRL <= VCNTRL_q;
+    VCNTRL <= VCNTRL_d;
     
     VSYNC <= VSYNC_q;
     nBLANK <= nBLANK_q;
@@ -1269,47 +1269,82 @@ begin
 
 -- - REGISTER OUT
 --  low word register access
-   u0_data <= (sizeIt(ST_SHIFT_MODE_CS,16) and std_logic_vector'("000000" & ST_SHIFT_MODE_q & "00000000")) or
-              (sizeIt(FALCON_SHIFT_MODE_CS,16) and std_logic_vector'("00000" & FALCON_SHIFT_MODE_q)) or
-              (sizeIt(SYS_CTR_CS,16) and std_logic_vector'("100000000" & SYS_CTR_q(6 downto 4) & (not BLITTER_RUN) & SYS_CTR_q(2 downto 0))) or
-              (sizeIt(LOF_CS,16) and LOF_q) or (sizeIt(LWD_CS,16) and LWD_q) or
-              (sizeIt(HBE_CS,16) and std_logic_vector'("0000" & HBE_q)) or
-              (sizeIt(HDB_CS,16) and std_logic_vector'("0000" & HDB_q)) or
-              (sizeIt(HDE_CS,16) and std_logic_vector'("0000" & HDE_q)) or
-              (sizeIt(HBB_CS,16) and std_logic_vector'("0000" & HBB_q)) or
-              (sizeIt(HSS_CS,16) and std_logic_vector'("0000" & HSS_q)) or
-              (sizeIt(HHT_CS,16) and std_logic_vector'("0000" & HHT_q)) or
-              (sizeIt(VBE_CS,16) and std_logic_vector'("00000" & VBE_q)) or
-              (sizeIt(VDB_CS,16) and std_logic_vector'("00000" & VDB_q)) or
-              (sizeIt(VDE_CS,16) and std_logic_vector'("00000" & VDE_q)) or
-              (sizeIt(VBB_CS,16) and std_logic_vector'("00000" & VBB_q)) or
-              (sizeIt(VSS_CS,16) and std_logic_vector'("00000" & VSS_q)) or
-              (sizeIt(VFT_CS,16) and std_logic_vector'("00000" & VFT_q)) or
-              (sizeIt(VCO_CS,16) and std_logic_vector'("0000000" & VCO_q)) or
-              (sizeIt(VCNTRL_CS,16) and std_logic_vector'("000000000000" & VCNTRL_q)) or
-              (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(31 downto 16)) or
-              (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(31 downto 16)) or
-              (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(31 downto 16)) or
-              (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(31 downto 16)) or
-              (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(31 downto 16)) or
-              (sizeIt(BORDER_COLOR_CS,16) and std_logic_vector'("00000000" & BORDER_COLOR_q(23 downto 16))) or
-              (sizeIt(VIDEO_PLL_CONFIG_CS,16) and std_logic_vector'("0000000" & VR_DOUT_q)) or
-              (sizeIt(VIDEO_PLL_RECONFIG_CS,16) and std_logic_vector'(VR_BUSY & "0000" & VR_WR_q & VR_RD & VIDEO_RECONFIG_q & "11111010"));
+--   u0_data <= (sizeIt(ST_SHIFT_MODE_CS,16) and std_logic_vector'("000000" & ST_SHIFT_MODE_q & "00000000")) or
+--              (sizeIt(FALCON_SHIFT_MODE_CS,16) and std_logic_vector'("00000" & FALCON_SHIFT_MODE_q)) or
+--              (sizeIt(SYS_CTR_CS,16) and std_logic_vector'("100000000" & SYS_CTR_q(6 downto 4) & (not BLITTER_RUN) & SYS_CTR_q(2 downto 0))) or
+--              (sizeIt(LOF_CS,16) and LOF_q) or (sizeIt(LWD_CS,16) and LWD_q) or
+--              (sizeIt(HBE_CS,16) and std_logic_vector'("0000" & HBE_q)) or
+--              (sizeIt(HDB_CS,16) and std_logic_vector'("0000" & HDB_q)) or
+--              (sizeIt(HDE_CS,16) and std_logic_vector'("0000" & HDE_q)) or
+--              (sizeIt(HBB_CS,16) and std_logic_vector'("0000" & HBB_q)) or
+--              (sizeIt(HSS_CS,16) and std_logic_vector'("0000" & HSS_q)) or
+--              (sizeIt(HHT_CS,16) and std_logic_vector'("0000" & HHT_q)) or
+--              (sizeIt(VBE_CS,16) and std_logic_vector'("00000" & VBE_q)) or
+--              (sizeIt(VDB_CS,16) and std_logic_vector'("00000" & VDB_q)) or
+--              (sizeIt(VDE_CS,16) and std_logic_vector'("00000" & VDE_q)) or
+--              (sizeIt(VBB_CS,16) and std_logic_vector'("00000" & VBB_q)) or
+--              (sizeIt(VSS_CS,16) and std_logic_vector'("00000" & VSS_q)) or
+--              (sizeIt(VFT_CS,16) and std_logic_vector'("00000" & VFT_q)) or
+--              (sizeIt(VCO_CS,16) and std_logic_vector'("0000000" & VCO_q)) or
+--              (sizeIt(VCNTRL_CS,16) and std_logic_vector'("000000000000" & VCNTRL_q)) or
+--              (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(31 downto 16)) or
+--              (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(31 downto 16)) or
+--              (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(31 downto 16)) or
+--              (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(31 downto 16)) or
+--              (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(31 downto 16)) or
+--              (sizeIt(BORDER_COLOR_CS,16) and std_logic_vector'("00000000" & BORDER_COLOR_q(23 downto 16))) or
+--              (sizeIt(VIDEO_PLL_CONFIG_CS,16) and std_logic_vector'("0000000" & VR_DOUT_q)) or
+--              (sizeIt(VIDEO_PLL_RECONFIG_CS,16) and std_logic_vector'(VR_BUSY & "0000" & VR_WR_q & VR_RD & VIDEO_RECONFIG_q & "11111010"));
     
-    u0_enabledt <= (ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or BORDER_COLOR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
-	                HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
-                    VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS) and (not nFB_OE);
-    FB_AD(31 downto 16) <= u0_tridata;
+    FB_AD(31 downto 16) <= "000000" & st_shift_mode_q & "00000000" when st_shift_mode_cs = '1' else
+                           "100000000" & sys_ctr_q(6 downto 4) & (not blitter_run) & sys_ctr_q(2 downto 0) when sys_ctr_cs = '1' else
+                           lwd_q when lof_cs = '1' and lwd_cs = '1' else
+                           "0000" & hbe_q when hbe_cs = '1' else
+                           "0000" & hdb_q when hdb_cs = '1' else
+                           "0000" & hde_q when hde_cs = '1' else
+                           "0000" & hbb_q when hbb_cs = '1' else
+                           "0000" & hss_q when hss_cs = '1' else
+                           "0000" & hht_q when hht_cs = '1' else
+                           "00000" & vbe_q when vbe_cs = '1' else
+                           "00000" & vdb_q when vdb_cs = '1' else
+                           "00000" & vde_q when vde_cs = '1' else
+                           "00000" & vbb_q when vbb_cs = '1' else
+                           "00000" & vss_q when vss_cs = '1' else
+                           "00000" & vft_q when vft_cs = '1' else
+                           "0000000" & vco_q when vco_cs = '1' else
+                           "000000000000" & vcntrl_q when vcntrl_cs = '1' else
+                           acp_vctr_q(31 downto 16) when acp_vctr_cs = '1' else
+                           atari_hh_q(31 downto 16) when atari_hh_cs = '1' else
+                           atari_vh_q(31 downto 16) when atari_vh_cs = '1' else
+                           atari_hl_q(31 downto 16) when atari_hl_cs = '1' else
+                           atari_vl_q(31 downto 16) when atari_vl_cs = '1' else
+                           "00000000" & border_color_q(23 downto 16) when border_color_cs = '1' else
+                           "0000000" & vr_dout_q when video_pll_config_cs = '1' else
+                           vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010" when video_pll_reconfig_cs else
+                           (others => 'Z');
+                           
+--    u0_enabledt <= (ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or BORDER_COLOR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
+--	                HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
+--                    VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS) and (not nFB_OE);
+--    FB_AD(31 downto 16) <= u0_tridata;
 
 --  high word register access
-    u1_data <= (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(15 downto 0)) or
-               (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(15 downto 0)) or
-               (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(15 downto 0)) or
-               (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(15 downto 0)) or
-               (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(15 downto 0)) or
-               (sizeIt(BORDER_COLOR_CS,16) and BORDER_COLOR_q(15 downto 0));
-    u1_enabledt <= (ACP_VCTR_CS or BORDER_COLOR_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
-    FB_AD(15 downto 0) <= u1_tridata;
+--    u1_data <= (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(15 downto 0)) or
+--               (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(15 downto 0)) or
+--               (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(15 downto 0)) or
+--               (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(15 downto 0)) or
+--               (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(15 downto 0)) or
+--               (sizeIt(BORDER_COLOR_CS,16) and BORDER_COLOR_q(15 downto 0));
+--    u1_enabledt <= (ACP_VCTR_CS or BORDER_COLOR_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
+--    FB_AD(15 downto 0) <= u1_tridata;
+
+    fb_ad(15 downto 0) <= acp_vctr_q(15 downto 0) when acp_vctr_cs = '1' else
+                          atari_hh_q(15 downto 0) when atari_hh_cs = '1' else
+                          atari_vh_q(15 downto 0) when atari_vh_cs = '1' else
+                          atari_hl_q(15 downto 0) when atari_hl_cs = '1' else
+                          atari_vl_q(15 downto 0) when atari_vl_cs = '1' else
+                          border_color_q(15 downto 0) when border_color_cs = '1' else
+                          (others => 'Z');
 
     video_mod_ta <= clut_ta_q or ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
                     HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
