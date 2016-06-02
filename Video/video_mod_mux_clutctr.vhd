@@ -263,7 +263,7 @@ architecture rtl of video_mod_mux_clutctr is
     signal VCO_ena                  : std_logic_vector(8 downto 0);
     signal VCO_q                    : std_logic_vector(8 downto 0);
     signal VCNTRL                   : std_logic_vector(3 downto 0) := (others => '0');
-    signal VCNTRL_d                 : std_logic_vector(3 downto 0);
+    signal vcntrl_d                 : std_logic_vector(3 downto 0);
     signal VCNTRL_q                 : std_logic_vector(3 downto 0);
     signal u0_data                  : std_logic_vector(15 downto 0);
     signal u0_tridata               : std_logic_vector(15 downto 0);
@@ -350,7 +350,7 @@ architecture rtl of video_mod_mux_clutctr is
     signal gnd                      : std_logic;
     signal u1_enabledt              : std_logic;
 	signal u0_enabledt              : std_logic;
-    signal VCNTRL_CS                : std_logic;
+    signal vcntrl_cs                : std_logic;
     signal VCO_CS                   : std_logic;
     signal VFT_CS                   : std_logic;
     signal VSS_CS                   : std_logic;
@@ -528,7 +528,7 @@ begin
     HBE <= HBE_q;
     HSS <= HSS_q;
     VCO <= VCO_q;
-    VCNTRL <= VCNTRL_d;
+    VCNTRL <= vcntrl_q;
     
     VSYNC <= VSYNC_q;
     nBLANK <= nBLANK_q;
@@ -746,7 +746,7 @@ begin
             END IF;
 
             IF VCNTRL0_ena_ctrl = '1' THEN
-                VCNTRL_q <= VCNTRL_d;
+                VCNTRL_q <= vcntrl_d;
             END IF;
         END IF;
     END PROCESS;
@@ -1248,9 +1248,9 @@ begin
 
     --  VCNTRL
     --  $82C2 / 2 Falcon resolution control register VCNTRL
-    VCNTRL_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000101100001");
-    VCNTRL_d <= FB_AD(19 downto 16);
-    VCNTRL0_ena_ctrl <= VCNTRL_CS and (not nFB_WR) and FB_B(3);
+    vcntrl_cs <= '1' when nFB_CS1 = '0' and f_addr_cmp_w(fb_adr(19 downto 0), x"f82c2") = '1' else '0';
+    vcntrl_d <= FB_AD(19 downto 16);
+    VCNTRL0_ena_ctrl <= vcntrl_cs and (not nFB_WR) and FB_B(3);
 
 -- - REGISTER OUT
 --  low word register access
@@ -1271,7 +1271,7 @@ begin
 --              (sizeIt(VSS_CS,16) and std_logic_vector'("00000" & VSS_q)) or
 --              (sizeIt(VFT_CS,16) and std_logic_vector'("00000" & VFT_q)) or
 --              (sizeIt(VCO_CS,16) and std_logic_vector'("0000000" & VCO_q)) or
---              (sizeIt(VCNTRL_CS,16) and std_logic_vector'("000000000000" & VCNTRL_q)) or
+--              (sizeIt(vcntrl_cs,16) and std_logic_vector'("000000000000" & VCNTRL_q)) or
 --              (sizeIt(acp_vctr_CS,16) and acp_vctr_q(31 downto 16)) or
 --              (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(31 downto 16)) or
 --              (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(31 downto 16)) or
@@ -1310,7 +1310,7 @@ begin
                            
 --    u0_enabledt <= (st_shift_mode_CS or falcon_shift_mode_CS or acp_vctr_CS or border_color_CS or sys_ctr_CS or lof_CS or lwd_CS or HBE_CS or HDB_CS or
 --	                HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
---                    VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS) and (not nFB_OE);
+--                    VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or VSS_CS or VFT_CS or VCO_CS or vcntrl_cs) and (not nFB_OE);
 --    FB_AD(31 downto 16) <= u0_tridata;
 
 --  high word register access
@@ -1333,7 +1333,7 @@ begin
 
     video_mod_ta <= clut_ta_q or st_shift_mode_CS or falcon_shift_mode_CS or acp_vctr_CS or sys_ctr_CS or lof_CS or lwd_CS or HBE_CS or HDB_CS or
                     HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
-                    VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS;
+                    VSS_CS or VFT_CS or VCO_CS or vcntrl_cs;
 
     --  VIDEO AUSGABE SETZEN
     CLK17M_d <= not CLK17M_q;
