@@ -677,6 +677,7 @@ set_global_assignment -name AUTO_DELAY_CHAINS_FOR_HIGH_FANOUT_INPUT_PINS OFF
 set_global_assignment -name OPTIMIZE_FOR_METASTABILITY OFF
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK13M_q
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK17M_q
+set_global_assignment -name VHDL_FILE firebee_utils_pkg.vhd
 set_global_assignment -name AHDL_FILE altpll_reconfig1_pllrcfg_t4q.tdf
 set_global_assignment -name AHDL_FILE altpll_reconfig1.tdf
 set_global_assignment -name AHDL_FILE altpll4.tdf

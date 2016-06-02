@@ -35,18 +35,18 @@
 -- VERZ2_.clk          VERZ2_clk
 -- VERZ2_.d            VERZ2_d
 -- VERZ2_              VERZ2
--- CLUT_MUX_AV0_.q     CLUT_MUX_AV0_q
--- CLUT_MUX_AV0_.prn   CLUT_MUX_AV0_prn
--- CLUT_MUX_AV0_.clrn  CLUT_MUX_AV0_clrn
--- CLUT_MUX_AV0_.clk   CLUT_MUX_AV0_clk
--- CLUT_MUX_AV0_.d     CLUT_MUX_AV0_d
--- CLUT_MUX_AV0_       CLUT_MUX_AV0
--- CLUT_MUX_AV1_.q     CLUT_MUX_AV1_q
--- CLUT_MUX_AV1_.prn   CLUT_MUX_AV1_prn
--- CLUT_MUX_AV1_.clrn  CLUT_MUX_AV1_clrn
--- CLUT_MUX_AV1_.clk   CLUT_MUX_AV1_clk
--- CLUT_MUX_AV1_.d     CLUT_MUX_AV1_d
--- CLUT_MUX_AV1_       CLUT_MUX_AV1
+-- clut_mux_av0_.q     clut_mux_av0_q
+-- clut_mux_av0_.prn   clut_mux_av0_prn
+-- clut_mux_av0_.clrn  clut_mux_av0_clrn
+-- clut_mux_av0_.clk   clut_mux_av0_clk
+-- clut_mux_av0_.d     clut_mux_av0_d
+-- clut_mux_av0_       clut_mux_av0
+-- clut_mux_av1_.q     clut_mux_av1_q
+-- clut_mux_av1_.prn   clut_mux_av1_prn
+-- clut_mux_av1_.clrn  clut_mux_av1_clrn
+-- clut_mux_av1_.clk   clut_mux_av1_clk
+-- clut_mux_av1_.d     clut_mux_av1_d
+-- clut_mux_av1_       clut_mux_av1
 
 
 --  CREATED BY FREDI ASCHWANDEN
@@ -56,6 +56,9 @@
 library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
+    
+library work;
+    use work.firebee_utils_pkg.all;
 
 entity video_mod_mux_clutctr is
     port
@@ -85,7 +88,7 @@ entity video_mod_mux_clutctr is
         FALCON_CLUT_WR  : out std_logic_vector(3 downto 0);
         ST_CLUT_RD      : out std_logic;
         ST_CLUT_WR      : out std_logic_vector(1 downto 0);
-        CLUT_MUX_ADR    : out std_logic_vector(3 downto 0);
+        clut_mux_adr    : out std_logic_vector(3 downto 0);
         HSYNC           : out std_logic;
         VSYNC           : out std_logic;
         nBLANK          : out std_logic;
@@ -99,7 +102,7 @@ entity video_mod_mux_clutctr is
         BLITTER_ON      : out std_logic;
         VIDEO_RAM_CTR   : out std_logic_vector(15 downto 0);
         VIDEO_MOD_TA    : out std_logic;
-        BORDER_COLOR    : out std_logic_vector(23 downto 0);
+        border_color    : out std_logic_vector(23 downto 0);
         CCSEL           : out std_logic_vector(2 downto 0);
         ACP_CLUT_WR     : out std_logic_vector(3 downto 0);
         INTER_ZEI       : out std_logic;
@@ -116,7 +119,7 @@ end video_mod_mux_clutctr;
 architecture rtl of video_mod_mux_clutctr is
     --  DIV. CONTROL REGISTER
     --  BRAUCHT EIN WAITSTAT
-    --  LÃ„NGE HSYNC PULS IN PIXEL_CLK
+    --  LÃƒâ€žNGE HSYNC PULS IN PIXEL_CLK
     --  LETZTES PIXEL EINER ZEILE ERREICHT
     --  ATARI RESOLUTION
     --  HORIZONTAL TIMING 640x480
@@ -125,42 +128,42 @@ architecture rtl of video_mod_mux_clutctr is
     --  VERTIKAL TIMING 320x240
     --  HORIZONTAL
     --  VERTIKAL
-    signal VR_DOUT                  : std_logic_vector(8 downto 0);
-    signal VR_DOUT_d                : std_logic_vector(8 downto 0);
-    signal VR_DOUT_q                : std_logic_vector(8 downto 0);
-    signal VR_FRQ                   : unsigned(7 downto 0);
-    signal VR_FRQ_d                 : std_logic_vector(7 downto 0);
-    signal VR_FRQ_q                 : std_logic_vector(7 downto 0);
+    signal vr_dout                  : std_logic_vector(8 downto 0);
+    signal vr_dout_d                : std_logic_vector(8 downto 0);
+    signal vr_dout_q                : std_logic_vector(8 downto 0);
+    signal vr_frq                   : unsigned(7 downto 0);
+    signal vr_frq_d                 : std_logic_vector(7 downto 0);
+    signal vr_frq_q                 : std_logic_vector(7 downto 0);
     signal FB_B                     : std_logic_vector(3 downto 0);
     signal FB_16B                   : std_logic_vector(1 downto 0);
-    signal ST_SHIFT_MODE            : std_logic_vector(1 downto 0);
-    signal ST_SHIFT_MODE_d          : std_logic_vector(1 downto 0);
-    signal ST_SHIFT_MODE_q          : std_logic_vector(1 downto 0);
-    signal FALCON_SHIFT_MODE        : std_logic_vector(10 downto 0);
-    signal FALCON_SHIFT_MODE_d      : std_logic_vector(10 downto 0);
-    signal FALCON_SHIFT_MODE_q      : std_logic_vector(10 downto 0);
-    signal CLUT_MUX_ADR_d           : std_logic_vector(3 downto 0);
-    signal CLUT_MUX_ADR_q           : std_logic_vector(3 downto 0);
-    signal CLUT_MUX_AV1             : std_logic_vector(3 downto 0);
-    signal CLUT_MUX_AV1_d           : std_logic_vector(3 downto 0);
-    signal CLUT_MUX_AV1_q           : std_logic_vector(3 downto 0);
-    signal CLUT_MUX_AV0             : std_logic_vector(3 downto 0);
-    signal CLUT_MUX_AV0_d           : std_logic_vector(3 downto 0);
-    signal CLUT_MUX_AV0_q           : std_logic_vector(3 downto 0);
-    signal ACP_VCTR                 : std_logic_vector(31 downto 0);
-    signal ACP_VCTR_d               : std_logic_vector(31 downto 0);
-    signal ACP_VCTR_q               : std_logic_vector(31 downto 0);
-    signal BORDER_COLOR_d           : std_logic_vector(23 downto 0);
-    signal BORDER_COLOR_q           : std_logic_vector(23 downto 0);
-    signal SYS_CTR                  : std_logic_vector(6 downto 0);
-    signal SYS_CTR_d                : std_logic_vector(6 downto 0);
-    signal SYS_CTR_q                : std_logic_vector(6 downto 0);
-    signal LOF                      : std_logic_vector(15 downto 0);
-    signal LOF_d                    : std_logic_vector(15 downto 0);
-    signal LOF_q                    : std_logic_vector(15 downto 0);
-    signal LWD                      : std_logic_vector(15 downto 0);
-    signal LWD_d                    : std_logic_vector(15 downto 0);
-    signal LWD_q                    : std_logic_vector(15 downto 0);
+    signal st_shift_mode            : std_logic_vector(1 downto 0);
+    signal st_shift_mode_d          : std_logic_vector(1 downto 0);
+    signal st_shift_mode_q          : std_logic_vector(1 downto 0);
+    signal falcon_shift_mode        : std_logic_vector(10 downto 0);
+    signal falcon_shift_mode_d      : std_logic_vector(10 downto 0);
+    signal falcon_shift_mode_q      : std_logic_vector(10 downto 0);
+    signal clut_mux_adr_d           : std_logic_vector(3 downto 0);
+    signal clut_mux_adr_q           : std_logic_vector(3 downto 0);
+    signal clut_mux_av1             : std_logic_vector(3 downto 0);
+    signal clut_mux_av1_d           : std_logic_vector(3 downto 0);
+    signal clut_mux_av1_q           : std_logic_vector(3 downto 0);
+    signal clut_mux_av0             : std_logic_vector(3 downto 0);
+    signal clut_mux_av0_d           : std_logic_vector(3 downto 0);
+    signal clut_mux_av0_q           : std_logic_vector(3 downto 0);
+    signal acp_vctr                 : std_logic_vector(31 downto 0);
+    signal acp_vctr_d               : std_logic_vector(31 downto 0);
+    signal acp_vctr_q               : std_logic_vector(31 downto 0);
+    signal border_color_d           : std_logic_vector(23 downto 0);
+    signal border_color_q           : std_logic_vector(23 downto 0);
+    signal sys_ctr                  : std_logic_vector(6 downto 0);
+    signal sys_ctr_d                : std_logic_vector(6 downto 0);
+    signal sys_ctr_q                : std_logic_vector(6 downto 0);
+    signal lof                      : std_logic_vector(15 downto 0);
+    signal lof_d                    : std_logic_vector(15 downto 0);
+    signal lof_q                    : std_logic_vector(15 downto 0);
+    signal lwd                      : std_logic_vector(15 downto 0);
+    signal lwd_d                    : std_logic_vector(15 downto 0);
+    signal lwd_q                    : std_logic_vector(15 downto 0);
     signal HSYNC_I                  : std_logic_vector(7 downto 0);
     signal HSYNC_I_d                : std_logic_vector(7 downto 0);
     signal HSYNC_I_q                : std_logic_vector(7 downto 0);
@@ -266,17 +269,17 @@ architecture rtl of video_mod_mux_clutctr is
     signal u0_tridata               : std_logic_vector(15 downto 0);
     signal u1_data                  : std_logic_vector(15 downto 0);
     signal u1_tridata               : std_logic_vector(15 downto 0);
-    -- signal ST_SHIFT_MODE0_clk_ctrl  : std_logic;
-    signal ST_SHIFT_MODE0_ena_ctrl  : std_logic;
- 	-- signal FALCON_SHIFT_MODE0_clk_ctrl  : std_logic;
-    signal FALCON_SHIFT_MODE8_ena_ctrl  : std_logic;
-	signal FALCON_SHIFT_MODE0_ena_ctrl  : std_logic;
+    -- signal st_shift_mode0_clk_ctrl  : std_logic;
+    signal st_shift_mode0_ena_ctrl  : std_logic;
+ 	-- signal falcon_shift_mode0_clk_ctrl  : std_logic;
+    signal falcon_shift_mode8_ena_ctrl  : std_logic;
+	signal falcon_shift_mode0_ena_ctrl  : std_logic;
     
-    signal ACP_VCTR24_ena_ctrl      : std_logic;
-	signal ACP_VCTR16_ena_ctrl      : std_logic;
-    signal ACP_VCTR8_ena_ctrl       : std_logic;
-	signal ACP_VCTR6_ena_ctrl       : std_logic;
-    signal ACP_VCTR0_ena_ctrl       : std_logic;
+    signal acp_vctr24_ena_ctrl      : std_logic;
+	signal acp_vctr16_ena_ctrl      : std_logic;
+    signal acp_vctr8_ena_ctrl       : std_logic;
+	signal acp_vctr6_ena_ctrl       : std_logic;
+    signal acp_vctr0_ena_ctrl       : std_logic;
 	
     signal ATARI_HH24_ena_ctrl      : std_logic;
     signal ATARI_HH16_ena_ctrl      : std_logic;
@@ -295,16 +298,16 @@ architecture rtl of video_mod_mux_clutctr is
     signal ATARI_VL16_ena_ctrl      : std_logic;
 	signal ATARI_VL8_ena_ctrl       : std_logic;
     signal ATARI_VL0_ena_ctrl       : std_logic;
-	signal VR_DOUT0_ena_ctrl        : std_logic;
-    signal VR_FRQ0_ena_ctrl         : std_logic;
-	signal BORDER_COLOR16_ena_ctrl  : std_logic;
-    signal BORDER_COLOR8_ena_ctrl   : std_logic;
-	signal BORDER_COLOR0_ena_ctrl   : std_logic;
-    signal SYS_CTR0_ena_ctrl        : std_logic;
-	signal LOF8_ena_ctrl            : std_logic;
-    signal LOF0_ena_ctrl            : std_logic;
-    signal LWD8_ena_ctrl            : std_logic;
-    signal LWD0_ena_ctrl            : std_logic;
+	signal vr_dout0_ena_ctrl        : std_logic;
+    signal vr_frq0_ena_ctrl         : std_logic;
+	signal border_color16_ena_ctrl  : std_logic;
+    signal border_color8_ena_ctrl   : std_logic;
+	signal border_color0_ena_ctrl   : std_logic;
+    signal sys_ctr0_ena_ctrl        : std_logic;
+	signal lof8_ena_ctrl            : std_logic;
+    signal lof0_ena_ctrl            : std_logic;
+    signal lwd8_ena_ctrl            : std_logic;
+    signal lwd0_ena_ctrl            : std_logic;
     signal HHT8_ena_ctrl            : std_logic;
 	signal HHT0_ena_ctrl            : std_logic;
     signal HBE8_ena_ctrl            : std_logic;
@@ -441,14 +444,14 @@ architecture rtl of video_mod_mux_clutctr is
     signal CLUT_TA_q                : std_logic;
     signal CLUT_TA_d                : std_logic;
     signal CLUT_TA                  : std_logic;
-    signal LWD_CS                   : std_logic;
-    signal LOF_CS                   : std_logic;
-	signal SYS_CTR_CS               : std_logic;
+    signal lwd_CS                   : std_logic;
+    signal lof_CS                   : std_logic;
+	signal sys_ctr_CS               : std_logic;
     signal ACP_VIDEO_ON             : std_logic;
-    signal BORDER_COLOR_CS          : std_logic;
-    signal ACP_VCTR_CS              : std_logic;
-	signal FALCON_SHIFT_MODE_CS     : std_logic;
-    signal ST_SHIFT_MODE_CS         : std_logic;
+    signal border_color_CS          : std_logic;
+    signal acp_vctr_CS              : std_logic;
+	signal falcon_shift_mode_CS     : std_logic;
+    signal st_shift_mode_CS         : std_logic;
     signal ST_CLUT                  : std_logic;
     signal ST_CLUT_CS               : std_logic;
 	signal FALCON_CLUT              : std_logic;
@@ -493,26 +496,6 @@ architecture rtl of video_mod_mux_clutctr is
         end loop;
         return rep;
     end function sizeit;
-    
-    -- f_addr_cmp() compares addr against addr_const (only counting from the highest significant bit of the smaller
-    -- number, ignoring ignore least significant bits) and returns true if both addresses match, false otherwise
-    function f_addr_cmp(signal addr : std_logic_vector; constant addr_const : std_logic_vector; constant ignore : integer) return boolean is
-        variable c_len  : integer := addr_const'high;
-        variable a_len  : integer := addr'high;
-        variable len    : integer;
-        variable result : boolean := false;
-    begin
-        if c_len < a_len then
-            len := c_len;
-        else
-            len := a_len;
-        end if;
-        for i in len downto len - ignore loop
-            result := addr_const(i) = addr(i);
-            exit when result = false;
-        end loop;
-        return result;
-    end function f_addr_cmp;
 
 begin
     -- Sub Module Section
@@ -534,11 +517,11 @@ begin
 
     -- Register Section
 
-    CLUT_MUX_ADR <= CLUT_MUX_ADR_q;
+    clut_mux_adr <= clut_mux_adr_q;
     
     -- missing signals that seem to got lost during conversion
     HSYNC <= HSYNC_q;
-    ACP_VCTR <= ACP_VCTR_q;
+    acp_vctr <= acp_vctr_q;
     RAND <= RAND_q;
     ATARI_HH <= ATARI_HH_q;
     ATARI_HL <= ATARI_HL_q;
@@ -550,9 +533,9 @@ begin
     VSYNC <= VSYNC_q;
     nBLANK <= nBLANK_q;
     FIFO_RDE <= FIFO_RDE_q;
-    BORDER_COLOR(23 downto 16) <= BORDER_COLOR_q(23 downto 16);
-    BORDER_COLOR(15 downto 8) <= BORDER_COLOR_q(15 downto 8);
-    BORDER_COLOR(7 downto 0) <= BORDER_COLOR_q(7 downto 0);
+    border_color(23 downto 16) <= border_color_q(23 downto 16);
+    border_color(15 downto 8) <= border_color_q(15 downto 8);
+    border_color(7 downto 0) <= border_color_q(7 downto 0);
     CCSEL <= CCSEL_q;
     INTER_ZEI <= INTER_ZEI_q;
     DOP_FIFO_CLR <= DOP_FIFO_CLR_q;
@@ -561,18 +544,18 @@ begin
     process (pixel_clk_i)
     begin
         if rising_edge(pixel_clk_i) then
-            CLUT_MUX_ADR_q <= CLUT_MUX_ADR_d;
+            clut_mux_adr_q <= clut_mux_adr_d;
             HSYNC_q <= HSYNC_d;
             VSYNC_q <= VSYNC_d;
             nBLANK_q <= nBLANK_d;
             FIFO_RDE_q <= FIFO_RDE_d;
-            if BORDER_COLOR16_ena_ctrl = '1' then
+            if border_color16_ena_ctrl = '1' then
                 border_color_q(23 downto 16) <= border_color_d(23 downto 16);
             end if;
-            if BORDER_COLOR8_ena_ctrl = '1' THEN
+            if border_color8_ena_ctrl = '1' THEN
                 border_color_q(15 downto 8) <= border_color_d(15 downto 8);
             END IF;
-            IF BORDER_COLOR0_ena_ctrl = '1' THEN
+            IF border_color0_ena_ctrl = '1' THEN
                 border_color_q(7 downto 0) <= border_color_d(7 downto 0);
             END IF;
             CCSEL_q <= CCSEL_d;
@@ -602,7 +585,7 @@ begin
         END IF;
     END PROCESS;
 
-    VR_FRQ <= unsigned(VR_FRQ_q);
+    vr_frq <= unsigned(vr_frq_q);
     
     PROCESS (main_clk)
     BEGIN
@@ -613,63 +596,63 @@ begin
 
             CLK17M_q <= CLK17M_d;
 
-            IF VR_DOUT0_ena_ctrl = '1' THEN
-                VR_DOUT_q <= VR_DOUT_d;
+            IF vr_dout0_ena_ctrl = '1' THEN
+                vr_dout_q <= vr_dout_d;
             END IF;
             
-            IF VR_FRQ0_ena_ctrl = '1' THEN
-                VR_FRQ_q <= VR_FRQ_d;
+            IF vr_frq0_ena_ctrl = '1' THEN
+                vr_frq_q <= vr_frq_d;
             END IF;
             
-            IF ST_SHIFT_MODE0_ena_ctrl = '1' THEN
-                ST_SHIFT_MODE_q <= ST_SHIFT_MODE_d;
+            IF st_shift_mode0_ena_ctrl = '1' THEN
+                st_shift_mode_q <= st_shift_mode_d;
             END IF;
             
-            IF FALCON_SHIFT_MODE8_ena_ctrl = '1' THEN
+            IF falcon_shift_mode8_ena_ctrl = '1' THEN
                 falcon_shift_mode_q(10 downto 8) <= falcon_shift_mode_d(10 downto 8);
             END IF;
             
-            IF FALCON_SHIFT_MODE0_ena_ctrl = '1' THEN
+            IF falcon_shift_mode0_ena_ctrl = '1' THEN
                 falcon_shift_mode_q(7 downto 0) <= falcon_shift_mode_d(7 downto 0);
             END IF;
-            IF ACP_VCTR24_ena_ctrl = '1' THEN
-                ACP_VCTR_q(31 downto 24) <= ACP_VCTR_d(31 downto 24);
+            IF acp_vctr24_ena_ctrl = '1' THEN
+                acp_vctr_q(31 downto 24) <= acp_vctr_d(31 downto 24);
             END IF;
             
-            IF ACP_VCTR16_ena_ctrl = '1' THEN
-                ACP_VCTR_q(23 downto 16) <= ACP_VCTR_d(23 downto 16);
+            IF acp_vctr16_ena_ctrl = '1' THEN
+                acp_vctr_q(23 downto 16) <= acp_vctr_d(23 downto 16);
             END IF;
             
-            IF ACP_VCTR8_ena_ctrl = '1' THEN
-                ACP_VCTR_q(15 downto 8) <= ACP_VCTR_d(15 downto 8);
+            IF acp_vctr8_ena_ctrl = '1' THEN
+                acp_vctr_q(15 downto 8) <= acp_vctr_d(15 downto 8);
             END IF;
             
-            IF ACP_VCTR6_ena_ctrl = '1' THEN
-                ACP_VCTR_q(7 downto 6) <= ACP_VCTR_d(7 downto 6);
+            IF acp_vctr6_ena_ctrl = '1' THEN
+                acp_vctr_q(7 downto 6) <= acp_vctr_d(7 downto 6);
             END IF;
             
-            IF ACP_VCTR0_ena_ctrl = '1' THEN
-                ACP_VCTR_q(5 downto 0) <= ACP_VCTR_d(5 downto 0);
+            IF acp_vctr0_ena_ctrl = '1' THEN
+                acp_vctr_q(5 downto 0) <= acp_vctr_d(5 downto 0);
             END IF;
     
-            IF SYS_CTR0_ena_ctrl='1' THEN
-                SYS_CTR_q <= SYS_CTR_d;
+            IF sys_ctr0_ena_ctrl='1' THEN
+                sys_ctr_q <= sys_ctr_d;
             END IF;
 
-            IF LOF8_ena_ctrl = '1' THEN
-                LOF_q(15 downto 8) <= LOF_d(15 downto 8);
+            IF lof8_ena_ctrl = '1' THEN
+                lof_q(15 downto 8) <= lof_d(15 downto 8);
             END IF;
  
-            IF LOF0_ena_ctrl = '1' THEN
-                LOF_q(7 downto 0) <= LOF_d(7 downto 0);
+            IF lof0_ena_ctrl = '1' THEN
+                lof_q(7 downto 0) <= lof_d(7 downto 0);
             END IF;
 
-            IF LWD8_ena_ctrl = '1' THEN
-                LWD_q(15 downto 8) <= LWD_d(15 downto 8);
+            IF lwd8_ena_ctrl = '1' THEN
+                lwd_q(15 downto 8) <= lwd_d(15 downto 8);
             END IF;
 
-            IF LWD0_ena_ctrl = '1' THEN
-                LWD_q(7 downto 0) <= LWD_d(7 downto 0);
+            IF lwd0_ena_ctrl = '1' THEN
+                lwd_q(7 downto 0) <= lwd_d(7 downto 0);
             END IF;
  
             IF HDB8_ena_ctrl = '1' THEN
@@ -771,8 +754,8 @@ begin
     PROCESS (pixel_clk_i)
     BEGIN
         IF rising_edge(pixel_clk_i) THEN
-            CLUT_MUX_AV1_q <= CLUT_MUX_AV1_d;
-            CLUT_MUX_AV0_q <= CLUT_MUX_AV0_d;
+            clut_mux_av1_q <= clut_mux_av1_d;
+            clut_mux_av0_q <= clut_mux_av0_d;
             CLUT_TA_q <= CLUT_TA_d;
             HSYNC_I_q <= HSYNC_I_d;
             HSY_LEN_q <= HSY_LEN_d;
@@ -972,31 +955,31 @@ begin
 
     --  $F8260/2
     st_shift_mode_cs <= '1' when nFB_CS1 = '0' and FB_ADR(19 downto 1) = 19x"7c130" else '0';
-    -- ST_SHIFT_MODE_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100110000");
-    ST_SHIFT_MODE_d <= FB_AD(25 downto 24);
-    ST_SHIFT_MODE0_ena_ctrl <= ST_SHIFT_MODE_CS and (not nFB_WR) and FB_B(0);
+    -- st_shift_mode_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100110000");
+    st_shift_mode_d <= FB_AD(25 downto 24);
+    st_shift_mode0_ena_ctrl <= st_shift_mode_CS and (not nFB_WR) and FB_B(0);
 
     --  MONO
-    COLOR1_1 <= to_std_logic(ST_SHIFT_MODE_q = "10") and (not COLOR8) and ST_VIDEO and (not ACP_VIDEO_ON);
+    COLOR1_1 <= to_std_logic(st_shift_mode_q = "10") and (not COLOR8) and ST_VIDEO and (not ACP_VIDEO_ON);
 
     --  4 FARBEN
-    COLOR2 <= to_std_logic(ST_SHIFT_MODE_q = "01") and (not COLOR8) and ST_VIDEO and (not ACP_VIDEO_ON);
+    COLOR2 <= to_std_logic(st_shift_mode_q = "01") and (not COLOR8) and ST_VIDEO and (not ACP_VIDEO_ON);
 
     --  16 FARBEN
-    COLOR4_1 <= to_std_logic(ST_SHIFT_MODE_q = "00") and (not COLOR8) and ST_VIDEO and (not ACP_VIDEO_ON);
+    COLOR4_1 <= to_std_logic(st_shift_mode_q = "00") and (not COLOR8) and ST_VIDEO and (not ACP_VIDEO_ON);
 
     --  FALCON SHIFT MODE
 
     --  $F8266/2
-    FALCON_SHIFT_MODE_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100110011");
-    FALCON_SHIFT_MODE_d <= FB_AD(26 downto 16);
-    FALCON_SHIFT_MODE8_ena_ctrl <= FALCON_SHIFT_MODE_CS and (not nFB_WR) and FB_B(2);
-    FALCON_SHIFT_MODE0_ena_ctrl <= FALCON_SHIFT_MODE_CS and (not nFB_WR) and FB_B(3);
+    falcon_shift_mode_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100110011");
+    falcon_shift_mode_d <= FB_AD(26 downto 16);
+    falcon_shift_mode8_ena_ctrl <= falcon_shift_mode_CS and (not nFB_WR) and FB_B(2);
+    falcon_shift_mode0_ena_ctrl <= falcon_shift_mode_CS and (not nFB_WR) and FB_B(3);
 
-    CLUT_OFF <= FALCON_SHIFT_MODE_q(3 downto 0) and sizeIt(COLOR4_i, 4);
-    COLOR1_2 <= FALCON_SHIFT_MODE_q(10) and (not COLOR16) and (not COLOR8) and FALCON_VIDEO and (not ACP_VIDEO_ON);
-    COLOR8_1 <= FALCON_SHIFT_MODE_q(4) and (not COLOR16) and FALCON_VIDEO and (not ACP_VIDEO_ON);
-    COLOR16_1 <= FALCON_SHIFT_MODE_q(8) and FALCON_VIDEO and (not ACP_VIDEO_ON);
+    CLUT_OFF <= falcon_shift_mode_q(3 downto 0) and sizeIt(COLOR4_i, 4);
+    COLOR1_2 <= falcon_shift_mode_q(10) and (not COLOR16) and (not COLOR8) and FALCON_VIDEO and (not ACP_VIDEO_ON);
+    COLOR8_1 <= falcon_shift_mode_q(4) and (not COLOR16) and FALCON_VIDEO and (not ACP_VIDEO_ON);
+    COLOR16_1 <= falcon_shift_mode_q(8) and FALCON_VIDEO and (not ACP_VIDEO_ON);
     COLOR4_2 <= (not COLOR1) and (not COLOR16) and (not COLOR8) and FALCON_VIDEO and (not ACP_VIDEO_ON);
 
     --  ACP VIDEO CONTROL
@@ -1015,21 +998,21 @@ begin
     --  BIT 26 = STANDARD ATARI SYNCS
 
     --  $400/4
-    ACP_VCTR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) = "00000000000000000100000000");
+    acp_vctr_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) = "00000000000000000100000000");
    
-    ACP_VCTR_d(31 downto 8) <= FB_AD(31 downto 8);
-    ACP_VCTR_d(5 downto 0) <= FB_AD(5 downto 0);
+    acp_vctr_d(31 downto 8) <= FB_AD(31 downto 8);
+    acp_vctr_d(5 downto 0) <= FB_AD(5 downto 0);
    
-    ACP_VCTR24_ena_ctrl <= ACP_VCTR_CS and FB_B(0) and (not nFB_WR);
-    ACP_VCTR16_ena_ctrl <= ACP_VCTR_CS and FB_B(1) and (not nFB_WR);
-    ACP_VCTR8_ena_ctrl <= ACP_VCTR_CS and FB_B(2) and (not nFB_WR);
-    ACP_VCTR0_ena_ctrl <= ACP_VCTR_CS and FB_B(3) and (not nFB_WR);
-    ACP_VIDEO_ON <= ACP_VCTR_q(0);
-    nPD_VGA <= ACP_VCTR_q(1);
+    acp_vctr24_ena_ctrl <= acp_vctr_CS and FB_B(0) and (not nFB_WR);
+    acp_vctr16_ena_ctrl <= acp_vctr_CS and FB_B(1) and (not nFB_WR);
+    acp_vctr8_ena_ctrl <= acp_vctr_CS and FB_B(2) and (not nFB_WR);
+    acp_vctr0_ena_ctrl <= acp_vctr_CS and FB_B(3) and (not nFB_WR);
+    ACP_VIDEO_ON <= acp_vctr_q(0);
+    nPD_VGA <= acp_vctr_q(1);
 
     --  ATARI MODUS
-    --  WENN 1 AUTOMATISCHE AUFLÃ–SUNG
-    ATARI_SYNC <= ACP_VCTR_q(26);
+    --  WENN 1 AUTOMATISCHE AUFLÃƒâ€“SUNG
+    ATARI_SYNC <= acp_vctr_q(26);
 
     --  HORIZONTAL TIMING 640x480
 
@@ -1076,10 +1059,10 @@ begin
     VIDEO_PLL_CONFIG_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 9) = "0000000000000000011") and FB_B(0) and FB_B(1);
     VR_WR_d <= VIDEO_PLL_CONFIG_CS and (not nFB_WR) and (not VR_BUSY) and (not VR_WR_q);
     VR_RD <= VIDEO_PLL_CONFIG_CS and nFB_WR and (not VR_BUSY);
-    VR_DOUT0_ena_ctrl <= not VR_BUSY;
-    VR_DOUT_d <= VR_D;
-    VR_FRQ0_ena_ctrl <= to_std_logic(VR_WR_q='1' and FB_ADR(8 downto 0) = "000000100");
-    VR_FRQ_d <= FB_AD(23 downto 16);
+    vr_dout0_ena_ctrl <= not VR_BUSY;
+    vr_dout_d <= VR_D;
+    vr_frq0_ena_ctrl <= to_std_logic(VR_WR_q='1' and FB_ADR(8 downto 0) = "000000100");
+    vr_frq_d <= FB_AD(23 downto 16);
 
     --  VIDEO PLL RECONFIG
     --  $(F)000'0800
@@ -1087,23 +1070,23 @@ begin
     VIDEO_RECONFIG_d <= VIDEO_PLL_RECONFIG_CS and (not nFB_WR) and (not VR_BUSY) and (not VIDEO_RECONFIG_q);
 
     -- ----------------------------------------------------------------------------------------------------------------------
-    VIDEO_RAM_CTR <= ACP_VCTR_q(31 downto 16);
+    VIDEO_RAM_CTR <= acp_vctr_q(31 downto 16);
 
     -- ------------ COLOR MODE IM ACP SETZEN
-    COLOR1_3 <= ACP_VCTR_q(5) and (not ACP_VCTR_q(4)) and (not ACP_VCTR_q(3)) and (not ACP_VCTR_q(2)) and ACP_VIDEO_ON;
-    COLOR8_2 <= ACP_VCTR_q(4) and (not ACP_VCTR_q(3)) and (not ACP_VCTR_q(2)) and ACP_VIDEO_ON;
-    COLOR16_2 <= ACP_VCTR_q(3) and (not ACP_VCTR_q(2)) and ACP_VIDEO_ON;
-    COLOR24 <= ACP_VCTR_q(2) and ACP_VIDEO_ON;
+    COLOR1_3 <= acp_vctr_q(5) and (not acp_vctr_q(4)) and (not acp_vctr_q(3)) and (not acp_vctr_q(2)) and ACP_VIDEO_ON;
+    COLOR8_2 <= acp_vctr_q(4) and (not acp_vctr_q(3)) and (not acp_vctr_q(2)) and ACP_VIDEO_ON;
+    COLOR16_2 <= acp_vctr_q(3) and (not acp_vctr_q(2)) and ACP_VIDEO_ON;
+    COLOR24 <= acp_vctr_q(2) and ACP_VIDEO_ON;
     ACP_CLUT <= (ACP_VIDEO_ON and (COLOR1 or COLOR8)) or (ST_VIDEO and COLOR1);
 
     --  ST ODER FALCON SHIFT MODE SETZEN WENN WRITE X..SHIFT REGISTER
-    ACP_VCTR_d(7) <= FALCON_SHIFT_MODE_CS and (not nFB_WR) and (not ACP_VIDEO_ON);
-    ACP_VCTR_d(6) <= ST_SHIFT_MODE_CS and (not nFB_WR) and (not ACP_VIDEO_ON);
+    acp_vctr_d(7) <= falcon_shift_mode_CS and (not nFB_WR) and (not ACP_VIDEO_ON);
+    acp_vctr_d(6) <= st_shift_mode_CS and (not nFB_WR) and (not ACP_VIDEO_ON);
    
-    ACP_VCTR6_ena_ctrl <= (FALCON_SHIFT_MODE_CS and (not nFB_WR)) or (ST_SHIFT_MODE_CS and (not nFB_WR)) or (ACP_VCTR_CS and FB_B(3) and (not nFB_WR) and FB_AD(0));
-    FALCON_VIDEO <= ACP_VCTR_q(7);
+    acp_vctr6_ena_ctrl <= (falcon_shift_mode_CS and (not nFB_WR)) or (st_shift_mode_CS and (not nFB_WR)) or (acp_vctr_CS and FB_B(3) and (not nFB_WR) and FB_AD(0));
+    FALCON_VIDEO <= acp_vctr_q(7);
     FALCON_CLUT <= FALCON_VIDEO and (not ACP_VIDEO_ON) and (not COLOR16);
-    ST_VIDEO <= ACP_VCTR_q(6);
+    ST_VIDEO <= acp_vctr_q(6);
     ST_CLUT <= ST_VIDEO and (not ACP_VIDEO_ON) and (not FALCON_CLUT) and (not COLOR1);
     pixel_clk_i <= pixel_clk;
 
@@ -1117,11 +1100,11 @@ begin
     --  RANDFARBE
 
     --  $404/4
-    BORDER_COLOR_CS <= to_std_logic(((not nFB_CS2) = '1') and FB_ADR(27 downto 2) = "00000000000000000100000001");
-    BORDER_COLOR_d <= FB_AD(23 downto 0);
-    BORDER_COLOR16_ena_ctrl <= BORDER_COLOR_CS and FB_B(1) and (not nFB_WR);
-    BORDER_COLOR8_ena_ctrl <= BORDER_COLOR_CS and FB_B(2) and (not nFB_WR);
-    BORDER_COLOR0_ena_ctrl <= BORDER_COLOR_CS and FB_B(3) and (not nFB_WR);
+    border_color_CS <= to_std_logic(((not nFB_CS2) = '1') and FB_ADR(27 downto 2) = "00000000000000000100000001");
+    border_color_d <= FB_AD(23 downto 0);
+    border_color16_ena_ctrl <= border_color_CS and FB_B(1) and (not nFB_WR);
+    border_color8_ena_ctrl <= border_color_CS and FB_B(2) and (not nFB_WR);
+    border_color0_ena_ctrl <= border_color_CS and FB_B(3) and (not nFB_WR);
 
     --  System Config Register
     --  $FFFF8006 [R/W] B  76543210  Monitor-Type Hi
@@ -1146,27 +1129,28 @@ begin
     --                               10 VGA
     --                               11 TV
     --  $8006/2
-    sys_ctr_cs <= '1' when nFB_CS1 = '0' and f_addr_cmp(FB_ADR, 20x"f8006", 1);
+    sys_ctr_cs <= '1' when nFB_CS1 = '0' and f_addr_cmp_w(FB_ADR, 20x"f8006") = '1';
             -- FB_ADR(19 downto 1) = std_logic_vector'(20x"f8006")(19 downto 1) else '0';
     
-    -- SYS_CTR_CS <= to_std_logic(((not nFB_CS1) = '1') and FB_ADR(19 downto 1) = "1111100000000000011");
-    SYS_CTR_d <= FB_AD(22 downto 16);
-    SYS_CTR0_ena_ctrl <= SYS_CTR_CS and (not nFB_WR) and FB_B(3);
-    BLITTER_ON <= not SYS_CTR_q(3);
+    -- sys_ctr_CS <= to_std_logic(((not nFB_CS1) = '1') and FB_ADR(19 downto 1) = "1111100000000000011");
+    sys_ctr_d <= FB_AD(22 downto 16);
+    sys_ctr0_ena_ctrl <= sys_ctr_CS and (not nFB_WR) and FB_B(3);
+    BLITTER_ON <= not sys_ctr_q(3);
 
-    --  LOF
+    --  lof
     --  $820E/2
-    LOF_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000111");
-    LOF_d <= FB_AD(31 downto 16);
-    LOF8_ena_ctrl <= LOF_CS and (not nFB_WR) and FB_B(2);
-    LOF0_ena_ctrl <= LOF_CS and (not nFB_WR) and FB_B(3);
-
-    --  LWD
+    lof_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000111");
+    lof_d <= FB_AD(31 downto 16);
+    lof8_ena_ctrl <= lof_CS and (not nFB_WR) and FB_B(2);
+    lof0_ena_ctrl <= lof_CS and (not nFB_WR) and FB_B(3);
+    lof <= lof_q;
+    
+    --  lwd
     --  $8210/2
-    LWD_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100001000");
-    LWD_d <= FB_AD(31 downto 16);
-    LWD8_ena_ctrl <= LWD_CS and (not nFB_WR) and FB_B(0);
-    LWD0_ena_ctrl <= LWD_CS and (not nFB_WR) and FB_B(1);
+    lwd_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100001000");
+    lwd_d <= FB_AD(31 downto 16);
+    lwd8_ena_ctrl <= lwd_CS and (not nFB_WR) and FB_B(0);
+    lwd0_ena_ctrl <= lwd_CS and (not nFB_WR) and FB_B(1);
 
     --  HORIZONTAL
     --  HHT
@@ -1249,7 +1233,8 @@ begin
 
     --  VFT
     --  $82A2/2
-    VFT_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000101010001");
+    -- VFT_CS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000101010001");
+    vft_cs <= not nFB_CS1 and f_addr_cmp_w(fb_adr(19 downto 0), x"f82a2");
     VFT_d <= FB_AD(26 downto 16);
     VFT8_ena_ctrl <= VFT_CS and (not nFB_WR) and FB_B(2);
     VFT0_ena_ctrl <= VFT_CS and (not nFB_WR) and FB_B(3);
@@ -1269,10 +1254,10 @@ begin
 
 -- - REGISTER OUT
 --  low word register access
---   u0_data <= (sizeIt(ST_SHIFT_MODE_CS,16) and std_logic_vector'("000000" & ST_SHIFT_MODE_q & "00000000")) or
---              (sizeIt(FALCON_SHIFT_MODE_CS,16) and std_logic_vector'("00000" & FALCON_SHIFT_MODE_q)) or
---              (sizeIt(SYS_CTR_CS,16) and std_logic_vector'("100000000" & SYS_CTR_q(6 downto 4) & (not BLITTER_RUN) & SYS_CTR_q(2 downto 0))) or
---              (sizeIt(LOF_CS,16) and LOF_q) or (sizeIt(LWD_CS,16) and LWD_q) or
+--   u0_data <= (sizeIt(st_shift_mode_CS,16) and std_logic_vector'("000000" & st_shift_mode_q & "00000000")) or
+--              (sizeIt(falcon_shift_mode_CS,16) and std_logic_vector'("00000" & falcon_shift_mode_q)) or
+--              (sizeIt(sys_ctr_CS,16) and std_logic_vector'("100000000" & sys_ctr_q(6 downto 4) & (not BLITTER_RUN) & sys_ctr_q(2 downto 0))) or
+--              (sizeIt(lof_CS,16) and lof_q) or (sizeIt(lwd_CS,16) and lwd_q) or
 --              (sizeIt(HBE_CS,16) and std_logic_vector'("0000" & HBE_q)) or
 --              (sizeIt(HDB_CS,16) and std_logic_vector'("0000" & HDB_q)) or
 --              (sizeIt(HDE_CS,16) and std_logic_vector'("0000" & HDE_q)) or
@@ -1287,13 +1272,13 @@ begin
 --              (sizeIt(VFT_CS,16) and std_logic_vector'("00000" & VFT_q)) or
 --              (sizeIt(VCO_CS,16) and std_logic_vector'("0000000" & VCO_q)) or
 --              (sizeIt(VCNTRL_CS,16) and std_logic_vector'("000000000000" & VCNTRL_q)) or
---              (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(31 downto 16)) or
+--              (sizeIt(acp_vctr_CS,16) and acp_vctr_q(31 downto 16)) or
 --              (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(31 downto 16)) or
 --              (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(31 downto 16)) or
 --              (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(31 downto 16)) or
 --              (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(31 downto 16)) or
---              (sizeIt(BORDER_COLOR_CS,16) and std_logic_vector'("00000000" & BORDER_COLOR_q(23 downto 16))) or
---              (sizeIt(VIDEO_PLL_CONFIG_CS,16) and std_logic_vector'("0000000" & VR_DOUT_q)) or
+--              (sizeIt(border_color_CS,16) and std_logic_vector'("00000000" & border_color_q(23 downto 16))) or
+--              (sizeIt(VIDEO_PLL_CONFIG_CS,16) and std_logic_vector'("0000000" & vr_dout_q)) or
 --              (sizeIt(VIDEO_PLL_RECONFIG_CS,16) and std_logic_vector'(VR_BUSY & "0000" & VR_WR_q & VR_RD & VIDEO_RECONFIG_q & "11111010"));
     
     FB_AD(31 downto 16) <= "000000" & st_shift_mode_q & "00000000" when st_shift_mode_cs = '1' else
@@ -1320,22 +1305,22 @@ begin
                            atari_vl_q(31 downto 16) when atari_vl_cs = '1' else
                            "00000000" & border_color_q(23 downto 16) when border_color_cs = '1' else
                            "0000000" & vr_dout_q when video_pll_config_cs = '1' else
-                           vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010" when video_pll_reconfig_cs else
+                           vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010" when video_pll_reconfig_cs = '1' else
                            (others => 'Z');
                            
---    u0_enabledt <= (ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or BORDER_COLOR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
+--    u0_enabledt <= (st_shift_mode_CS or falcon_shift_mode_CS or acp_vctr_CS or border_color_CS or sys_ctr_CS or lof_CS or lwd_CS or HBE_CS or HDB_CS or
 --	                HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
 --                    VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS) and (not nFB_OE);
 --    FB_AD(31 downto 16) <= u0_tridata;
 
 --  high word register access
---    u1_data <= (sizeIt(ACP_VCTR_CS,16) and ACP_VCTR_q(15 downto 0)) or
+--    u1_data <= (sizeIt(acp_vctr_CS,16) and acp_vctr_q(15 downto 0)) or
 --               (sizeIt(ATARI_HH_CS,16) and ATARI_HH_q(15 downto 0)) or
 --               (sizeIt(ATARI_VH_CS,16) and ATARI_VH_q(15 downto 0)) or
 --               (sizeIt(ATARI_HL_CS,16) and ATARI_HL_q(15 downto 0)) or
 --               (sizeIt(ATARI_VL_CS,16) and ATARI_VL_q(15 downto 0)) or
---               (sizeIt(BORDER_COLOR_CS,16) and BORDER_COLOR_q(15 downto 0));
---    u1_enabledt <= (ACP_VCTR_CS or BORDER_COLOR_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
+--               (sizeIt(border_color_CS,16) and border_color_q(15 downto 0));
+--    u1_enabledt <= (acp_vctr_CS or border_color_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
 --    FB_AD(15 downto 0) <= u1_tridata;
 
     fb_ad(15 downto 0) <= acp_vctr_q(15 downto 0) when acp_vctr_cs = '1' else
@@ -1346,7 +1331,7 @@ begin
                           border_color_q(15 downto 0) when border_color_cs = '1' else
                           (others => 'Z');
 
-    video_mod_ta <= clut_ta_q or ST_SHIFT_MODE_CS or FALCON_SHIFT_MODE_CS or ACP_VCTR_CS or SYS_CTR_CS or LOF_CS or LWD_CS or HBE_CS or HDB_CS or
+    video_mod_ta <= clut_ta_q or st_shift_mode_CS or falcon_shift_mode_CS or acp_vctr_CS or sys_ctr_CS or lof_CS or lwd_CS or HBE_CS or HDB_CS or
                     HDE_CS or HBB_CS or HSS_CS or HHT_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
                     VSS_CS or VFT_CS or VCO_CS or VCNTRL_CS;
 
@@ -1362,12 +1347,12 @@ begin
                  (CLK17M_q and (not	 ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and ((VCNTRL_q(2) and (not VCO_q(2))) or VCO_q(0))) or
                  (CLK25M and (not ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and (not VCNTRL_q(2)) and VCO_q(2) and (not VCO_q(0))) or
                  (CLK33M and (not ACP_VIDEO_ON) and (FALCON_VIDEO or ST_VIDEO) and (not VCNTRL_q(2)) and (not VCO_q(2)) and (not VCO_q(0))) or
-                 (to_std_logic((CLK25M and ACP_VIDEO_ON)='1' and ACP_VCTR_q(9 downto 8) = "00")) or
-                 (to_std_logic((CLK33M and ACP_VIDEO_ON)='1' and ACP_VCTR_q(9 downto 8) = "01")) or
-                 (CLK_VIDEO and ACP_VIDEO_ON and ACP_VCTR_q(9));
+                 (to_std_logic((CLK25M and ACP_VIDEO_ON)='1' and acp_vctr_q(9 downto 8) = "00")) or
+                 (to_std_logic((CLK33M and ACP_VIDEO_ON)='1' and acp_vctr_q(9 downto 8) = "01")) or
+                 (CLK_VIDEO and ACP_VIDEO_ON and acp_vctr_q(9));
 
     -- ------------------------------------------------------------
-    --  HORIZONTALE SYNC LÃ„NGE in PIXEL_CLK
+    --  HORIZONTALE SYNC LÃƒâ€žNGE in PIXEL_CLK
     -- --------------------------------------------------------------
 
     --  320 pixels, 32 MHz, RGB
@@ -1389,9 +1374,9 @@ begin
                  -- ("00010000" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and ((sizeIt(VCNTRL_q(2), 8) and sizeIt(not VCO_q(2), 8)) or sizeIt(VCO_q(0),8))) or
                  -- ("00011100" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and sizeIt(not VCNTRL_q(2), 8) and sizeIt(VCO_q(2), 8) and sizeIt(not VCO_q(0), 8)) or
                  -- ("00100000" and sizeIt(not ACP_VIDEO_ON, 8) and (sizeIt(FALCON_VIDEO, 8) or sizeIt(ST_VIDEO, 8)) and sizeIt(not VCNTRL_q(2), 8) and sizeIt(not VCO_q(2), 8) and sizeIt(not VCO_q(0), 8)) or
-                 -- ("00011100" and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(to_std_logic(ACP_VCTR_q(9 downto 8) = "00"), 8)) or
-                 -- ("00100000" and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(to_std_logic(ACP_VCTR_q(9 downto 8) = "01"), 8)) or
-                 -- ((std_logic_vector(to_unsigned(16, HSY_LEN_d'LENGTH) + unsigned(std_logic_vector('0' & VR_FRQ_q(7 downto 1))))) and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(ACP_VCTR_q(9), 8));
+                 -- ("00011100" and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(to_std_logic(acp_vctr_q(9 downto 8) = "00"), 8)) or
+                 -- ("00100000" and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(to_std_logic(acp_vctr_q(9 downto 8) = "01"), 8)) or
+                 -- ((std_logic_vector(to_unsigned(16, HSY_LEN_d'LENGTH) + unsigned(std_logic_vector('0' & vr_frq_q(7 downto 1))))) and sizeIt(ACP_VIDEO_ON, 8) and sizeIt(acp_vctr_q(9), 8));
 
 --  MULTIPLIKATIONS FAKTOR
    MULF <= ("000010" and sizeIt(not ST_VIDEO,6) and sizeIt(VCNTRL_q(2),6)) or
@@ -1414,7 +1399,7 @@ begin
 	 VVCNT_q(0) = VDIS_START(0) and VVCNT_q /= "00000000000" and
 	 (unsigned(VHCNT_q) > unsigned(std_logic_vector(unsigned(HDIS_END) - 2)))));
 
---  DOPPELZEILENFIFO LÃ–SCHEN AM ENDE DER DOPPELZEILE UND BEI MAIN FIFO START
+--  DOPPELZEILENFIFO LÃƒâ€“SCHEN AM ENDE DER DOPPELZEILE UND BEI MAIN FIFO START
    DOP_FIFO_CLR_d <= (INTER_ZEI_q and HSYNC_START_q) or SYNC_PIX_q;
 
 --    RAND_LINKS[]    =  HBE[]                                    &  ACP_VIDEO_ON
@@ -1493,7 +1478,7 @@ begin
 	 VCNTRL_q(2),11)) or (std_logic_vector'('0' & VFT_q(10 downto 1)) and
 	 sizeIt(not ACP_VIDEO_ON,11) and sizeIt(not ATARI_SYNC,11));
 
-    --  ZÃ„HLER
+    --  ZÃƒâ€žHLER
     LAST_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(H_TOTAL) - 2)));
 
     VHCNT_d <= (std_logic_vector(unsigned(VHCNT_q) + 1)) and sizeIt(not LAST_q,12);
@@ -1505,7 +1490,7 @@ begin
     --  1 ZEILE DAVOR ON OFF
     DPO_ZL_d <= to_std_logic((unsigned(VVCNT_q) > unsigned(std_logic_vector(unsigned(RAND_OBEN) - 1))) and (unsigned(VVCNT_q) < unsigned(std_logic_vector(unsigned(RAND_UNTEN) - 1))));
 
-    --  AM ZEILENENDE ÃœBERNEHMEN
+    --  AM ZEILENENDE ÃƒÅ“BERNEHMEN
     DPO_ZL_ena <= LAST_q;
 
     --  BESSER EINZELN WEGEN TIMING
@@ -1521,7 +1506,7 @@ begin
     VCO_OFF_d <= to_std_logic(VHCNT_q = HDIS_END);
 
     
-    --  AM ZEILENENDE ÃœBERNEHMEN
+    --  AM ZEILENENDE ÃƒÅ“BERNEHMEN
     VCO_ZL_ena <= LAST_q;
 
     --  1 ZEILE DAVOR ON OFF
@@ -1529,7 +1514,7 @@ begin
 
     VDTRON_d <= (VDTRON_q and (not VCO_OFF_q)) or (VCO_ON_q and VCO_ZL_q);
 
-    --  VERZÃ–GERUNG UND SYNC
+    --  VERZÃƒâ€“GERUNG UND SYNC
 
     HSYNC_START_d <= to_std_logic(VHCNT_q = (std_logic_vector(unsigned(HS_START) - 3)));
 
@@ -1547,7 +1532,7 @@ begin
     VSYNC_I0_ena_ctrl <= LAST_q;
 
     --  3 zeilen vsync length
-    --  runterzählen bis 0
+    --  runterzÃ¤hlen bis 0
     VSYNC_I_d <= 3x"3" when VSYNC_START_q = '1' else
                  std_logic_vector(unsigned(VSYNC_I_q) - 1) when VSYNC_START_q = '0' and VSYNC_I_q /= 3x"0" else
                  (others => '0');
@@ -1567,14 +1552,14 @@ begin
     VERZ0_d(0) <= DISP_ON_q;
 
     --   VERZ[1][0] = HSYNC_I[] != 0;
-    --  NUR MÃ–GLICH WENN BEIDE
-    VERZ1_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1')
-	 and HSYNC_I_q /= "00000000")) or (to_std_logic((ACP_VCTR_q(15) and
+    --  NUR MÃƒâ€“GLICH WENN BEIDE
+    VERZ1_d(0) <= (to_std_logic((((not acp_vctr_q(15)) or (not VCO_q(6)))='1')
+	 and HSYNC_I_q /= "00000000")) or (to_std_logic((acp_vctr_q(15) and
 	 VCO_q(6))='1' and HSYNC_I_q = "00000000"));
 
-    --  NUR MÃ–GLICH WENN BEIDE
-    VERZ2_d(0) <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1')
-	 and VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
+    --  NUR MÃƒâ€“GLICH WENN BEIDE
+    VERZ2_d(0) <= (to_std_logic((((not acp_vctr_q(15)) or (not VCO_q(5)))='1')
+	 and VSYNC_I_q /= "000")) or (to_std_logic((acp_vctr_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
 
     --  nBLANK =  VERZ[0][8];
@@ -1583,20 +1568,20 @@ begin
     --  nBLANK_d <= DISP_ON_q;
 
     --  HSYNC  =  VERZ[1][9];
-    --  NUR MÃ–GLICH WENN BEIDE
-    HSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(6)))='1') and
-	 HSYNC_I_q /= "00000000")) or (to_std_logic((ACP_VCTR_q(15) and
+    --  NUR MÃƒâ€“GLICH WENN BEIDE
+    HSYNC_d <= (to_std_logic((((not acp_vctr_q(15)) or (not VCO_q(6)))='1') and
+	 HSYNC_I_q /= "00000000")) or (to_std_logic((acp_vctr_q(15) and
 	 VCO_q(6))='1' and HSYNC_I_q = "00000000"));
 
     --  VSYNC  =  VERZ[2][9];
-    --  NUR MÃ–GLICH WENN BEIDE
-    VSYNC_d <= (to_std_logic((((not ACP_VCTR_q(15)) or (not VCO_q(5)))='1') and
-	 VSYNC_I_q /= "000")) or (to_std_logic((ACP_VCTR_q(15) and
+    --  NUR MÃƒâ€“GLICH WENN BEIDE
+    VSYNC_d <= (to_std_logic((((not acp_vctr_q(15)) or (not VCO_q(5)))='1') and
+	 VSYNC_I_q /= "000")) or (to_std_logic((acp_vctr_q(15) and
 	 VCO_q(5))='1' and VSYNC_I_q = "000"));
     nSYNC <= gnd;
 
     --  RANDFARBE MACHEN ------------------------------------
-    RAND_d(0) <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
+    RAND_d(0) <= DISP_ON_q and (not VDTRON_q) and acp_vctr_q(25);
     RAND_d(1) <= RAND_q(0);
     RAND_d(2) <= RAND_q(1);
     RAND_d(3) <= RAND_q(2);
@@ -1606,25 +1591,25 @@ begin
     
     --  RAND_ON = RAND[6];
     rand_on <= rand(6);
-    -- RAND_ON <= DISP_ON_q and (not VDTRON_q) and ACP_VCTR_q(25);
+    -- RAND_ON <= DISP_ON_q and (not VDTRON_q) and acp_vctr_q(25);
 
     -- --------------------------------------------------------
     CLR_FIFO_ena <= LAST_q;
 
-    --  IN LETZTER ZEILE LÃ–SCHEN
+    --  IN LETZTER ZEILE LÃƒâ€“SCHEN
     CLR_FIFO_d <= to_std_logic(VVCNT_q = (std_logic_vector(unsigned(V_TOTAL) - 2)));
     START_ZEILE_ena <= LAST_q;
 
     --  ZEILE 1
     START_ZEILE_d <= to_std_logic(VVCNT_q = "00000000000");
 
-    --  SUB PIXEL ZÃ„HLER SYNCHRONISIEREN
+    --  SUB PIXEL ZÃƒâ€žHLER SYNCHRONISIEREN
     SYNC_PIX_d <= to_std_logic(VHCNT_q = "000000000011") and START_ZEILE_q;
 
-    --  SUB PIXEL ZÃ„HLER SYNCHRONISIEREN
+    --  SUB PIXEL ZÃƒâ€žHLER SYNCHRONISIEREN
     SYNC_PIX1_d <= to_std_logic(VHCNT_q = "000000000101") and START_ZEILE_q;
 
-    --  SUB PIXEL ZÃ„HLER SYNCHRONISIEREN
+    --  SUB PIXEL ZÃƒâ€žHLER SYNCHRONISIEREN
     SYNC_PIX2_d <= to_std_logic(VHCNT_q = "000000000111") and START_ZEILE_q;
 
     SUB_PIXEL_CNT0_ena_ctrl <= VDTRON_q or SYNC_PIX_q;
@@ -1632,7 +1617,7 @@ begin
     -- count up if display on sonst clear bei sync pix
     SUB_PIXEL_CNT_d <= (std_logic_vector(unsigned(SUB_PIXEL_CNT_q) + 1)) and sizeIt(not SYNC_PIX_q,7);
 
-    --  3 CLOCK ZUSÃ„TZLICH FÃœR FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
+    --  3 CLOCK ZUSÃƒâ€žTZLICH FÃƒÅ“R FIFO SHIFT DATAOUT UND SHIFT RIGTH POSITION
     FIFO_RDE_d <= (((to_std_logic(SUB_PIXEL_CNT_q = "0000001") and COLOR1) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(5 downto 0) = "000001") and COLOR2) or
 	 (to_std_logic(SUB_PIXEL_CNT_q(4 downto 0) = "00001") and color4_i) or
@@ -1641,9 +1626,9 @@ begin
 	 (to_std_logic(SUB_PIXEL_CNT_q(1 downto 0) = "01") and COLOR24)) and
 	 VDTRON_q) or SYNC_PIX_q or SYNC_PIX1_q or SYNC_PIX2_q;
 
-    CLUT_MUX_AV0_d <= SUB_PIXEL_CNT_q(3 downto 0);
-    CLUT_MUX_AV1_d <= CLUT_MUX_AV0_q;
-    CLUT_MUX_ADR_d <= CLUT_MUX_AV1_q;
+    clut_mux_av0_d <= SUB_PIXEL_CNT_q(3 downto 0);
+    clut_mux_av1_d <= clut_mux_av0_q;
+    clut_mux_adr_d <= clut_mux_av1_q;
 
 
     -- Assignments added to explicitly combine the

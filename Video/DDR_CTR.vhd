@@ -22,15 +22,15 @@ library ieee;
 entity ddr_ctr is
     port
     (
-        FB_ADR          : in std_logic_vector(31 downto 0);
+        fb_adr          : in std_logic_vector(31 downto 0);
         nFB_CS1         : in std_logic;
         nFB_CS2         : in std_logic;
         nFB_CS3         : in std_logic;
         nFB_OE          : in std_logic;
-        FB_SIZE0        : in std_logic;
-        FB_SIZE1        : in std_logic;
+        fb_size0        : in std_logic;
+        fb_size1        : in std_logic;
         nRSTO           : in std_logic;
-        MAIN_CLK        : in std_logic;
+        main_clk        : in std_logic;
 	    FB_ALE          : in std_logic;
         nFB_WR          : in std_logic;
         DDR_SYNC_66M    : in std_logic;
@@ -46,16 +46,16 @@ entity ddr_ctr is
         nVWE            : buffer std_logic;
         nVRAS           : buffer std_logic;
         nVCS            : buffer std_logic;
-        VCKE            : buffer std_logic;
+        vcke            : buffer std_logic;
         nVCAS           : buffer std_logic;
-        FB_LE           : buffer std_logic_vector(3 downto 0);
-        FB_VDOE         : buffer std_logic_vector(3 downto 0);
+        fb_le           : buffer std_logic_vector(3 downto 0);
+        fb_vdoe         : buffer std_logic_vector(3 downto 0);
         SR_FIFO_WRE     : buffer std_logic;
         SR_DDR_FB       : buffer std_logic;
         SR_DDR_WR       : buffer std_logic;
         SR_DDRWR_D_SEL  : buffer std_logic;
         SR_VDMP         : buffer std_logic_vector(7 downto 0);
-        VIDEO_DDR_TA    : buffer std_logic;
+        video_ddr_ta    : buffer std_logic;
         SR_BLITTER_DACK : buffer std_logic;
         BA              : buffer std_logic_vector(1 downto 0);
         DDRWR_D_SEL1    : buffer std_logic;
@@ -73,13 +73,13 @@ architecture rtl of ddr_ctr is
     --  READ FIFO
     --  CLOSE FIFO BANK
     --  REFRESH 10X7.5NfS=75NS
-    signal FB_REGDDR_3                  : std_logic_vector(2 downto 0);
-    signal FB_REGDDR_d                  : std_logic_vector(2 downto 0);
-    signal FB_REGDDR_q                  : std_logic_vector(2 downto 0);
+    signal fb_regddr_3                  : std_logic_vector(2 downto 0);
+    signal fb_regddr_d                  : std_logic_vector(2 downto 0);
+    signal fb_regddr_q                  : std_logic_vector(2 downto 0);
     signal DDR_SM_6                     : std_logic_vector(5 downto 0);
     signal DDR_SM_d                     : std_logic_vector(5 downto 0);
     signal DDR_SM_q                     : std_logic_vector(5 downto 0);
-    signal FB_B                         : std_logic_vector(3 downto 0);
+    signal fb_b                         : std_logic_vector(3 downto 0);
     signal VA_P                         : std_logic_vector(12 downto 0);
     signal VA_P_d                       : std_logic_vector(12 downto 0);
     signal VA_P_q                       : std_logic_vector(12 downto 0);
@@ -97,7 +97,7 @@ architecture rtl of ddr_ctr is
     signal MCS_q                        : std_logic_vector(1 downto 0);
     signal SR_VDMP_d                    : std_logic_vector(7 downto 0);
     signal SR_VDMP_q                    : std_logic_vector(7 downto 0);
-    signal CPU_ROW_ADR                  : std_logic_vector(12 downto 0);
+    signal cpu_row_adr                  : std_logic_vector(12 downto 0);
     signal CPU_BA                       : std_logic_vector(1 downto 0);
     signal CPU_COL_ADR                  : std_logic_vector(9 downto 0);
     signal BLITTER_ROW_ADR              : std_logic_vector(12 downto 0);
@@ -131,7 +131,7 @@ architecture rtl of ddr_ctr is
     signal VIDEO_ACT_ADR                : std_logic_vector(26 downto 0);
     signal u0_data                      : std_logic_vector(7 downto 0);
     signal u0_tridata                   : std_logic_vector(7 downto 0);
-    signal FB_REGDDR_0_clk_ctrl         : std_logic;
+    signal fb_regddr_0_clk_ctrl         : std_logic;
     signal SR_VDMP0_clk_ctrl            : std_logic;
     signal MCS0_clk_ctrl                : std_logic;
 	signal VA_S0_clk_ctrl               : std_logic;
@@ -182,8 +182,8 @@ architecture rtl of ddr_ctr is
     signal BA1_1                        : std_logic;
     signal BA0_2                        : std_logic;
     signal BA0_1                        : std_logic;
-    signal BUS_CYC_d_2                  : std_logic;
-    signal BUS_CYC_d_1                  : std_logic;
+    signal bus_cyc_d_2                  : std_logic;
+    signal bus_cyc_d_1                  : std_logic;
 	signal FIFO_BANK_OK_d_2             : std_logic;
     signal FIFO_BANK_OK_d_1             : std_logic;
     signal u0_enabledt                  : std_logic;
@@ -201,7 +201,7 @@ architecture rtl of ddr_ctr is
     signal DDR_REFRESH_REQ_clk          : std_logic;
 	signal DDR_REFRESH_REQ_d            : std_logic;
     signal DDR_REFRESH_REQ              : std_logic;
-    signal DDR_REFRESH_ON               : std_logic;
+    signal ddr_refresh_on               : std_logic;
     signal FIFO_BANK_NOT_OK             : std_logic;
 	signal FIFO_BANK_OK_q               : std_logic;
     signal FIFO_BANK_OK_clk             : std_logic;
@@ -239,11 +239,11 @@ architecture rtl of ddr_ctr is
 	signal BLITTER_REQ_clk              : std_logic;
     signal BLITTER_REQ_d                : std_logic;
     signal BLITTER_REQ                  : std_logic;
-    signal BUS_CYC_END                  : std_logic;
-    signal BUS_CYC_q                    : std_logic;
-    signal BUS_CYC_clk                  : std_logic;
-    signal BUS_CYC_d                    : std_logic;
-    signal BUS_CYC                      : std_logic;
+    signal bus_cyc_end                  : std_logic;
+    signal bus_cyc_q                    : std_logic;
+    signal bus_cyc_clk                  : std_logic;
+    signal bus_cyc_d                    : std_logic;
+    signal bus_cyc                      : std_logic;
     signal CPU_AC_q                     : std_logic;
     signal CPU_AC_clk                   : std_logic;
     signal CPU_AC_d                     : std_logic;
@@ -259,13 +259,13 @@ architecture rtl of ddr_ctr is
     signal SR_DDR_WR_q                  : std_logic;
 	signal SR_DDR_WR_clk                : std_logic;
     signal SR_DDR_WR_d                  : std_logic;
-    signal DDR_CONFIG                   : std_logic;
-    signal DDR_CS_q                     : std_logic;
-    signal DDR_CS_ena                   : std_logic;
-	signal DDR_CS_clk                   : std_logic;
-    signal DDR_CS_d                     : std_logic;
-    signal DDR_CS                       : std_logic;
-    signal DDR_SEL                      : std_logic;
+    signal ddr_config                   : std_logic;
+    signal ddr_cs_q                     : std_logic;
+    signal ddr_cs_ena                   : std_logic;
+	signal ddr_cs_clk                   : std_logic;
+    signal ddr_cs_d                     : std_logic;
+    signal ddr_cs                       : std_logic;
+    signal ddr_sel                      : std_logic;
     signal CPU_DDR_SYNC_q               : std_logic;
 	signal CPU_DDR_SYNC_clk             : std_logic;
     signal CPU_DDR_SYNC_d               : std_logic;
@@ -354,10 +354,10 @@ begin
         end if;
     end process;
 
-    process (FB_REGDDR_0_clk_ctrl)
+    process (fb_regddr_0_clk_ctrl)
     begin
         if rising_edge(fb_regddr_0_clk_ctrl) then
-            FB_REGDDR_q <= FB_REGDDR_d;
+            fb_regddr_q <= fb_regddr_d;
         end if;
     end process;
 
@@ -410,11 +410,11 @@ begin
         end if;
     end process;
 
-    process (DDR_CS_clk)
+    process (ddr_cs_clk)
     begin
-        if DDR_CS_clk'event and DDR_CS_clk='1' then
-            if DDR_CS_ena='1' then
-                DDR_CS_q <= DDR_CS_d;
+        if ddr_cs_clk'event and ddr_cs_clk='1' then
+            if ddr_cs_ena='1' then
+                ddr_cs_q <= ddr_cs_d;
             end if;
         end if;
     end process;
@@ -433,10 +433,10 @@ begin
         end if;
     end process;
 
-    process (BUS_CYC_clk)
+    process (bus_cyc_clk)
     begin
-        if BUS_CYC_clk'event and BUS_CYC_clk='1' then
-            BUS_CYC_q <= BUS_CYC_d;
+        if bus_cyc_clk'event and bus_cyc_clk='1' then
+            bus_cyc_q <= bus_cyc_d;
         end if;
     end process;
 
@@ -617,98 +617,98 @@ begin
     --  BYT SELECT
     --  ADR==0
     --  LONG UND LINE
-    FB_B(0) <= to_std_logic(FB_ADR(1 downto 0) = "00") or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
+    fb_b(0) <= to_std_logic(fb_adr(1 downto 0) = "00") or (fb_size1 and fb_size0) or ((not fb_size1) and (not fb_size0));
 
     --  ADR==1
     --  HIGH WORD
     --  LONG UND LINE
-    FB_B(1) <= to_std_logic(FB_ADR(1 downto 0) = "01") or (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
+    fb_b(1) <= to_std_logic(fb_adr(1 downto 0) = "01") or (fb_size1 and (not fb_size0) and (not fb_adr(1))) or (fb_size1 and fb_size0) or ((not fb_size1) and (not fb_size0));
 
     --  ADR==2
     --  LONG UND LINE
-    FB_B(2) <= to_std_logic(FB_ADR(1 downto 0) = "10") or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
+    fb_b(2) <= to_std_logic(fb_adr(1 downto 0) = "10") or (fb_size1 and fb_size0) or ((not fb_size1) and (not fb_size0));
 
     --  ADR==3
     --  LOW WORD
     --  LONG UND LINE
-    FB_B(3) <= to_std_logic(FB_ADR(1 downto 0) = "11") or (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or (FB_SIZE1 and FB_SIZE0) or ((not FB_SIZE1) and (not FB_SIZE0));
+    fb_b(3) <= to_std_logic(fb_adr(1 downto 0) = "11") or (fb_size1 and (not fb_size0) and fb_adr(1)) or (fb_size1 and fb_size0) or ((not fb_size1) and (not fb_size0));
 
     --  CPU READ (REG DDR => CPU) AND WRITE (CPU => REG DDR)  --------------------------------------------------
-    FB_REGDDR_0_clk_ctrl <= MAIN_CLK;
+    fb_regddr_0_clk_ctrl <= main_clk;
 
 
-    process (FB_REGDDR_q, DDR_SEL, BUS_CYC_q, LINE, DDR_CS_q, nFB_OE, MAIN_CLK, DDR_CONFIG, nFB_WR)
+    process (fb_regddr_q, ddr_sel, bus_cyc_q, LINE, ddr_cs_q, nFB_OE, main_clk, ddr_config, nFB_WR)
         variable stdVec3: std_logic_vector(2 downto 0);
     begin
-        FB_REGDDR_d <= FB_REGDDR_q;
+        fb_regddr_d <= fb_regddr_q;
         fb_vdoe <= (others => '0');
         fb_le <= (others => '0');
         video_ddr_ta <= '0';
         bus_cyc_end <= '0';
         
-        stdVec3 := FB_REGDDR_q;
+        stdVec3 := fb_regddr_q;
         
         case stdVec3 is
             when "000" =>
-                FB_LE(0) <= not nFB_WR;
+                fb_le(0) <= not nFB_WR;
                 --  LOS WENN BEREIT ODER IMMER BEI LINE WRITE
-                if (BUS_CYC_q or (DDR_SEL and LINE and (not nFB_WR))) = '1' then
-                    FB_REGDDR_d <= "001";
+                if (bus_cyc_q or (ddr_sel and LINE and (not nFB_WR))) = '1' then
+                    fb_regddr_d <= "001";
                 else
-                    FB_REGDDR_d <= "000";
+                    fb_regddr_d <= "000";
                 end if;
             
             when "001" =>
-                if DDR_CS_q = '1' then
-                    FB_LE(0) <= not nFB_WR;
-                    VIDEO_DDR_TA <= '1';
+                if ddr_cs_q = '1' then
+                    fb_le(0) <= not nFB_WR;
+                    video_ddr_ta <= '1';
                     if LINE ='1' then
-                        FB_VDOE(0) <= (not nFB_OE) and (not DDR_CONFIG);
-                        FB_REGDDR_d <= "010";
+                        fb_vdoe(0) <= (not nFB_OE) and (not ddr_config);
+                        fb_regddr_d <= "010";
                     else
-                        BUS_CYC_END <= '1';
-                        FB_VDOE(0) <= (not nFB_OE) and (not MAIN_CLK) and (not DDR_CONFIG);
-                        FB_REGDDR_d <= "000";
+                        bus_cyc_end <= '1';
+                        fb_vdoe(0) <= (not nFB_OE) and (not main_clk) and (not ddr_config);
+                        fb_regddr_d <= "000";
                     end if;
                 else
-                    FB_REGDDR_d <= "000";
+                    fb_regddr_d <= "000";
                 end if;
             
             when "010" =>
-                if DDR_CS_q = '1' then
-                    FB_VDOE(1) <= (not nFB_OE) and (not DDR_CONFIG);
-                    FB_LE(1) <= not nFB_WR;
-                    VIDEO_DDR_TA <= '1';
-                    FB_REGDDR_d <= "011";
+                if ddr_cs_q = '1' then
+                    fb_vdoe(1) <= (not nFB_OE) and (not ddr_config);
+                    fb_le(1) <= not nFB_WR;
+                    video_ddr_ta <= '1';
+                    fb_regddr_d <= "011";
                 else
-                    FB_REGDDR_d <= "000";
+                    fb_regddr_d <= "000";
                 end if;
             
             when "011" =>
-                if DDR_CS_q ='1' then
-                    FB_VDOE(2) <= (not nFB_OE) and (not DDR_CONFIG);
-                    FB_LE(2) <= not nFB_WR;
+                if ddr_cs_q ='1' then
+                    fb_vdoe(2) <= (not nFB_OE) and (not ddr_config);
+                    fb_le(2) <= not nFB_WR;
 
                     --  BEI LINE WRITE EVT. WARTEN
-                    if ((not BUS_CYC_q) and LINE and (not nFB_WR)) = '1' then
-                        FB_REGDDR_d <= "011";
+                    if ((not bus_cyc_q) and LINE and (not nFB_WR)) = '1' then
+                        fb_regddr_d <= "011";
                     else
-                        VIDEO_DDR_TA <= '1';
-                        FB_REGDDR_d <= "100";
+                        video_ddr_ta <= '1';
+                        fb_regddr_d <= "100";
                     end if;
                 else
-                    FB_REGDDR_d <= "000";
+                    fb_regddr_d <= "000";
                 end if;
     
             when "100" =>
-                if DDR_CS_q = '1' then
-                    FB_VDOE(3) <= (not nFB_OE) and (not MAIN_CLK) and (not DDR_CONFIG);
-                    FB_LE(3) <= not nFB_WR;
-                    VIDEO_DDR_TA <= '1';
-                    BUS_CYC_END <= '1';
-                    FB_REGDDR_d <= "000";
+                if ddr_cs_q = '1' then
+                    fb_vdoe(3) <= (not nFB_OE) and (not main_clk) and (not ddr_config);
+                    fb_le(3) <= not nFB_WR;
+                    video_ddr_ta <= '1';
+                    bus_cyc_end <= '1';
+                    fb_regddr_d <= "000";
                 else
-                    FB_REGDDR_d <= "000";
+                    fb_regddr_d <= "000";
                 end if;
             
             when others =>
@@ -718,17 +718,17 @@ begin
     end process;
 
     --  DDR STEUERUNG -----------------------------------------------------
-    --  VIDEO RAM CONTROL REGISTER (IST in VIDEO_MUX_CTR) $F0000400: BIT 0: VCKE; 1: !nVCS ;2:REFRESH ON , (0=FIFO UND CNT CLEAR); 3: CONFIG; 8: FIFO_ACTIVE;
-    VCKE <= VIDEO_RAM_CTR(0);
+    --  VIDEO RAM CONTROL REGISTER (IST in VIDEO_MUX_CTR) $F0000400: BIT 0: vcke; 1: !nVCS ;2:REFRESH ON , (0=FIFO UND CNT CLEAR); 3: CONFIG; 8: FIFO_ACTIVE;
+    vcke <= VIDEO_RAM_CTR(0);
     nVCS <= not VIDEO_RAM_CTR(1);
-    DDR_REFRESH_ON <= VIDEO_RAM_CTR(2);
-    DDR_CONFIG <= VIDEO_RAM_CTR(3);
+    ddr_refresh_on <= VIDEO_RAM_CTR(2);
+    ddr_config <= VIDEO_RAM_CTR(3);
     FIFO_ACTIVE <= VIDEO_RAM_CTR(8);
 
     -- ------------------------------
-    CPU_ROW_ADR <= FB_ADR(26 downto 14);
-    CPU_BA <= FB_ADR(13 downto 12);
-    CPU_COL_ADR <= FB_ADR(11 downto 2);
+    cpu_row_adr <= fb_adr(26 downto 14);
+    CPU_BA <= fb_adr(13 downto 12);
+    CPU_COL_ADR <= fb_adr(11 downto 2);
     nVRAS <= not VRAS;
     nVCAS <= not VCAS;
     nVWE <= not VWE;
@@ -744,33 +744,33 @@ begin
     DDRWR_D_SEL1 <= BLITTER_AC_q;
 
     --  SELECT LOGIC
-    DDR_SEL <= to_std_logic(FB_ALE='1' and FB_AD(31 downto 30) = "01");
-    DDR_CS_clk <= MAIN_CLK;
-    DDR_CS_ena <= FB_ALE;
-    DDR_CS_d <= DDR_SEL;
+    ddr_sel <= to_std_logic(FB_ALE='1' and FB_AD(31 downto 30) = "01");
+    ddr_cs_clk <= main_clk;
+    ddr_cs_ena <= FB_ALE;
+    ddr_cs_d <= ddr_sel;
 
-    --  WENN READ ODER WRITE B,W,L DDR SOFORT ANFORDERN, BEI WRITE LINE SPÄTER
+    --  WENN READ ODER WRITE B,W,L DDR SOFORT ANFORDERN, BEI WRITE LINE SPÃ„TER
     --  NICHT LINE ODER READ SOFORT LOS WENN NICHT CONFIG
     --  CONFIG SOFORT LOS
-    --  LINE WRITE SPÄTER
-    CPU_SIG <= (DDR_SEL and (nFB_WR or (not LINE)) and (not DDR_CONFIG)) or
-	 (DDR_SEL and DDR_CONFIG) or (to_std_logic(FB_REGDDR_q = "010") and (not nFB_WR));
+    --  LINE WRITE SPÃ„TER
+    CPU_SIG <= (ddr_sel and (nFB_WR or (not LINE)) and (not ddr_config)) or
+	 (ddr_sel and ddr_config) or (to_std_logic(fb_regddr_q = "010") and (not nFB_WR));
     CPU_REQ_clk <= DDR_SYNC_66M;
 
     --  HALTEN BUS CYC BEGONNEN ODER FERTIG
-    CPU_REQ_d <= CPU_SIG or (to_std_logic(CPU_REQ_q='1' and FB_REGDDR_q /= "010"
-	 and FB_REGDDR_q /= "100") and (not BUS_CYC_END) and (not BUS_CYC_q));
-    BUS_CYC_clk <= DDRCLK0;
-    BUS_CYC_d_1 <= BUS_CYC_q and (not BUS_CYC_END);
+    CPU_REQ_d <= CPU_SIG or (to_std_logic(CPU_REQ_q='1' and fb_regddr_q /= "010"
+	 and fb_regddr_q /= "100") and (not bus_cyc_end) and (not bus_cyc_q));
+    bus_cyc_clk <= DDRCLK0;
+    bus_cyc_d_1 <= bus_cyc_q and (not bus_cyc_end);
 
     --  STATE MACHINE SYNCHRONISIEREN -----------------
     MCS0_clk_ctrl <= DDRCLK0;
-    MCS_d(0) <= MAIN_CLK;
+    MCS_d(0) <= main_clk;
     MCS_d(1) <= MCS_q(0);
     CPU_DDR_SYNC_clk <= DDRCLK0;
 
     --  NUR 1 WENN EIN
-    CPU_DDR_SYNC_d <= to_std_logic(MCS_q = "10") and VCKE and (not nVCS);
+    CPU_DDR_SYNC_d <= to_std_logic(MCS_q = "10") and vcke and (not nVCS);
 
     -- -------------------------------------------------
     VA_S0_clk_ctrl <= DDRCLK0;
@@ -785,12 +785,12 @@ begin
     DDR_SM_0_clk_ctrl <= DDRCLK0;
 
 
-    process (DDR_SM_q, DDR_REFRESH_REQ_q, CPU_DDR_SYNC_q, DDR_CONFIG,
-	 CPU_ROW_ADR, FIFO_ROW_ADR, BLITTER_ROW_ADR, BLITTER_REQ_q, BLITTER_WR,
+    process (DDR_SM_q, DDR_REFRESH_REQ_q, CPU_DDR_SYNC_q, ddr_config,
+	 cpu_row_adr, FIFO_ROW_ADR, BLITTER_ROW_ADR, BLITTER_REQ_q, BLITTER_WR,
 	 FIFO_AC_q, CPU_COL_ADR, BLITTER_COL_ADR, VA_S_q, CPU_BA, BLITTER_BA,
-	 FB_B, CPU_AC_q, BLITTER_AC_q, FIFO_BANK_OK_q, FIFO_MW, FIFO_REQ_q,
-	 VIDEO_ADR_CNT_q, FIFO_COL_ADR, DDR_SEL, LINE, FIFO_BA, VA_P_q,
-	 BA_P_q, CPU_REQ_q, FB_AD, nFB_WR, FB_SIZE0, FB_SIZE1,
+	 fb_b, CPU_AC_q, BLITTER_AC_q, FIFO_BANK_OK_q, FIFO_MW, FIFO_REQ_q,
+	 VIDEO_ADR_CNT_q, FIFO_COL_ADR, ddr_sel, LINE, FIFO_BA, VA_P_q,
+	 BA_P_q, CPU_REQ_q, FB_AD, nFB_WR, fb_size0, fb_size1,
 	 DDR_REFRESH_SIG_q)
         variable stdVec6: std_logic_vector(5 downto 0);
     begin
@@ -806,7 +806,7 @@ begin
         (FIFO_BANK_OK_d_1, FIFO_AC_d, SR_DDR_FB, SR_BLITTER_DACK, BLITTER_AC_d,
 	    SR_DDR_WR_d, SR_DDRWR_D_SEL_d, CPU_AC_d, VA12_2, VA11_2, VA9_2,
 	    VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2,
-	    BA1_2, BA0_2, SR_FIFO_WRE_d, BUS_CYC_d_2, VWE, VA10_2,
+	    BA1_2, BA0_2, SR_FIFO_WRE_d, bus_cyc_d_2, VWE, VA10_2,
 	    FIFO_BANK_NOT_OK, VCAS, VRAS) <=
 	    std_logic_vector'("00000000000000000000000000000");
         stdVec6 := DDR_SM_q;
@@ -818,14 +818,14 @@ begin
                     --  SYNCHRON UND EIN?
                 elsif (CPU_DDR_SYNC_q)='1' then
                     --  JA
-                    if (DDR_CONFIG)='1' then
+                    if (ddr_config)='1' then
                         DDR_SM_d <= "001000";
                         --  BEI WAIT UND LINE WRITE
                     elsif (CPU_REQ_q)='1' then
-                        VA_S_d <= CPU_ROW_ADR;
+                        VA_S_d <= cpu_row_adr;
                         BA_S_d <= CPU_BA;
                         CPU_AC_d <= '1';
-                        BUS_CYC_d_2 <= '1';
+                        bus_cyc_d_2 <= '1';
                         DDR_SM_d <= "000010";
                     else
                         --  FIFO IST DEFAULT
@@ -849,7 +849,7 @@ begin
         
             when "000001" =>
                 --  SCHNELLZUGRIFF *** HIER IST PAGE IMMER NOT OK ***
-                if (DDR_SEL and (nFB_WR or (not LINE)))='1' then
+                if (ddr_sel and (nFB_WR or (not LINE)))='1' then
                     VRAS <= '1';
                     (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= FB_AD(26 downto 14);
                     (BA1_2, BA0_2) <= FB_AD(13 downto 12);
@@ -857,7 +857,7 @@ begin
                     VA_S_d(10) <= '1';
                     CPU_AC_d <= '1';
                     --  BUS CYCLUS LOSTRETEN
-                    BUS_CYC_d_2 <= '1';
+                    bus_cyc_d_2 <= '1';
                 else
                     VRAS <= (FIFO_AC_q and FIFO_REQ_q) or (BLITTER_AC_q and BLITTER_REQ_q);
                     (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= VA_P_q;
@@ -875,7 +875,7 @@ begin
                 CPU_AC_d <= '1';
 
                 --  BUS CYCLUS LOSTRETEN
-                BUS_CYC_d_2 <= '1';
+                bus_cyc_d_2 <= '1';
                 DDR_SM_d <= "000011";
       
             when "000011" =>
@@ -912,7 +912,7 @@ begin
                 BLITTER_AC_d <= BLITTER_AC_q;
                 VCAS <= '1';
 
-                --  READ DATEN FÜR CPU
+                --  READ DATEN FÃœR CPU
                 SR_DDR_FB <= CPU_AC_q;
 
                 --  BLITTER DACK AND BLITTER LATCH DATEN
@@ -959,7 +959,7 @@ begin
                 BA_S_d <= (std_logic_vector'(CPU_AC_q & CPU_AC_q) and CPU_BA) or (std_logic_vector'(BLITTER_AC_q & BLITTER_AC_q) and BLITTER_BA);
 
                 --  BYTE ENABLE WRITE
-                SR_VDMP_d(7 downto 4) <= FB_B;
+                SR_VDMP_d(7 downto 4) <= fb_b;
 
                 --  LINE ENABLE WRITE
                 SR_VDMP_d(3 downto 0) <= sizeIt(LINE,4) and "1111";
@@ -974,7 +974,7 @@ begin
                 --  WRITE COMMAND CPU UND BLITTER if WRITER
                 SR_DDR_WR_d <= '1';
 
-                --  2. HÄLFTE WRITE DATEN SELEKTIEREN
+                --  2. HÃ„LFTE WRITE DATEN SELEKTIEREN
                 SR_DDRWR_D_SEL_d <= '1';
 
                 --  WENN LINE DANN ACTIV
@@ -988,7 +988,7 @@ begin
                 --  WRITE COMMAND CPU UND BLITTER if WRITE
                 SR_DDR_WR_d <= '1';
 
-                --  2. HÄLFTE WRITE DATEN SELEKTIEREN
+                --  2. HÃ„LFTE WRITE DATEN SELEKTIEREN
                 SR_DDRWR_D_SEL_d <= '1';
                 DDR_SM_d <= "010100";
       
@@ -1131,14 +1131,14 @@ begin
                 end if;
       
             when "011100" =>
-                if (DDR_SEL and (nFB_WR or (not LINE)))='1' and FB_AD(13 downto 12) /= FIFO_BA then
+                if (ddr_sel and (nFB_WR or (not LINE)))='1' and FB_AD(13 downto 12) /= FIFO_BA then
                     VRAS <= '1';
                     (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= FB_AD(26 downto 14);
                     (BA1_2, BA0_2) <= FB_AD(13 downto 12);
                     CPU_AC_d <= '1';
 
                     --  BUS CYCLUS LOSTRETEN
-                    BUS_CYC_d_2 <= '1';
+                    bus_cyc_d_2 <= '1';
 
                     --  AUTO PRECHARGE DA NICHT FIFO BANK
                     VA_S_d(10) <= '1';
@@ -1159,7 +1159,7 @@ begin
                 DDR_SM_d <= "001001";
       
             when "001001" =>
-                BUS_CYC_d_2 <= CPU_REQ_q;
+                bus_cyc_d_2 <= CPU_REQ_q;
                 DDR_SM_d <= "001010";
       
             when "001010" =>
@@ -1180,13 +1180,13 @@ begin
             when "001101" =>
 
                 --  NUR BEI LONG WRITE
-                VRAS <= FB_AD(18) and (not nFB_WR) and (not FB_SIZE0) and (not FB_SIZE1);
+                VRAS <= FB_AD(18) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
 
                 --  NUR BEI LONG WRITE
-                VCAS <= FB_AD(17) and (not nFB_WR) and (not FB_SIZE0) and (not FB_SIZE1);
+                VCAS <= FB_AD(17) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
 
                 --  NUR BEI LONG WRITE
-                VWE <= FB_AD(16) and (not nFB_WR) and (not FB_SIZE0) and (not FB_SIZE1);
+                VWE <= FB_AD(16) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
 
                 --  CLOSE FIFO BANK
                 DDR_SM_d <= "000111";
@@ -1196,7 +1196,7 @@ begin
                 --  AUF NOT OK
                 FIFO_BANK_NOT_OK <= '1';
 
-                --  BÄNKE SCHLIESSEN
+                --  BÃ„NKE SCHLIESSEN
                 VRAS <= '1';
                 VWE <= '1';
                 DDR_SM_d <= "000110";
@@ -1205,7 +1205,7 @@ begin
                 --  AUF NOT OK
                 FIFO_BANK_NOT_OK <= '1';
 
-                --  BÄNKE SCHLIESSEN
+                --  BÃ„NKE SCHLIESSEN
                 VRAS <= '1';
                 VWE <= '1';
 
@@ -1263,7 +1263,7 @@ begin
     --  BLITTER ----------------------
     -- ---------------------------------------
     BLITTER_REQ_clk <= DDRCLK0;
-    BLITTER_REQ_d <= BLITTER_SIG and (not DDR_CONFIG) and VCKE and (not nVCS);
+    BLITTER_REQ_d <= BLITTER_SIG and (not ddr_config) and vcke and (not nVCS);
     BLITTER_ROW_ADR <= BLITTER_ADR(26 downto 14);
     BLITTER_BA(1) <= BLITTER_ADR(13);
     BLITTER_BA(0) <= BLITTER_ADR(12);
@@ -1276,7 +1276,7 @@ begin
     FIFO_REQ_d <= (to_std_logic((unsigned(FIFO_MW) < unsigned'("011001000"))) or
 	 (to_std_logic((unsigned(FIFO_MW) < unsigned'("111110100"))) and
 	 FIFO_REQ_q)) and FIFO_ACTIVE and (not CLEAR_FIFO_CNT_q) and (not
-	 STOP_q) and (not DDR_CONFIG) and VCKE and (not nVCS);
+	 STOP_q) and (not ddr_config) and vcke and (not nVCS);
     FIFO_ROW_ADR <= VIDEO_ADR_CNT_q(22 downto 10);
     FIFO_BA(1) <= VIDEO_ADR_CNT_q(9);
     FIFO_BA(0) <= VIDEO_ADR_CNT_q(8);
@@ -1286,7 +1286,7 @@ begin
     FIFO_BANK_OK_clk <= DDRCLK0;
     FIFO_BANK_OK_d_2 <= FIFO_BANK_OK_q and (not FIFO_BANK_NOT_OK);
 
-    --  ZÄHLER RÜCKSETZEN WENN CLR FIFO ----------------
+    --  ZÃ„HLER RÃœCKSETZEN WENN CLR FIFO ----------------
     CLR_FIFO_SYNC_clk <= DDRCLK0;
 
     --  SYNCHRONISIEREN
@@ -1296,7 +1296,7 @@ begin
     STOP_clk <= DDRCLK0;
     STOP_d <= CLR_FIFO_SYNC_q or CLEAR_FIFO_CNT_q;
 
-    --  ZÄHLEN -----------------------------------------------
+    --  ZÃ„HLEN -----------------------------------------------
     VIDEO_ADR_CNT0_clk_ctrl <= DDRCLK0;
     VIDEO_ADR_CNT0_ena_ctrl <= SR_FIFO_WRE_q or CLEAR_FIFO_CNT_q;
     VIDEO_ADR_CNT_d <= (sizeIt(CLEAR_FIFO_CNT_q,23) and VIDEO_BASE_ADR) or
@@ -1320,60 +1320,60 @@ begin
     -- ---------------------------------------------------------------------------------------
     DDR_REFRESH_CNT0_clk_ctrl <= CLK33M;
 
-    --  ZÄHLEN 0-2047
+    --  ZÃ„HLEN 0-2047
     DDR_REFRESH_CNT_d <= std_logic_vector'(unsigned(DDR_REFRESH_CNT_q) + unsigned'("00000000001"));
     REFRESH_TIME_clk <= DDRCLK0;
 
     --  SYNC
-    REFRESH_TIME_d <= to_std_logic(DDR_REFRESH_CNT_q = "00000000000") and (not MAIN_CLK);
+    REFRESH_TIME_d <= to_std_logic(DDR_REFRESH_CNT_q = "00000000000") and (not main_clk);
     DDR_REFRESH_SIG0_clk_ctrl <= DDRCLK0;
     DDR_REFRESH_SIG0_ena_ctrl <= to_std_logic(REFRESH_TIME_q='1' or DDR_SM_q = "100011");
 
-    --  9 STÜCK (8 REFRESH UND 1 ALS VORLAUF)
+    --  9 STÃœCK (8 REFRESH UND 1 ALS VORLAUF)
     --  MINUS 1 WENN GEMACHT
     DDR_REFRESH_SIG_d <= (sizeIt(REFRESH_TIME_q,4) and "1001" and
-	 sizeIt(DDR_REFRESH_ON,4) and sizeIt(not DDR_CONFIG,4)) or (sizeIt(not
+	 sizeIt(ddr_refresh_on,4) and sizeIt(not ddr_config,4)) or (sizeIt(not
 	 REFRESH_TIME_q,4) and (std_logic_vector'(unsigned(DDR_REFRESH_SIG_q) -
-	 unsigned'("0001"))) and sizeIt(DDR_REFRESH_ON,4) and sizeIt(not
-	 DDR_CONFIG,4));
+	 unsigned'("0001"))) and sizeIt(ddr_refresh_on,4) and sizeIt(not
+	 ddr_config,4));
     DDR_REFRESH_REQ_clk <= DDRCLK0;
-    DDR_REFRESH_REQ_d <= to_std_logic(DDR_REFRESH_SIG_q /= "0000") and DDR_REFRESH_ON and (not REFRESH_TIME_q) and (not DDR_CONFIG);
+    DDR_REFRESH_REQ_d <= to_std_logic(DDR_REFRESH_SIG_q /= "0000") and ddr_refresh_on and (not REFRESH_TIME_q) and (not ddr_config);
 
     -- ---------------------------------------------------------
     --  VIDEO REGISTER -----------------------
     -- -------------------------------------------------------------------------------------------------------------------
-    VIDEO_BASE_L_D0_clk_ctrl <= MAIN_CLK;
+    VIDEO_BASE_L_D0_clk_ctrl <= main_clk;
 
     --  820D/2
-    VIDEO_BASE_L <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000110");
+    VIDEO_BASE_L <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000110");
 
     --  SORRY, NUR 16 BYT GRENZEN
     VIDEO_BASE_L_D_d <= FB_AD(23 downto 16);
-    VIDEO_BASE_L_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_L and FB_B(1);
-    VIDEO_BASE_M_D0_clk_ctrl <= MAIN_CLK;
+    VIDEO_BASE_L_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_L and fb_b(1);
+    VIDEO_BASE_M_D0_clk_ctrl <= main_clk;
 
     --  8203/2
-    VIDEO_BASE_M <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000001");
+    VIDEO_BASE_M <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000001");
     VIDEO_BASE_M_D_d <= FB_AD(23 downto 16);
-    VIDEO_BASE_M_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_M and FB_B(3);
-    VIDEO_BASE_H_D0_clk_ctrl <= MAIN_CLK;
+    VIDEO_BASE_M_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_M and fb_b(3);
+    VIDEO_BASE_H_D0_clk_ctrl <= main_clk;
 
     --  8200-1/2
-    VIDEO_BASE_H <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000000");
+    VIDEO_BASE_H <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000000");
     VIDEO_BASE_H_D_d <= FB_AD(23 downto 16);
-    VIDEO_BASE_H_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_H and FB_B(1);
-    VIDEO_BASE_X_D0_clk_ctrl <= MAIN_CLK;
+    VIDEO_BASE_H_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_H and fb_b(1);
+    VIDEO_BASE_X_D0_clk_ctrl <= main_clk;
     VIDEO_BASE_X_D_d <= FB_AD(26 downto 24);
-    VIDEO_BASE_X_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_H and FB_B(0);
+    VIDEO_BASE_X_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_H and fb_b(0);
 
     --  8209/2
-    VIDEO_CNT_L <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000100");
+    VIDEO_CNT_L <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000100");
 
     --  8207/2
-    VIDEO_CNT_M <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000011");
+    VIDEO_CNT_M <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000011");
 
     --  8204,5/2
-    VIDEO_CNT_H <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000010");
+    VIDEO_CNT_H <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000010");
 
     --  FB_AD[31..24] = lpm_bustri_BYT(
     --                         VIDEO_BASE_H  & (0, VIDEO_BASE_X_D[])
@@ -1397,7 +1397,7 @@ begin
     -- Assignments added to explicitly combine the
     -- effects of multiple drivers in the source
     FIFO_BANK_OK_d <= FIFO_BANK_OK_d_1 or FIFO_BANK_OK_d_2;
-    BUS_CYC_d <= BUS_CYC_d_1 or BUS_CYC_d_2;
+    bus_cyc_d <= bus_cyc_d_1 or bus_cyc_d_2;
     BA(0) <= BA0_1 or BA0_2;
     BA(1) <= BA1_1 or BA1_2;
     VA(0) <= VA0_1 or VA0_2;
