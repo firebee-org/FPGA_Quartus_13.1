@@ -201,6 +201,8 @@ architecture rtl OF firebee1 IS
     signal nFB_WR_i         : std_logic;
     signal nIDE_RD_i        : std_logic;
     signal nIDE_WR_i        : std_logic;
+    signal fb_ad_in         : std_logic_vector(31 downto 0);
+    signal fb_ad_out        : std_logic_vector(31 downto 0);
 
     component altpll_reconfig1
         port
@@ -491,7 +493,8 @@ begin
             CLK_VIDEO => CLK_VIDEO,
             VR_BUSY => VR_BUSY,
             DDRCLK => DDRCLK,
-            FB_AD => FB_AD,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             VD => VD,
             VDQS => VDQS,

@@ -111,7 +111,8 @@ entity video_mod_mux_clutctr is
         vr_wr           : out std_logic;
         vr_rd           : out std_logic;
         clr_fifo        : out std_logic;
-        fb_ad           : out std_logic_vector(31 downto 0)
+        fb_ad_in        : in std_logic_vector(31 downto 0);
+        fb_ad_out       : out std_logic_vector(31 downto 0)
    );
 end video_mod_mux_clutctr;
 
@@ -957,7 +958,7 @@ begin
     --  $F8260/2
     st_shift_mode_cs <= '1' when nFB_CS1 = '0' and fb_adR(19 downto 1) = 19x"7c130" else '0';
     -- st_shift_mode_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000100110000");
-    st_shift_mode_d <= fb_ad(25 downto 24) when st_shift_mode_cs;
+    st_shift_mode_d <= fb_ad_in(25 downto 24) when st_shift_mode_cs;
     st_shift_mode0_ena_ctrl <= st_shift_mode_CS and (not nFB_WR) and FB_B(0);
 
     --  MONO
@@ -973,7 +974,7 @@ begin
 
     --  $F8266/2
     falcon_shift_mode_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000100110011");
-    falcon_shift_mode_d <= fb_ad(26 downto 16) when falcon_shift_mode_cs;
+    falcon_shift_mode_d <= fb_ad_in(26 downto 16) when falcon_shift_mode_cs;
     falcon_shift_mode8_ena_ctrl <= falcon_shift_mode_CS and (not nFB_WR) and FB_B(2);
     falcon_shift_mode0_ena_ctrl <= falcon_shift_mode_CS and (not nFB_WR) and FB_B(3);
 
@@ -1001,8 +1002,8 @@ begin
     --  $400/4
     acp_vctr_CS <= to_std_logic(((not nFB_CS2)='1') and fb_adR(27 downto 2) = "00000000000000000100000000");
    
-    acp_vctr_d(31 downto 8) <= fb_ad(31 downto 8) when acp_vctr_cs;
-    acp_vctr_d(5 downto 0) <= fb_ad(5 downto 0) when acp_vctr_cs;
+    acp_vctr_d(31 downto 8) <= fb_ad_in(31 downto 8) when acp_vctr_cs;
+    acp_vctr_d(5 downto 0) <= fb_ad_in(5 downto 0) when acp_vctr_cs;
    
     acp_vctr24_ena_ctrl <= acp_vctr_CS and fb_b(0) and (not nFB_WR);
     acp_vctr16_ena_ctrl <= acp_vctr_CS and fb_b(1) and (not nFB_WR);
@@ -1019,7 +1020,7 @@ begin
 
     --  $410/4
     ATARI_HH_CS <= to_std_logic(((not nFB_CS2)='1') and fb_adR(27 downto 2) = "00000000000000000100000100");
-    ATARI_HH_d <= fb_ad when atari_hh_cs;
+    ATARI_HH_d <= fb_ad_in when atari_hh_cs;
     ATARI_HH24_ena_ctrl <= ATARI_HH_CS and FB_B(0) and (not nFB_WR);
     ATARI_HH16_ena_ctrl <= ATARI_HH_CS and FB_B(1) and (not nFB_WR);
     ATARI_HH8_ena_ctrl <= ATARI_HH_CS and FB_B(2) and (not nFB_WR);
@@ -1029,7 +1030,7 @@ begin
 
     --  $414/4
     ATARI_VH_CS <= to_std_logic(((not nFB_CS2)='1') and fb_adR(27 downto 2) = "00000000000000000100000101");
-    ATARI_VH_d <= fb_ad when atari_vh_cs;
+    ATARI_VH_d <= fb_ad_in when atari_vh_cs;
     ATARI_VH24_ena_ctrl <= ATARI_VH_CS and FB_B(0) and (not nFB_WR);
     ATARI_VH16_ena_ctrl <= ATARI_VH_CS and FB_B(1) and (not nFB_WR);
     ATARI_VH8_ena_ctrl <= ATARI_VH_CS and FB_B(2) and (not nFB_WR);
@@ -1039,7 +1040,7 @@ begin
 
     --  $418/4
     ATARI_HL_CS <= to_std_logic(((not nFB_CS2)='1') and fb_adR(27 downto 2) = "00000000000000000100000110");
-    ATARI_HL_d <= fb_ad when atari_hl_cs;
+    ATARI_HL_d <= fb_ad_in when atari_hl_cs;
     ATARI_HL24_ena_ctrl <= ATARI_HL_CS and FB_B(0) and (not nFB_WR);
     ATARI_HL16_ena_ctrl <= ATARI_HL_CS and FB_B(1) and (not nFB_WR);
     ATARI_HL8_ena_ctrl <= ATARI_HL_CS and FB_B(2) and (not nFB_WR);
@@ -1049,7 +1050,7 @@ begin
 
     --  $41C/4
     ATARI_VL_CS <= to_std_logic(((not nFB_CS2)='1') and fb_adR(27 downto 2) = "00000000000000000100000111");
-    ATARI_VL_d <= fb_ad when atari_vl_cs;
+    ATARI_VL_d <= fb_ad_in when atari_vl_cs;
     ATARI_VL24_ena_ctrl <= ATARI_VL_CS and FB_B(0) and (not nFB_WR);
     ATARI_VL16_ena_ctrl <= ATARI_VL_CS and FB_B(1) and (not nFB_WR);
     ATARI_VL8_ena_ctrl <= ATARI_VL_CS and FB_B(2) and (not nFB_WR);
@@ -1063,7 +1064,7 @@ begin
     vr_dout0_ena_ctrl <= not vr_busy;
     vr_dout_d <= vr_d;
     vr_frq0_ena_ctrl <= to_std_logic(vr_wr_q='1' and fb_adR(8 downto 0) = "000000100");
-    vr_frq_d <= fb_ad(23 downto 16) when video_pll_config_cs;
+    vr_frq_d <= fb_ad_in(23 downto 16) when video_pll_config_cs;
 
     --  VIDEO PLL RECONFIG
     --  $(F)000'0800
@@ -1084,7 +1085,7 @@ begin
     acp_vctr_d(7) <= falcon_shift_mode_CS and (not nFB_WR) and (not ACP_VIDEO_ON);
     acp_vctr_d(6) <= st_shift_mode_CS and (not nFB_WR) and (not ACP_VIDEO_ON);
    
-    acp_vctr6_ena_ctrl <= (falcon_shift_mode_CS and (not nFB_WR)) or (st_shift_mode_CS and (not nFB_WR)) or (acp_vctr_CS and FB_B(3) and (not nFB_WR) and fb_ad(0));
+    acp_vctr6_ena_ctrl <= (falcon_shift_mode_CS and (not nFB_WR)) or (st_shift_mode_CS and (not nFB_WR)) or (acp_vctr_CS and FB_B(3) and (not nFB_WR) and fb_ad_in(0));
     FALCON_VIDEO <= acp_vctr_q(7);
     FALCON_CLUT <= FALCON_VIDEO and (not ACP_VIDEO_ON) and (not color16);
     ST_VIDEO <= acp_vctr_q(6);
@@ -1102,7 +1103,7 @@ begin
 
     --  $404/4
     border_color_CS <= to_std_logic(((not nFB_CS2) = '1') and fb_adR(27 downto 2) = "00000000000000000100000001");
-    border_color_d <= fb_ad(23 downto 0) when border_color_cs;
+    border_color_d <= fb_ad_in(23 downto 0) when border_color_cs;
     border_color16_ena_ctrl <= border_color_CS and FB_B(1) and (not nFB_WR);
     border_color8_ena_ctrl <= border_color_CS and FB_B(2) and (not nFB_WR);
     border_color0_ena_ctrl <= border_color_CS and FB_B(3) and (not nFB_WR);
@@ -1134,14 +1135,14 @@ begin
             -- fb_adR(19 downto 1) = std_logic_vector'(20x"f8006")(19 downto 1) else '0';
     
     -- sys_ctr_CS <= to_std_logic(((not nFB_CS1) = '1') and fb_adR(19 downto 1) = "1111100000000000011");
-    sys_ctr_d <= fb_ad(22 downto 16) when sys_ctr_cs;
+    sys_ctr_d <= fb_ad_in(22 downto 16) when sys_ctr_cs;
     sys_ctr0_ena_ctrl <= sys_ctr_CS and (not nFB_WR) and FB_B(3);
     blitter_on <= not sys_ctr_q(3);
 
     --  lof
     --  $820E/2
     lof_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000100000111");
-    lof_d <= fb_ad(31 downto 16) when lof_cs;
+    lof_d <= fb_ad_in(31 downto 16) when lof_cs;
     lof8_ena_ctrl <= lof_CS and (not nFB_WR) and FB_B(2);
     lof0_ena_ctrl <= lof_CS and (not nFB_WR) and FB_B(3);
     lof <= lof_q;
@@ -1149,7 +1150,7 @@ begin
     --  lwd
     --  $8210/2
     lwd_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000100001000");
-    lwd_d <= fb_ad(31 downto 16) when lwd_cs;
+    lwd_d <= fb_ad_in(31 downto 16) when lwd_cs;
     lwd8_ena_ctrl <= lwd_CS and (not nFB_WR) and FB_B(0);
     lwd0_ena_ctrl <= lwd_CS and (not nFB_WR) and FB_B(1);
 
@@ -1157,42 +1158,42 @@ begin
     --  HHT
     --  $8282/2
     HHT_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101000001");
-    HHT_d <= fb_ad(27 downto 16) when hht_cs;
+    HHT_d <= fb_ad_in(27 downto 16) when hht_cs;
     HHT8_ena_ctrl <= HHT_CS and (not nFB_WR) and FB_B(2);
     HHT0_ena_ctrl <= HHT_CS and (not nFB_WR) and FB_B(3);
 
     --  HBE
     --  $8286/2
     HBE_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101000011");
-    HBE_d <= fb_ad(27 downto 16) when hbe_cs;
+    HBE_d <= fb_ad_in(27 downto 16) when hbe_cs;
     HBE8_ena_ctrl <= HBE_CS and (not nFB_WR) and FB_B(2);
     HBE0_ena_ctrl <= HBE_CS and (not nFB_WR) and FB_B(3);
 
     --  HDB
     --  $8288/2
     HDB_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101000100");
-    HDB_d <= fb_ad(27 downto 16) when hdb_cs;
+    HDB_d <= fb_ad_in(27 downto 16) when hdb_cs;
     HDB8_ena_ctrl <= HDB_CS and (not nFB_WR) and FB_B(0);
     HDB0_ena_ctrl <= HDB_CS and (not nFB_WR) and FB_B(1);
 
     --  HDE
     --  $828A/2
     HDE_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101000101");
-    HDE_d <= fb_ad(27 downto 16) when hde_cs;
+    HDE_d <= fb_ad_in(27 downto 16) when hde_cs;
     HDE8_ena_ctrl <= HDE_CS and (not nFB_WR) and FB_B(2);
     HDE0_ena_ctrl <= HDE_CS and (not nFB_WR) and FB_B(3);
 
     --  HBB
     --  $8284/2
     HBB_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101000010");
-    HBB_d <= fb_ad(27 downto 16) when hbb_cs;
+    HBB_d <= fb_ad_in(27 downto 16) when hbb_cs;
     HBB8_ena_ctrl <= HBB_CS and (not nFB_WR) and FB_B(0);
     HBB0_ena_ctrl <= HBB_CS and (not nFB_WR) and FB_B(1);
 
     --  HSS
     --  Videl hsync start register $828C / 2
     HSS_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101000110");
-    HSS_d <= fb_ad(27 downto 16) when hss_cs;
+    HSS_d <= fb_ad_in(27 downto 16) when hss_cs;
     HSS8_ena_ctrl <= HSS_CS and (not nFB_WR) and FB_B(0);
     HSS0_ena_ctrl <= HSS_CS and (not nFB_WR) and FB_B(1);
 
@@ -1200,35 +1201,35 @@ begin
     --  VBE
     --  $82A6/2
     VBE_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101010011");
-    VBE_d <= fb_ad(26 downto 16) when vbe_cs;
+    VBE_d <= fb_ad_in(26 downto 16) when vbe_cs;
     VBE8_ena_ctrl <= VBE_CS and (not nFB_WR) and FB_B(2);
     VBE0_ena_ctrl <= VBE_CS and (not nFB_WR) and FB_B(3);
 
     --  VDB
     --  $82A8/2
     VDB_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101010100");
-    VDB_d <= fb_ad(26 downto 16) when vdb_cs;
+    VDB_d <= fb_ad_in(26 downto 16) when vdb_cs;
     VDB8_ena_ctrl <= VDB_CS and (not nFB_WR) and FB_B(0);
     VDB0_ena_ctrl <= VDB_CS and (not nFB_WR) and FB_B(1);
 
     --  VDE
     --  $82AA/2
     VDE_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101010101");
-    VDE_d <= fb_ad(26 downto 16) when vde_cs;
+    VDE_d <= fb_ad_in(26 downto 16) when vde_cs;
     VDE8_ena_ctrl <= VDE_CS and (not nFB_WR) and FB_B(2);
     VDE0_ena_ctrl <= VDE_CS and (not nFB_WR) and FB_B(3);
 
     --  VBB
     --  $82A4/2
     VBB_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101010010");
-    VBB_d <= fb_ad(26 downto 16) when vbb_cs;
+    VBB_d <= fb_ad_in(26 downto 16) when vbb_cs;
     VBB8_ena_ctrl <= VBB_CS and (not nFB_WR) and FB_B(0);
     VBB0_ena_ctrl <= VBB_CS and (not nFB_WR) and FB_B(1);
 
     --  VSS
     --  $82AC/2
     VSS_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101010110");
-    VSS_d <= fb_ad(26 downto 16) when vss_cs;
+    VSS_d <= fb_ad_in(26 downto 16) when vss_cs;
     VSS8_ena_ctrl <= VSS_CS and (not nFB_WR) and FB_B(0);
     VSS0_ena_ctrl <= VSS_CS and (not nFB_WR) and FB_B(1);
 
@@ -1236,21 +1237,21 @@ begin
     --  $82A2/2
     -- VFT_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101010001");
     vft_cs <= not nFB_CS1 and f_addr_cmp_w(fb_adr(19 downto 0), x"f82a2");
-    VFT_d <= fb_ad(26 downto 16) when vft_cs;
+    VFT_d <= fb_ad_in(26 downto 16) when vft_cs;
     VFT8_ena_ctrl <= VFT_CS and (not nFB_WR) and FB_B(2);
     VFT0_ena_ctrl <= VFT_CS and (not nFB_WR) and FB_B(3);
 
     --  VCO
     --  $82C0 / 2 Falcon clock control register VCO
     VCO_CS <= to_std_logic(((not nFB_CS1)='1') and fb_adR(19 downto 1) = "1111100000101100000");
-    VCO_d <= fb_ad(24 downto 16) when vco_cs;
+    VCO_d <= fb_ad_in(24 downto 16) when vco_cs;
     VCO_ena(8) <= VCO_CS and (not nFB_WR) and FB_B(0);
     VCO0_ena_ctrl <= VCO_CS and (not nFB_WR) and FB_B(1);
 
     --  VCNTRL
     --  $82C2 / 2 Falcon resolution control register VCNTRL
     vcntrl_cs <= '1' when nFB_CS1 = '0' and f_addr_cmp_w(fb_adr(19 downto 0), x"f82c2") = '1' else '0';
-    vcntrl_d <= fb_ad(19 downto 16) when vcntrl_cs;
+    vcntrl_d <= fb_ad_in(19 downto 16) when vcntrl_cs;
     VCNTRL0_ena_ctrl <= vcntrl_cs and (not nFB_WR) and FB_B(3);
 
 -- - REGISTER OUT
@@ -1282,32 +1283,32 @@ begin
 --              (sizeIt(VIDEO_PLL_CONFIG_CS,16) and std_logic_vector'("0000000" & vr_dout_q)) or
 --              (sizeIt(VIDEO_PLL_RECONFIG_CS,16) and std_logic_vector'(vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010"));
     
---    fb_ad(31 downto 16) <= "000000" & st_shift_mode_q & "00000000" when st_shift_mode_cs = '1' else
---                           "100000000" & sys_ctr_q(6 downto 4) & (not blitter_run) & sys_ctr_q(2 downto 0) when sys_ctr_cs = '1' else
---                           lwd_q when lof_cs = '1' and lwd_cs = '1' else
---                           "0000" & hbe_q when hbe_cs = '1' else
---                           "0000" & hdb_q when hdb_cs = '1' else
---                           "0000" & hde_q when hde_cs = '1' else
---                           "0000" & hbb_q when hbb_cs = '1' else
---                           "0000" & hss_q when hss_cs = '1' else
---                           "0000" & hht_q when hht_cs = '1' else
---                           "00000" & vbe_q when vbe_cs = '1' else
---                           "00000" & vdb_q when vdb_cs = '1' else
---                           "00000" & vde_q when vde_cs = '1' else
---                           "00000" & vbb_q when vbb_cs = '1' else
---                           "00000" & vss_q when vss_cs = '1' else
---                           "00000" & vft_q when vft_cs = '1' else
---                           "0000000" & vco_q when vco_cs = '1' else
---                           "000000000000" & vcntrl_q when vcntrl_cs = '1' else
---                           acp_vctr_q(31 downto 16) when acp_vctr_cs = '1' else
---                           atari_hh_q(31 downto 16) when atari_hh_cs = '1' else
---                           atari_vh_q(31 downto 16) when atari_vh_cs = '1' else
---                           atari_hl_q(31 downto 16) when atari_hl_cs = '1' else
---                           atari_vl_q(31 downto 16) when atari_vl_cs = '1' else
---                           "00000000" & border_color_q(23 downto 16) when border_color_cs = '1' else
---                           "0000000" & vr_dout_q when video_pll_config_cs = '1' else
---                           vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010" when video_pll_reconfig_cs = '1' else
---                           (others => 'Z');
+    fb_ad_out(31 downto 16) <= "000000" & st_shift_mode_q & "00000000" when st_shift_mode_cs = '1' else
+                           "100000000" & sys_ctr_q(6 downto 4) & (not blitter_run) & sys_ctr_q(2 downto 0) when sys_ctr_cs = '1' else
+                           lwd_q when lof_cs = '1' and lwd_cs = '1' else
+                           "0000" & hbe_q when hbe_cs = '1' else
+                           "0000" & hdb_q when hdb_cs = '1' else
+                           "0000" & hde_q when hde_cs = '1' else
+                           "0000" & hbb_q when hbb_cs = '1' else
+                           "0000" & hss_q when hss_cs = '1' else
+                           "0000" & hht_q when hht_cs = '1' else
+                           "00000" & vbe_q when vbe_cs = '1' else
+                           "00000" & vdb_q when vdb_cs = '1' else
+                           "00000" & vde_q when vde_cs = '1' else
+                           "00000" & vbb_q when vbb_cs = '1' else
+                           "00000" & vss_q when vss_cs = '1' else
+                           "00000" & vft_q when vft_cs = '1' else
+                           "0000000" & vco_q when vco_cs = '1' else
+                           "000000000000" & vcntrl_q when vcntrl_cs = '1' else
+                           acp_vctr_q(31 downto 16) when acp_vctr_cs = '1' else
+                           atari_hh_q(31 downto 16) when atari_hh_cs = '1' else
+                           atari_vh_q(31 downto 16) when atari_vh_cs = '1' else
+                           atari_hl_q(31 downto 16) when atari_hl_cs = '1' else
+                           atari_vl_q(31 downto 16) when atari_vl_cs = '1' else
+                           "00000000" & border_color_q(23 downto 16) when border_color_cs = '1' else
+                           "0000000" & vr_dout_q when video_pll_config_cs = '1' else
+                           vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010" when video_pll_reconfig_cs = '1' else
+                           (others => 'Z');
                            
 --    u0_enabledt <= (st_shift_mode_CS or falcon_shift_mode_CS or acp_vctr_CS or border_color_CS or sys_ctr_CS or lof_CS or lwd_CS or HBE_CS or HDB_CS or
 --	                hde_CS or HBB_CS or HSS_CS or HHT_CS or atari_hh_CS or atari_vh_CS or atari_hl_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
@@ -1324,7 +1325,7 @@ begin
 --    u1_enabledt <= (acp_vctr_CS or border_color_CS or ATARI_HH_CS or ATARI_VH_CS or ATARI_HL_CS or ATARI_VL_CS) and (not nFB_OE);
 --    fb_ad(15 downto 0) <= u1_tridata;
 
-    fb_ad(15 downto 0) <= acp_vctr_q(15 downto 0) when acp_vctr_cs = '1' else
+    fb_ad_out(15 downto 0) <= acp_vctr_q(15 downto 0) when acp_vctr_cs = '1' else
                           atari_hh_q(15 downto 0) when atari_hh_cs = '1' else
                           atari_vh_q(15 downto 0) when atari_vh_cs = '1' else
                           atari_hl_q(15 downto 0) when atari_hl_cs = '1' else

@@ -534,23 +534,9 @@ BEGIN
     SYNTHESIZED_WIRE_61 <= COLOR8 OR COLOR4;
     SYNTHESIZED_WIRE_16 <= COLOR4 OR COLOR8 OR COLOR2;
     
-    
-    inst108 : entity work.lpm_bustri_long
-        port map
-        (
-            enabledt => FB_VDOE(0),
-            data => VDR,
-            tridata => fb_ad_out
-        );
-    
-    
-    inst109 : entity work.lpm_bustri_long
-        port map
-        (
-            enabledt => FB_VDOE(1),
-            data => SYNTHESIZED_WIRE_11,
-            tridata => fb_ad_out
-        );
+   
+    fb_ad_out <= vdr when fb_vdoe(0) else (others => 'Z');
+    fb_ad_out <= synthesized_wire_11 when fb_vdoe(1) else (others => 'Z');
     
     
     inst11 : entity work.lpm_ff5
@@ -561,23 +547,8 @@ BEGIN
             q => ZR_C8
         );
     
-    
-    inst110 : entity work.lpm_bustri_long
-        port map
-        (
-            enabledt => FB_VDOE(2),
-            data => SYNTHESIZED_WIRE_13,
-            tridata => fb_ad_out
-        );
-    
-    
-    inst119 : entity work.lpm_bustri_long
-        port map
-        (
-            enabledt => FB_VDOE(3),
-            data => SYNTHESIZED_WIRE_14,
-            tridata => fb_ad_out
-        );
+    fb_ad_out <= synthesized_wire_13 when fb_vdoe(2) else (others => 'Z');
+    fb_ad_out <= synthesized_wire_14 when fb_vdoe(3) else (others => 'Z');
     
     
     inst12 : entity work.lpm_ff1
@@ -594,7 +565,7 @@ BEGIN
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(0),
-            data => fb_ad_out,
+            data => fb_ad_in,
             q => FB_DDR(127 DOWNTO 96)
         );
     
@@ -604,7 +575,7 @@ BEGIN
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(1),
-            data => fb_ad_out,
+            data => fb_ad_in,
             q => FB_DDR(95 DOWNTO 64)
         );
     
@@ -614,7 +585,7 @@ BEGIN
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(2),
-            data => fb_ad_out,
+            data => fb_ad_in,
             q => FB_DDR(63 DOWNTO 32)
         );
     
@@ -624,7 +595,7 @@ BEGIN
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(3),
-            data => fb_ad_out,
+            data => fb_ad_in,
             q => FB_DDR(31 DOWNTO 0)
         );
     
@@ -921,15 +892,7 @@ BEGIN
             dataout => SYNTHESIZED_WIRE_65
         );
     
-    
-    
-    inst51 : entity work.lpm_bustri1
-        port map
-        (
-            enabledt => ST_CLUT_RD,
-            data => SYNTHESIZED_WIRE_29,
-            tridata => FB_AD(26 DOWNTO 24)
-        );
+    fb_ad_out(26 downto 24) <= synthesized_wire_29 when st_clut_rd else (others => 'Z');
     
     
     inst52 : entity work.lpm_ff3
@@ -940,14 +903,7 @@ BEGIN
             q => SYNTHESIZED_WIRE_26
         );
     
-    
-    inst53 : entity work.lpm_bustri_byt
-        port map
-        (
-            enabledt => ACP_CLUT_RD,
-            data => SYNTHESIZED_WIRE_30,
-            tridata => FB_AD(7 DOWNTO 0)
-        );
+    fb_ad_out(7 downto 0) <= synthesized_wire_30 when acp_clut_rd else (others => 'Z');
     
     
     inst54 : entity work.lpm_constant0
@@ -957,32 +913,10 @@ BEGIN
         );
     
     
+    fb_ad_out(22 downto 20) <= synthesized_wire_31 when st_clut_rd else (others => 'Z');
+    fb_ad_out(15 downto 8) <= synthesized_wire_32 when acp_clut_rd else (others => 'Z');
     
-    inst56 : entity work.lpm_bustri1
-        port map
-        (
-            enabledt => ST_CLUT_RD,
-            data => SYNTHESIZED_WIRE_31,
-            tridata => FB_AD(22 DOWNTO 20)
-        );
-    
-    
-    inst57 : entity work.lpm_bustri_byt
-        port map
-        (
-            enabledt => ACP_CLUT_RD,
-            data => SYNTHESIZED_WIRE_32,
-            tridata => FB_AD(15 DOWNTO 8)
-        );
-    
-    
-    inst58 : entity work.lpm_bustri_byt
-        port map
-        (
-            enabledt => ACP_CLUT_RD,
-            data => SYNTHESIZED_WIRE_33,
-            tridata => FB_AD(23 DOWNTO 16)
-        );
+    fb_ad_out(23 downto 16) <= synthesized_wire_33 when acp_clut_rd else (others => 'Z');
     
     
     inst59 : entity work.lpm_constant0
@@ -991,16 +925,7 @@ BEGIN
             result => CCS(12 DOWNTO 8)
         );
     
-    
-    
-    
-    inst61 : entity work.lpm_bustri1
-        port map
-        (
-            enabledt => ST_CLUT_RD,
-            data => SYNTHESIZED_WIRE_34,
-            tridata => FB_AD(18 DOWNTO 16)
-        );
+    fb_ad_out(18 downto 16) <= synthesized_wire_34 when st_clut_rd else (others => 'Z');
     
     
     inst62 : entity work.lpm_muxdz
@@ -1036,15 +961,9 @@ BEGIN
     
     SYNTHESIZED_WIRE_60 <= FIFO_RDE AND SYNTHESIZED_WIRE_40;
     
-    
-    inst66 : entity work.lpm_bustri3
-        port map
-        (
-            enabledt => FALCON_CLUT_RDH,
-            data => SYNTHESIZED_WIRE_41,
-            tridata => FB_AD(31 DOWNTO 26)
-        );
-    
+    fb_ad_out(31 downto 26) <= synthesized_wire_41 when falcon_clut_rdh else (others => 'Z');
+    -- the following line results in a syntax error. No idea what's wrong with it:
+    -- fb_ad_out(23 downto 18) <= synthesized_wire_44 when falcon_clut_rdh else (others <= 'Z');
     
     SYNTHESIZED_WIRE_38 <= FIFO_RDE AND INTER_ZEI;
     SYNTHESIZED_WIRE_40 <= NOT(INTER_ZEI);
@@ -1066,15 +985,6 @@ BEGIN
         );
     
     
-    inst70 : entity work.lpm_bustri3
-        port map
-        (
-            enabledt => FALCON_CLUT_RDH,
-            data => SYNTHESIZED_WIRE_44,
-            tridata => FB_AD(23 DOWNTO 18)
-        );
-    
-    
     inst71 : entity work.lpm_ff6
         port map
         (
@@ -1084,17 +994,7 @@ BEGIN
             q => VDMA
         );
     
-    
-    
-    
-    inst74 : entity work.lpm_bustri3
-        port map
-        (
-            enabledt => FALCON_CLUT_RDL,
-            data => SYNTHESIZED_WIRE_45,
-            tridata => FB_AD(23 DOWNTO 18)
-        );
-    
+    fb_ad_out(23 downto 18) <= synthesized_wire_45 when falcon_clut_rdl else (others => 'Z');    
     
     
     
@@ -1328,7 +1228,7 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
             address_b => CLUT_ADR(3 DOWNTO 0),
-            data_a => FB_AD(18 DOWNTO 16),
+            data_a => fb_ad_in(18 DOWNTO 16),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_34,
             q_b => CCS(7 DOWNTO 5)
@@ -1344,7 +1244,7 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
             address_b => CLUT_ADR(3 DOWNTO 0),
-            data_a => FB_AD(22 DOWNTO 20),
+            data_a => fb_ad_in(22 DOWNTO 20),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_31,
             q_b => CCS(15 DOWNTO 13)
@@ -1360,7 +1260,7 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(4 DOWNTO 1),
             address_b => CLUT_ADR(3 DOWNTO 0),
-            data_a => FB_AD(26 DOWNTO 24),
+            data_a => fb_ad_in(26 DOWNTO 24),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_29,
             q_b => CCS(23 DOWNTO 21)
@@ -1385,7 +1285,8 @@ BEGIN
             BLITTER_RUN => BLITTER_RUN,
             CLK_VIDEO => CLK_VIDEO,
             VR_BUSY => VR_BUSY,
-            FB_AD => FB_AD,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             VR_D => VR_D,
             COLOR8 => COLOR8,
