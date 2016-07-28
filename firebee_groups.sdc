@@ -193,3 +193,10 @@ set_clock_groups -asynchronous -group [get_clocks {MAIN_CLK}] \
 #**************************************************************
 # Set Input Transition
 #**************************************************************
+
+if { [string equal "quartus_fit" $::TimeQuestInfo(nameofexecutable)] } {
+    post_message -type info "Over constraining hold"
+    set_clock_uncertainty -add -enable_same_physical_edge -from { MAIN_CLK } -to { MAIN_CLK } -hold 0.2
+}
+
+ 

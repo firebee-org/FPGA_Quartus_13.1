@@ -16,7 +16,7 @@ entity firebee1 is
 		nFB_CS3         : in std_logic;
 		FB_SIZE0        : in std_logic;
 		FB_SIZE1        : in std_logic;
-		nFB_BURST       : in std_logic;
+		nFB_BURST       : in std_logic; 
 		LP_BUSY         : in std_logic;
 		nACSI_DRQ       : in std_logic;
 		nACSI_INT       : in std_logic;
@@ -148,45 +148,45 @@ entity firebee1 is
 end firebee1;
 
 architecture rtl of firebee1 is
-    signal ACP_CONF         : std_logic_vector(31 downto 0);
+    signal acp_conf         : std_logic_vector(31 downto 0);
     signal clk25m_i         : std_logic;
-    signal CLK2M            : std_logic;
-    signal CLK2M4576        : std_logic;
-    signal CLK33M           : std_logic;
-    signal CLK48M           : std_logic;
-    signal CLK500k          : std_logic;
-    signal CLK_VIDEO        : std_logic;
-    signal DDR_SYNC_66M     : std_logic;
-    signal DDRCLK           : std_logic_vector(3 downto 0);
-    signal DMA_DRQ          : std_logic;
-    signal DSP_INT          : std_logic;
-    signal DSP_TA           : std_logic;
-    signal FALCON_IO_TA     : std_logic;
-    signal FB_ADR           : std_logic_vector(31 downto 0);
-    signal FDC_CLK          : std_logic;
-    signal HSYNC            : std_logic;
-    signal INT_HANDLER_TA   : std_logic;
-    signal LP_DIR           : std_logic;
-    signal MIDI_IN          : std_logic;
-    signal MOT_ON           : std_logic;
-    signal nBLANK           : std_logic;
-    signal nDREQ0           : std_logic;
-    signal nMFP_INT         : std_logic;
-    signal nRSTO            : std_logic;
-    signal PIXEL_CLK        : std_logic;
-    signal SD_CDM_D1        : std_logic;
-    signal STEP             : std_logic;
-    signal STEP_DIR         : std_logic;
-    signal TIMEBASE         : std_logic_vector(17 downto 0);
-    signal VIDEO_RECONFIG   : std_logic;
-    signal Video_TA         : std_logic;
-    signal VR_BUSY          : std_logic;
-    signal VR_D             : std_logic_vector(8 downto 0);
-    signal VR_RD            : std_logic;
-    signal VR_WR            : std_logic;
-    signal VSYNC            : std_logic;
-    signal WR_DATA          : std_logic;
-    signal WR_GATE          : std_logic;
+    signal clk2m            : std_logic;
+    signal clk2m4576        : std_logic;
+    signal clk33m           : std_logic;
+    signal clk48m           : std_logic;
+    signal clk500k          : std_logic;
+    signal clk_video        : std_logic;
+    signal ddr_sync_66m     : std_logic;
+    signal ddrclk           : std_logic_vector(3 downto 0);
+    signal dma_drq          : std_logic;
+    signal dsp_int          : std_logic;
+    signal dsp_ta           : std_logic;
+    signal falcon_io_ta     : std_logic;
+    signal fb_adr           : std_logic_vector(31 downto 0);
+    signal fdc_clk          : std_logic;
+    signal hsync            : std_logic;
+    signal int_handler_ta   : std_logic;
+    signal lp_dir           : std_logic;
+    signal midi_in          : std_logic;
+    signal mot_on           : std_logic;
+    signal blank_n          : std_logic;
+    signal dreq0_n          : std_logic;
+    signal mfp_int_n        : std_logic;
+    signal rsto_n           : std_logic;
+    signal pixel_clk        : std_logic;
+    signal sd_cdm_d1        : std_logic;
+    signal step             : std_logic;
+    signal step_dir         : std_logic;
+    signal timebase         : std_logic_vector(17 downto 0);
+    signal video_reconfig   : std_logic;
+    signal video_ta         : std_logic;
+    signal vr_busy          : std_logic;
+    signal vr_d             : std_logic_vector(8 downto 0);
+    signal vr_rd            : std_logic;
+    signal vr_wr            : std_logic;
+    signal vsync            : std_logic;
+    signal wr_data          : std_logic;
+    signal wr_gate          : std_logic;
     signal scandataout      : std_logic;
     signal scandone         : std_logic;
     signal reset            : std_logic;
@@ -197,10 +197,10 @@ architecture rtl of firebee1 is
     signal config_update    : std_logic;
     signal pll3_locked      : std_logic;
     signal pll1_locked      : std_logic;
-    signal nSRCS_i          : std_logic;
-    signal nFB_WR_i         : std_logic;
-    signal nIDE_RD_i        : std_logic;
-    signal nIDE_WR_i        : std_logic;
+    signal srcs_n_i         : std_logic;
+    signal fb_wr_n_i        : std_logic;
+    signal ide_rd_n_i       : std_logic;
+    signal ide_wr_n_i       : std_logic;
     signal fb_ad_in         : std_logic_vector(31 downto 0);
     signal fb_ad_out        : std_logic_vector(31 downto 0);
 
@@ -252,9 +252,9 @@ begin
         (
             inclk0 => MAIN_CLK,
             c0 => clk25m_i,
-            c1 => CLK2M,
-            c2 => CLK500k,
-            c3 => CLK2M4576,
+            c1 => clk2m,
+            c2 => clk500k,
+            c3 => clk2m4576,
             locked => pll3_locked
         );
     
@@ -263,17 +263,17 @@ begin
         port map
         (
             inclk0 => MAIN_CLK,
-            c0 => DDRCLK(0),
-            c1 => DDRCLK(1),
-            c2 => DDRCLK(2),
-            c3 => DDRCLK(3),
-            c4 => DDR_SYNC_66M
+            c0 => ddrclk(0),
+            c1 => ddrclk(1),
+            c2 => ddrclk(2),
+            c3 => ddrclk(3),
+            c4 => ddr_sync_66m
         );
         
     i_dsp : work.dsp
         port map
         (
-            CLK33M => CLK33M,
+            clk33m => main_clk,
             MAIN_CLK => MAIN_CLK,
             nFB_OE => nFB_OE,
             nFB_WR => nFB_WR,
@@ -282,29 +282,29 @@ begin
             FB_SIZE0 => FB_SIZE0,
             FB_SIZE1 => FB_SIZE1,
             nFB_BURST => nFB_BURST,
-            nRSTO => nRSTO,
+            nrsto => rsto_n,
             nFB_CS3 => nFB_CS3,
             fb_ad_in => fb_ad_in,
             fb_ad_out => fb_ad_out,
-            FB_ADR => FB_ADR,
+            fb_adr => fb_adr,
             IO => IO,
             SRD => SRD,
-            nSRCS => nSRCS_i,
+            nSRCS => srcs_n_i,
             nSRBLE => nSRBLE,
             nSRBHE => nSRBHE,
             nSRWE => nSRWE,
             nSROE => nSROE,
-            DSP_INT => DSP_INT,
-            DSP_TA => DSP_TA
+            dsp_int => dsp_int,
+            dsp_ta => dsp_ta
         );
 
     i_falconio_sdcard_ide_cf : work.falconio_sdcard_ide_cf
         port map
         (
-            CLK33M => CLK33M,
+            clk33m => main_clk,
             MAIN_CLK => MAIN_CLK,
-            CLK2M => CLK2M,
-            CLK500k => CLK500k,
+            clk2m => clk2m,
+            clk500k => clk500k,
             nFB_CS1 => nFB_CS1,
             FB_SIZE0 => FB_SIZE0,
             FB_SIZE1 => FB_SIZE1,
@@ -314,7 +314,7 @@ begin
             nACSI_INT => nACSI_INT,
             nSCSI_DRQ => nSCSI_DRQ,
             nSCSI_MSG => nSCSI_MSG,
-            MIDI_IN => MIDI_IN,
+            midi_in => midi_in,
             RxD => RxD,
             CTS => CTS,
             RI => RI,
@@ -338,16 +338,16 @@ begin
             WP_CF_CARD => WP_CF_CARD,
             nWP => nWP,
             nFB_CS2 => nFB_CS2,
-            nRSTO => nRSTO,
+            nrsto => rsto_n,
             nSCSI_C_D => nSCSI_C_D,
             nSCSI_I_O => nSCSI_I_O,
-            CLK2M4576 => CLK2M4576,
+            clk2m4576 => clk2m4576,
             nFB_OE => nFB_OE,
-            VSYNC => VSYNC,
-            HSYNC => HSYNC,
-            DSP_INT => DSP_INT,
-            nBLANK => nBLANK,
-            FDC_CLK => FDC_CLK,
+            vsync => vsync,
+            hsync => hsync,
+            dsp_int => dsp_int,
+            nblank => blank_n,
+            fdc_clk => fdc_clk,
             FB_ALE => FB_ALE,
             HD_DD => HD_DD,
             SCSI_PAR => SCSI_PAR,
@@ -355,18 +355,18 @@ begin
             nSCSI_BUSY => nSCSI_BUSY,
             nSCSI_RST => nSCSI_RST,
             SD_CD_DATA3 => SD_CD_DATA3,
-            SD_CDM_D1 => SD_CDM_D1,
-            ACP_CONF => ACP_CONF(31 downto 24),
+            sd_cdm_d1 => sd_cdm_d1,
+            acp_conf => acp_conf(31 downto 24),
             ACSI_D => ACSI_D,
             fb_ad_in => fb_ad_in,
             fb_ad_out => fb_ad_out,
-            FB_ADR => FB_ADR,
+            fb_adr => fb_adr,
             LP_D => LP_D,
             SCSI_D => SCSI_D,
             nIDE_CS1 => nIDE_CS1,
             nIDE_CS0 => nIDE_CS0,
             LP_STR => LP_STR,
-            LP_DIR => LP_DIR,
+            lp_dir => lp_dir,
             nACSI_ACK => nACSI_ACK,
             nACSI_RESET => nACSI_RESET,
             nACSI_CS => nACSI_CS,
@@ -380,16 +380,16 @@ begin
             YM_QC => YM_QC,
             YM_QB => YM_QB,
             nSDSEL => nSDSEL,
-            STEP => STEP,
-            MOT_ON => MOT_ON,
+            step => step,
+            mot_on => mot_on,
             nRP_LDS => nRP_LDS,
             nRP_UDS => nRP_UDS,
             nROM4 => nROM4,
             nROM3 => nROM3,
             nCF_CS1 => nCF_CS1,
             nCF_CS0 => nCF_CS0,
-            nIDE_RD => nIDE_RD_i,
-            nIDE_WR => nIDE_WR_i,
+            nIDE_RD => ide_rd_n_i,
+            nIDE_WR => ide_wr_n_i,
             AMKB_TX => AMKB_TX,
             IDE_RES => IDE_RES,
             DTR => DTR,
@@ -397,12 +397,12 @@ begin
             TxD => TxD,
             MIDI_OLR => MIDI_OLR,
             DSA_D => DSA_D,
-            nMFP_INT => nMFP_INT,
-            FALCON_IO_TA => FALCON_IO_TA,
-            STEP_DIR => STEP_DIR,
-            WR_DATA => WR_DATA,
-            WR_GATE => WR_GATE,
-            DMA_DRQ => DMA_DRQ,
+            nmfp_int => mfp_int_n,
+            falcon_io_ta => falcon_io_ta,
+            step_dir => step_dir,
+            wr_data => wr_data,
+            wr_gate => wr_gate,
+            dma_drq => dma_drq,
             MIDI_TLR => MIDI_TLR
         );
 
@@ -423,19 +423,19 @@ begin
             nPCI_INTB => nPCI_INTB,
             nPCI_INTC => nPCI_INTC,
             nPCI_INTD => nPCI_INTD,
-            nMFP_INT => nMFP_INT,
+            nmfp_int => mfp_int_n,
             nFB_OE => nFB_OE,
-            DSP_INT => DSP_INT,
-            VSYNC => VSYNC,
-            HSYNC => HSYNC,
-            DMA_DRQ => DMA_DRQ,
-            nRSTO => nRSTO,
+            dsp_int => dsp_int,
+            vsync => vsync,
+            hsync => hsync,
+            dma_drq => dma_drq,
+            nrsto => rsto_n,
             fb_ad_in => fb_ad_in,
             fb_ad_out => fb_ad_out,
-            FB_ADR => FB_ADR,
-            INT_HANDLER_TA => INT_HANDLER_TA,
+            fb_adr => fb_adr,
+            int_handler_ta => int_handler_ta,
             TIN0 => TIN0,
-            ACP_CONF => ACP_CONF,
+            acp_conf => acp_conf,
             nIRQ => nIRQ
         );    
         
@@ -443,8 +443,8 @@ begin
         port map
         (
             inclk0 => MAIN_CLK,
-            c0 => CLK48M,
-            c1 => FDC_CLK,
+            c0 => clk48m,
+            c1 => fdc_clk,
             c2 => CLK24M576,
             locked => pll1_locked
         );
@@ -453,24 +453,24 @@ begin
     i_pll_reconfig : altpll_reconfig1
         port map
         (
-            reconfig => VIDEO_RECONFIG,
-            read_param => VR_RD,
-            write_param => VR_WR,
+            reconfig => video_reconfig,
+            read_param => vr_rd,
+            write_param => vr_wr,
             pll_areset_in => '0',
             pll_scandataout => scandataout,
             pll_scandone => scandone,
             clock => MAIN_CLK,
             reset => reset,
-            counter_param => FB_ADR(8 downto 6),
-            counter_type => FB_ADR(5 downto 2),
+            counter_param => fb_adr(8 downto 6),
+            counter_type => fb_adr(5 downto 2),
             data_in => FB_AD(24 downto 16),
-            busy => VR_BUSY,
+            busy => vr_busy,
             pll_scandata => scandata,
             pll_scanclk => scanclk,
             pll_scanclkena => scan_clkena,
             pll_configupdate => config_update,
             pll_areset => pll_reset,
-            data_out => VR_D
+            data_out => vr_d
         );
     
     i_video : entity work.video
@@ -483,36 +483,37 @@ begin
             nFB_WR => nFB_WR,
             FB_SIZE0 => FB_SIZE0,
             FB_SIZE1 => FB_SIZE1,
-            nRSTO => nRSTO,
+            nrsto => rsto_n,
             nFB_OE => nFB_OE,
             FB_ALE => FB_ALE,
-            DDR_SYNC_66M => DDR_SYNC_66M,
-            CLK33M => CLK33M,
+            ddr_sync_66m => ddr_sync_66m,
+            -- clk33m => clk33m,
+            clk33m => main_clk,
             CLK25M => clk25m_i,
-            CLK_VIDEO => CLK_VIDEO,
-            VR_BUSY => VR_BUSY,
-            DDRCLK => DDRCLK,
+            clk_video => clk_video,
+            vr_busy => vr_busy,
+            ddrclk => ddrclk,
             fb_ad_in => fb_ad_in,
             fb_ad_out => fb_ad_out,
-            FB_ADR => FB_ADR,
+            fb_adr => fb_adr,
             VD => VD,
             VDQS => VDQS,
-            VR_D => VR_D,
-            VR_RD => VR_RD,
-            nBLANK => nBLANK,
+            vr_d => vr_d,
+            vr_rd => vr_rd,
+            nblank => blank_n,
             nVWE => nVWE,
             nVCAS => nVCAS,
             nVRAS => nVRAS,
             nVCS => nVCS,
             nPD_VGA => nPD_VGA,
             VCKE => VCKE,
-            VSYNC => VSYNC,
-            HSYNC => HSYNC,
+            vsync => vsync,
+            hsync => hsync,
             nSYNC => nSYNC,
-            VIDEO_TA => Video_TA,
-            PIXEL_CLK => PIXEL_CLK,
-            VIDEO_RECONFIG => VIDEO_RECONFIG,
-            VR_WR => VR_WR,
+            VIDEO_TA => video_ta,
+            pixel_clk => pixel_clk,
+            video_reconfig => video_reconfig,
+            vr_wr => vr_wr,
             BA => BA,
             VA => VA,
             VB => VB,
@@ -524,13 +525,13 @@ begin
     i_video_clk_pll : altpll4
         port map
         (
-            inclk0 => CLK48M,
+            inclk0 => clk48m,
             areset => pll_reset,
             scanclk => scanclk,
             scandata => scandata,
             scanclkena => scan_clkena,
             configupdate => config_update,
-            c0 => CLK_VIDEO,
+            c0 => clk_video,
             scandataout => scandataout,
             scandone => scandone
         );
@@ -539,55 +540,55 @@ begin
     inst1 : work.lpm_ff0
         port map
         (
-            clock => DDR_SYNC_66M,
+            clock => ddr_sync_66m,
             enable => FB_ALE,
             data => FB_AD,
-            q => FB_ADR
+            q => fb_adr
         );
     
-    nMOT_ON <= not(MOT_ON);
-    nSTEP_DIR <= not(STEP_DIR);
-    nSTEP <= not(STEP);
-    nWR <= not(WR_DATA);
+    nMOT_ON <= not(mot_on);
+    nSTEP_DIR <= not(step_dir);
+    nSTEP <= not(step);
+    nWR <= not(wr_data);
     
     inst18 : work.lpm_counter0
         port map
         (
-            clock => CLK500k,
-            q => TIMEBASE
+            clock => clk500k,
+            q => timebase
         );
     
     
-    nWR_GATE <= not(WR_GATE);
+    nWR_GATE <= not(wr_gate);
 
     nFB_TA <= not(video_ta or int_handler_ta or dsp_ta or falcon_io_ta);
     fb_ad_in <= fb_ad;
     fb_ad <= fb_ad_out when (video_ta or int_handler_ta or dsp_ta or falcon_io_ta) else (others => 'Z');
     
-    CLK33M <= MAIN_CLK;
+    clk33m <= MAIN_CLK;
 
-    reset <= not(nRSTO);
-    nRSTO <= pll3_locked and pll1_locked and nRSTO_MCF;
+    reset <= not(rsto_n);
+    rsto_n <= pll3_locked and pll1_locked and nRSTO_MCF;
     
     inst29 : alt_iobuf
         port map
         (
-            i => CLK2M,
-            oe => CLK2M,
+            i => clk2m,
+            oe => clk2m,
             io => MIDI_IN_PIN,
-            o => MIDI_IN
+            o => midi_in
         );
     
-    LED_FPGA_OK <= TIMEBASE(17);
+    LED_FPGA_OK <= timebase(17);
     
-    nDDR_CLK <= not(DDRCLK(0));
+    nDDR_CLK <= not(ddrclk(0));
     
     inst5 : work.altddio_out3
         port map
         (
-            datain_h => VSYNC,
-            datain_l => VSYNC,
-            outclock => PIXEL_CLK,
+            datain_h => vsync,
+            datain_l => vsync,
+            outclock => pixel_clk,
             dataout => VSYNC_PAD
         );
     
@@ -595,9 +596,9 @@ begin
     inst6 : work.altddio_out3
         port map
         (
-            datain_h => HSYNC,
-            datain_l => HSYNC,
-            outclock => PIXEL_CLK,
+            datain_h => hsync,
+            datain_l => hsync,
+            outclock => pixel_clk,
             dataout => HSYNC_PAD
         );
     
@@ -605,9 +606,9 @@ begin
     inst8 : work.altddio_out3
         port map
         (
-            datain_h => nBLANK,
-            datain_l => nBLANK,
-            outclock => PIXEL_CLK,
+            datain_h => blank_n,
+            datain_l => blank_n,
+            outclock => pixel_clk,
             dataout => nBLANK_PAD
         );
     
@@ -616,17 +617,17 @@ begin
         (
             datain_h => '0',
             datain_l => '1',
-            outclock => PIXEL_CLK,
+            outclock => pixel_clk,
             dataout => PIXEL_CLK_PAD
         );
     
-    SD_CMD_D1 <= SD_CDM_D1;
-    DDR_CLK <= DDRCLK(0);
-    LPDIR <= LP_DIR;
+    SD_CMD_D1 <= sd_cdm_d1;
+    DDR_CLK <= ddrclk(0);
+    LPDIR <= lp_dir;
     CLK25M <= clk25m_i;
-    CLKUSB <= CLK48M;
-    nSRCS <= nSRCS_i;
+    CLKUSB <= clk48m;
+    nSRCS <= srcs_n_i;
     
-    nIDE_RD <= nIDE_RD_i;
-    nIDE_WR <= nIDE_WR_i;
+    nIDE_RD <= ide_rd_n_i;
+    nIDE_WR <= ide_wr_n_i;
 end rtl;
