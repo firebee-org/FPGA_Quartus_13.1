@@ -51,7 +51,8 @@ entity blitter is
 		BLITTER_SIG     : OUT std_logic;
 		BLITTER_WR      : OUT std_logic;
 		blitter_ta      : OUT std_logic;
-		FB_AD           : INOUT std_logic_vector(31 DOWNTO 0)
+		fb_ad_in        : in std_logic_vector(31 DOWNTO 0);
+        fb_ad_out       : out std_logic_vector(31 downto 0)
 	);
 	-- {{ALTERA_IO_END}} DO NOT REMOVE THIS LINE!
 	

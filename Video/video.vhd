@@ -40,7 +40,8 @@ ENTITY video IS
 		CLK_VIDEO       : IN  std_logic;
 		VR_BUSY         : IN  std_logic;
 		DDRCLK          : IN  std_logic_vector(3 DOWNTO 0);
-		FB_AD           : INOUT  std_logic_vector(31 DOWNTO 0);
+		fb_ad_in        : in  std_logic_vector(31 DOWNTO 0);
+        fb_ad_out       : out std_logic_vector(31 downto 0);
 		FB_ADR          : IN  std_logic_vector(31 DOWNTO 0);
 		VD              : INOUT  std_logic_vector(31 DOWNTO 0);
 		VDQS            : INOUT  std_logic_vector(3 DOWNTO 0);
@@ -280,8 +281,8 @@ BEGIN
     GDFX_TEMP_SIGNAL_1 <= (VDMB(47 DOWNTO 0) & VDMA(127 DOWNTO 48));
     
     
-    ACP_CLUT_RAM : entity work.altdpram2
-        PORT MAP
+    acp_clut_ram : entity work.altdpram2
+        port map
         (
             wren_a => ACP_CLUT_WR(3),
             wren_b => SYNTHESIZED_WIRE_0,
@@ -289,15 +290,15 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => ZR_C8B,
-            data_a => FB_AD(7 DOWNTO 0),
+            data_a => fb_ad_in(7 DOWNTO 0),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_30,
             q_b => CCA(7 DOWNTO 0)
         );
     
     
-    ACP_CLUT_RAM54 : entity work.altdpram2
-        PORT MAP
+    acp_clut_ram_54 : entity work.altdpram2
+        port map
         (
             wren_a => ACP_CLUT_WR(2),
             wren_b => SYNTHESIZED_WIRE_1,
@@ -305,15 +306,15 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => ZR_C8B,
-            data_a => FB_AD(15 DOWNTO 8),
+            data_a => fb_ad_in(15 DOWNTO 8),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_32,
             q_b => CCA(15 DOWNTO 8)
         );
     
     
-    ACP_CLUT_RAM55 : entity work.altdpram2
-        PORT MAP
+    acp_clut_ram55 : entity work.altdpram2
+        port map
         (
             wren_a => ACP_CLUT_WR(1),
             wren_b => SYNTHESIZED_WIRE_2,
@@ -321,7 +322,7 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => ZR_C8B,
-            data_a => FB_AD(23 DOWNTO 16),
+            data_a => fb_ad_in(23 DOWNTO 16),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_33,
             q_b => CCA(23 DOWNTO 16)
@@ -329,7 +330,7 @@ BEGIN
     
     
     i_blitter : entity work.blitter
-        PORT MAP
+        port map
         (
             nRSTO => nRSTO,
             MAIN_CLK => MAIN_CLK,
@@ -346,7 +347,8 @@ BEGIN
             SR_BLITTER_DACK => SR_BLITTER_DACK,
             BLITTER_DACK => BLITTER_DACK,
             BLITTER_DIN => BLITTER_DIN,
-            FB_AD => FB_AD,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             VIDEO_RAM_CTR => VIDEO_RAM_CTR,
             BLITTER_RUN => BLITTER_RUN,
@@ -359,7 +361,7 @@ BEGIN
     
     
     i_ddr_ctr : entity work.ddr_ctr
-        PORT MAP
+        port map
         (
             nFB_CS1 => nFB_CS1,
             nFB_CS2 => nFB_CS2,
@@ -378,7 +380,8 @@ BEGIN
             CLK33M => CLK33M,
             CLR_FIFO => CLR_FIFO,
             BLITTER_ADR => BLITTER_ADR,
-            FB_AD => FB_AD,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             FIFO_MW => FIFO_MW,
             VIDEO_RAM_CTR => VIDEO_RAM_CTR,
@@ -403,8 +406,8 @@ BEGIN
         );
     
     
-    FALCON_CLUT_BLUE : entity work.altdpram1
-        PORT MAP
+    falcon_clut_blue : entity work.altdpram1
+        port map
         (
             wren_a => FALCON_CLUT_WR(3),
             wren_b => SYNTHESIZED_WIRE_3,
@@ -412,15 +415,15 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => CLUT_ADR,
-            data_a => FB_AD(23 DOWNTO 18),
+            data_a => fb_ad_in(23 DOWNTO 18),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_45,
             q_b => CCF(7 DOWNTO 2)
         );
     
     
-    FALCON_CLUT_GREEN : entity work.altdpram1
-        PORT MAP
+    falcon_clut_green : entity work.altdpram1
+        port map
         (
             wren_a => FALCON_CLUT_WR(1),
             wren_b => SYNTHESIZED_WIRE_4,
@@ -428,15 +431,15 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => CLUT_ADR,
-            data_a => FB_AD(23 DOWNTO 18),
+            data_a => fb_ad_in(23 DOWNTO 18),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_44,
             q_b => CCF(15 DOWNTO 10)
         );
     
     
-    FALCON_CLUT_RED : entity work.altdpram1
-        PORT MAP
+    falcon_clut_red : entity work.altdpram1
+        port map
         (
             wren_a => FALCON_CLUT_WR(0),
             wren_b => SYNTHESIZED_WIRE_5,
@@ -444,7 +447,7 @@ BEGIN
             clock_b => pixel_clk_i,
             address_a => FB_ADR(9 DOWNTO 2),
             address_b => CLUT_ADR,
-            data_a => FB_AD(31 DOWNTO 26),
+            data_a => fb_ad_in(31 DOWNTO 26),
             data_b => (OTHERS => '0'),
             q_a => SYNTHESIZED_WIRE_41,
             q_b => CCF(23 DOWNTO 18)
@@ -452,7 +455,7 @@ BEGIN
     
     
     inst : entity work.lpm_fifo_dc0
-        PORT MAP
+        port map
         (
             wrreq => FIFO_WRE,
             wrclk => DDRCLK(0),
@@ -466,7 +469,7 @@ BEGIN
     
     
     inst1 : entity work.altddio_bidir0
-        PORT MAP
+        port map
         (
             oe => VDOUT_OE,
             inclock => DDRCLK(1),
@@ -481,7 +484,7 @@ BEGIN
     
     
     inst10 : entity work.lpm_ff4
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_7,
@@ -490,7 +493,7 @@ BEGIN
     
     
     inst100 : entity work.lpm_muxvdm
-        PORT MAP
+        port map
         (
             data0x => VDMB,
             data10x => GDFX_TEMP_SIGNAL_1,
@@ -514,7 +517,7 @@ BEGIN
     
     
     inst102 : entity work.lpm_mux3
-        PORT MAP
+        port map
         (
             data1 => DFF_inst93,
             data0 => ZR_C8(0),
@@ -533,25 +536,25 @@ BEGIN
     
     
     inst108 : entity work.lpm_bustri_long
-        PORT MAP
+        port map
         (
             enabledt => FB_VDOE(0),
             data => VDR,
-            tridata => FB_AD
+            tridata => fb_ad_out
         );
     
     
     inst109 : entity work.lpm_bustri_long
-        PORT MAP
+        port map
         (
             enabledt => FB_VDOE(1),
             data => SYNTHESIZED_WIRE_11,
-            tridata => FB_AD
+            tridata => fb_ad_out
         );
     
     
     inst11 : entity work.lpm_ff5
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_12,
@@ -560,25 +563,25 @@ BEGIN
     
     
     inst110 : entity work.lpm_bustri_long
-        PORT MAP
+        port map
         (
             enabledt => FB_VDOE(2),
             data => SYNTHESIZED_WIRE_13,
-            tridata => FB_AD
+            tridata => fb_ad_out
         );
     
     
     inst119 : entity work.lpm_bustri_long
-        PORT MAP
+        port map
         (
             enabledt => FB_VDOE(3),
             data => SYNTHESIZED_WIRE_14,
-            tridata => FB_AD
+            tridata => fb_ad_out
         );
     
     
     inst12 : entity work.lpm_ff1
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             data => VDP_IN(31 DOWNTO 0),
@@ -587,47 +590,47 @@ BEGIN
     
     
     inst13 : entity work.lpm_ff0
-        PORT MAP
+        port map
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(0),
-            data => FB_AD,
+            data => fb_ad_out,
             q => FB_DDR(127 DOWNTO 96)
         );
     
     
     inst14 : entity work.lpm_ff0
-        PORT MAP
+        port map
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(1),
-            data => FB_AD,
+            data => fb_ad_out,
             q => FB_DDR(95 DOWNTO 64)
         );
     
     
     inst15 : entity work.lpm_ff0
-        PORT MAP
+        port map
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(2),
-            data => FB_AD,
+            data => fb_ad_out,
             q => FB_DDR(63 DOWNTO 32)
         );
     
     
     inst16 : entity work.lpm_ff0
-        PORT MAP
+        port map
         (
             clock => DDR_SYNC_66M,
             enable => FB_LE(3),
-            data => FB_AD,
+            data => fb_ad_out,
             q => FB_DDR(31 DOWNTO 0)
         );
     
     
     inst17 : entity work.lpm_ff0
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             enable => DDR_FB(1),
@@ -637,7 +640,7 @@ BEGIN
     
     
     inst18 : entity work.lpm_ff0
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             enable => DDR_FB(0),
@@ -647,7 +650,7 @@ BEGIN
     
     
     inst19 : entity work.lpm_ff0
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             enable => DDR_FB(0),
@@ -657,7 +660,7 @@ BEGIN
     
     
     inst2 : entity work.altddio_out0
-        PORT MAP
+        port map
         (
             outclock => DDRCLK(3),
             datain_h => VDMP(7 DOWNTO 4),
@@ -667,7 +670,7 @@ BEGIN
     
     
     inst20 : entity work.lpm_ff1
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             data => VDVZ(31 DOWNTO 0),
@@ -676,7 +679,7 @@ BEGIN
     
     
     inst21 : entity work.lpm_mux0
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data0x => FIFO_D(127 DOWNTO 96),
@@ -689,7 +692,7 @@ BEGIN
     
     
     inst22 : entity work.lpm_mux5
-        PORT MAP
+        port map
         (
             data0x => FB_DDR(127 DOWNTO 64),
             data1x => FB_DDR(63 DOWNTO 0),
@@ -701,14 +704,14 @@ BEGIN
     
     
     inst23 : entity work.lpm_constant2
-        PORT MAP
+        port map
         (
             result => GDFX_TEMP_SIGNAL_16
         );
     
     
     inst24 : entity work.lpm_mux1
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data0x => FIFO_D(127 DOWNTO 112),
@@ -725,7 +728,7 @@ BEGIN
     
     
     inst25 : entity work.lpm_mux2
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data0x => FIFO_D(127 DOWNTO 120),
@@ -750,7 +753,7 @@ BEGIN
     
     
     inst26 : entity work.lpm_shiftreg4
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             shiftin => SR_FIFO_WRE,
@@ -759,7 +762,7 @@ BEGIN
     
     
     inst27 : entity work.lpm_latch0
-        PORT MAP
+        port map
         (
             gate => DDR_SYNC_66M,
             data => SYNTHESIZED_WIRE_15,
@@ -770,7 +773,7 @@ BEGIN
     
     
     inst3 : entity work.lpm_ff1
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             data => VDP_IN(63 DOWNTO 32),
@@ -785,7 +788,7 @@ BEGIN
     SYNTHESIZED_WIRE_46 <= CLUT_ADR7A AND COLOR8;
       
     inst36 : entity work.lpm_ff6
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             enable => BLITTER_DACK(0),
@@ -797,7 +800,7 @@ BEGIN
     video_ta <= blitter_ta /* or video_mod_ta */ or video_ddr_ta;
     
     inst4 : entity work.lpm_ff1
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             data => VDVZ(63 DOWNTO 32),
@@ -806,7 +809,7 @@ BEGIN
     
     
     inst40 : entity work.mux41_0
-        PORT MAP
+        port map
         (
             S0 => COLOR2,
             S1 => COLOR4,
@@ -818,7 +821,7 @@ BEGIN
     
     
     inst41 : entity work.mux41_1
-        PORT MAP
+        port map
         (
             S0 => COLOR2,
             S1 => COLOR4,
@@ -830,7 +833,7 @@ BEGIN
     
     
     inst42 : entity work.mux41_2
-        PORT MAP
+        port map
         (
             S0 => COLOR2,
             D2 => CLUT_ADR7A,
@@ -843,7 +846,7 @@ BEGIN
     
     
     inst43 : entity work.mux41_3
-        PORT MAP
+        port map
         (
             S0 => COLOR2,
             D2 => CLUT_ADR6A,
@@ -856,7 +859,7 @@ BEGIN
     
     
     inst44 : entity work.mux41_4
-        PORT MAP
+        port map
         (
             S0 => COLOR2,
             D2 => CLUT_ADR5A,
@@ -869,7 +872,7 @@ BEGIN
     
     
     inst45 : entity work.mux41_5
-        PORT MAP
+        port map
         (
             S0 => COLOR2,
             D2 => CLUT_ADR4A,
@@ -882,7 +885,7 @@ BEGIN
     
     
     inst46 : entity work.lpm_ff3
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_25,
@@ -891,7 +894,7 @@ BEGIN
     
     
     inst47 : entity work.lpm_ff3
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data => CCF,
@@ -901,7 +904,7 @@ BEGIN
     
     
     inst49 : entity work.lpm_ff3
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_26,
@@ -910,7 +913,7 @@ BEGIN
     
     
     inst5 : entity work.altddio_out2
-        PORT MAP
+        port map
         (
             outclock => pixel_clk_i,
             datain_h => SYNTHESIZED_WIRE_62,
@@ -921,7 +924,7 @@ BEGIN
     
     
     inst51 : entity work.lpm_bustri1
-        PORT MAP
+        port map
         (
             enabledt => ST_CLUT_RD,
             data => SYNTHESIZED_WIRE_29,
@@ -930,7 +933,7 @@ BEGIN
     
     
     inst52 : entity work.lpm_ff3
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data => CCS,
@@ -939,7 +942,7 @@ BEGIN
     
     
     inst53 : entity work.lpm_bustri_byt
-        PORT MAP
+        port map
         (
             enabledt => ACP_CLUT_RD,
             data => SYNTHESIZED_WIRE_30,
@@ -948,7 +951,7 @@ BEGIN
     
     
     inst54 : entity work.lpm_constant0
-        PORT MAP
+        port map
         (
             result => CCS(20 DOWNTO 16)
         );
@@ -956,7 +959,7 @@ BEGIN
     
     
     inst56 : entity work.lpm_bustri1
-        PORT MAP
+        port map
         (
             enabledt => ST_CLUT_RD,
             data => SYNTHESIZED_WIRE_31,
@@ -965,7 +968,7 @@ BEGIN
     
     
     inst57 : entity work.lpm_bustri_byt
-        PORT MAP
+        port map
         (
             enabledt => ACP_CLUT_RD,
             data => SYNTHESIZED_WIRE_32,
@@ -974,7 +977,7 @@ BEGIN
     
     
     inst58 : entity work.lpm_bustri_byt
-        PORT MAP
+        port map
         (
             enabledt => ACP_CLUT_RD,
             data => SYNTHESIZED_WIRE_33,
@@ -983,7 +986,7 @@ BEGIN
     
     
     inst59 : entity work.lpm_constant0
-        PORT MAP
+        port map
         (
             result => CCS(12 DOWNTO 8)
         );
@@ -992,7 +995,7 @@ BEGIN
     
     
     inst61 : entity work.lpm_bustri1
-        PORT MAP
+        port map
         (
             enabledt => ST_CLUT_RD,
             data => SYNTHESIZED_WIRE_34,
@@ -1001,7 +1004,7 @@ BEGIN
     
     
     inst62 : entity work.lpm_muxdz
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             clken => FIFO_RDE,
@@ -1013,7 +1016,7 @@ BEGIN
     
     
     inst63 : entity work.lpm_fifodz
-        PORT MAP
+        port map
         (
             wrreq => SYNTHESIZED_WIRE_60,
             rdreq => SYNTHESIZED_WIRE_38,
@@ -1025,7 +1028,7 @@ BEGIN
     
     
     inst64 : entity work.lpm_constant0
-        PORT MAP
+        port map
         (
             result => CCS(4 DOWNTO 0)
         );
@@ -1035,7 +1038,7 @@ BEGIN
     
     
     inst66 : entity work.lpm_bustri3
-        PORT MAP
+        port map
         (
             enabledt => FALCON_CLUT_RDH,
             data => SYNTHESIZED_WIRE_41,
@@ -1047,7 +1050,7 @@ BEGIN
     SYNTHESIZED_WIRE_40 <= NOT(INTER_ZEI);
     
     inst7 : entity work.lpm_mux6
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data0x => SYNTHESIZED_WIRE_42,
@@ -1064,7 +1067,7 @@ BEGIN
     
     
     inst70 : entity work.lpm_bustri3
-        PORT MAP
+        port map
         (
             enabledt => FALCON_CLUT_RDH,
             data => SYNTHESIZED_WIRE_44,
@@ -1073,7 +1076,7 @@ BEGIN
     
     
     inst71 : entity work.lpm_ff6
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             enable => FIFO_WRE,
@@ -1085,7 +1088,7 @@ BEGIN
     
     
     inst74 : entity work.lpm_bustri3
-        PORT MAP
+        port map
         (
             enabledt => FALCON_CLUT_RDL,
             data => SYNTHESIZED_WIRE_45,
@@ -1096,7 +1099,7 @@ BEGIN
     
     
     inst77 : entity work.lpm_constant1
-        PORT MAP
+        port map
         (
             result => CCF(1 DOWNTO 0)
         );
@@ -1108,14 +1111,14 @@ BEGIN
     
     
     inst80 : entity work.lpm_constant1
-        PORT MAP
+        port map
         (
             result => CCF(9 DOWNTO 8)
         );
     
     
     inst81 : entity work.lpm_mux4
-        PORT MAP
+        port map
         (
             sel => COLOR1,
             data0x => ZR_C8(7 DOWNTO 1),
@@ -1125,14 +1128,14 @@ BEGIN
     
     
     inst82 : entity work.lpm_constant3
-        PORT MAP
+        port map
         (
             result => SYNTHESIZED_WIRE_47
         );
     
     
     inst83 : entity work.lpm_constant1
-        PORT MAP
+        port map
         (
             result => CCF(17 DOWNTO 16)
         );
@@ -1158,7 +1161,7 @@ BEGIN
     
     
     inst89 : entity work.lpm_shiftreg6
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             shiftin => SR_BLITTER_DACK,
@@ -1167,7 +1170,7 @@ BEGIN
     
     
     inst9 : entity work.lpm_ff1
-        PORT MAP
+        port map
         (
             clock => pixel_clk_i,
             data => SYNTHESIZED_WIRE_48,
@@ -1184,7 +1187,7 @@ BEGIN
     
     
     inst92 : entity work.lpm_shiftreg6
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             shiftin => SR_DDR_FB,
@@ -1201,7 +1204,7 @@ BEGIN
     
     
     inst94 : entity work.lpm_ff6
-        PORT MAP
+        port map
         (
             clock => DDRCLK(0),
             enable => FIFO_WRE,
@@ -1220,7 +1223,7 @@ BEGIN
     
     
     inst97 : entity work.lpm_ff5
-        PORT MAP
+        port map
         (
             clock => DDRCLK(2),
             data => SR_VDMP,
@@ -1229,7 +1232,7 @@ BEGIN
     
     
     sr0 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1240,7 +1243,7 @@ BEGIN
     
     
     sr1 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1251,7 +1254,7 @@ BEGIN
     
     
     sr2 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1262,7 +1265,7 @@ BEGIN
     
     
     sr3 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1273,7 +1276,7 @@ BEGIN
     
     
     sr4 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1284,7 +1287,7 @@ BEGIN
     
     
     sr5 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1295,7 +1298,7 @@ BEGIN
     
     
     sr6 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1306,7 +1309,7 @@ BEGIN
     
     
     sr7 : entity work.lpm_shiftreg0
-        PORT MAP
+        port map
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
@@ -1317,7 +1320,7 @@ BEGIN
     
     
     ST_CLUT_BLUE : entity work.altdpram0
-        PORT MAP
+        port map
         (
             wren_a => ST_CLUT_WR(1),
             wren_b => '0',
@@ -1333,7 +1336,7 @@ BEGIN
     
     
     ST_CLUT_GREEN : entity work.altdpram0
-        PORT MAP
+        port map
         (
             wren_a => ST_CLUT_WR(1),
             wren_b => '0',
@@ -1349,7 +1352,7 @@ BEGIN
     
     
     ST_CLUT_RED : entity work.altdpram0
-        PORT MAP
+        port map
         (
             wren_a => ST_CLUT_WR(0),
             wren_b => '0',
@@ -1365,7 +1368,7 @@ BEGIN
     
     
     i_video_mod_mux_clutctr : entity work.video_mod_mux_clutctr
-        PORT MAP
+        port map
         (
             nRSTO => nRSTO,
             MAIN_CLK => MAIN_CLK,

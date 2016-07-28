@@ -297,7 +297,7 @@ begin
         );
     
     
-    i_falcioio_sdcard_ide_cf : work.falconio_sdcard_ide_cf
+    i_falconio_sdcard_ide_cf : work.falconio_sdcard_ide_cf
         port map
         (
             CLK33M => CLK33M,

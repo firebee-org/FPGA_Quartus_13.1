@@ -60,7 +60,8 @@ entity ddr_ctr is
         BA              : buffer std_logic_vector(1 downto 0);
         DDRWR_D_SEL1    : buffer std_logic;
         VDM_SEL         : buffer std_logic_vector(3 downto 0);
-        FB_AD           : inout std_logic_vector(31 downto 0)
+        fb_ad_in        : in std_logic_vector(31 downto 0);
+        fb_ad_out       : out std_logic_vector(31 downto 0)
    );
 end ddr_ctr;
 
@@ -744,7 +745,7 @@ begin
     DDRWR_D_SEL1 <= BLITTER_AC_q;
 
     --  SELECT LOGIC
-    ddr_sel <= to_std_logic(FB_ALE='1' and FB_AD(31 downto 30) = "01");
+    ddr_sel <= to_std_logic(FB_ALE='1' and fb_ad_in(31 downto 30) = "01");
     ddr_cs_clk <= main_clk;
     ddr_cs_ena <= FB_ALE;
     ddr_cs_d <= ddr_sel;
@@ -790,7 +791,7 @@ begin
 	 FIFO_AC_q, CPU_COL_ADR, BLITTER_COL_ADR, VA_S_q, CPU_BA, BLITTER_BA,
 	 fb_b, CPU_AC_q, BLITTER_AC_q, FIFO_BANK_OK_q, FIFO_MW, FIFO_REQ_q,
 	 VIDEO_ADR_CNT_q, FIFO_COL_ADR, ddr_sel, LINE, FIFO_BA, VA_P_q,
-	 BA_P_q, CPU_REQ_q, FB_AD, nFB_WR, fb_size0, fb_size1,
+	 BA_P_q, CPU_REQ_q, fb_ad_in, nFB_WR, fb_size0, fb_size1,
 	 DDR_REFRESH_SIG_q)
         variable stdVec6: std_logic_vector(5 downto 0);
     begin
@@ -851,8 +852,8 @@ begin
                 --  SCHNELLZUGRIFF *** HIER IST PAGE IMMER NOT OK ***
                 if (ddr_sel and (nFB_WR or (not LINE)))='1' then
                     VRAS <= '1';
-                    (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= FB_AD(26 downto 14);
-                    (BA1_2, BA0_2) <= FB_AD(13 downto 12);
+                    (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= fb_ad_in(26 downto 14);
+                    (BA1_2, BA0_2) <= fb_ad_in(13 downto 12);
                     --  AUTO PRECHARGE DA NICHT FIFO PAGE
                     VA_S_d(10) <= '1';
                     CPU_AC_d <= '1';
@@ -1131,10 +1132,10 @@ begin
                 end if;
       
             when "011100" =>
-                if (ddr_sel and (nFB_WR or (not LINE)))='1' and FB_AD(13 downto 12) /= FIFO_BA then
+                if (ddr_sel and (nFB_WR or (not LINE)))='1' and fb_ad_in(13 downto 12) /= FIFO_BA then
                     VRAS <= '1';
-                    (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= FB_AD(26 downto 14);
-                    (BA1_2, BA0_2) <= FB_AD(13 downto 12);
+                    (VA12_2, VA11_2, VA10_2, VA9_2, VA8_2, VA7_2, VA6_2, VA5_2, VA4_2, VA3_2, VA2_2, VA1_2, VA0_2) <= fb_ad_in(26 downto 14);
+                    (BA1_2, BA0_2) <= fb_ad_in(13 downto 12);
                     CPU_AC_d <= '1';
 
                     --  BUS CYCLUS LOSTRETEN
@@ -1173,20 +1174,20 @@ begin
                 DDR_SM_d <= "001100";
             
             when "001100" =>
-                VA_S_d <= FB_AD(12 downto 0);
-                BA_S_d <= FB_AD(14 downto 13);
+                VA_S_d <= fb_ad_in(12 downto 0);
+                BA_S_d <= fb_ad_in(14 downto 13);
                 DDR_SM_d <= "001101";
       
             when "001101" =>
 
                 --  NUR BEI LONG WRITE
-                VRAS <= FB_AD(18) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
+                VRAS <= fb_ad_in(18) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
 
                 --  NUR BEI LONG WRITE
-                VCAS <= FB_AD(17) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
+                VCAS <= fb_ad_in(17) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
 
                 --  NUR BEI LONG WRITE
-                VWE <= FB_AD(16) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
+                VWE <= fb_ad_in(16) and (not nFB_WR) and (not fb_size0) and (not fb_size1);
 
                 --  CLOSE FIFO BANK
                 DDR_SM_d <= "000111";
@@ -1348,22 +1349,22 @@ begin
     VIDEO_BASE_L <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000110");
 
     --  SORRY, NUR 16 BYT GRENZEN
-    VIDEO_BASE_L_D_d <= FB_AD(23 downto 16);
+    VIDEO_BASE_L_D_d <= fb_ad_in(23 downto 16);
     VIDEO_BASE_L_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_L and fb_b(1);
     VIDEO_BASE_M_D0_clk_ctrl <= main_clk;
 
     --  8203/2
     VIDEO_BASE_M <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000001");
-    VIDEO_BASE_M_D_d <= FB_AD(23 downto 16);
+    VIDEO_BASE_M_D_d <= fb_ad_in(23 downto 16);
     VIDEO_BASE_M_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_M and fb_b(3);
     VIDEO_BASE_H_D0_clk_ctrl <= main_clk;
 
     --  8200-1/2
     VIDEO_BASE_H <= to_std_logic(((not nFB_CS1)='1') and fb_adr(19 downto 1) = "1111100000100000000");
-    VIDEO_BASE_H_D_d <= FB_AD(23 downto 16);
+    VIDEO_BASE_H_D_d <= fb_ad_in(23 downto 16);
     VIDEO_BASE_H_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_H and fb_b(1);
     VIDEO_BASE_X_D0_clk_ctrl <= main_clk;
-    VIDEO_BASE_X_D_d <= FB_AD(26 downto 24);
+    VIDEO_BASE_X_D_d <= fb_ad_in(26 downto 24);
     VIDEO_BASE_X_D0_ena_ctrl <= (not nFB_WR) and VIDEO_BASE_H and fb_b(0);
 
     --  8209/2
@@ -1379,7 +1380,7 @@ begin
     --                         VIDEO_BASE_H  & (0, VIDEO_BASE_X_D[])
     --                       # VIDEO_CNT_H   & (0, VIDEO_ACT_ADR[26..24]),
     --                        (VIDEO_BASE_H # VIDEO_CNT_H) & !nFB_OE); 
-    fb_ad(31 downto 24) <= "00000" & video_base_x_d_d when video_base_h and not nfb_oe else
+    fb_ad_out(31 downto 24) <= "00000" & video_base_x_d_d when video_base_h and not nfb_oe else
                            "00000" & video_act_adr(26 downto 24) when video_cnt_h and not nfb_oe else
                            (others => 'Z');
                            
@@ -1391,7 +1392,7 @@ begin
 	 (sizeIt(VIDEO_CNT_H,8) and VIDEO_ACT_ADR(23 downto 16));
     u0_enabledt <= (VIDEO_BASE_L or VIDEO_BASE_M or VIDEO_BASE_H or VIDEO_CNT_L
 	 or VIDEO_CNT_M or VIDEO_CNT_H) and (not nFB_OE);
- --   FB_AD(23 downto 16) <= u0_tridata when u0_enabledt;
+    fb_ad_out(23 downto 16) <= u0_tridata when u0_enabledt;
 
 
     -- Assignments added to explicitly combine the
