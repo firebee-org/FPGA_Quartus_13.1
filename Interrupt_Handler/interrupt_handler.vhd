@@ -5030,87 +5030,91 @@ begin
 --  HWORD
 --  HHBYT
 --  LONG UND LINE
-   FB_B(0) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or ((not
-	 FB_SIZE1) and FB_SIZE0 and (not FB_ADR(1)) and (not FB_ADR(0))) or
-	 ((not FB_SIZE1) and (not FB_SIZE0)) or (FB_SIZE1 and FB_SIZE0);
+    FB_B(0) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or
+               ((not FB_SIZE1) and FB_SIZE0 and (not FB_ADR(1)) and (not FB_ADR(0))) or
+               ((not FB_SIZE1) and (not FB_SIZE0)) or
+               (FB_SIZE1 and FB_SIZE0);
 
 --  HWORD
 --  HLBYT
 --  LONG UND LINE
-   FB_B(1) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or ((not
-	 FB_SIZE1) and FB_SIZE0 and (not FB_ADR(1)) and FB_ADR(0)) or ((not
-	 FB_SIZE1) and (not FB_SIZE0)) or (FB_SIZE1 and FB_SIZE0);
+    FB_B(1) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or
+               ((not FB_SIZE1) and FB_SIZE0 and (not FB_ADR(1)) and FB_ADR(0)) or
+               ((not FB_SIZE1) and (not FB_SIZE0)) or
+               (FB_SIZE1 and FB_SIZE0);
 
 --  LWORD
 --  LHBYT
 --  LONG UND LINE
-   FB_B(2) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or ((not FB_SIZE1)
-	 and FB_SIZE0 and FB_ADR(1) and (not FB_ADR(0))) or ((not FB_SIZE1) and
-	 (not FB_SIZE0)) or (FB_SIZE1 and FB_SIZE0);
+    FB_B(2) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or
+               ((not FB_SIZE1) and FB_SIZE0 and FB_ADR(1) and (not FB_ADR(0))) or
+               ((not FB_SIZE1) and (not FB_SIZE0)) or (FB_SIZE1 and FB_SIZE0);
 
 --  LWORD
 --  LLBYT
 --  LONG UND LINE
-   FB_B(3) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or ((not FB_SIZE1)
-	 and FB_SIZE0 and FB_ADR(1) and FB_ADR(0)) or ((not FB_SIZE1) and (not
-	 FB_SIZE0)) or (FB_SIZE1 and FB_SIZE0);
+    FB_B(3) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or
+               ((not FB_SIZE1) and FB_SIZE0 and FB_ADR(1) and FB_ADR(0)) or
+               ((not FB_SIZE1) and (not FB_SIZE0)) or
+               (FB_SIZE1 and FB_SIZE0);
 
 --  INTERRUPT CONTROL REGISTER: BIT0=INT5 AUSLÖSEN, 1=INT7 AUSLÖSEN
-   INT_CTR0_clk_ctrl <= MAIN_CLK;
+    INT_CTR0_clk_ctrl <= MAIN_CLK;
 
 --  $10000/4
-   int_ctr_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4000" else '0';
-   INT_CTR_d <= fb_ad_in;
-   INT_CTR24_ena_ctrl <= INT_CTR_CS and FB_B(0) and (not nFB_WR);
-   INT_CTR16_ena_ctrl <= INT_CTR_CS and FB_B(1) and (not nFB_WR);
-   INT_CTR8_ena_ctrl <= INT_CTR_CS and FB_B(2) and (not nFB_WR);
-   INT_CTR0_ena_ctrl <= INT_CTR_CS and FB_B(3) and (not nFB_WR);
+    int_ctr_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4000" else '0';
+    INT_CTR_d <= fb_ad_in;
+    INT_CTR24_ena_ctrl <= INT_CTR_CS and FB_B(0) and (not nFB_WR);
+    INT_CTR16_ena_ctrl <= INT_CTR_CS and FB_B(1) and (not nFB_WR);
+    INT_CTR8_ena_ctrl <= INT_CTR_CS and FB_B(2) and (not nFB_WR);
+    INT_CTR0_ena_ctrl <= INT_CTR_CS and FB_B(3) and (not nFB_WR);
 
 --  INTERRUPT ENABLE REGISTER BIT31=INT7,30=INT6,29=INT5,28=INT4,27=INT3,26=INT2
-   INT_ENA0_clk_ctrl <= MAIN_CLK;
-   INT_ENA0_clrn_ctrl <= nRSTO;
+    INT_ENA0_clk_ctrl <= MAIN_CLK;
+    INT_ENA0_clrn_ctrl <= nRSTO;
 
 --  $10004/4
     int_ena_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4001" else '0';
     
     -- INT_ENA_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) =
     -- "00000000000100000000000001");
-   INT_ENA_d <= fb_ad_in;
-   INT_ENA24_ena_ctrl <= INT_ENA_CS and FB_B(0) and (not nFB_WR);
-   INT_ENA16_ena_ctrl <= INT_ENA_CS and FB_B(1) and (not nFB_WR);
-   INT_ENA8_ena_ctrl <= INT_ENA_CS and FB_B(2) and (not nFB_WR);
-   INT_ENA0_ena_ctrl <= INT_ENA_CS and FB_B(3) and (not nFB_WR);
+    INT_ENA_d <= fb_ad_in;
+    INT_ENA24_ena_ctrl <= INT_ENA_CS and FB_B(0) and (not nFB_WR);
+    INT_ENA16_ena_ctrl <= INT_ENA_CS and FB_B(1) and (not nFB_WR);
+    INT_ENA8_ena_ctrl <= INT_ENA_CS and FB_B(2) and (not nFB_WR);
+    INT_ENA0_ena_ctrl <= INT_ENA_CS and FB_B(3) and (not nFB_WR);
 
 --  INTERRUPT CLEAR REGISTER WRITE ONLY 1=INTERRUPT CLEAR
-   INT_CLEAR0_clk_ctrl <= MAIN_CLK;
+    INT_CLEAR0_clk_ctrl <= MAIN_CLK;
 
 --  $10008/4
     int_clear_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4002" else '0';
     -- INT_CLEAR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) = "00000000000100000000000010");
-   INT_CLEAR_d(31 downto 24) <= fb_ad_in(31 downto 24) and sizeIt(INT_CLEAR_CS,8)
-	 and sizeIt(FB_B(0),8) and sizeIt(not nFB_WR,8);
-   INT_CLEAR_d(23 downto 16) <= fb_ad_in(23 downto 16) and sizeIt(INT_CLEAR_CS,8)
-	 and sizeIt(FB_B(1),8) and sizeIt(not nFB_WR,8);
-   INT_CLEAR_d(15 downto 8) <= fb_ad_in(15 downto 8) and sizeIt(INT_CLEAR_CS,8)
-	 and sizeIt(FB_B(2),8) and sizeIt(not nFB_WR,8);
-   INT_CLEAR_d(7 downto 0) <= fb_ad_in(7 downto 0) and sizeIt(INT_CLEAR_CS,8) and
-	 sizeIt(FB_B(3),8) and sizeIt(not nFB_WR,8);
+
+    int_clear_d(31 downto 24) <= fb_ad_in(31 downto 24) when int_clear_cs and fb_b(0) and not nfb_wr;
+    int_clear_d(23 downto 16) <= fb_ad_in(23 downto 16) when int_clear_cs and fb_b(1) and not nfb_wr;
+    int_clear_d(15 downto 8) <= fb_ad_in(15 downto 8) when int_clear_cs and fb_b(2) and not nfb_wr;
+    int_clear_d(7 downto 0) <= fb_ad_in(7 downto 0) when int_clear_cs and fb_b(3) and not nfb_wr;
+
+        
+--    INT_CLEAR_d(31 downto 24) <= fb_ad_in(31 downto 24) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(0),8) and sizeIt(not nFB_WR,8);
+--    INT_CLEAR_d(23 downto 16) <= fb_ad_in(23 downto 16) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(1),8) and sizeIt(not nFB_WR,8);
+--    INT_CLEAR_d(15 downto 8) <= fb_ad_in(15 downto 8) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(2),8) and sizeIt(not nFB_WR,8);
+--    INT_CLEAR_d(7 downto 0) <= fb_ad_in(7 downto 0) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(3),8) and sizeIt(not nFB_WR,8);
 
 --  INTERRUPT LATCH REGISTER READ ONLY
 --  $1000C/4
 
     int_latch_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4003" else '0';
-    -- INT_LATCH_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) =
-	--  "00000000000100000000000011");
+    -- INT_LATCH_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) = "00000000000100000000000011");
 
 --  INTERRUPT
-   nIRQ(2) <= not (HSYNC and INT_ENA_q(26));
-   nIRQ(3) <= not (INT_CTR_q(0) and INT_ENA_q(27));
-   nIRQ(4) <= not (VSYNC and INT_ENA_q(28));
-   nIRQ(5) <= not (to_std_logic(INT_LATCH_q /=
-	 "00000000000000000000000000000000") and INT_ENA_q(29));
-   nIRQ(6) <= not ((not nMFP_INT) and INT_ENA_q(30));
-   nIRQ(7) <= not (PSEUDO_BUS_ERROR and INT_ENA_q(31));
+    nIRQ(2) <= not (HSYNC and INT_ENA_q(26));
+    nIRQ(3) <= not (INT_CTR_q(0) and INT_ENA_q(27));
+    nIRQ(4) <= not (VSYNC and INT_ENA_q(28));
+    nIRQ(5) <= not (to_std_logic(INT_LATCH_q /= "00000000000000000000000000000000") and INT_ENA_q(29));
+    nIRQ(6) <= not ((not nMFP_INT) and INT_ENA_q(30));
+    nIRQ(7) <= not (PSEUDO_BUS_ERROR and INT_ENA_q(31));
 
 --  SCC
 --  VME
@@ -5127,79 +5131,78 @@ begin
 --                               #  FB_ADR[19..4]==H"F890"           -- DMA SOUND
 --                               #  FB_ADR[19..4]==H"F891"           -- DMA SOUND
 --                               #  FB_ADR[19..4]==H"F892"           -- DMA SOUND
-   PSEUDO_BUS_ERROR <= (not nFB_CS1) and (to_std_logic(FB_ADR(19 downto 4) =
-	 "1111100011001000" or FB_ADR(19 downto 4) = "1111100011100000" or
-	 FB_ADR(19 downto 4) = "1111111110101000" or FB_ADR(19 downto 4) =
-	 "1111111110101001" or FB_ADR(19 downto 4) = "1111111110101010" or
-	 FB_ADR(19 downto 4) = "1111111110101000" or FB_ADR(19 downto 8) =
-	 "111110000111" or FB_ADR(19 downto 4) = "1111111111000010" or
-	 FB_ADR(19 downto 4) = "1111111111000011"));
+   PSEUDO_BUS_ERROR <= (not nFB_CS1) and (to_std_logic(FB_ADR(19 downto 4) = "1111100011001000" or
+                                                       FB_ADR(19 downto 4) = "1111100011100000" or
+                                                       FB_ADR(19 downto 4) = "1111111110101000" or
+                                                       FB_ADR(19 downto 4) = "1111111110101001" or
+                                                       FB_ADR(19 downto 4) = "1111111110101010" or
+                                                       FB_ADR(19 downto 4) = "1111111110101000" or
+                                                       FB_ADR(19 downto 8) = "111110000111" or
+                                                       FB_ADR(19 downto 4) = "1111111111000010" or
+                                                       FB_ADR(19 downto 4) = "1111111111000011"));
 
 --  if VIDEO ADR CHANGE
 --  WRITE VIDEO BASE ADR HIGH 0xFFFF8201/2
-   TIN0 <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) =
-	 "1111100000100000000") and (not nFB_WR);
+    TIN0 <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100000100000000") and (not nFB_WR);
 
 --  INTERRUPT LATCH
-   INT_L0_clk_ctrl <= MAIN_CLK;
-   INT_L0_clrn_ctrl <= nRSTO;
-   INT_L_d(0) <= PIC_INT and INT_ENA_q(0);
-   INT_L_d(1) <= E0_INT and INT_ENA_q(1);
-   INT_L_d(2) <= DVI_INT and INT_ENA_q(2);
-   INT_L_d(3) <= (not nPCI_INTA) and INT_ENA_q(3);
-   INT_L_d(4) <= (not nPCI_INTB) and INT_ENA_q(4);
-   INT_L_d(5) <= (not nPCI_INTC) and INT_ENA_q(5);
-   INT_L_d(6) <= (not nPCI_INTD) and INT_ENA_q(6);
-   INT_L_d(7) <= DSP_INT and INT_ENA_q(7);
-   INT_L_d(8) <= VSYNC and INT_ENA_q(8);
-   INT_L_d(9) <= HSYNC and INT_ENA_q(9);
-   INT_LA9_0_clk_ctrl <= MAIN_CLK;
-   INT_LA8_0_clk_ctrl <= MAIN_CLK;
-   INT_LA7_0_clk_ctrl <= MAIN_CLK;
-   INT_LA6_0_clk_ctrl <= MAIN_CLK;
-   INT_LA5_0_clk_ctrl <= MAIN_CLK;
-   INT_LA4_0_clk_ctrl <= MAIN_CLK;
-   INT_LA3_0_clk_ctrl <= MAIN_CLK;
-   INT_LA2_0_clk_ctrl <= MAIN_CLK;
-   INT_LA1_0_clk_ctrl <= MAIN_CLK;
-   INT_LA0_0_clk_ctrl <= MAIN_CLK;
-   INT_LATCH_d <= "11111111111111111111111111111111";
-   INT_LATCH_clrn <= (not INT_CLEAR_q) and sizeIt(nRSTO,32);
-   INT_LA0_0_clrn_ctrl <= INT_ENA_q(0) and nRSTO;
-   INT_LA0_d <= ((std_logic_vector'(unsigned(INT_LA0_q) + unsigned'("0001")))
-	 and sizeIt(INT_L_q(0),4) and sizeIt(to_std_logic((unsigned(INT_LA0_q)
-	 < unsigned'("0111"))),4)) or ((std_logic_vector'(unsigned(INT_LA0_q) -
-	 unsigned'("0001"))) and sizeIt(not INT_L_q(0),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA0_q) > unsigned'("1000"))),4)) or
-	 ("1111" and sizeIt(INT_L_q(0),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA0_q) > unsigned'("0110"))),4)) or
-	 ("0000" and sizeIt(not INT_L_q(0),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA0_q) < unsigned'("1001"))),4));
-   INT_LATCH0_clk_1 <= INT_LA0_q(3);
-   INT_LA1_0_clrn_ctrl <= INT_ENA_q(1) and nRSTO;
-   INT_LA1_d <= ((std_logic_vector'(unsigned(INT_LA1_q) + unsigned'("0001")))
-	 and sizeIt(INT_L_q(1),4) and sizeIt(to_std_logic((unsigned(INT_LA1_q)
-	 < unsigned'("0111"))),4)) or ((std_logic_vector'(unsigned(INT_LA1_q) -
-	 unsigned'("0001"))) and sizeIt(not INT_L_q(1),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA1_q) > unsigned'("1000"))),4)) or
-	 ("1111" and sizeIt(INT_L_q(1),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA1_q) > unsigned'("0110"))),4)) or
-	 ("0000" and sizeIt(not INT_L_q(1),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA1_q) < unsigned'("1001"))),4));
-   INT_LATCH1_clk_1 <= INT_LA1_q(3);
+    INT_L0_clk_ctrl <= MAIN_CLK;
+    INT_L0_clrn_ctrl <= nRSTO;
+    INT_L_d(0) <= PIC_INT and INT_ENA_q(0);
+    INT_L_d(1) <= E0_INT and INT_ENA_q(1);
+    INT_L_d(2) <= DVI_INT and INT_ENA_q(2);
+    INT_L_d(3) <= (not nPCI_INTA) and INT_ENA_q(3);
+    INT_L_d(4) <= (not nPCI_INTB) and INT_ENA_q(4);
+    INT_L_d(5) <= (not nPCI_INTC) and INT_ENA_q(5);
+    INT_L_d(6) <= (not nPCI_INTD) and INT_ENA_q(6);
+    INT_L_d(7) <= DSP_INT and INT_ENA_q(7);
+    INT_L_d(8) <= VSYNC and INT_ENA_q(8);
+    INT_L_d(9) <= HSYNC and INT_ENA_q(9);
+    INT_LA9_0_clk_ctrl <= MAIN_CLK;
+    INT_LA8_0_clk_ctrl <= MAIN_CLK;
+    INT_LA7_0_clk_ctrl <= MAIN_CLK;
+    INT_LA6_0_clk_ctrl <= MAIN_CLK;
+    INT_LA5_0_clk_ctrl <= MAIN_CLK;
+    INT_LA4_0_clk_ctrl <= MAIN_CLK;
+    INT_LA3_0_clk_ctrl <= MAIN_CLK;
+    INT_LA2_0_clk_ctrl <= MAIN_CLK;
+    INT_LA1_0_clk_ctrl <= MAIN_CLK;
+    INT_LA0_0_clk_ctrl <= MAIN_CLK;
+    INT_LATCH_d <= "11111111111111111111111111111111";
+    INT_LATCH_clrn <= (not INT_CLEAR_q) and sizeIt(nRSTO,32);
+    INT_LA0_0_clrn_ctrl <= INT_ENA_q(0) and nRSTO;
+    INT_LA0_d <= ((std_logic_vector'(unsigned(INT_LA0_q) + unsigned'("0001"))) and sizeIt(INT_L_q(0),4) and sizeIt(to_std_logic((unsigned(INT_LA0_q)
+                    < unsigned'("0111"))),4)) or ((std_logic_vector'(unsigned(INT_LA0_q) - unsigned'("0001"))) and sizeIt(not INT_L_q(0),4) and
+                      sizeIt(to_std_logic((unsigned(INT_LA0_q) > unsigned'("1000"))),4)) or
+                      ("1111" and sizeIt(INT_L_q(0),4) and sizeIt(to_std_logic((unsigned(INT_LA0_q) > unsigned'("0110"))),4)) or
+                      ("0000" and sizeIt(not INT_L_q(0),4) and sizeIt(to_std_logic((unsigned(INT_LA0_q) < unsigned'("1001"))),4));
+    INT_LATCH0_clk_1 <= INT_LA0_q(3);
+    INT_LA1_0_clrn_ctrl <= INT_ENA_q(1) and nRSTO;
+    INT_LA1_d <= ((std_logic_vector'(unsigned(INT_LA1_q) + unsigned'("0001")))
+                    and sizeIt(INT_L_q(1),4) and sizeIt(to_std_logic((unsigned(INT_LA1_q)
+                    < unsigned'("0111"))),4)) or ((std_logic_vector'(unsigned(INT_LA1_q) -
+                    unsigned'("0001"))) and sizeIt(not INT_L_q(1),4) and
+                    sizeIt(to_std_logic((unsigned(INT_LA1_q) > unsigned'("1000"))),4)) or
+                    ("1111" and sizeIt(INT_L_q(1),4) and
+                    sizeIt(to_std_logic((unsigned(INT_LA1_q) > unsigned'("0110"))),4)) or
+                    ("0000" and sizeIt(not INT_L_q(1),4) and
+                    sizeIt(to_std_logic((unsigned(INT_LA1_q) < unsigned'("1001"))),4));
+                    INT_LATCH1_clk_1 <= INT_LA1_q(3);
+   
    INT_LA2_0_clrn_ctrl <= INT_ENA_q(2) and nRSTO;
    INT_LA2_d <= ((std_logic_vector'(unsigned(INT_LA2_q) + unsigned'("0001")))
-	 and sizeIt(INT_L_q(2),4) and sizeIt(to_std_logic((unsigned(INT_LA2_q)
-	 < unsigned'("0111"))),4)) or ((std_logic_vector'(unsigned(INT_LA2_q) -
-	 unsigned'("0001"))) and sizeIt(not INT_L_q(2),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA2_q) > unsigned'("1000"))),4)) or
-	 ("1111" and sizeIt(INT_L_q(2),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA2_q) > unsigned'("0110"))),4)) or
-	 ("0000" and sizeIt(not INT_L_q(2),4) and
-	 sizeIt(to_std_logic((unsigned(INT_LA2_q) < unsigned'("1001"))),4));
-   INT_LATCH2_clk_1 <= INT_LA2_q(3);
-   INT_LA3_0_clrn_ctrl <= INT_ENA_q(3) and nRSTO;
-   INT_LA3_d <= ((std_logic_vector'(unsigned(INT_LA3_q) + unsigned'("0001")))
+                and sizeIt(INT_L_q(2),4) and sizeIt(to_std_logic((unsigned(INT_LA2_q)
+                < unsigned'("0111"))),4)) or ((std_logic_vector'(unsigned(INT_LA2_q) -
+                unsigned'("0001"))) and sizeIt(not INT_L_q(2),4) and
+                sizeIt(to_std_logic((unsigned(INT_LA2_q) > unsigned'("1000"))),4)) or
+                ("1111" and sizeIt(INT_L_q(2),4) and
+                sizeIt(to_std_logic((unsigned(INT_LA2_q) > unsigned'("0110"))),4)) or
+                ("0000" and sizeIt(not INT_L_q(2),4) and
+                sizeIt(to_std_logic((unsigned(INT_LA2_q) < unsigned'("1001"))),4));
+    
+    INT_LATCH2_clk_1 <= INT_LA2_q(3);
+    INT_LA3_0_clrn_ctrl <= INT_ENA_q(3) and nRSTO;
+    INT_LA3_d <= ((std_logic_vector'(unsigned(INT_LA3_q) + unsigned'("0001")))
 	 and sizeIt(INT_L_q(3),4) and sizeIt(to_std_logic((unsigned(INT_LA3_q)
 	 < unsigned'("0111"))),4)) or ((std_logic_vector'(unsigned(INT_LA3_q) -
 	 unsigned'("0001"))) and sizeIt(not INT_L_q(3),4) and
