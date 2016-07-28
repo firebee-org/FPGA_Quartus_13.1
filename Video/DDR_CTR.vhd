@@ -311,16 +311,6 @@ architecture rtl of ddr_ctr is
     end sizeIt;
 
 begin
-
-    -- Sub Module Section
-    u0 : entity work.lpm_bustri_BYT
-        port map
-        (
-            data => u0_data,
-            enabledt => u0_enabledt,
-            tridata => u0_tridata
-        );
-
     -- Register Section
 
     SR_FIFO_WRE <= SR_FIFO_WRE_q;
