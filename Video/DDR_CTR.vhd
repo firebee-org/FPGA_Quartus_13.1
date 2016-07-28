@@ -1391,7 +1391,7 @@ begin
 	 (sizeIt(VIDEO_CNT_H,8) and VIDEO_ACT_ADR(23 downto 16));
     u0_enabledt <= (VIDEO_BASE_L or VIDEO_BASE_M or VIDEO_BASE_H or VIDEO_CNT_L
 	 or VIDEO_CNT_M or VIDEO_CNT_H) and (not nFB_OE);
-    FB_AD(23 downto 16) <= u0_tridata;
+ --   FB_AD(23 downto 16) <= u0_tridata when u0_enabledt;
 
 
     -- Assignments added to explicitly combine the
