@@ -174,7 +174,8 @@ ENTITY interrupt_handler IS
         INT_HANDLER_TA  : BUFFER std_logic;
         ACP_CONF        : BUFFER std_logic_vector(31 DOWNTO 0);
         TIN0            : BUFFER std_logic;
-        FB_AD           : INOUT std_logic_vector(31 DOWNTO 0)
+        fb_ad_in        : in std_logic_vector(31 downto 0);
+        fb_ad_out       : out std_logic_vector(31 downto 0)
    );
 END interrupt_handler;
 
@@ -5100,7 +5101,7 @@ BEGIN
 
 --  $10000/4
    INT_CTR_CS <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4000" else '0';
-   INT_CTR_d <= FB_AD;
+   INT_CTR_d <= fb_ad_in;
    INT_CTR24_ena_ctrl <= INT_CTR_CS and FB_B(0) and (not nFB_WR);
    INT_CTR16_ena_ctrl <= INT_CTR_CS and FB_B(1) and (not nFB_WR);
    INT_CTR8_ena_ctrl <= INT_CTR_CS and FB_B(2) and (not nFB_WR);
@@ -5115,7 +5116,7 @@ BEGIN
     
     -- INT_ENA_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) =
     -- "00000000000100000000000001");
-   INT_ENA_d <= FB_AD;
+   INT_ENA_d <= fb_ad_in;
    INT_ENA24_ena_ctrl <= INT_ENA_CS and FB_B(0) and (not nFB_WR);
    INT_ENA16_ena_ctrl <= INT_ENA_CS and FB_B(1) and (not nFB_WR);
    INT_ENA8_ena_ctrl <= INT_ENA_CS and FB_B(2) and (not nFB_WR);
@@ -5127,13 +5128,13 @@ BEGIN
 --  $10008/4
     int_clear_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4002" else '0';
     -- INT_CLEAR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) = "00000000000100000000000010");
-   INT_CLEAR_d(31 DOWNTO 24) <= FB_AD(31 DOWNTO 24) and sizeIt(INT_CLEAR_CS,8)
+   INT_CLEAR_d(31 DOWNTO 24) <= fb_ad_in(31 DOWNTO 24) and sizeIt(INT_CLEAR_CS,8)
 	 and sizeIt(FB_B(0),8) and sizeIt(not nFB_WR,8);
-   INT_CLEAR_d(23 DOWNTO 16) <= FB_AD(23 DOWNTO 16) and sizeIt(INT_CLEAR_CS,8)
+   INT_CLEAR_d(23 DOWNTO 16) <= fb_ad_in(23 DOWNTO 16) and sizeIt(INT_CLEAR_CS,8)
 	 and sizeIt(FB_B(1),8) and sizeIt(not nFB_WR,8);
-   INT_CLEAR_d(15 DOWNTO 8) <= FB_AD(15 DOWNTO 8) and sizeIt(INT_CLEAR_CS,8)
+   INT_CLEAR_d(15 DOWNTO 8) <= fb_ad_in(15 DOWNTO 8) and sizeIt(INT_CLEAR_CS,8)
 	 and sizeIt(FB_B(2),8) and sizeIt(not nFB_WR,8);
-   INT_CLEAR_d(7 DOWNTO 0) <= FB_AD(7 DOWNTO 0) and sizeIt(INT_CLEAR_CS,8) and
+   INT_CLEAR_d(7 DOWNTO 0) <= fb_ad_in(7 DOWNTO 0) and sizeIt(INT_CLEAR_CS,8) and
 	 sizeIt(FB_B(3),8) and sizeIt(not nFB_WR,8);
 
 --  INTERRUPT LATCH REGISTER READ ONLY
@@ -5341,7 +5342,7 @@ BEGIN
 
     --  $4'0000/4
     ACP_CONF_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 DOWNTO 2) = "00000000010000000000000000");
-    ACP_CONF_d <= FB_AD;
+    ACP_CONF_d <= fb_ad_in;
     ACP_CONF24_ena_ctrl <= ACP_CONF_CS and FB_B(0) and (not nFB_WR);
     ACP_CONF16_ena_ctrl <= ACP_CONF_CS and FB_B(1) and (not nFB_WR);
     ACP_CONF8_ena_ctrl <= ACP_CONF_CS and FB_B(2) and (not nFB_WR);
@@ -5352,7 +5353,7 @@ BEGIN
     --  C1287   0=SEK 2=MIN 4=STD 6=WOCHENTAG 7=TAG 8=MONAT 9=JAHR
     -- --------------------------------------------------------
     RTC_ADR0_clk_ctrl <= MAIN_CLK;
-    RTC_ADR_d <= FB_AD(21 DOWNTO 16);
+    RTC_ADR_d <= fb_ad_in(21 DOWNTO 16);
 
     --  FFFF8961
     UHR_AS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 DOWNTO 1) = "1111100010010110000") and FB_B(1);
@@ -5370,210 +5371,210 @@ BEGIN
     WERTE0_0_clk_ctrl <= MAIN_CLK;
    
     (WERTE7_0_d_1, WERTE6_0_d_1, WERTE5_0_d_1, WERTE4_0_d_1, WERTE3_0_d_1,
-	 WERTE2_0_d_1, WERTE1_0_d_1, WERTE0_0_d_1) <= FB_AD(23 DOWNTO 16) and
+	 WERTE2_0_d_1, WERTE1_0_d_1, WERTE0_0_d_1) <= fb_ad_in(23 DOWNTO 16) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "000000"),8) and sizeIt(UHR_DS,8) and
 	 sizeIt(not nFB_WR,8);
    
     (WERTE7_d(1), WERTE6_d(1), WERTE5_d(1), WERTE4_d(1), WERTE3_d(1),
-	 WERTE2_d(1), WERTE1_d(1), WERTE0_d(1)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(1), WERTE1_d(1), WERTE0_d(1)) <= fb_ad_in(23 DOWNTO 16);
     
     (WERTE7_2_d_1, WERTE6_2_d_1, WERTE5_2_d_1, WERTE4_2_d_1, WERTE3_2_d_1,
-	 WERTE2_2_d_1, WERTE1_2_d_1, WERTE0_2_d_1) <= FB_AD(23 DOWNTO 16) and
+	 WERTE2_2_d_1, WERTE1_2_d_1, WERTE0_2_d_1) <= fb_ad_in(23 DOWNTO 16) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "000010"),8) and sizeIt(UHR_DS,8) and
 	 sizeIt(not nFB_WR,8);
 
     (WERTE7_d(3), WERTE6_d(3), WERTE5_d(3), WERTE4_d(3), WERTE3_d(3),
-	 WERTE2_d(3), WERTE1_d(3), WERTE0_d(3)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(3), WERTE1_d(3), WERTE0_d(3)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_4_d_1, WERTE6_4_d_1, WERTE5_4_d_1, WERTE4_4_d_1, WERTE3_4_d_1,
-	 WERTE2_4_d_1, WERTE1_4_d_1, WERTE0_4_d_1) <= FB_AD(23 DOWNTO 16) and
+	 WERTE2_4_d_1, WERTE1_4_d_1, WERTE0_4_d_1) <= fb_ad_in(23 DOWNTO 16) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "000100"),8) and sizeIt(UHR_DS,8) and
 	 sizeIt(not nFB_WR,8);
    
     (WERTE7_d(5), WERTE6_d(5), WERTE5_d(5), WERTE4_d(5), WERTE3_d(5),
-	 WERTE2_d(5), WERTE1_d(5), WERTE0_d(5)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(5), WERTE1_d(5), WERTE0_d(5)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_6_d_1, WERTE6_6_d_1, WERTE5_6_d_1, WERTE4_6_d_1, WERTE3_6_d_1,
-	 WERTE2_6_d_1, WERTE1_6_d_1, WERTE0_6_d_1) <= FB_AD(23 DOWNTO 16) and
+	 WERTE2_6_d_1, WERTE1_6_d_1, WERTE0_6_d_1) <= fb_ad_in(23 DOWNTO 16) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "000110"),8) and sizeIt(UHR_DS,8) and
 	 sizeIt(not nFB_WR,8);
     
     (WERTE7_7_d_1, WERTE6_7_d_1, WERTE5_7_d_1, WERTE4_7_d_1, WERTE3_7_d_1,
-	 WERTE2_7_d_1, WERTE1_7_d_1, WERTE0_7_d_1) <= FB_AD(23 DOWNTO 16) and
+	 WERTE2_7_d_1, WERTE1_7_d_1, WERTE0_7_d_1) <= fb_ad_in(23 DOWNTO 16) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "000111"),8) and sizeIt(UHR_DS,8) and
 	 sizeIt(not nFB_WR,8);
     
     (WERTE7_8_d_1, WERTE6_8_d_1, WERTE5_8_d_1, WERTE4_8_d_1, WERTE3_8_d_1,
-	 WERTE2_8_d_1, WERTE1_8_d_1, WERTE0_8_d_1) <= FB_AD(23 DOWNTO 16) and
+	 WERTE2_8_d_1, WERTE1_8_d_1, WERTE0_8_d_1) <= fb_ad_in(23 DOWNTO 16) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "001000"),8) and sizeIt(UHR_DS,8) and
 	 sizeIt(not nFB_WR,8);
    
     (WERTE7_9_d_1, WERTE6_9_d_1, WERTE5_9_d_1, WERTE4_9_d_1, WERTE3_9_d_1,
-	 WERTE2_9_d_1, WERTE1_9_d_1, WERTE0_9_d_1) <= FB_AD(23 DOWNTO 16) and
+	 WERTE2_9_d_1, WERTE1_9_d_1, WERTE0_9_d_1) <= fb_ad_in(23 DOWNTO 16) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "001001"),8) and sizeIt(UHR_DS,8) and
 	 sizeIt(not nFB_WR,8);
     
     (WERTE7_d(10), WERTE6_d(10), WERTE5_d(10), WERTE4_d(10), WERTE3_d(10),
-	 WERTE2_d(10), WERTE1_d(10), WERTE0_d(10)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(10), WERTE1_d(10), WERTE0_d(10)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(11), WERTE6_d(11), WERTE5_d(11), WERTE4_d(11), WERTE3_d(11),
-	 WERTE2_11_d_1, WERTE1_11_d_1, WERTE0_11_d_1) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_11_d_1, WERTE1_11_d_1, WERTE0_11_d_1) <= fb_ad_in(23 DOWNTO 16);
     
     (WERTE7_d(12), WERTE6_d(12), WERTE5_d(12), WERTE4_d(12), WERTE3_d(12),
-	 WERTE2_d(12), WERTE1_d(12), WERTE0_d(12)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(12), WERTE1_d(12), WERTE0_d(12)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_13_d_1, WERTE6_d(13), WERTE5_d(13), WERTE4_d(13), WERTE3_d(13),
-	 WERTE2_d(13), WERTE1_d(13), WERTE0_13_d_1) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(13), WERTE1_d(13), WERTE0_13_d_1) <= fb_ad_in(23 DOWNTO 16);
     
     (WERTE7_d(14), WERTE6_d(14), WERTE5_d(14), WERTE4_d(14), WERTE3_d(14),
-	 WERTE2_d(14), WERTE1_d(14), WERTE0_d(14)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(14), WERTE1_d(14), WERTE0_d(14)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(15), WERTE6_d(15), WERTE5_d(15), WERTE4_d(15), WERTE3_d(15),
-	 WERTE2_d(15), WERTE1_d(15), WERTE0_d(15)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(15), WERTE1_d(15), WERTE0_d(15)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(16), WERTE6_d(16), WERTE5_d(16), WERTE4_d(16), WERTE3_d(16),
-	 WERTE2_d(16), WERTE1_d(16), WERTE0_d(16)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(16), WERTE1_d(16), WERTE0_d(16)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(17), WERTE6_d(17), WERTE5_d(17), WERTE4_d(17), WERTE3_d(17),
-	 WERTE2_d(17), WERTE1_d(17), WERTE0_d(17)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(17), WERTE1_d(17), WERTE0_d(17)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(18), WERTE6_d(18), WERTE5_d(18), WERTE4_d(18), WERTE3_d(18),
-	 WERTE2_d(18), WERTE1_d(18), WERTE0_d(18)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(18), WERTE1_d(18), WERTE0_d(18)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(19), WERTE6_d(19), WERTE5_d(19), WERTE4_d(19), WERTE3_d(19),
-	 WERTE2_d(19), WERTE1_d(19), WERTE0_d(19)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(19), WERTE1_d(19), WERTE0_d(19)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(20), WERTE6_d(20), WERTE5_d(20), WERTE4_d(20), WERTE3_d(20),
-	 WERTE2_d(20), WERTE1_d(20), WERTE0_d(20)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(20), WERTE1_d(20), WERTE0_d(20)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(21), WERTE6_d(21), WERTE5_d(21), WERTE4_d(21), WERTE3_d(21),
-	 WERTE2_d(21), WERTE1_d(21), WERTE0_d(21)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(21), WERTE1_d(21), WERTE0_d(21)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(22), WERTE6_d(22), WERTE5_d(22), WERTE4_d(22), WERTE3_d(22),
-	 WERTE2_d(22), WERTE1_d(22), WERTE0_d(22)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(22), WERTE1_d(22), WERTE0_d(22)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(23), WERTE6_d(23), WERTE5_d(23), WERTE4_d(23), WERTE3_d(23),
-	 WERTE2_d(23), WERTE1_d(23), WERTE0_d(23)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(23), WERTE1_d(23), WERTE0_d(23)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(24), WERTE6_d(24), WERTE5_d(24), WERTE4_d(24), WERTE3_d(24),
-	 WERTE2_d(24), WERTE1_d(24), WERTE0_d(24)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(24), WERTE1_d(24), WERTE0_d(24)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(25), WERTE6_d(25), WERTE5_d(25), WERTE4_d(25), WERTE3_d(25),
-	 WERTE2_d(25), WERTE1_d(25), WERTE0_d(25)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(25), WERTE1_d(25), WERTE0_d(25)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(26), WERTE6_d(26), WERTE5_d(26), WERTE4_d(26), WERTE3_d(26),
-	 WERTE2_d(26), WERTE1_d(26), WERTE0_d(26)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(26), WERTE1_d(26), WERTE0_d(26)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(27), WERTE6_d(27), WERTE5_d(27), WERTE4_d(27), WERTE3_d(27),
-	 WERTE2_d(27), WERTE1_d(27), WERTE0_d(27)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(27), WERTE1_d(27), WERTE0_d(27)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(28), WERTE6_d(28), WERTE5_d(28), WERTE4_d(28), WERTE3_d(28),
-	 WERTE2_d(28), WERTE1_d(28), WERTE0_d(28)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(28), WERTE1_d(28), WERTE0_d(28)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(29), WERTE6_d(29), WERTE5_d(29), WERTE4_d(29), WERTE3_d(29),
-	 WERTE2_d(29), WERTE1_d(29), WERTE0_d(29)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(29), WERTE1_d(29), WERTE0_d(29)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(30), WERTE6_d(30), WERTE5_d(30), WERTE4_d(30), WERTE3_d(30),
-	 WERTE2_d(30), WERTE1_d(30), WERTE0_d(30)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(30), WERTE1_d(30), WERTE0_d(30)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(31), WERTE6_d(31), WERTE5_d(31), WERTE4_d(31), WERTE3_d(31),
-	 WERTE2_d(31), WERTE1_d(31), WERTE0_d(31)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(31), WERTE1_d(31), WERTE0_d(31)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(32), WERTE6_d(32), WERTE5_d(32), WERTE4_d(32), WERTE3_d(32),
-	 WERTE2_d(32), WERTE1_d(32), WERTE0_d(32)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(32), WERTE1_d(32), WERTE0_d(32)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(33), WERTE6_d(33), WERTE5_d(33), WERTE4_d(33), WERTE3_d(33),
-	 WERTE2_d(33), WERTE1_d(33), WERTE0_d(33)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(33), WERTE1_d(33), WERTE0_d(33)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(34), WERTE6_d(34), WERTE5_d(34), WERTE4_d(34), WERTE3_d(34),
-	 WERTE2_d(34), WERTE1_d(34), WERTE0_d(34)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(34), WERTE1_d(34), WERTE0_d(34)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(35), WERTE6_d(35), WERTE5_d(35), WERTE4_d(35), WERTE3_d(35),
-        WERTE2_d(35), WERTE1_d(35), WERTE0_d(35)) <= FB_AD(23 DOWNTO 16);
+        WERTE2_d(35), WERTE1_d(35), WERTE0_d(35)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(36), WERTE6_d(36), WERTE5_d(36), WERTE4_d(36), WERTE3_d(36),
-	 WERTE2_d(36), WERTE1_d(36), WERTE0_d(36)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(36), WERTE1_d(36), WERTE0_d(36)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(37), WERTE6_d(37), WERTE5_d(37), WERTE4_d(37), WERTE3_d(37),
-	 WERTE2_d(37), WERTE1_d(37), WERTE0_d(37)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(37), WERTE1_d(37), WERTE0_d(37)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(38), WERTE6_d(38), WERTE5_d(38), WERTE4_d(38), WERTE3_d(38),
-	 WERTE2_d(38), WERTE1_d(38), WERTE0_d(38)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(38), WERTE1_d(38), WERTE0_d(38)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(39), WERTE6_d(39), WERTE5_d(39), WERTE4_d(39), WERTE3_d(39),
-	 WERTE2_d(39), WERTE1_d(39), WERTE0_d(39)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(39), WERTE1_d(39), WERTE0_d(39)) <= fb_ad_in(23 DOWNTO 16);
     
     (WERTE7_d(40), WERTE6_d(40), WERTE5_d(40), WERTE4_d(40), WERTE3_d(40),
-	 WERTE2_d(40), WERTE1_d(40), WERTE0_d(40)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(40), WERTE1_d(40), WERTE0_d(40)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(41), WERTE6_d(41), WERTE5_d(41), WERTE4_d(41), WERTE3_d(41),
-	 WERTE2_d(41), WERTE1_d(41), WERTE0_d(41)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(41), WERTE1_d(41), WERTE0_d(41)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(42), WERTE6_d(42), WERTE5_d(42), WERTE4_d(42), WERTE3_d(42),
-	 WERTE2_d(42), WERTE1_d(42), WERTE0_d(42)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(42), WERTE1_d(42), WERTE0_d(42)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(43), WERTE6_d(43), WERTE5_d(43), WERTE4_d(43), WERTE3_d(43),
-	 WERTE2_d(43), WERTE1_d(43), WERTE0_d(43)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(43), WERTE1_d(43), WERTE0_d(43)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(44), WERTE6_d(44), WERTE5_d(44), WERTE4_d(44), WERTE3_d(44),
-	 WERTE2_d(44), WERTE1_d(44), WERTE0_d(44)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(44), WERTE1_d(44), WERTE0_d(44)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(45), WERTE6_d(45), WERTE5_d(45), WERTE4_d(45), WERTE3_d(45),
-	 WERTE2_d(45), WERTE1_d(45), WERTE0_d(45)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(45), WERTE1_d(45), WERTE0_d(45)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(46), WERTE6_d(46), WERTE5_d(46), WERTE4_d(46), WERTE3_d(46),
-	 WERTE2_d(46), WERTE1_d(46), WERTE0_d(46)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(46), WERTE1_d(46), WERTE0_d(46)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(47), WERTE6_d(47), WERTE5_d(47), WERTE4_d(47), WERTE3_d(47),
-	 WERTE2_d(47), WERTE1_d(47), WERTE0_d(47)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(47), WERTE1_d(47), WERTE0_d(47)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(48), WERTE6_d(48), WERTE5_d(48), WERTE4_d(48), WERTE3_d(48),
-	 WERTE2_d(48), WERTE1_d(48), WERTE0_d(48)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(48), WERTE1_d(48), WERTE0_d(48)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(49), WERTE6_d(49), WERTE5_d(49), WERTE4_d(49), WERTE3_d(49),
-	 WERTE2_d(49), WERTE1_d(49), WERTE0_d(49)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(49), WERTE1_d(49), WERTE0_d(49)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(50), WERTE6_d(50), WERTE5_d(50), WERTE4_d(50), WERTE3_d(50),
-	 WERTE2_d(50), WERTE1_d(50), WERTE0_d(50)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(50), WERTE1_d(50), WERTE0_d(50)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(51), WERTE6_d(51), WERTE5_d(51), WERTE4_d(51), WERTE3_d(51),
-	 WERTE2_d(51), WERTE1_d(51), WERTE0_d(51)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(51), WERTE1_d(51), WERTE0_d(51)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(52), WERTE6_d(52), WERTE5_d(52), WERTE4_d(52), WERTE3_d(52),
-	 WERTE2_d(52), WERTE1_d(52), WERTE0_d(52)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(52), WERTE1_d(52), WERTE0_d(52)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(53), WERTE6_d(53), WERTE5_d(53), WERTE4_d(53), WERTE3_d(53),
-	 WERTE2_d(53), WERTE1_d(53), WERTE0_d(53)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(53), WERTE1_d(53), WERTE0_d(53)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(54), WERTE6_d(54), WERTE5_d(54), WERTE4_d(54), WERTE3_d(54),
-	 WERTE2_d(54), WERTE1_d(54), WERTE0_d(54)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(54), WERTE1_d(54), WERTE0_d(54)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(55), WERTE6_d(55), WERTE5_d(55), WERTE4_d(55), WERTE3_d(55),
-	 WERTE2_d(55), WERTE1_d(55), WERTE0_d(55)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(55), WERTE1_d(55), WERTE0_d(55)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(56), WERTE6_d(56), WERTE5_d(56), WERTE4_d(56), WERTE3_d(56),
-	 WERTE2_d(56), WERTE1_d(56), WERTE0_d(56)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(56), WERTE1_d(56), WERTE0_d(56)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(57), WERTE6_d(57), WERTE5_d(57), WERTE4_d(57), WERTE3_d(57),
-	 WERTE2_d(57), WERTE1_d(57), WERTE0_d(57)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(57), WERTE1_d(57), WERTE0_d(57)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(58), WERTE6_d(58), WERTE5_d(58), WERTE4_d(58), WERTE3_d(58),
-	 WERTE2_d(58), WERTE1_d(58), WERTE0_d(58)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(58), WERTE1_d(58), WERTE0_d(58)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(59), WERTE6_d(59), WERTE5_d(59), WERTE4_d(59), WERTE3_d(59),
-	 WERTE2_d(59), WERTE1_d(59), WERTE0_d(59)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(59), WERTE1_d(59), WERTE0_d(59)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(60), WERTE6_d(60), WERTE5_d(60), WERTE4_d(60), WERTE3_d(60),
-	 WERTE2_d(60), WERTE1_d(60), WERTE0_d(60)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(60), WERTE1_d(60), WERTE0_d(60)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(61), WERTE6_d(61), WERTE5_d(61), WERTE4_d(61), WERTE3_d(61),
-	 WERTE2_d(61), WERTE1_d(61), WERTE0_d(61)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(61), WERTE1_d(61), WERTE0_d(61)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(62), WERTE6_d(62), WERTE5_d(62), WERTE4_d(62), WERTE3_d(62),
-	 WERTE2_d(62), WERTE1_d(62), WERTE0_d(62)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(62), WERTE1_d(62), WERTE0_d(62)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_d(63), WERTE6_d(63), WERTE5_d(63), WERTE4_d(63), WERTE3_d(63),
-	 WERTE2_d(63), WERTE1_d(63), WERTE0_d(63)) <= FB_AD(23 DOWNTO 16);
+	 WERTE2_d(63), WERTE1_d(63), WERTE0_d(63)) <= fb_ad_in(23 DOWNTO 16);
    
     (WERTE7_0_ena_1, WERTE6_0_ena_1, WERTE5_0_ena_1, WERTE4_0_ena_1,
 	 WERTE3_0_ena_1, WERTE2_0_ena_1, WERTE1_0_ena_1, WERTE0_0_ena_1) <=
@@ -6008,7 +6009,7 @@ BEGIN
 	 (sizeIt(ACP_CONF_CS,8) and ACP_CONF_q(31 DOWNTO 24));
    u0_enabledt <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or
 	 ACP_CONF_CS) and (not nFB_OE);
-   FB_AD(31 DOWNTO 24) <= u0_tridata;
+   fb_ad_out(31 DOWNTO 24) <= u0_tridata;
    u1_data <= (std_logic_vector'(WERTE7_q(0) & WERTE6_q(0) & WERTE5_q(0) &
 	 WERTE4_q(0) & WERTE3_q(0) & WERTE2_q(0) & WERTE1_q(0) & WERTE0_q(0))
 	 and sizeIt(to_std_logic(RTC_ADR_q = "000000"),8) and sizeIt(UHR_DS,8))
@@ -6227,7 +6228,7 @@ BEGIN
 	 (sizeIt(ACP_CONF_CS,8) and ACP_CONF_q(23 DOWNTO 16));
    u1_enabledt <= (UHR_DS or UHR_AS or INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS
 	 or INT_CLEAR_CS or ACP_CONF_CS) and (not nFB_OE);
-   FB_AD(23 DOWNTO 16) <= u1_tridata;
+   fb_ad_out(23 DOWNTO 16) <= u1_tridata;
    u2_data <= (sizeIt(INT_CTR_CS,8) and INT_CTR_q(15 DOWNTO 8)) or
 	 (sizeIt(INT_ENA_CS,8) and INT_ENA_q(15 DOWNTO 8)) or
 	 (sizeIt(INT_LATCH_CS,8) and INT_LATCH_q(15 DOWNTO 8)) or
@@ -6235,7 +6236,7 @@ BEGIN
 	 (sizeIt(ACP_CONF_CS,8) and ACP_CONF_q(15 DOWNTO 8));
    u2_enabledt <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or
 	 ACP_CONF_CS) and (not nFB_OE);
-   FB_AD(15 DOWNTO 8) <= u2_tridata;
+   fb_ad_out(15 DOWNTO 8) <= u2_tridata;
    u3_data <= (sizeIt(INT_CTR_CS,8) and INT_CTR_q(7 DOWNTO 0)) or
 	 (sizeIt(INT_ENA_CS,8) and INT_ENA_q(7 DOWNTO 0)) or
 	 (sizeIt(INT_LATCH_CS,8) and INT_LATCH_q(7 DOWNTO 0)) or
@@ -6243,7 +6244,7 @@ BEGIN
 	 (sizeIt(ACP_CONF_CS,8) and ACP_CONF_q(7 DOWNTO 0));
    u3_enabledt <= (INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or
 	 ACP_CONF_CS) and (not nFB_OE);
-   FB_AD(7 DOWNTO 0) <= u3_tridata;
+   fb_ad_out(7 DOWNTO 0) <= u3_tridata;
    INT_HANDLER_TA <= int_ctr_cs or int_ena_cs or int_latch_cs or int_clear_cs;
 
 

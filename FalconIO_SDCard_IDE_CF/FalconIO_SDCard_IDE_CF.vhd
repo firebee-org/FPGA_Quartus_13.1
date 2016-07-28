@@ -130,7 +130,8 @@ ENTITY falconio_sdcard_ide_cf IS
 		WR_DATA         : OUT std_logic;
 		WR_GATE         : OUT std_logic;
 		DMA_DRQ         : OUT std_logic;
-		FB_AD           : INOUT std_logic_vector(31 DOWNTO 0);
+        fb_ad_in        : in std_logic_vector(31 downto 0);
+        fb_ad_out       : out std_logic_vector(31 downto 0);
 		LP_D            : INOUT std_logic_vector(7 DOWNTO 0);
 		SND_A           : INOUT std_logic_vector(7 downto 0);
 		ACSI_D          : INOUT std_logic_vector(7 DOWNTO 0);
@@ -302,11 +303,11 @@ BEGIN
     nDREQ0 <= '0';
 
     -- input daten halten
-    p_hold_input_data : PROCESS(MAIN_CLK, nFB_WR, FB_AD(31 DOWNTO 16), FB_ADI(15 DOWNTO 0))
+    p_hold_input_data : PROCESS(MAIN_CLK, nFB_WR, fb_ad_in(31 DOWNTO 16), FB_ADI(15 DOWNTO 0))
 	BEGIN
 		IF rising_edge(MAIN_CLK) THEN
 			IF nFB_WR = '0' THEN
-				FB_ADI <= FB_AD(31 downto 16); 
+				FB_ADI <= fb_ad_in(31 downto 16); 
 			ELSE
 				FB_ADI <= FB_ADI; 
 			END IF;
@@ -403,9 +404,9 @@ BEGIN
 			wrusedw				=> RDF_AZ
         );
     FCF_CS  <= '1' WHEN nFB_CS2 = '0' AND FB_ADR(26 DOWNTO 0) = x"0020110" AND LONG = '1' ELSE '0';		-- F002'0110 LONG ONLY
-    FCF_APH <= '1' WHEN FB_ALE = '1' AND FB_AD(31 DOWNTO 0)  = x"F0020110" AND LONG = '1' ELSE '0';		-- ADRESSPHASE F0020110 LONG ONLY
+    FCF_APH <= '1' WHEN FB_ALE = '1' AND fb_ad_in(31 DOWNTO 0)  = x"F0020110" AND LONG = '1' ELSE '0';		-- ADRESSPHASE F0020110 LONG ONLY
     RDF_RDE <= '1' WHEN FCF_APH = '1' AND nFB_WR = '1' ELSE '0';										-- AKTIVIEREN IN ADRESSPHASE
-    FB_AD <= RDF_DOUT(7 DOWNTO 0) & RDF_DOUT(15 DOWNTO 8) & RDF_DOUT(23 DOWNTO 16) & RDF_DOUT(31 DOWNTO 24) WHEN FCF_CS = '1' and nFB_OE = '0'
+    fb_ad_out <= RDF_DOUT(7 DOWNTO 0) & RDF_DOUT(15 DOWNTO 8) & RDF_DOUT(23 DOWNTO 16) & RDF_DOUT(31 DOWNTO 24) WHEN FCF_CS = '1' and nFB_OE = '0'
                 ELSE (OTHERS => 'Z');
                 
     RDF_DIN <= CD_OUT_FDC WHEN DMA_MODUS(7) = '1' ELSE SCSI_DOUT;
@@ -413,7 +414,7 @@ BEGIN
 	WRF: dcfifo1
 		PORT MAP(
 			aclr				=> CLR_FIFO,
-			data				=> FB_AD(7 DOWNTO 0) & FB_AD(15 DOWNTO 8) & FB_AD(23 DOWNTO 16) & FB_AD(31 DOWNTO 24),
+			data				=> fb_ad_in(7 DOWNTO 0) & fb_ad_in(15 DOWNTO 8) & fb_ad_in(23 DOWNTO 16) & fb_ad_in(31 DOWNTO 24),
 			rdclk				=> FDC_CLK,
 			rdreq				=> WRF_RDE,
 			wrclk				=> MAIN_CLK,
@@ -423,7 +424,7 @@ BEGIN
         );
     CD_IN_FDC <=  WRF_DOUT WHEN DMA_ACTIV = '1' and DMA_MODUS(8) = '1' ELSE FB_ADI(7 DOWNTO 0); 							-- BEI DMA WRITE <-FIFO SONST <-FB
     DMA_AZ_CS  <= '1' WHEN nFB_CS2 = '0' AND FB_ADR(26 DOWNTO 0) = x"002010C" ELSE '0';										-- F002'010C LONG
-    FB_AD <= DMA_DRQ_Q & DMA_DRQ_REG & IDE_INT & FDINT & SCSI_INT & RDF_AZ & "0" & DMA_STATUS & "00" & WRF_AZ WHEN DMA_AZ_CS = '1' and nFB_OE = '0'
+    fb_ad_out <= DMA_DRQ_Q & DMA_DRQ_REG & IDE_INT & FDINT & SCSI_INT & RDF_AZ & "0" & DMA_STATUS & "00" & WRF_AZ WHEN DMA_AZ_CS = '1' and nFB_OE = '0'
         ELSE (OTHERS => 'Z');
     DMA_DRQ_Q <= '1' WHEN DMA_DRQ_REG = "11" and DMA_MODUS(6) = '0' ELSE '0';
 
@@ -581,9 +582,9 @@ BEGIN
     CA1 <= '1' WHEN DMA_ACTIV = '1' ELSE DMA_MODUS(1);
     CA2 <= '1' WHEN DMA_ACTIV = '1' ELSE DMA_MODUS(2);
     
-    FB_AD(23 downto 16) <= "0000" & (not DMA_STATUS(1)) & "0" & WDC_BSL(1) & HD_DD when WDC_BSL_CS = '1' and nFB_OE = '0' else (OTHERS => 'Z');
-    FB_AD(31 downto 24) <= "00000000" when DMA_DATEN_CS = '1'                               and nFB_OE = '0' ELSE "ZZZZZZZZ";
-    FB_AD(23 DOWNTO 16) <= FDC_OUT WHEN DMA_DATEN_CS = '1' AND DMA_MODUS(4 DOWNTO 3) = "00" AND nFB_OE = '0' ELSE
+    fb_ad_out(23 downto 16) <= "0000" & (not DMA_STATUS(1)) & "0" & WDC_BSL(1) & HD_DD when WDC_BSL_CS = '1' and nFB_OE = '0' else (OTHERS => 'Z');
+    fb_ad_out(31 downto 24) <= "00000000" when DMA_DATEN_CS = '1'                               and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= FDC_OUT WHEN DMA_DATEN_CS = '1' AND DMA_MODUS(4 DOWNTO 3) = "00" AND nFB_OE = '0' ELSE
                          SCSI_DOUT WHEN DMA_DATEN_CS = '1' AND DMA_MODUS(4 DOWNTO 3) = "01" AND nFB_OE = '0' ELSE 
       DMA_BYT_CNT(16 downto 9) when DMA_DATEN_CS = '1' and DMA_MODUS(4) = '1'           and nFB_OE = '0' else "ZZZZZZZZ";
     --- WDC BSL REGISTER -------------------------------------------------------
@@ -593,7 +594,7 @@ BEGIN
 			WDC_BSL <= "00";
 		ELSIF rising_edge(MAIN_CLK) AND WDC_BSL_CS = '1' AND nFB_WR = '0' THEN
 			IF FB_B0 = '1' THEN
-				WDC_BSL(1 DOWNTO 0) <= FB_AD(25 DOWNTO 24);
+				WDC_BSL(1 DOWNTO 0) <= fb_ad_in(25 DOWNTO 24);
 			ELSE
 				WDC_BSL(1 DOWNTO 0) <= WDC_BSL(1 DOWNTO 0);
 			END IF;
@@ -606,12 +607,12 @@ BEGIN
 			DMA_MODUS <= x"0000";
 		ELSIF rising_edge(MAIN_CLK) AND DMA_MODUS_CS = '1' AND nFB_WR = '0' THEN
 			IF FB_B0 = '1' THEN
-				DMA_MODUS(15 DOWNTO 8) <= FB_AD(31 DOWNTO 24);
+				DMA_MODUS(15 DOWNTO 8) <= fb_ad_in(31 DOWNTO 24);
 			ELSE
 				DMA_MODUS(15 DOWNTO 8) <= DMA_MODUS(15 DOWNTO 8);
 			END IF;
 			IF FB_B1 = '1' THEN
-				DMA_MODUS(7 DOWNTO 0) <= FB_AD(23 DOWNTO 16);
+				DMA_MODUS(7 DOWNTO 0) <= fb_ad_in(23 DOWNTO 16);
 			ELSE
 				DMA_MODUS(7 DOWNTO 0) <= DMA_MODUS(7 DOWNTO 0);
 			END IF;
@@ -626,16 +627,16 @@ BEGIN
 			DMA_BYT_CNT <= x"00000000";													 
 		ELSIF rising_edge(MAIN_CLK) AND nFB_WR = '0' AND DMA_DATEN_CS = '1' AND nFB_WR = '0' AND DMA_MODUS(4) = '1' AND FB_B1 = '1' THEN
 				DMA_BYT_CNT(31 downto 17) <= "000000000000000";
-				DMA_BYT_CNT(16 DOWNTO 9) <= FB_AD(23 DOWNTO 16);
+				DMA_BYT_CNT(16 DOWNTO 9) <= fb_ad_in(23 DOWNTO 16);
 				DMA_BYT_CNT(8 downto 0) <= "000000000";
 			ELSIF rising_edge(MAIN_CLK) AND nFB_WR = '0' AND DMA_BYT_CNT_CS = '1' THEN
-				DMA_BYT_CNT <= FB_AD;
+				DMA_BYT_CNT <= fb_ad_in;
 			ELSE
 				DMA_BYT_CNT <= DMA_BYT_CNT;
 			END IF;
 	END PROCESS;
     --------------------------------------------------------------------
-    FB_AD(31 downto 16) <= "0000000000000" & DMA_STATUS when DMA_MODUS_CS = '1' and nFB_OE = '0' else "ZZZZZZZZZZZZZZZZ";
+    fb_ad_out(31 downto 16) <= "0000000000000" & DMA_STATUS when DMA_MODUS_CS = '1' and nFB_OE = '0' else "ZZZZZZZZZZZZZZZZ";
     DMA_STATUS(0) <= '1';													-- DMA OK
     DMA_STATUS(1) <= '1' WHEN DMA_BYT_CNT /= 0 AND DMA_BYT_CNT(31) = '0' ELSE '0';					-- WENN byts UND NICHT MINUS
     DMA_STATUS(2) <= '0' WHEN DMA_DRQ_I = '1' OR SCSI_DRQ = '1' ELSE '0'; 
@@ -660,7 +661,7 @@ BEGIN
 		IF nRSTO = '0' THEN
 			DMA_TOP <= x"00";
 		ELSIF rising_edge(MAIN_CLK) AND nFB_WR = '0' AND (DMA_TOP_CS = '1' OR DMA_ADR_CS = '1') THEN
-			DMA_TOP <= FB_AD(31 DOWNTO 24);
+			DMA_TOP <= fb_ad_in(31 DOWNTO 24);
 		ELSE 
 			DMA_TOP <= DMA_TOP;
 		END IF;
@@ -670,7 +671,7 @@ BEGIN
 		IF nRSTO = '0' THEN
 			DMA_HIGH <= x"00";
 		ELSIF rising_edge(MAIN_CLK) AND nFB_WR = '0' AND (DMA_HIGH_CS = '1' OR DMA_ADR_CS = '1') THEN
-			DMA_HIGH <= FB_AD(23 DOWNTO 16);
+			DMA_HIGH <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			DMA_HIGH <= DMA_HIGH;
 		END IF;
@@ -682,9 +683,9 @@ BEGIN
 			DMA_MID <= x"00";
 		ELSIF rising_edge(MAIN_CLK) AND nFB_WR = '0' THEN
 			IF DMA_MID_CS = '1' THEN
-				DMA_MID <= FB_AD(23 DOWNTO 16);
+				DMA_MID <= fb_ad_in(23 DOWNTO 16);
 			ELSIF DMA_ADR_CS = '1' THEN
-				DMA_MID <= FB_AD(15 DOWNTO 8);
+				DMA_MID <= fb_ad_in(15 DOWNTO 8);
 			END IF;
 		END IF;
 	END PROCESS;
@@ -695,9 +696,9 @@ BEGIN
 			DMA_LOW <= x"00";
 		ELSIF rising_edge(MAIN_CLK) AND nFB_WR = '0' THEN
             IF DMA_LOW_CS = '1'THEN
-				DMA_LOW <= FB_AD(23 DOWNTO 16);
+				DMA_LOW <= fb_ad_in(23 DOWNTO 16);
 			ELSIF DMA_ADR_CS = '1' THEN
-				DMA_LOW <= FB_AD(7 DOWNTO 0);
+				DMA_LOW <= fb_ad_in(7 DOWNTO 0);
             END IF;
 		END IF;
 	END PROCESS;
@@ -707,18 +708,18 @@ BEGIN
     DMA_MID_CS <= '1' WHEN nFB_CS1 = '0'  AND FB_ADR(19 DOWNTO 1) = x"7C305" AND FB_B1 = '1' ELSE '0';			-- F860B/2		
     DMA_LOW_CS <= '1' WHEN nFB_CS1 = '0'  AND FB_ADR(19 DOWNTO 1) = x"7C306" AND FB_B1 = '1' ELSE '0';			-- F860D/2
     
-    FB_AD(31 DOWNTO 24) <= DMA_TOP  WHEN DMA_TOP_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZ";
-    FB_AD(23 DOWNTO 16) <= DMA_HIGH WHEN DMA_HIGH_CS = '1' and nFB_OE = '0' ELSE "ZZZZZZZZ";
-    FB_AD(23 DOWNTO 16) <= DMA_MID  WHEN DMA_MID_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZ";
-    FB_AD(23 DOWNTO 16) <= DMA_LOW  WHEN DMA_LOW_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(31 DOWNTO 24) <= DMA_TOP  WHEN DMA_TOP_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= DMA_HIGH WHEN DMA_HIGH_CS = '1' and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= DMA_MID  WHEN DMA_MID_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= DMA_LOW  WHEN DMA_LOW_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZ";
     -- DIRECTZUGRIFF
     DMA_DIRM_CS <= '1' WHEN nFB_CS2 = '0' AND     FB_ADR(26 DOWNTO 0) = x"20100" ELSE '0';						-- F002'0100 WORD 
     DMA_ADR_CS  <= '1' WHEN nFB_CS2 = '0' AND     FB_ADR(26 DOWNTO 0) = x"20104" ELSE '0';						-- F002'0104 LONG 
     DMA_BYT_CNT_CS  <= '1' WHEN nFB_CS2 = '0' AND FB_ADR(26 DOWNTO 0) = x"20108" ELSE '0';						-- F002'0108 LONG
 
-    FB_AD <= DMA_TOP & DMA_HIGH & DMA_MID & DMA_LOW when DMA_ADR_CS = '1'  and nFB_OE = '0' else "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= DMA_MODUS WHEN DMA_DIRM_CS = '1' and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD <= DMA_BYT_CNT WHEN DMA_BYT_CNT_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+    fb_ad_out <= DMA_TOP & DMA_HIGH & DMA_MID & DMA_LOW when DMA_ADR_CS = '1'  and nFB_OE = '0' else "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+    fb_ad_out(31 DOWNTO 16) <= DMA_MODUS WHEN DMA_DIRM_CS = '1' and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
+    fb_ad_out <= DMA_BYT_CNT WHEN DMA_BYT_CNT_CS = '1'  and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
 
     -- DMA RW TOGGLE ------------------------------------------
 	PROCESS(MAIN_CLK, nRSTO, DMA_MODUS_CS, DMA_MODUS, DMA_DIR_OLD)
@@ -840,8 +841,8 @@ BEGIN
 		);                                              
     ACIA_CS_I <= '1' WHEN nFB_CS1 = '0'AND FB_ADR(19 DOWNTO 3) = x"1FF80" ELSE '0';		-- FFC00-FFC07 FFC00/8
     KEYB_RxD <= '0' WHEN AMKB_REG(3) = '0' or PIC_AMKB_RX = '0' ELSE '1';				-- TASTATUR DATEN VOM PIC(PS2) OR NORMAL  // 
-    FB_AD(31 DOWNTO 24) <= DATA_OUT_ACIA_I  WHEN ACIA_CS_I = '1' and FB_ADR(2) = '0' and nFB_OE = '0' ELSE  
-					   DATA_OUT_ACIA_II WHEN ACIA_CS_I = '1' and FB_ADR(2) = '1' and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(31 DOWNTO 24) <= DATA_OUT_ACIA_I  WHEN ACIA_CS_I = '1' and FB_ADR(2) = '0' and nFB_OE = '0' ELSE  
+					   DATA_OUT_ACIA_II WHEN ACIA_CS_I = '1' and FB_ADR(2) = '1' and nFB_OE = '0' ELSE (others => 'Z');
 
     -- AMKB_TX: SPIKES AUSFILTERN  und sychronisieren ------------------------------------------
 	PROCESS(CLK2M, AMKB_RX, AMKB_REG)
@@ -916,7 +917,7 @@ BEGIN
  			DTACKn				=> DTACK_OUT_MFPn,
 			-- Data and Adresses:
 			RS					=> FB_ADR(5 DOWNTO 1),
-			DATA_IN				=> FB_AD(23 DOWNTO 16),
+			DATA_IN				=> fb_ad_in(23 DOWNTO 16),
 			DATA_OUT			=> DATA_OUT_MFP,
 --			DATA_EN				=> DATA_EN_MFP,
             GPIP_IN(7)			=> NOT DMA_DRQ_Q,
@@ -957,10 +958,10 @@ BEGIN
     MFP_INTACK <= '1' WHEN nFB_CS2 = '0' AND FB_ADR(26 DOWNTO 0) = x"20000" ELSE '0'; 	--F002'0000
     LDS <= '1' WHEN MFP_CS = '1' OR MFP_INTACK = '1' ELSE '0';
 
-    FB_AD(23 DOWNTO 16) <= DATA_OUT_MFP WHEN MFP_CS = '1' and nFB_OE = '0' ELSE "ZZZZZZZZ";
-    FB_AD(31 DOWNTO 10) <= "0000000000000000000000" WHEN MFP_INTACK = '1' and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZZZZZZZ";
-    FB_AD(9 DOWNTO 2) <= DATA_OUT_MFP when MFP_INTACK = '1' and nFB_OE = '0' ELSE "ZZZZZZZZ";
-    FB_AD(1 DOWNTO 0) <= "00" WHEN MFP_INTACK = '1' AND nFB_OE = '0' ELSE "ZZ";
+    fb_ad_out(23 DOWNTO 16) <= DATA_OUT_MFP WHEN MFP_CS = '1' and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 10) <= "0000000000000000000000" WHEN MFP_INTACK = '1' and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(9 DOWNTO 2) <= DATA_OUT_MFP when MFP_INTACK = '1' and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(1 DOWNTO 0) <= "00" WHEN MFP_INTACK = '1' AND nFB_OE = '0' ELSE (others => 'Z');
     DINTn <= '0' WHEN IDE_INT = '1' AND ACP_CONF(28) = '1' ELSE
              '0' WHEN FDINT = '1' ELSE
              '0' WHEN SCSI_INT = '1' AND ACP_CONF(28) = '1' ELSE '1';
@@ -1000,7 +1001,7 @@ BEGIN
     SNDCS_I <= '1' WHEN SNDCS = '1' AND FB_ADR (1 DOWNTO 1) = "0" ELSE '0';
     SNDIR_I <= '1' WHEN SNDCS = '1' AND nFB_WR = '0' ELSE '0';
 
-    FB_AD(31 DOWNTO 24) <= DA_OUT_X WHEN SNDCS_I = '1' and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(31 DOWNTO 24) <= DA_OUT_X WHEN SNDCS_I = '1' and nFB_OE = '0' ELSE (others => 'Z');
 
     nnIDE_RES <= SND_A_X(7);
     LP_DIR_X  <= SND_A_X(6);
@@ -1012,7 +1013,7 @@ BEGIN
     DSA_D	  <= SND_A_X(1);
     nSDSEL    <= SND_A_X(0);
     SND_A <= SND_A_X;
-    LP_D <= LP_D_X WHEN LP_DIR_X = '0' ELSE "ZZZZZZZZ";
+    LP_D <= LP_D_X WHEN LP_DIR_X = '0' ELSE (others => 'Z');
     LP_DIR <= LP_DIR_X; 
 
 
@@ -1027,143 +1028,143 @@ BEGIN
 		IF nRSTO = '0' THEN
 			sndmactl <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"0" and nFB_WR = '0' and FB_B1 ='1' THEN
-				sndmactl <= FB_AD(23 DOWNTO 16);
+				sndmactl <= fb_ad_in(23 DOWNTO 16);
 			ELSE
 				sndmactl <= sndmactl;
 			END IF;
 	END PROCESS;
 
-    FB_AD(23 DOWNTO 16) <= sndmactl WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"0" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndmactl WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"0" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	begin
 		IF nRSTO = '0' THEN
 			sndbashi <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"1" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndbashi <= FB_AD(23 DOWNTO 16);
+			sndbashi <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndbashi <= sndbashi;
 		END IF;
 	END PROCESS;
     
-    FB_AD(23 DOWNTO 16) <= sndbashi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"1" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndbashi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"1" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO,MAIN_CLK,FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndbasmi <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"2" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndbasmi <= FB_AD(23 DOWNTO 16);
+			sndbasmi <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndbasmi <= sndbasmi;
 		END IF;
 	END PROCESS;
 
-    FB_AD(23 DOWNTO 16) <= sndbasmi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"2" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndbasmi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"2" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndbaslo <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"3" and nFB_WR = '0' and FB_B1 ='1' THEN
-				sndbaslo <= FB_AD(23 DOWNTO 16);
+				sndbaslo <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndbaslo <= sndbaslo;
 		END IF;
 	END PROCESS;
     
-    FB_AD(23 DOWNTO 16) <= sndbaslo WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"3" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndbaslo WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"3" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO,MAIN_CLK,FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndadrhi <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"4" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndadrhi <= FB_AD(23 DOWNTO 16);
+			sndadrhi <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndadrhi <= sndadrhi;
 		END IF;
 	END PROCESS;
 
-    FB_AD(23 DOWNTO 16) <= sndadrhi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"4" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndadrhi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"4" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndadrmi <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"5" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndadrmi <= FB_AD(23 DOWNTO 16);
+			sndadrmi <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndadrmi <= sndadrmi;
 		END IF;
 	END PROCESS;
 
-    FB_AD(23 DOWNTO 16) <= sndadrmi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"5" and nFB_OE = '0' else "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndadrmi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"5" and nFB_OE = '0' else (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndadrlo <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"6" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndadrlo <= FB_AD(23 DOWNTO 16);
+			sndadrlo <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndadrlo <= sndadrlo;
 		END IF;
 	END PROCESS;
     
-    FB_AD(23 DOWNTO 16) <= sndadrlo WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"6" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndadrlo WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"6" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndendhi <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"7" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndendhi <= FB_AD(23 DOWNTO 16);
+			sndendhi <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndendhi <= sndendhi;
 		END IF;
 	END PROCESS;
 
-    FB_AD(23 DOWNTO 16) <= sndendhi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"7" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndendhi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"7" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndendmi <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"8" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndendmi <= FB_AD(23 DOWNTO 16);
+			sndendmi <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndendmi <= sndendmi;
 		END IF;
 	END PROCESS;
     
-    FB_AD(23 DOWNTO 16) <= sndendmi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"8" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndendmi WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"8" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndendlo <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"9" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndendlo <= FB_AD(23 DOWNTO 16);
+			sndendlo <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndendlo <= sndendlo;
 		END IF;
 	END PROCESS;
 
-    FB_AD(23 DOWNTO 16) <= sndendlo WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"9" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndendlo WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"9" and nFB_OE = '0' ELSE (others => 'Z');
 
 	PROCESS(nRSTO, MAIN_CLK, FB_ADR(5 DOWNTO 1), dma_snd_cs)
 	BEGIN
 		IF nRSTO = '0' THEN
 			sndmode <= x"00";
 		ELSIF rising_edge(MAIN_CLK) and dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"10" and nFB_WR = '0' and FB_B1 ='1' THEN
-			sndmode <= FB_AD(23 DOWNTO 16);
+			sndmode <= fb_ad_in(23 DOWNTO 16);
 		ELSE
 			sndmode <= sndmode;
 		END IF;
 	END PROCESS;
     
-    FB_AD(23 DOWNTO 16) <= sndmode WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"10" and nFB_OE = '0' ELSE "ZZZZZZZZ";
+    fb_ad_out(23 DOWNTO 16) <= sndmode WHEN dma_snd_cs = '1' and FB_ADR(5 DOWNTO 1) = x"10" and nFB_OE = '0' ELSE (others => 'Z');
 
     ----------------------------------------------------------------------------
     -- Paddle
@@ -1171,13 +1172,13 @@ BEGIN
     
     paddle_cs <= '1' WHEN nFB_CS1 = '0' and FB_ADR(19 DOWNTO 6) = x"3E48" ELSE '0';	-- F9200-F923F
     
-    FB_AD(31 DOWNTO 16) <= x"bfff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"0" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"1" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"8" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"9" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"A" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"B" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= x"0000" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"10" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-    FB_AD(31 DOWNTO 16) <= x"0000" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"11" and nFB_OE = '0' ELSE "ZZZZZZZZZZZZZZZZ";
+    fb_ad_out(31 DOWNTO 16) <= x"bfff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"0" and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"1" and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"8" and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"9" and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"A" and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 16) <= x"ffff" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"B" and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 16) <= x"0000" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"10" and nFB_OE = '0' ELSE (others => 'Z');
+    fb_ad_out(31 DOWNTO 16) <= x"0000" WHEN paddle_cs = '1' and FB_ADR(5 DOWNTO 1) = x"11" and nFB_OE = '0' ELSE (others => 'Z');
 
 END rtl;

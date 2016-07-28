@@ -1384,17 +1384,25 @@ begin
                            "00000" & video_act_adr(26 downto 24) when video_cnt_h and not nfb_oe else
                            (others => 'Z');
                            
-    u0_data <= (sizeIt(VIDEO_BASE_L,8) and VIDEO_BASE_L_D_q) or
-	 (sizeIt(VIDEO_BASE_M,8) and VIDEO_BASE_M_D_q) or
-	 (sizeIt(VIDEO_BASE_H,8) and VIDEO_BASE_H_D_q) or
-	 (sizeIt(VIDEO_CNT_L,8) and VIDEO_ACT_ADR(7 downto 0)) or
-	 (sizeIt(VIDEO_CNT_M,8) and VIDEO_ACT_ADR(15 downto 8)) or
-	 (sizeIt(VIDEO_CNT_H,8) and VIDEO_ACT_ADR(23 downto 16));
-    u0_enabledt <= (VIDEO_BASE_L or VIDEO_BASE_M or VIDEO_BASE_H or VIDEO_CNT_L
-	 or VIDEO_CNT_M or VIDEO_CNT_H) and (not nFB_OE);
-    fb_ad_out(23 downto 16) <= u0_tridata when u0_enabledt;
-
-
+--    u0_data <= (sizeIt(VIDEO_BASE_L,8) and VIDEO_BASE_L_D_q) or
+--	 (sizeIt(VIDEO_BASE_M,8) and VIDEO_BASE_M_D_q) or
+--	 (sizeIt(VIDEO_BASE_H,8) and VIDEO_BASE_H_D_q) or
+--	 (sizeIt(VIDEO_CNT_L,8) and VIDEO_ACT_ADR(7 downto 0)) or
+--	 (sizeIt(VIDEO_CNT_M,8) and VIDEO_ACT_ADR(15 downto 8)) or
+--	 (sizeIt(VIDEO_CNT_H,8) and VIDEO_ACT_ADR(23 downto 16));
+--    u0_enabledt <= (VIDEO_BASE_L or VIDEO_BASE_M or VIDEO_BASE_H or VIDEO_CNT_L
+--	 or VIDEO_CNT_M or VIDEO_CNT_H) and (not nFB_OE);
+--  fb_ad_out(23 downto 16) <= u0_tridata when u0_enabledt else (others => 'Z');
+    
+    fb_ad_out(23 downto 16) <= video_base_l_d_q when video_base_l and not nfb_oe else
+                               video_base_m_d_q when video_base_m and not nfb_oe else
+                               video_base_h_d_q when video_base_h and not nfb_oe else
+                               video_act_adr(7 downto 0) when video_cnt_l and not nfb_oe else
+                               video_act_adr(15 downto 8) when video_cnt_m and not nfb_oe else
+                               video_act_adr(23 downto 16) when video_cnt_h and not nfb_oe else
+                               (others => 'Z');
+    fb_ad_out(15 downto 0) <= (others => 'Z');
+    
     -- Assignments added to explicitly combine the
     -- effects of multiple drivers in the source
     FIFO_BANK_OK_d <= FIFO_BANK_OK_d_1 or FIFO_BANK_OK_d_2;

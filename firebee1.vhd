@@ -1,12 +1,12 @@
-LIBRARY ieee;
-    USE ieee.std_logic_1164.all; 
+library ieee;
+use ieee.std_logic_1164.all; 
 
-LIBRARY altera;
-    USE altera.altera_primitives_components.all;
+library altera;
+use altera.altera_primitives_components.all;
     
-LIBRARY work;
+library work;
 
-ENTITY firebee1 IS 
+entity firebee1 is
 	port
 	(
 		FB_ALE          : in std_logic;
@@ -147,7 +147,7 @@ ENTITY firebee1 IS
 	);
 end firebee1;
 
-architecture rtl OF firebee1 IS 
+architecture rtl of firebee1 is
     signal ACP_CONF         : std_logic_vector(31 downto 0);
     signal clk25m_i         : std_logic;
     signal CLK2M            : std_logic;
@@ -269,8 +269,7 @@ begin
             c3 => DDRCLK(3),
             c4 => DDR_SYNC_66M
         );
-    
-    
+        
     i_dsp : work.dsp
         port map
         (
@@ -285,7 +284,8 @@ begin
             nFB_BURST => nFB_BURST,
             nRSTO => nRSTO,
             nFB_CS3 => nFB_CS3,
-            FB_AD => FB_AD,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             IO => IO,
             SRD => SRD,
@@ -297,8 +297,7 @@ begin
             DSP_INT => DSP_INT,
             DSP_TA => DSP_TA
         );
-    
-    
+
     i_falconio_sdcard_ide_cf : work.falconio_sdcard_ide_cf
         port map
         (
@@ -359,7 +358,8 @@ begin
             SD_CDM_D1 => SD_CDM_D1,
             ACP_CONF => ACP_CONF(31 downto 24),
             ACSI_D => ACSI_D,
-            FB_AD => FB_AD,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             LP_D => LP_D,
             SCSI_D => SCSI_D,
@@ -405,7 +405,7 @@ begin
             DMA_DRQ => DMA_DRQ,
             MIDI_TLR => MIDI_TLR
         );
-    
+
     
     i_interrupt_handler : work.interrupt_handler
         port map
@@ -430,15 +430,15 @@ begin
             HSYNC => HSYNC,
             DMA_DRQ => DMA_DRQ,
             nRSTO => nRSTO,
-            FB_AD => FB_AD,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             INT_HANDLER_TA => INT_HANDLER_TA,
             TIN0 => TIN0,
             ACP_CONF => ACP_CONF,
             nIRQ => nIRQ
-        );
-    
-    
+        );    
+        
     i_mfp_acia_clk_pll : work.altpll1
         port map
         (
@@ -472,7 +472,6 @@ begin
             pll_areset => pll_reset,
             data_out => VR_D
         );
-    
     
     i_video : entity work.video
         port map
@@ -522,7 +521,6 @@ begin
             VR => VR
         );
     
-    
     i_video_clk_pll : altpll4
         port map
         (
@@ -563,6 +561,8 @@ begin
     nWR_GATE <= not(WR_GATE);
 
     nFB_TA <= not(video_ta or int_handler_ta or dsp_ta or falcon_io_ta);
+    fb_ad_in <= fb_ad;
+    fb_ad <= fb_ad_out when (video_ta or int_handler_ta or dsp_ta or falcon_io_ta) else (others => 'Z');
     
     CLK33M <= MAIN_CLK;
 

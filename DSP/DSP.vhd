@@ -49,7 +49,8 @@ ENTITY dsp IS
 		nSROE       : OUT std_logic;
 		DSP_INT     : OUT std_logic;
 		DSP_TA      : OUT std_logic;
-		FB_AD       : INOUT std_logic_vector(31 DOWNTO 0);
+		fb_ad_in    : in std_logic_vector(31 downto 0);
+        fb_ad_out   : out std_logic_vector(31 downto 0);
 		IO          : INOUT std_logic_vector(17 DOWNTO 0);
 		SRD         : INOUT std_logic_vector(15 DOWNTO 0)
 	);
@@ -72,6 +73,7 @@ BEGIN
 	DSP_INT <= '0';
 	DSP_TA <= '0';
 	IO(17 DOWNTO 0) <= FB_ADR(18 DOWNTO 1);
-	SRD(15 DOWNTO 0) <= FB_AD(31 DOWNTO 16) WHEN nFB_WR = '0' AND nSRCS = '0' ELSE "ZZZZZZZZZZZZZZZZ";
-	FB_AD(31 DOWNTO 16) <= SRD(15 DOWNTO 0) WHEN nFB_OE = '0' AND nSRCS = '0' ELSE "ZZZZZZZZZZZZZZZZ";
+	SRD(15 DOWNTO 0) <= fb_ad_in(31 DOWNTO 16) WHEN nFB_WR = '0' AND nSRCS = '0' ELSE (others => 'Z');
+	-- fb_ad_out(31 DOWNTO 16) <= SRD(15 DOWNTO 0) WHEN nFB_OE = '0' AND nSRCS = '0' ELSE (others => 'Z');
+    fb_ad_out(31 downto 0) <= (others => 'Z');     -- otherwise we get a constant driver error
 END rtl;

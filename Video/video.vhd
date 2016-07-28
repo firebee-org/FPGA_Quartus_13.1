@@ -1,229 +1,248 @@
--- Copyright (C) 1991-2014 Altera Corporation
--- Your use of Altera Corporation's design tools, logic functions 
--- and other software and tools, and its AMPP partner logic 
--- functions, and any output files from any of the foregoing 
--- (including device programming or simulation files), and any 
--- associated documentation or information are expressly subject 
--- to the terms and conditions of the Altera Program License 
--- Subscription Agreement, Altera MegaCore Function License 
--- Agreement, or other applicable license agreement, including, 
--- without limitation, that your use is for the sole purpose of 
--- programming logic devices manufactured by Altera and sold by 
--- Altera or its authorized distributors.  Please refer to the 
--- applicable agreement for further details.
+----------------------------------------------------------------------
+---- ----
+---- This file is part of the 'Firebee' project. ----
+---- http://firebee.org ----
+---- ----
+---- Description: ----
+---- This package contains utility functions, procedures and constants
+---- for the Firebee project.
+----
+---- Author(s): ----
+----  Fredi Aschwanden
+----  Markus Fröschle, mfro@mubf.de
+---- ----
+----------------------------------------------------------------------
+---- ----
+---- Copyright (C) 2015 Markus Fröschle & the FireBee project
+---- ----
+---- This source file is free software; you can redistribute it ----
+---- and/or modify it under the terms of the GNU General Public ----
+---- License as published by the Free Software Foundation; either ----
+---- version 2 of the License, or (at your option) any later ----
+---- version. ----
+---- ----
+---- This program is distributed in the hope that it will be ----
+---- useful, but WITHOUT ANY WARRANTY; without even the implied ----
+---- warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR ----
+---- PURPOSE. See the GNU General Public License for more ----
+---- details. ----
+---- ----
+---- You should have received a copy of the GNU General Public ----
+---- License along with this program; if not, write to the Free ----
+---- Software Foundation, Inc., 51 Franklin Street, Fifth Floor, ----
+---- Boston, MA 02110-1301, USA. ----
+---- ----
+----------------------------------------------------------------------
+--
 
--- PROGRAM		"Quartus II 64-Bit"
--- VERSION		"Version 13.1.4 Build 182 03/12/2014 SJ Web Edition"
--- CREATED		"Mon Jan 11 09:20:56 2016"
+library ieee;
+use ieee.std_logic_1164.all; 
 
-LIBRARY ieee;
-    USE ieee.std_logic_1164.all; 
+library work;
 
-LIBRARY work;
-
-ENTITY video IS 
-	PORT
+entity video is 
+	port
 	(
-		MAIN_CLK        : IN  std_logic;
-		nFB_CS1         : IN  std_logic;
-		nFB_CS2         : IN  std_logic;
-		nFB_CS3         : IN  std_logic;
-		nFB_WR          : IN  std_logic;
-		FB_SIZE0        : IN  std_logic;
-		FB_SIZE1        : IN  std_logic;
-		nRSTO           : IN  std_logic;
-		nFB_OE          : IN  std_logic;
-		FB_ALE          : IN  std_logic;
-		DDR_SYNC_66M    : IN  std_logic;
-		CLK33M          : IN  std_logic;
-		CLK25M          : IN  std_logic;
-		CLK_VIDEO       : IN  std_logic;
-		VR_BUSY         : IN  std_logic;
-		DDRCLK          : IN  std_logic_vector(3 DOWNTO 0);
-		fb_ad_in        : in  std_logic_vector(31 DOWNTO 0);
+		MAIN_CLK        : in  std_logic;
+		nFB_CS1         : in  std_logic;
+		nFB_CS2         : in  std_logic;
+		nFB_CS3         : in  std_logic;
+		nFB_WR          : in  std_logic;
+		FB_SIZE0        : in  std_logic;
+		FB_SIZE1        : in  std_logic;
+		nRSTO           : in  std_logic;
+		nFB_OE          : in  std_logic;
+		FB_ALE          : in  std_logic;
+		DDR_SYNC_66M    : in  std_logic;
+		CLK33M          : in  std_logic;
+		CLK25M          : in  std_logic;
+		CLK_VIDEO       : in  std_logic;
+		VR_BUSY         : in  std_logic;
+		ddrclk          : in  std_logic_vector(3 downto 0);
+		fb_ad_in        : in  std_logic_vector(31 downto 0);
         fb_ad_out       : out std_logic_vector(31 downto 0);
-		FB_ADR          : IN  std_logic_vector(31 DOWNTO 0);
-		VD              : INOUT  std_logic_vector(31 DOWNTO 0);
-		VDQS            : INOUT  std_logic_vector(3 DOWNTO 0);
-		VR_D            : IN  std_logic_vector(8 DOWNTO 0);
-		nBLANK          : OUT  std_logic;
-		nVWE            : OUT  std_logic;
-		nVCAS           : OUT  std_logic;
-		nVRAS           : OUT  std_logic;
-		nVCS            : OUT  std_logic;
-		nPD_VGA         : OUT  std_logic;
-		VCKE            : OUT  std_logic;
-		VSYNC           : OUT  std_logic;
-		HSYNC           : OUT  std_logic;
-		nSYNC           : OUT  std_logic;
-		VIDEO_TA        : OUT  std_logic;
-		PIXEL_CLK       : OUT  std_logic;
-		VIDEO_RECONFIG  : OUT  std_logic;
-		VR_WR           : OUT  std_logic;
-		VR_RD           : OUT  std_logic;
-		BA              : OUT  std_logic_vector(1 DOWNTO 0);
-		VA              : OUT  std_logic_vector(12 DOWNTO 0);
-		VB              : OUT  std_logic_vector(7 DOWNTO 0);
-		VDM             : OUT  std_logic_vector(3 DOWNTO 0);
-		VG              : OUT  std_logic_vector(7 DOWNTO 0);
-		VR              : OUT  std_logic_vector(7 DOWNTO 0)
+		FB_ADR          : in  std_logic_vector(31 downto 0);
+		VD              : inout  std_logic_vector(31 downto 0);
+		vdqs            : inout  std_logic_vector(3 downto 0);
+		VR_D            : in  std_logic_vector(8 downto 0);
+		nBLANK          : out  std_logic;
+		nVWE            : out  std_logic;
+		nVCAS           : out  std_logic;
+		nVRAS           : out  std_logic;
+		nVCS            : out  std_logic;
+		nPD_VGA         : out  std_logic;
+		VCKE            : out  std_logic;
+		VSYNC           : out  std_logic;
+		HSYNC           : out  std_logic;
+		nSYNC           : out  std_logic;
+		VIDEO_TA        : out  std_logic;
+		pixel_clk       : out  std_logic;
+		VIDEO_RECONFIG  : out  std_logic;
+		VR_WR           : out  std_logic;
+		VR_RD           : out  std_logic;
+		BA              : out  std_logic_vector(1 downto 0);
+		VA              : out  std_logic_vector(12 downto 0);
+		VB              : out  std_logic_vector(7 downto 0);
+		VDM             : out  std_logic_vector(3 downto 0);
+		VG              : out  std_logic_vector(7 downto 0);
+		VR              : out  std_logic_vector(7 downto 0)
 	);
-END video;
+end video;
 
 ARCHITECTURE rtl OF video IS 
-    ATTRIBUTE black_box     : BOOLEAN;
-    ATTRIBUTE noopt         : BOOLEAN;
-    SIGNAL	ACP_CLUT_RD     : std_logic;
-    SIGNAL	ACP_CLUT_WR     : std_logic_vector(3 DOWNTO 0);
-    SIGNAL	BLITTER_ADR     : std_logic_vector(31 DOWNTO 0);
-    SIGNAL	BLITTER_DACK    : std_logic_vector(4 DOWNTO 0);
-    SIGNAL	BLITTER_DIN     : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	BLITTER_DOUT    : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	BLITTER_ON      : std_logic;
-    SIGNAL	BLITTER_RUN     : std_logic;
-    SIGNAL	BLITTER_SIG     : std_logic;
-    SIGNAL	BLITTER_TA      : std_logic;
-    SIGNAL	BLITTER_WR      : std_logic;
-    SIGNAL	BORDER_COLOR    : std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CC16            : std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CC24            : std_logic_vector(31 DOWNTO 0);
-    SIGNAL	CCA             : std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CCF             : std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CCS             : std_logic_vector(23 DOWNTO 0);
-    SIGNAL	CCSEL           : std_logic_vector(2 DOWNTO 0);
-    SIGNAL	CLR_FIFO        : std_logic;
-    SIGNAL	CLUT_ADR        : std_logic_vector(7 DOWNTO 0);
-    SIGNAL	CLUT_ADR1A      : std_logic;
-    SIGNAL	CLUT_ADR2A      : std_logic;
-    SIGNAL	CLUT_ADR3A      : std_logic;
-    SIGNAL	CLUT_ADR4A      : std_logic;
-    SIGNAL	CLUT_ADR5A      : std_logic;
-    SIGNAL	CLUT_ADR6A      : std_logic;
-    SIGNAL	CLUT_ADR7A      : std_logic;
-    SIGNAL	CLUT_MUX_ADR    : std_logic_vector(3 DOWNTO 0);
-    SIGNAL	CLUT_OFF        : std_logic_vector(3 DOWNTO 0);
-    SIGNAL	COLOR1          : std_logic;
-    SIGNAL	COLOR2          : std_logic;
-    SIGNAL	COLOR4          : std_logic;
-    SIGNAL	COLOR8          : std_logic;
-    SIGNAL	DDR_FB          : std_logic_vector(4 DOWNTO 0);
-    SIGNAL	DDR_WR          : std_logic;
-    SIGNAL	DDRWR_D_SEL     : std_logic_vector(1 DOWNTO 0);
-    SIGNAL	DOP_FIFO_CLR    : std_logic;
-    SIGNAL	FALCON_CLUT_RDH : std_logic;
-    SIGNAL	FALCON_CLUT_RDL : std_logic;
-    SIGNAL	FALCON_CLUT_WR  : std_logic_vector(3 DOWNTO 0);
-    SIGNAL	FB_DDR          : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	FB_LE           : std_logic_vector(3 DOWNTO 0);
-    SIGNAL	FB_VDOE         : std_logic_vector(3 DOWNTO 0);
-    SIGNAL	FIFO_D          : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	FIFO_MW         : std_logic_vector(8 DOWNTO 0);
-    SIGNAL	FIFO_RDE        : std_logic;
-    SIGNAL	FIFO_WRE        : std_logic;
-    SIGNAL	INTER_ZEI       : std_logic;
-    SIGNAL	nFB_BURST       : std_logic := '0';
-    SIGNAL	pixel_clk_i     : std_logic;
-    SIGNAL	SR_BLITTER_DACK : std_logic;
-    SIGNAL	SR_DDR_FB       : std_logic;
-    SIGNAL	SR_DDR_WR       : std_logic;
-    SIGNAL	SR_DDRWR_D_SEL  : std_logic;
-    SIGNAL	SR_FIFO_WRE     : std_logic;
-    SIGNAL	SR_VDMP         : std_logic_vector(7 DOWNTO 0);
-    SIGNAL	ST_CLUT_RD      : std_logic;
-    SIGNAL	ST_CLUT_WR      : std_logic_vector(1 DOWNTO 0);
-    SIGNAL	VDM_SEL         : std_logic_vector(3 DOWNTO 0);
-    SIGNAL	VDMA            : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VDMB            : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VDMC            : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VDMP            : std_logic_vector(7 DOWNTO 0);
-    SIGNAL	VDOUT_OE        : std_logic;
-    SIGNAL	VDP_IN          : std_logic_vector(63 DOWNTO 0);
-    SIGNAL	VDP_OUT         : std_logic_vector(63 DOWNTO 0);
-    SIGNAL	VDR             : std_logic_vector(31 DOWNTO 0);
-    SIGNAL	VDVZ            : std_logic_vector(127 DOWNTO 0);
-    SIGNAL	VIDEO_DDR_TA    : std_logic;
-    SIGNAL	VIDEO_MOD_TA    : std_logic;
-    SIGNAL	VIDEO_RAM_CTR   : std_logic_vector(15 DOWNTO 0);
-    SIGNAL	ZR_C8           : std_logic_vector(7 DOWNTO 0);
-    SIGNAL	ZR_C8B          : std_logic_vector(7 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_0 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_1 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_2 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_3 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_4 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_5 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_60 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_7 : std_logic_vector(15 DOWNTO 0);
-    SIGNAL	DFF_inst93      : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_8 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_9 : std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_61 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_11 :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_12 :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_13 :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_14 :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_15 :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_16 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_18 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_19 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_20 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_21 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_22 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_23 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_24 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_25 :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_26 :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_62 :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_29 :  std_logic_vector(2 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_30 :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_31 :  std_logic_vector(2 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_32 :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_33 :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_34 :  std_logic_vector(2 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_63 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_36 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_38 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_40 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_41 :  std_logic_vector(5 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_42 :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_43 :  std_logic_vector(23 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_44 :  std_logic_vector(5 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_45 :  std_logic_vector(5 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_46 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_47 :  std_logic_vector(6 DOWNTO 0);
-    SIGNAL	SYNTHESIZED_WIRE_48 :  std_logic_vector(31 DOWNTO 0);
-    SIGNAL	DFF_inst91          :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_64 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_49 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_50 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_51 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_52 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_53 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_54 :  std_logic;
-    SIGNAL	SYNTHESIZED_WIRE_65 :  std_logic_vector(23 DOWNTO 0);
+    attribute black_box     : BOOLEAN;
+    attribute noopt         : BOOLEAN;
+    signal	ACP_CLUT_RD     : std_logic;
+    signal	ACP_CLUT_WR     : std_logic_vector(3 downto 0);
+    signal	BLITTER_ADR     : std_logic_vector(31 downto 0);
+    signal	blitter_dack    : std_logic_vector(4 downto 0);
+    signal	blitter_din     : std_logic_vector(127 downto 0);
+    signal	BLITTER_DOUT    : std_logic_vector(127 downto 0);
+    signal	BLITTER_ON      : std_logic;
+    signal	BLITTER_RUN     : std_logic;
+    signal	BLITTER_SIG     : std_logic;
+    signal	BLITTER_TA      : std_logic;
+    signal	BLITTER_WR      : std_logic;
+    signal	BORDER_COLOR    : std_logic_vector(23 downto 0);
+    signal	CC16            : std_logic_vector(23 downto 0);
+    signal	CC24            : std_logic_vector(31 downto 0);
+    signal	CCA             : std_logic_vector(23 downto 0);
+    signal	ccf             : std_logic_vector(23 downto 0);
+    signal	CCS             : std_logic_vector(23 downto 0);
+    signal	CCSEL           : std_logic_vector(2 downto 0);
+    signal	CLR_FIFO        : std_logic;
+    signal	clut_adr        : std_logic_vector(7 downto 0);
+    signal	CLUT_ADR1A      : std_logic;
+    signal	CLUT_ADR2A      : std_logic;
+    signal	CLUT_ADR3A      : std_logic;
+    signal	CLUT_ADR4A      : std_logic;
+    signal	CLUT_ADR5A      : std_logic;
+    signal	CLUT_ADR6A      : std_logic;
+    signal	CLUT_ADR7A      : std_logic;
+    signal	CLUT_MUX_ADR    : std_logic_vector(3 downto 0);
+    signal	CLUT_OFF        : std_logic_vector(3 downto 0);
+    signal	color1          : std_logic;
+    signal	color2          : std_logic;
+    signal	color4          : std_logic;
+    signal	color8          : std_logic;
+    signal	DDR_FB          : std_logic_vector(4 downto 0);
+    signal	ddr_wr          : std_logic;
+    signal	ddrwr_d_sel     : std_logic_vector(1 downto 0);
+    signal	DOP_FIFO_CLR    : std_logic;
+    signal	FALCON_CLUT_RDH : std_logic;
+    signal	FALCON_CLUT_RDL : std_logic;
+    signal	FALCON_CLUT_WR  : std_logic_vector(3 downto 0);
+    signal	FB_DDR          : std_logic_vector(127 downto 0);
+    signal	FB_LE           : std_logic_vector(3 downto 0);
+    signal	FB_VDOE         : std_logic_vector(3 downto 0);
+    signal	FIFO_D          : std_logic_vector(127 downto 0);
+    signal	FIFO_MW         : std_logic_vector(8 downto 0);
+    signal	FIFO_RDE        : std_logic;
+    signal	FIFO_WRE        : std_logic;
+    signal	INTER_ZEI       : std_logic;
+    signal	nFB_BURST       : std_logic := '0';
+    signal	pixel_clk_i     : std_logic;
+    signal	SR_BLITTER_DACK : std_logic;
+    signal	SR_DDR_FB       : std_logic;
+    signal	sr_ddr_wr       : std_logic;
+    signal	SR_DDRWR_D_SEL  : std_logic;
+    signal	SR_FIFO_WRE     : std_logic;
+    signal	SR_VDMP         : std_logic_vector(7 downto 0);
+    signal	ST_CLUT_RD      : std_logic;
+    signal	ST_CLUT_WR      : std_logic_vector(1 downto 0);
+    signal	VDM_SEL         : std_logic_vector(3 downto 0);
+    signal	VDMA            : std_logic_vector(127 downto 0);
+    signal	VDMB            : std_logic_vector(127 downto 0);
+    signal	VDMC            : std_logic_vector(127 downto 0);
+    signal	VDMP            : std_logic_vector(7 downto 0);
+    signal	vdout_oe        : std_logic;
+    signal	VDP_IN          : std_logic_vector(63 downto 0);
+    signal	VDP_OUT         : std_logic_vector(63 downto 0);
+    signal	VDR             : std_logic_vector(31 downto 0);
+    signal	vdvz            : std_logic_vector(127 downto 0);
+    signal	VIDEO_DDR_TA    : std_logic;
+    signal	VIDEO_MOD_TA    : std_logic;
+    signal	VIDEO_RAM_CTR   : std_logic_vector(15 downto 0);
+    signal	ZR_C8           : std_logic_vector(7 downto 0);
+    signal	ZR_C8B          : std_logic_vector(7 downto 0);
+    signal	SYNTHESIZED_WIRE_0 : std_logic;
+    signal	SYNTHESIZED_WIRE_1 : std_logic;
+    signal	SYNTHESIZED_WIRE_2 : std_logic;
+    signal	SYNTHESIZED_WIRE_3 : std_logic;
+    signal	SYNTHESIZED_WIRE_4 : std_logic;
+    signal	SYNTHESIZED_WIRE_5 : std_logic;
+    signal	SYNTHESIZED_WIRE_60 :  std_logic;
+    signal	SYNTHESIZED_WIRE_7 : std_logic_vector(15 downto 0);
+    signal	DFF_inst93      : std_logic;
+    signal	SYNTHESIZED_WIRE_8 : std_logic;
+    signal	SYNTHESIZED_WIRE_9 : std_logic;
+    signal	SYNTHESIZED_WIRE_61 :  std_logic;
+    signal	SYNTHESIZED_WIRE_11 :  std_logic_vector(31 downto 0);
+    signal	SYNTHESIZED_WIRE_12 :  std_logic_vector(7 downto 0);
+    signal	SYNTHESIZED_WIRE_13 :  std_logic_vector(31 downto 0);
+    signal	SYNTHESIZED_WIRE_14 :  std_logic_vector(31 downto 0);
+    signal	SYNTHESIZED_WIRE_15 :  std_logic_vector(31 downto 0);
+    signal	SYNTHESIZED_WIRE_16 :  std_logic;
+    signal	SYNTHESIZED_WIRE_18 :  std_logic;
+    signal	SYNTHESIZED_WIRE_19 :  std_logic;
+    signal	SYNTHESIZED_WIRE_20 :  std_logic;
+    signal	SYNTHESIZED_WIRE_21 :  std_logic;
+    signal	SYNTHESIZED_WIRE_22 :  std_logic;
+    signal	SYNTHESIZED_WIRE_23 :  std_logic;
+    signal	SYNTHESIZED_WIRE_24 :  std_logic;
+    signal	SYNTHESIZED_WIRE_25 :  std_logic_vector(23 downto 0);
+    signal	SYNTHESIZED_WIRE_26 :  std_logic_vector(23 downto 0);
+    signal	SYNTHESIZED_WIRE_62 :  std_logic_vector(23 downto 0);
+    signal	SYNTHESIZED_WIRE_29 :  std_logic_vector(2 downto 0);
+    signal	SYNTHESIZED_WIRE_30 :  std_logic_vector(7 downto 0);
+    signal	SYNTHESIZED_WIRE_31 :  std_logic_vector(2 downto 0);
+    signal	SYNTHESIZED_WIRE_32 :  std_logic_vector(7 downto 0);
+    signal	SYNTHESIZED_WIRE_33 :  std_logic_vector(7 downto 0);
+    signal	SYNTHESIZED_WIRE_34 :  std_logic_vector(2 downto 0);
+    signal	SYNTHESIZED_WIRE_63 :  std_logic_vector(127 downto 0);
+    signal	SYNTHESIZED_WIRE_36 :  std_logic_vector(127 downto 0);
+    signal	SYNTHESIZED_WIRE_38 :  std_logic;
+    signal	SYNTHESIZED_WIRE_40 :  std_logic;
+    signal	SYNTHESIZED_WIRE_41 :  std_logic_vector(5 downto 0);
+    signal	SYNTHESIZED_WIRE_42 :  std_logic_vector(23 downto 0);
+    signal	SYNTHESIZED_WIRE_43 :  std_logic_vector(23 downto 0);
+    signal	SYNTHESIZED_WIRE_44 :  std_logic_vector(5 downto 0);
+    signal	SYNTHESIZED_WIRE_45 :  std_logic_vector(5 downto 0);
+    signal	SYNTHESIZED_WIRE_46 :  std_logic;
+    signal	SYNTHESIZED_WIRE_47 :  std_logic_vector(6 downto 0);
+    signal	SYNTHESIZED_WIRE_48 :  std_logic_vector(31 downto 0);
+    signal	DFF_inst91          :  std_logic;
+    signal	SYNTHESIZED_WIRE_64 :  std_logic;
+    signal	SYNTHESIZED_WIRE_49 :  std_logic;
+    signal	SYNTHESIZED_WIRE_50 :  std_logic;
+    signal	SYNTHESIZED_WIRE_51 :  std_logic;
+    signal	SYNTHESIZED_WIRE_52 :  std_logic;
+    signal	SYNTHESIZED_WIRE_53 :  std_logic;
+    signal	SYNTHESIZED_WIRE_54 :  std_logic;
+    signal	SYNTHESIZED_WIRE_65 :  std_logic_vector(23 downto 0);
     
-    SIGNAL	GDFX_TEMP_SIGNAL_16 :  std_logic_vector(7 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_0  :  std_logic_vector(15 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_6  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_5  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_4  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_3  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_2  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_1  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_15 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_14 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_13 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_12 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_11 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_10 :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_9  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_8  :  std_logic_vector(127 DOWNTO 0);
-    SIGNAL	GDFX_TEMP_SIGNAL_7  :  std_logic_vector(127 DOWNTO 0);
+    signal	GDFX_TEMP_SIGNAL_16 :  std_logic_vector(7 downto 0);
+    signal	GDFX_TEMP_SIGNAL_0  :  std_logic_vector(15 downto 0);
+    signal	GDFX_TEMP_SIGNAL_6  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_5  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_4  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_3  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_2  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_1  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_15 :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_14 :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_13 :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_12 :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_11 :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_10 :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_9  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_8  :  std_logic_vector(127 downto 0);
+    signal	GDFX_TEMP_SIGNAL_7  :  std_logic_vector(127 downto 0);
     
-BEGIN 
-    VB(7 DOWNTO 0) <= SYNTHESIZED_WIRE_65(7 DOWNTO 0);
-    VG(7 DOWNTO 0) <= SYNTHESIZED_WIRE_65(15 DOWNTO 8);
-    VR(7 DOWNTO 0) <= SYNTHESIZED_WIRE_65(23 DOWNTO 16);
+begin 
+    VB(7 downto 0) <= SYNTHESIZED_WIRE_65(7 downto 0);
+    VG(7 downto 0) <= SYNTHESIZED_WIRE_65(15 downto 8);
+    VR(7 downto 0) <= SYNTHESIZED_WIRE_65(23 downto 16);
 
     SYNTHESIZED_WIRE_0 <= '0';
     SYNTHESIZED_WIRE_1 <= '0';
@@ -264,21 +283,21 @@ BEGIN
     CC16(0) <= GDFX_TEMP_SIGNAL_16(0);
     
     
-    GDFX_TEMP_SIGNAL_15 <= (VDMB(55 DOWNTO 0) & VDMA(127 DOWNTO 56));
-    GDFX_TEMP_SIGNAL_14 <= (VDMB(63 DOWNTO 0) & VDMA(127 DOWNTO 64));
-    GDFX_TEMP_SIGNAL_13 <= (VDMB(71 DOWNTO 0) & VDMA(127 DOWNTO 72));
-    GDFX_TEMP_SIGNAL_12 <= (VDMB(79 DOWNTO 0) & VDMA(127 DOWNTO 80));
-    GDFX_TEMP_SIGNAL_11 <= (VDMB(87 DOWNTO 0) & VDMA(127 DOWNTO 88));
-    GDFX_TEMP_SIGNAL_10 <= (VDMB(95 DOWNTO 0) & VDMA(127 DOWNTO 96));
-    GDFX_TEMP_SIGNAL_9 <= (VDMB(103 DOWNTO 0) & VDMA(127 DOWNTO 104));
-    GDFX_TEMP_SIGNAL_8 <= (VDMB(111 DOWNTO 0) & VDMA(127 DOWNTO 112));
-    GDFX_TEMP_SIGNAL_7 <= (VDMB(119 DOWNTO 0) & VDMA(127 DOWNTO 120));
-    GDFX_TEMP_SIGNAL_6 <= (VDMB(7 DOWNTO 0) & VDMA(127 DOWNTO 8));
-    GDFX_TEMP_SIGNAL_5 <= (VDMB(15 DOWNTO 0) & VDMA(127 DOWNTO 16));
-    GDFX_TEMP_SIGNAL_4 <= (VDMB(23 DOWNTO 0) & VDMA(127 DOWNTO 24));
-    GDFX_TEMP_SIGNAL_3 <= (VDMB(31 DOWNTO 0) & VDMA(127 DOWNTO 32));
-    GDFX_TEMP_SIGNAL_2 <= (VDMB(39 DOWNTO 0) & VDMA(127 DOWNTO 40));
-    GDFX_TEMP_SIGNAL_1 <= (VDMB(47 DOWNTO 0) & VDMA(127 DOWNTO 48));
+    GDFX_TEMP_SIGNAL_15 <= (VDMB(55 downto 0) & VDMA(127 downto 56));
+    GDFX_TEMP_SIGNAL_14 <= (VDMB(63 downto 0) & VDMA(127 downto 64));
+    GDFX_TEMP_SIGNAL_13 <= (VDMB(71 downto 0) & VDMA(127 downto 72));
+    GDFX_TEMP_SIGNAL_12 <= (VDMB(79 downto 0) & VDMA(127 downto 80));
+    GDFX_TEMP_SIGNAL_11 <= (VDMB(87 downto 0) & VDMA(127 downto 88));
+    GDFX_TEMP_SIGNAL_10 <= (VDMB(95 downto 0) & VDMA(127 downto 96));
+    GDFX_TEMP_SIGNAL_9 <= (VDMB(103 downto 0) & VDMA(127 downto 104));
+    GDFX_TEMP_SIGNAL_8 <= (VDMB(111 downto 0) & VDMA(127 downto 112));
+    GDFX_TEMP_SIGNAL_7 <= (VDMB(119 downto 0) & VDMA(127 downto 120));
+    GDFX_TEMP_SIGNAL_6 <= (VDMB(7 downto 0) & VDMA(127 downto 8));
+    GDFX_TEMP_SIGNAL_5 <= (VDMB(15 downto 0) & VDMA(127 downto 16));
+    GDFX_TEMP_SIGNAL_4 <= (VDMB(23 downto 0) & VDMA(127 downto 24));
+    GDFX_TEMP_SIGNAL_3 <= (VDMB(31 downto 0) & VDMA(127 downto 32));
+    GDFX_TEMP_SIGNAL_2 <= (VDMB(39 downto 0) & VDMA(127 downto 40));
+    GDFX_TEMP_SIGNAL_1 <= (VDMB(47 downto 0) & VDMA(127 downto 48));
     
     
     acp_clut_ram : entity work.altdpram2
@@ -288,12 +307,12 @@ BEGIN
             wren_b => SYNTHESIZED_WIRE_0,
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(9 DOWNTO 2),
+            address_a => FB_ADR(9 downto 2),
             address_b => ZR_C8B,
-            data_a => fb_ad_in(7 DOWNTO 0),
-            data_b => (OTHERS => '0'),
+            data_a => fb_ad_in(7 downto 0),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_30,
-            q_b => CCA(7 DOWNTO 0)
+            q_b => CCA(7 downto 0)
         );
     
     
@@ -304,12 +323,12 @@ BEGIN
             wren_b => SYNTHESIZED_WIRE_1,
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(9 DOWNTO 2),
+            address_a => FB_ADR(9 downto 2),
             address_b => ZR_C8B,
-            data_a => fb_ad_in(15 DOWNTO 8),
-            data_b => (OTHERS => '0'),
+            data_a => fb_ad_in(15 downto 8),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_32,
-            q_b => CCA(15 DOWNTO 8)
+            q_b => CCA(15 downto 8)
         );
     
     
@@ -320,14 +339,13 @@ BEGIN
             wren_b => SYNTHESIZED_WIRE_2,
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(9 DOWNTO 2),
+            address_a => FB_ADR(9 downto 2),
             address_b => ZR_C8B,
-            data_a => fb_ad_in(23 DOWNTO 16),
-            data_b => (OTHERS => '0'),
+            data_a => fb_ad_in(23 downto 16),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_33,
-            q_b => CCA(23 DOWNTO 16)
+            q_b => CCA(23 downto 16)
         );
-    
     
     i_blitter : entity work.blitter
         port map
@@ -343,10 +361,10 @@ BEGIN
             nFB_CS1 => nFB_CS1,
             nFB_CS2 => nFB_CS2,
             nFB_CS3 => nFB_CS3,
-            DDRCLK0 => DDRCLK(0),
+            DDRCLK0 => ddrclk(0),
             SR_BLITTER_DACK => SR_BLITTER_DACK,
-            BLITTER_DACK => BLITTER_DACK,
-            BLITTER_DIN => BLITTER_DIN,
+            blitter_dack => blitter_dack,
+            blitter_din => blitter_din,
             fb_ad_in => fb_ad_in,
             fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
@@ -357,9 +375,8 @@ BEGIN
             blitter_ta => blitter_ta,
             BLITTER_ADR => BLITTER_ADR,
             BLITTER_DOUT => BLITTER_DOUT
-        );
-    
-    
+        );    
+
     i_ddr_ctr : entity work.ddr_ctr
         port map
         (
@@ -376,7 +393,7 @@ BEGIN
             DDR_SYNC_66M => DDR_SYNC_66M,
             BLITTER_SIG => BLITTER_SIG,
             BLITTER_WR => BLITTER_WR,
-            DDRCLK0 => DDRCLK(0),
+            DDRCLK0 => ddrclk(0),
             CLK33M => CLK33M,
             CLR_FIFO => CLR_FIFO,
             BLITTER_ADR => BLITTER_ADR,
@@ -392,19 +409,19 @@ BEGIN
             nVCAS => nVCAS,
             SR_FIFO_WRE => SR_FIFO_WRE,
             SR_DDR_FB => SR_DDR_FB,
-            SR_DDR_WR => SR_DDR_WR,
+            sr_ddr_wr => sr_ddr_wr,
             SR_DDRWR_D_SEL => SR_DDRWR_D_SEL,
             VIDEO_DDR_TA => VIDEO_DDR_TA,
             SR_BLITTER_DACK => SR_BLITTER_DACK,
-            DDRWR_D_SEL1 => DDRWR_D_SEL(1),
+            DDRWR_D_SEL1 => ddrwr_d_sel(1),
             BA => BA,
             FB_LE => FB_LE,
             FB_VDOE => FB_VDOE,
             SR_VDMP => SR_VDMP,
             VA => VA,
             VDM_SEL => VDM_SEL
-        );
-    
+        );   
+
     
     falcon_clut_blue : entity work.altdpram1
         port map
@@ -413,12 +430,12 @@ BEGIN
             wren_b => SYNTHESIZED_WIRE_3,
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(9 DOWNTO 2),
-            address_b => CLUT_ADR,
-            data_a => fb_ad_in(23 DOWNTO 18),
-            data_b => (OTHERS => '0'),
+            address_a => FB_ADR(9 downto 2),
+            address_b => clut_adr,
+            data_a => fb_ad_in(23 downto 18),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_45,
-            q_b => CCF(7 DOWNTO 2)
+            q_b => ccf(7 downto 2)
         );
     
     
@@ -429,12 +446,12 @@ BEGIN
             wren_b => SYNTHESIZED_WIRE_4,
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(9 DOWNTO 2),
-            address_b => CLUT_ADR,
-            data_a => fb_ad_in(23 DOWNTO 18),
-            data_b => (OTHERS => '0'),
+            address_a => FB_ADR(9 downto 2),
+            address_b => clut_adr,
+            data_a => fb_ad_in(23 downto 18),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_44,
-            q_b => CCF(15 DOWNTO 10)
+            q_b => ccf(15 downto 10)
         );
     
     
@@ -445,12 +462,12 @@ BEGIN
             wren_b => SYNTHESIZED_WIRE_5,
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(9 DOWNTO 2),
-            address_b => CLUT_ADR,
-            data_a => fb_ad_in(31 DOWNTO 26),
-            data_b => (OTHERS => '0'),
+            address_a => FB_ADR(9 downto 2),
+            address_b => clut_adr,
+            data_a => fb_ad_in(31 downto 26),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_41,
-            q_b => CCF(23 DOWNTO 18)
+            q_b => ccf(23 downto 18)
         );
     
     
@@ -458,7 +475,7 @@ BEGIN
         port map
         (
             wrreq => FIFO_WRE,
-            wrclk => DDRCLK(0),
+            wrclk => ddrclk(0),
             rdreq => SYNTHESIZED_WIRE_60,
             rdclk => pixel_clk_i,
             aclr => CLR_FIFO,
@@ -471,15 +488,15 @@ BEGIN
     inst1 : entity work.altddio_bidir0
         port map
         (
-            oe => VDOUT_OE,
-            inclock => DDRCLK(1),
-            outclock => DDRCLK(3),
-            datain_h => VDP_OUT(63 DOWNTO 32),
-            datain_l => VDP_OUT(31 DOWNTO 0),
+            oe => vdout_oe,
+            inclock => ddrclk(1),
+            outclock => ddrclk(3),
+            datain_h => VDP_OUT(63 downto 32),
+            datain_l => VDP_OUT(31 downto 0),
             padio => VD,
             combout => SYNTHESIZED_WIRE_15,
-            dataout_h => VDP_IN(31 DOWNTO 0),
-            dataout_l => VDP_IN(63 DOWNTO 32)
+            dataout_h => VDP_IN(31 downto 0),
+            dataout_l => VDP_IN(63 downto 32)
         );
     
     
@@ -521,18 +538,18 @@ BEGIN
         (
             data1 => DFF_inst93,
             data0 => ZR_C8(0),
-            sel => COLOR1,
+            sel => color1,
             result => ZR_C8B(0)
         );
     
     
     
-    CLUT_ADR(2) <= CLUT_ADR2A AND SYNTHESIZED_WIRE_61;    
-    CLUT_ADR(4) <= CLUT_OFF(0) OR SYNTHESIZED_WIRE_8;
-    CLUT_ADR(6) <= CLUT_OFF(2) OR SYNTHESIZED_WIRE_9;
+    clut_adr(2) <= CLUT_ADR2A AND SYNTHESIZED_WIRE_61;    
+    clut_adr(4) <= CLUT_OFF(0) OR SYNTHESIZED_WIRE_8;
+    clut_adr(6) <= CLUT_OFF(2) OR SYNTHESIZED_WIRE_9;
 
-    SYNTHESIZED_WIRE_61 <= COLOR8 OR COLOR4;
-    SYNTHESIZED_WIRE_16 <= COLOR4 OR COLOR8 OR COLOR2;
+    SYNTHESIZED_WIRE_61 <= color8 OR color4;
+    SYNTHESIZED_WIRE_16 <= color4 OR color8 OR color2;
     
    
     fb_ad_out <= vdr when fb_vdoe(0) else (others => 'Z');
@@ -554,9 +571,9 @@ BEGIN
     inst12 : entity work.lpm_ff1
         port map
         (
-            clock => DDRCLK(0),
-            data => VDP_IN(31 DOWNTO 0),
-            q => VDVZ(31 DOWNTO 0)
+            clock => ddrclk(0),
+            data => VDP_IN(31 downto 0),
+            q => vdvz(31 downto 0)
         );
     
     
@@ -566,7 +583,7 @@ BEGIN
             clock => DDR_SYNC_66M,
             enable => FB_LE(0),
             data => fb_ad_in,
-            q => FB_DDR(127 DOWNTO 96)
+            q => FB_DDR(127 downto 96)
         );
     
     
@@ -576,7 +593,7 @@ BEGIN
             clock => DDR_SYNC_66M,
             enable => FB_LE(1),
             data => fb_ad_in,
-            q => FB_DDR(95 DOWNTO 64)
+            q => FB_DDR(95 downto 64)
         );
     
     
@@ -586,7 +603,7 @@ BEGIN
             clock => DDR_SYNC_66M,
             enable => FB_LE(2),
             data => fb_ad_in,
-            q => FB_DDR(63 DOWNTO 32)
+            q => FB_DDR(63 downto 32)
         );
     
     
@@ -596,16 +613,16 @@ BEGIN
             clock => DDR_SYNC_66M,
             enable => FB_LE(3),
             data => fb_ad_in,
-            q => FB_DDR(31 DOWNTO 0)
+            q => FB_DDR(31 downto 0)
         );
     
     
     inst17 : entity work.lpm_ff0
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             enable => DDR_FB(1),
-            data => VDP_IN(31 DOWNTO 0),
+            data => VDP_IN(31 downto 0),
             q => SYNTHESIZED_WIRE_11
         );
     
@@ -613,9 +630,9 @@ BEGIN
     inst18 : entity work.lpm_ff0
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             enable => DDR_FB(0),
-            data => VDP_IN(63 DOWNTO 32),
+            data => VDP_IN(63 downto 32),
             q => SYNTHESIZED_WIRE_13
         );
     
@@ -623,9 +640,9 @@ BEGIN
     inst19 : entity work.lpm_ff0
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             enable => DDR_FB(0),
-            data => VDP_IN(31 DOWNTO 0),
+            data => VDP_IN(31 downto 0),
             q => SYNTHESIZED_WIRE_14
         );
     
@@ -633,9 +650,9 @@ BEGIN
     inst2 : entity work.altddio_out0
         port map
         (
-            outclock => DDRCLK(3),
-            datain_h => VDMP(7 DOWNTO 4),
-            datain_l => VDMP(3 DOWNTO 0),
+            outclock => ddrclk(3),
+            datain_h => VDMP(7 downto 4),
+            datain_l => VDMP(3 downto 0),
             dataout => VDM
         );
     
@@ -643,9 +660,9 @@ BEGIN
     inst20 : entity work.lpm_ff1
         port map
         (
-            clock => DDRCLK(0),
-            data => VDVZ(31 DOWNTO 0),
-            q => VDVZ(95 DOWNTO 64)
+            clock => ddrclk(0),
+            data => vdvz(31 downto 0),
+            q => vdvz(95 downto 64)
         );
     
     
@@ -653,11 +670,11 @@ BEGIN
         port map
         (
             clock => pixel_clk_i,
-            data0x => FIFO_D(127 DOWNTO 96),
-            data1x => FIFO_D(95 DOWNTO 64),
-            data2x => FIFO_D(63 DOWNTO 32),
-            data3x => FIFO_D(31 DOWNTO 0),
-            sel => CLUT_MUX_ADR(1 DOWNTO 0),
+            data0x => FIFO_D(127 downto 96),
+            data1x => FIFO_D(95 downto 64),
+            data2x => FIFO_D(63 downto 32),
+            data3x => FIFO_D(31 downto 0),
+            sel => CLUT_MUX_ADR(1 downto 0),
             result => SYNTHESIZED_WIRE_48
         );
     
@@ -665,11 +682,11 @@ BEGIN
     inst22 : entity work.lpm_mux5
         port map
         (
-            data0x => FB_DDR(127 DOWNTO 64),
-            data1x => FB_DDR(63 DOWNTO 0),
-            data2x => BLITTER_DOUT(127 DOWNTO 64),
-            data3x => BLITTER_DOUT(63 DOWNTO 0),
-            sel => DDRWR_D_SEL,
+            data0x => FB_DDR(127 downto 64),
+            data1x => FB_DDR(63 downto 0),
+            data2x => BLITTER_DOUT(127 downto 64),
+            data3x => BLITTER_DOUT(63 downto 0),
+            sel => ddrwr_d_sel,
             result => VDP_OUT
         );
     
@@ -685,15 +702,15 @@ BEGIN
         port map
         (
             clock => pixel_clk_i,
-            data0x => FIFO_D(127 DOWNTO 112),
-            data1x => FIFO_D(111 DOWNTO 96),
-            data2x => FIFO_D(95 DOWNTO 80),
-            data3x => FIFO_D(79 DOWNTO 64),
-            data4x => FIFO_D(63 DOWNTO 48),
-            data5x => FIFO_D(47 DOWNTO 32),
-            data6x => FIFO_D(31 DOWNTO 16),
-            data7x => FIFO_D(15 DOWNTO 0),
-            sel => CLUT_MUX_ADR(2 DOWNTO 0),
+            data0x => FIFO_D(127 downto 112),
+            data1x => FIFO_D(111 downto 96),
+            data2x => FIFO_D(95 downto 80),
+            data3x => FIFO_D(79 downto 64),
+            data4x => FIFO_D(63 downto 48),
+            data5x => FIFO_D(47 downto 32),
+            data6x => FIFO_D(31 downto 16),
+            data7x => FIFO_D(15 downto 0),
+            sel => CLUT_MUX_ADR(2 downto 0),
             result => SYNTHESIZED_WIRE_7
         );
     
@@ -702,22 +719,22 @@ BEGIN
         port map
         (
             clock => pixel_clk_i,
-            data0x => FIFO_D(127 DOWNTO 120),
-            data10x => FIFO_D(47 DOWNTO 40),
-            data11x => FIFO_D(39 DOWNTO 32),
-            data12x => FIFO_D(31 DOWNTO 24),
-            data13x => FIFO_D(23 DOWNTO 16),
-            data14x => FIFO_D(15 DOWNTO 8),
-            data15x => FIFO_D(7 DOWNTO 0),
-            data1x => FIFO_D(119 DOWNTO 112),
-            data2x => FIFO_D(111 DOWNTO 104),
-            data3x => FIFO_D(103 DOWNTO 96),
-            data4x => FIFO_D(95 DOWNTO 88),
-            data5x => FIFO_D(87 DOWNTO 80),
-            data6x => FIFO_D(79 DOWNTO 72),
-            data7x => FIFO_D(71 DOWNTO 64),
-            data8x => FIFO_D(63 DOWNTO 56),
-            data9x => FIFO_D(55 DOWNTO 48),
+            data0x => FIFO_D(127 downto 120),
+            data10x => FIFO_D(47 downto 40),
+            data11x => FIFO_D(39 downto 32),
+            data12x => FIFO_D(31 downto 24),
+            data13x => FIFO_D(23 downto 16),
+            data14x => FIFO_D(15 downto 8),
+            data15x => FIFO_D(7 downto 0),
+            data1x => FIFO_D(119 downto 112),
+            data2x => FIFO_D(111 downto 104),
+            data3x => FIFO_D(103 downto 96),
+            data4x => FIFO_D(95 downto 88),
+            data5x => FIFO_D(87 downto 80),
+            data6x => FIFO_D(79 downto 72),
+            data7x => FIFO_D(71 downto 64),
+            data8x => FIFO_D(63 downto 56),
+            data9x => FIFO_D(55 downto 48),
             sel => CLUT_MUX_ADR,
             result => SYNTHESIZED_WIRE_12
         );
@@ -726,7 +743,7 @@ BEGIN
     inst26 : entity work.lpm_shiftreg4
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             shiftin => SR_FIFO_WRE,
             shiftout => FIFO_WRE
         );
@@ -740,50 +757,50 @@ BEGIN
             q => VDR
         );
 
-    CLUT_ADR(1) <= CLUT_ADR1A AND SYNTHESIZED_WIRE_16;
+    clut_adr(1) <= CLUT_ADR1A AND SYNTHESIZED_WIRE_16;
     
     
     inst3 : entity work.lpm_ff1
         port map
         (
-            clock => DDRCLK(0),
-            data => VDP_IN(63 DOWNTO 32),
-            q => VDVZ(63 DOWNTO 32)
+            clock => ddrclk(0),
+            data => VDP_IN(63 downto 32),
+            q => vdvz(63 downto 32)
         );
     
-    CLUT_ADR(3) <= SYNTHESIZED_WIRE_61 AND CLUT_ADR3A;
-    CLUT_ADR(5) <= CLUT_OFF(1) OR SYNTHESIZED_WIRE_18;
-    SYNTHESIZED_WIRE_8 <= CLUT_ADR4A AND COLOR8;
-    SYNTHESIZED_WIRE_18 <= CLUT_ADR5A AND COLOR8;
-    SYNTHESIZED_WIRE_9 <= CLUT_ADR6A AND COLOR8;
-    SYNTHESIZED_WIRE_46 <= CLUT_ADR7A AND COLOR8;
+    clut_adr(3) <= SYNTHESIZED_WIRE_61 AND CLUT_ADR3A;
+    clut_adr(5) <= CLUT_OFF(1) OR SYNTHESIZED_WIRE_18;
+    SYNTHESIZED_WIRE_8 <= CLUT_ADR4A AND color8;
+    SYNTHESIZED_WIRE_18 <= CLUT_ADR5A AND color8;
+    SYNTHESIZED_WIRE_9 <= CLUT_ADR6A AND color8;
+    SYNTHESIZED_WIRE_46 <= CLUT_ADR7A AND color8;
       
     inst36 : entity work.lpm_ff6
         port map
         (
-            clock => DDRCLK(0),
-            enable => BLITTER_DACK(0),
-            data => VDVZ,
-            q => BLITTER_DIN
+            clock => ddrclk(0),
+            enable => blitter_dack(0),
+            data => vdvz,
+            q => blitter_din
         );
     
-    VDOUT_OE <= DDR_WR OR SR_DDR_WR;
-    video_ta <= blitter_ta /* or video_mod_ta */ or video_ddr_ta;
+    vdout_oe <= ddr_wr OR sr_ddr_wr;
+    video_ta <= blitter_ta or video_mod_ta or video_ddr_ta;
     
     inst4 : entity work.lpm_ff1
         port map
         (
-            clock => DDRCLK(0),
-            data => VDVZ(63 DOWNTO 32),
-            q => VDVZ(127 DOWNTO 96)
+            clock => ddrclk(0),
+            data => vdvz(63 downto 32),
+            q => vdvz(127 downto 96)
         );
     
     
     inst40 : entity work.mux41_0
         port map
         (
-            S0 => COLOR2,
-            S1 => COLOR4,
+            S0 => color2,
+            S1 => color4,
             D0 => CLUT_ADR6A,
             INH => SYNTHESIZED_WIRE_19,
             D1 => CLUT_ADR7A,
@@ -794,8 +811,8 @@ BEGIN
     inst41 : entity work.mux41_1
         port map
         (
-            S0 => COLOR2,
-            S1 => COLOR4,
+            S0 => color2,
+            S1 => color4,
             D0 => CLUT_ADR5A,
             INH => SYNTHESIZED_WIRE_20,
             D1 => CLUT_ADR6A,
@@ -806,9 +823,9 @@ BEGIN
     inst42 : entity work.mux41_2
         port map
         (
-            S0 => COLOR2,
+            S0 => color2,
             D2 => CLUT_ADR7A,
-            S1 => COLOR4,
+            S1 => color4,
             D0 => CLUT_ADR4A,
             INH => SYNTHESIZED_WIRE_21,
             D1 => CLUT_ADR5A,
@@ -819,9 +836,9 @@ BEGIN
     inst43 : entity work.mux41_3
         port map
         (
-            S0 => COLOR2,
+            S0 => color2,
             D2 => CLUT_ADR6A,
-            S1 => COLOR4,
+            S1 => color4,
             D0 => CLUT_ADR3A,
             INH => SYNTHESIZED_WIRE_22,
             D1 => CLUT_ADR4A,
@@ -832,9 +849,9 @@ BEGIN
     inst44 : entity work.mux41_4
         port map
         (
-            S0 => COLOR2,
+            S0 => color2,
             D2 => CLUT_ADR5A,
-            S1 => COLOR4,
+            S1 => color4,
             D0 => CLUT_ADR2A,
             INH => SYNTHESIZED_WIRE_23,
             D1 => CLUT_ADR3A,
@@ -845,9 +862,9 @@ BEGIN
     inst45 : entity work.mux41_5
         port map
         (
-            S0 => COLOR2,
+            S0 => color2,
             D2 => CLUT_ADR4A,
-            S1 => COLOR4,
+            S1 => color4,
             D0 => CLUT_ADR1A,
             INH => SYNTHESIZED_WIRE_24,
             D1 => CLUT_ADR2A,
@@ -868,7 +885,7 @@ BEGIN
         port map
         (
             clock => pixel_clk_i,
-            data => CCF,
+            data => ccf,
             q => SYNTHESIZED_WIRE_25
         );
     
@@ -909,7 +926,7 @@ BEGIN
     inst54 : entity work.lpm_constant0
         port map
         (
-            result => CCS(20 DOWNTO 16)
+            result => CCS(20 downto 16)
         );
     
     
@@ -922,7 +939,7 @@ BEGIN
     inst59 : entity work.lpm_constant0
         port map
         (
-            result => CCS(12 DOWNTO 8)
+            result => CCS(12 downto 8)
         );
     
     fb_ad_out(18 downto 16) <= synthesized_wire_34 when st_clut_rd else (others => 'Z');
@@ -955,15 +972,14 @@ BEGIN
     inst64 : entity work.lpm_constant0
         port map
         (
-            result => CCS(4 DOWNTO 0)
+            result => CCS(4 downto 0)
         );
     
     
     SYNTHESIZED_WIRE_60 <= FIFO_RDE AND SYNTHESIZED_WIRE_40;
     
     fb_ad_out(31 downto 26) <= synthesized_wire_41 when falcon_clut_rdh else (others => 'Z');
-    -- the following line results in a syntax error. No idea what's wrong with it:
-    -- fb_ad_out(23 downto 18) <= synthesized_wire_44 when falcon_clut_rdh else (others <= 'Z');
+    fb_ad_out(23 downto 18) <= synthesized_wire_44 when falcon_clut_rdh else (others => 'Z');
     
     SYNTHESIZED_WIRE_38 <= FIFO_RDE AND INTER_ZEI;
     SYNTHESIZED_WIRE_40 <= NOT(INTER_ZEI);
@@ -974,11 +990,11 @@ BEGIN
             clock => pixel_clk_i,
             data0x => SYNTHESIZED_WIRE_42,
             data1x => SYNTHESIZED_WIRE_43,
-            data2x => (OTHERS => '0'),
-            data3x => (OTHERS => '0'),
+            data2x => (others => '0'),
+            data3x => (others => '0'),
             data4x => CCA,
             data5x => CC16,
-            data6x => CC24(23 DOWNTO 0),
+            data6x => CC24(23 downto 0),
             data7x => BORDER_COLOR,
             sel => CCSEL,
             result => SYNTHESIZED_WIRE_62
@@ -988,9 +1004,9 @@ BEGIN
     inst71 : entity work.lpm_ff6
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             enable => FIFO_WRE,
-            data => VDVZ,
+            data => vdvz,
             q => VDMA
         );
     
@@ -1001,29 +1017,29 @@ BEGIN
     inst77 : entity work.lpm_constant1
         port map
         (
-            result => CCF(1 DOWNTO 0)
+            result => ccf(1 downto 0)
         );
     
     
     
-    CLUT_ADR(7) <= CLUT_OFF(3) OR SYNTHESIZED_WIRE_46;
+    clut_adr(7) <= CLUT_OFF(3) OR SYNTHESIZED_WIRE_46;
     
     
     
     inst80 : entity work.lpm_constant1
         port map
         (
-            result => CCF(9 DOWNTO 8)
+            result => ccf(9 downto 8)
         );
     
     
     inst81 : entity work.lpm_mux4
         port map
         (
-            sel => COLOR1,
-            data0x => ZR_C8(7 DOWNTO 1),
+            sel => color1,
+            data0x => ZR_C8(7 downto 1),
             data1x => SYNTHESIZED_WIRE_47,
-            result => ZR_C8B(7 DOWNTO 1)
+            result => ZR_C8B(7 downto 1)
         );
     
     
@@ -1037,35 +1053,35 @@ BEGIN
     inst83 : entity work.lpm_constant1
         port map
         (
-            result => CCF(17 DOWNTO 16)
+            result => ccf(17 downto 16)
         );
     
     
-    PROCESS(DDRCLK(0), DDR_WR)
-    BEGIN
-        IF (DDR_WR = '1') THEN
-            VDQS <= (OTHERS => DDRCLK(0));
+    process(ddrclk(0), ddr_wr)
+    begin
+        if (ddr_wr = '1') then
+            vdqs <= (others => ddrclk(0));
         ELSE
-            VDQS <= (OTHERS => 'Z');
-        END IF;
-    END PROCESS;
+            vdqs <= (others => 'Z');
+        end if;
+    end process;
         
     
-    PROCESS(DDRCLK(3))
-    BEGIN
-        IF (rising_edge(DDRCLK(3))) THEN
-            DDRWR_D_SEL(0) <= SR_DDRWR_D_SEL;
-            DDR_WR <= SR_DDR_WR;
-        END IF;
-    END PROCESS;
+    process(ddrclk(3))
+    begin
+        if (rising_edge(ddrclk(3))) then
+            ddrwr_d_sel(0) <= SR_DDRWR_D_SEL;
+            ddr_wr <= sr_ddr_wr;
+        end if;
+    end process;
     
     
     inst89 : entity work.lpm_shiftreg6
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             shiftin => SR_BLITTER_DACK,
-            q => BLITTER_DACK
+            q => blitter_dack
         );
     
     
@@ -1078,54 +1094,54 @@ BEGIN
         );
     
         
-    PROCESS(pixel_clk_i)
-    BEGIN
-        IF (rising_edge(pixel_clk_i)) THEN
-            DFF_inst91 <= CLUT_ADR(0);
-        END IF;
-    END PROCESS;
+    process(pixel_clk_i)
+    begin
+        if (rising_edge(pixel_clk_i)) then
+            DFF_inst91 <= clut_adr(0);
+        end if;
+    end process;
     
     
     inst92 : entity work.lpm_shiftreg6
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             shiftin => SR_DDR_FB,
             q => DDR_FB
         );
     
     
-    PROCESS(pixel_clk_i)
-    BEGIN
-        IF (rising_edge(pixel_clk_i)) THEN
+    process(pixel_clk_i)
+    begin
+        if (rising_edge(pixel_clk_i)) then
             DFF_inst93 <= DFF_inst91;
-        END IF;
-    END PROCESS;
+        end if;
+    end process;
     
     
     inst94 : entity work.lpm_ff6
         port map
         (
-            clock => DDRCLK(0),
+            clock => ddrclk(0),
             enable => FIFO_WRE,
             data => VDMA,
             q => VDMB
         );
     
     
-    PROCESS(pixel_clk_i)
-    BEGIN
-        IF (rising_edge(pixel_clk_i)) THEN
+    process(pixel_clk_i)
+    begin
+        if (rising_edge(pixel_clk_i)) then
             SYNTHESIZED_WIRE_64 <= FIFO_RDE;
-        END IF;
-    END PROCESS;
+        end if;
+    end process;
     
     
     
     inst97 : entity work.lpm_ff5
         port map
         (
-            clock => DDRCLK(2),
+            clock => ddrclk(2),
             data => SR_VDMP,
             q => VDMP
         );
@@ -1137,8 +1153,8 @@ BEGIN
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_49,
-            data => FIFO_D(127 DOWNTO 112),
-            shiftout => CLUT_ADR(0)
+            data => FIFO_D(127 downto 112),
+            shiftout => clut_adr(0)
         );
     
     
@@ -1148,7 +1164,7 @@ BEGIN
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_50,
-            data => FIFO_D(111 DOWNTO 96),
+            data => FIFO_D(111 downto 96),
             shiftout => CLUT_ADR1A
         );
     
@@ -1159,7 +1175,7 @@ BEGIN
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_51,
-            data => FIFO_D(95 DOWNTO 80),
+            data => FIFO_D(95 downto 80),
             shiftout => CLUT_ADR2A
         );
     
@@ -1170,7 +1186,7 @@ BEGIN
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_52,
-            data => FIFO_D(79 DOWNTO 64),
+            data => FIFO_D(79 downto 64),
             shiftout => CLUT_ADR3A
         );
     
@@ -1181,7 +1197,7 @@ BEGIN
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_53,
-            data => FIFO_D(63 DOWNTO 48),
+            data => FIFO_D(63 downto 48),
             shiftout => CLUT_ADR4A
         );
     
@@ -1192,7 +1208,7 @@ BEGIN
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
             shiftin => SYNTHESIZED_WIRE_54,
-            data => FIFO_D(47 DOWNTO 32),
+            data => FIFO_D(47 downto 32),
             shiftout => CLUT_ADR5A
         );
     
@@ -1203,7 +1219,7 @@ BEGIN
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
             shiftin => CLUT_ADR7A,
-            data => FIFO_D(31 DOWNTO 16),
+            data => FIFO_D(31 downto 16),
             shiftout => CLUT_ADR6A
         );
     
@@ -1213,8 +1229,8 @@ BEGIN
         (
             load => SYNTHESIZED_WIRE_64,
             clock => pixel_clk_i,
-            shiftin => CLUT_ADR(0),
-            data => FIFO_D(15 DOWNTO 0),
+            shiftin => clut_adr(0),
+            data => FIFO_D(15 downto 0),
             shiftout => CLUT_ADR7A
         );
     
@@ -1226,12 +1242,12 @@ BEGIN
             wren_b => '0',
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(4 DOWNTO 1),
-            address_b => CLUT_ADR(3 DOWNTO 0),
-            data_a => fb_ad_in(18 DOWNTO 16),
-            data_b => (OTHERS => '0'),
+            address_a => FB_ADR(4 downto 1),
+            address_b => clut_adr(3 downto 0),
+            data_a => fb_ad_in(18 downto 16),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_34,
-            q_b => CCS(7 DOWNTO 5)
+            q_b => CCS(7 downto 5)
         );
     
     
@@ -1242,12 +1258,12 @@ BEGIN
             wren_b => '0',
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(4 DOWNTO 1),
-            address_b => CLUT_ADR(3 DOWNTO 0),
-            data_a => fb_ad_in(22 DOWNTO 20),
-            data_b => (OTHERS => '0'),
+            address_a => FB_ADR(4 downto 1),
+            address_b => clut_adr(3 downto 0),
+            data_a => fb_ad_in(22 downto 20),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_31,
-            q_b => CCS(15 DOWNTO 13)
+            q_b => CCS(15 downto 13)
         );
     
     
@@ -1258,12 +1274,12 @@ BEGIN
             wren_b => '0',
             clock_a => MAIN_CLK,
             clock_b => pixel_clk_i,
-            address_a => FB_ADR(4 DOWNTO 1),
-            address_b => CLUT_ADR(3 DOWNTO 0),
-            data_a => fb_ad_in(26 DOWNTO 24),
-            data_b => (OTHERS => '0'),
+            address_a => FB_ADR(4 downto 1),
+            address_b => clut_adr(3 downto 0),
+            data_a => fb_ad_in(26 downto 24),
+            data_b => (others => '0'),
             q_a => SYNTHESIZED_WIRE_29,
-            q_b => CCS(23 DOWNTO 21)
+            q_b => CCS(23 downto 21)
         );
     
     
@@ -1289,9 +1305,9 @@ BEGIN
             fb_ad_out => fb_ad_out,
             FB_ADR => FB_ADR,
             VR_D => VR_D,
-            COLOR8 => COLOR8,
+            color8 => color8,
             ACP_CLUT_RD => ACP_CLUT_RD,
-            COLOR1 => COLOR1,
+            color1 => color1,
             FALCON_CLUT_RDH => FALCON_CLUT_RDH,
             FALCON_CLUT_RDL => FALCON_CLUT_RDL,
             ST_CLUT_RD => ST_CLUT_RD,
@@ -1301,9 +1317,9 @@ BEGIN
             nSYNC => nSYNC,
             nPD_VGA => nPD_VGA,
             FIFO_RDE => FIFO_RDE,
-            COLOR2 => COLOR2,
-            COLOR4 => COLOR4,
-            PIXEL_CLK => pixel_clk_i,
+            color2 => color2,
+            color4 => color4,
+            pixel_clk => pixel_clk_i,
             BLITTER_ON => BLITTER_ON,
             VIDEO_MOD_TA => VIDEO_MOD_TA,
             INTER_ZEI => INTER_ZEI,
@@ -1322,5 +1338,5 @@ BEGIN
             VIDEO_RAM_CTR => VIDEO_RAM_CTR
         );
     
-    PIXEL_CLK <= pixel_clk_i;
-END rtl;
+    pixel_clk <= pixel_clk_i;
+end rtl;

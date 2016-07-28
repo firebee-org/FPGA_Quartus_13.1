@@ -1131,7 +1131,7 @@ begin
     --                               10 VGA
     --                               11 TV
     --  $8006/2
-    sys_ctr_cs <= '1' when nFB_CS1 = '0' and f_addr_cmp_w(fb_adR, 20x"f8006") = '1';
+    sys_ctr_cs <= '1' when nFB_CS1 = '0' and f_addr_cmp_w(fb_adR, 20x"f8006") = '1' else '0';
             -- fb_adR(19 downto 1) = std_logic_vector'(20x"f8006")(19 downto 1) else '0';
     
     -- sys_ctr_CS <= to_std_logic(((not nFB_CS1) = '1') and fb_adR(19 downto 1) = "1111100000000000011");
@@ -1284,32 +1284,32 @@ begin
 --              (sizeIt(VIDEO_PLL_RECONFIG_CS,16) and std_logic_vector'(vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010"));
     
     fb_ad_out(31 downto 16) <= "000000" & st_shift_mode_q & "00000000" when st_shift_mode_cs = '1' else
-                           "100000000" & sys_ctr_q(6 downto 4) & (not blitter_run) & sys_ctr_q(2 downto 0) when sys_ctr_cs = '1' else
-                           lwd_q when lof_cs = '1' and lwd_cs = '1' else
-                           "0000" & hbe_q when hbe_cs = '1' else
-                           "0000" & hdb_q when hdb_cs = '1' else
-                           "0000" & hde_q when hde_cs = '1' else
-                           "0000" & hbb_q when hbb_cs = '1' else
-                           "0000" & hss_q when hss_cs = '1' else
-                           "0000" & hht_q when hht_cs = '1' else
-                           "00000" & vbe_q when vbe_cs = '1' else
-                           "00000" & vdb_q when vdb_cs = '1' else
-                           "00000" & vde_q when vde_cs = '1' else
-                           "00000" & vbb_q when vbb_cs = '1' else
-                           "00000" & vss_q when vss_cs = '1' else
-                           "00000" & vft_q when vft_cs = '1' else
-                           "0000000" & vco_q when vco_cs = '1' else
-                           "000000000000" & vcntrl_q when vcntrl_cs = '1' else
-                           acp_vctr_q(31 downto 16) when acp_vctr_cs = '1' else
-                           atari_hh_q(31 downto 16) when atari_hh_cs = '1' else
-                           atari_vh_q(31 downto 16) when atari_vh_cs = '1' else
-                           atari_hl_q(31 downto 16) when atari_hl_cs = '1' else
-                           atari_vl_q(31 downto 16) when atari_vl_cs = '1' else
-                           "00000000" & border_color_q(23 downto 16) when border_color_cs = '1' else
-                           "0000000" & vr_dout_q when video_pll_config_cs = '1' else
-                           vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010" when video_pll_reconfig_cs = '1' else
-                           (others => 'Z');
-                           
+                               "100000000" & sys_ctr_q(6 downto 4) & (not blitter_run) & sys_ctr_q(2 downto 0) when sys_ctr_cs = '1' else
+                               lwd_q when lof_cs = '1' and lwd_cs = '1' else
+                               "0000" & hbe_q when hbe_cs = '1' else
+                               "0000" & hdb_q when hdb_cs = '1' else
+                               "0000" & hde_q when hde_cs = '1' else
+                               "0000" & hbb_q when hbb_cs = '1' else
+                               "0000" & hss_q when hss_cs = '1' else
+                               "0000" & hht_q when hht_cs = '1' else
+                               "00000" & vbe_q when vbe_cs = '1' else
+                               "00000" & vdb_q when vdb_cs = '1' else
+                               "00000" & vde_q when vde_cs = '1' else
+                               "00000" & vbb_q when vbb_cs = '1' else
+                               "00000" & vss_q when vss_cs = '1' else
+                               "00000" & vft_q when vft_cs = '1' else
+                               "0000000" & vco_q when vco_cs = '1' else
+                               "000000000000" & vcntrl_q when vcntrl_cs = '1' else
+                               acp_vctr_q(31 downto 16) when acp_vctr_cs = '1' else
+                               atari_hh_q(31 downto 16) when atari_hh_cs = '1' else
+                               atari_vh_q(31 downto 16) when atari_vh_cs = '1' else
+                               atari_hl_q(31 downto 16) when atari_hl_cs = '1' else
+                               atari_vl_q(31 downto 16) when atari_vl_cs = '1' else
+                               "00000000" & border_color_q(23 downto 16) when border_color_cs = '1' else
+                               "0000000" & vr_dout_q when video_pll_config_cs = '1' else
+                               vr_busy & "0000" & vr_wr_q & vr_rd & video_reconfig_q & "11111010" when video_pll_reconfig_cs = '1' else
+                               (others => 'Z');
+                   
 --    u0_enabledt <= (st_shift_mode_CS or falcon_shift_mode_CS or acp_vctr_CS or border_color_CS or sys_ctr_CS or lof_CS or lwd_CS or HBE_CS or HDB_CS or
 --	                hde_CS or HBB_CS or HSS_CS or HHT_CS or atari_hh_CS or atari_vh_CS or atari_hl_CS or ATARI_VL_CS or VIDEO_PLL_CONFIG_CS or
 --                    VIDEO_PLL_RECONFIG_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or VSS_CS or VFT_CS or VCO_CS or vcntrl_cs) and (not nFB_OE);
@@ -1326,16 +1326,38 @@ begin
 --    fb_ad(15 downto 0) <= u1_tridata;
 
     fb_ad_out(15 downto 0) <= acp_vctr_q(15 downto 0) when acp_vctr_cs = '1' else
-                          atari_hh_q(15 downto 0) when atari_hh_cs = '1' else
-                          atari_vh_q(15 downto 0) when atari_vh_cs = '1' else
-                          atari_hl_q(15 downto 0) when atari_hl_cs = '1' else
-                          atari_vl_q(15 downto 0) when atari_vl_cs = '1' else
-                          border_color_q(15 downto 0) when border_color_cs = '1' else
-                          (others => 'Z');
+                              atari_hh_q(15 downto 0) when atari_hh_cs = '1' else
+                              atari_vh_q(15 downto 0) when atari_vh_cs = '1' else
+                              atari_hl_q(15 downto 0) when atari_hl_cs = '1' else
+                              atari_vl_q(15 downto 0) when atari_vl_cs = '1' else
+                              border_color_q(15 downto 0) when border_color_cs = '1' else
+                              (others => 'Z');
 
-    video_mod_ta <= clut_ta_q or st_shift_mode_CS or falcon_shift_mode_CS or acp_vctr_CS or sys_ctr_CS or lof_CS or lwd_CS or HBE_CS or HDB_CS or
-                    hde_CS or HBB_CS or HSS_CS or HHT_CS or atari_hh_CS or atari_vh_CS or atari_hl_CS or ATARI_VL_CS or VBE_CS or VDB_CS or VDE_CS or VBB_CS or
-                    VSS_CS or VFT_CS or VCO_CS or vcntrl_cs;
+    video_mod_ta <= clut_ta_q or
+                    st_shift_mode_cs or
+                    falcon_shift_mode_cs or
+                    acp_vctr_cs or
+                    sys_ctr_cs or
+                    lof_cs or
+                    lwd_cs or
+                    hbe_cs or
+                    hdb_cs or
+                    hde_cs or
+                    hbb_cs or
+                    hss_cs or
+                    hht_cs or
+                    atari_hh_cs or
+                    atari_vh_cs or
+                    atari_hl_cs or
+                    atari_vl_cs or
+                    vbe_cs or
+                    vdb_cs or
+                    vde_cs or
+                    vbb_cs or
+                    vss_cs or
+                    vft_cs or
+                    vco_cs or
+                    vcntrl_cs;
 
     --  VIDEO AUSGABE SETZEN
     CLK17M_d <= not CLK17M_q;
