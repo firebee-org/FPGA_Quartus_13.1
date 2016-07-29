@@ -182,13 +182,13 @@ end interrupt_handler;
 
 ARCHITECTURE rtl OF interrupt_handler IS
 --  WERTE REGISTER 0-63
-   signal FB_B              : std_logic_vector(3 downto 0);
-   signal INT_CTR           : std_logic_vector(31 downto 0);
-   signal INT_CTR_d         : std_logic_vector(31 downto 0);
-   signal INT_CTR_q         : std_logic_vector(31 downto 0);
+   signal fb_b              : std_logic_vector(3 downto 0);
+   signal int_ctr           : std_logic_vector(31 downto 0);
+   signal int_ctr_d         : std_logic_vector(31 downto 0);
+   signal int_ctr_q         : std_logic_vector(31 downto 0);
    
-   signal INT_LATCH         : std_logic_vector(31 downto 0);
-   signal INT_LATCH_d       : std_logic_vector(31 downto 0);
+   signal int_latch         : std_logic_vector(31 downto 0);
+   signal int_latch_d       : std_logic_vector(31 downto 0);
    signal INT_LATCH_clrn    : std_logic_vector(31 downto 0);
    signal INT_LATCH_q       : std_logic_vector(31 downto 0);
    signal INT_LATCH_clk     : std_logic_vector(31 downto 0);
@@ -475,7 +475,7 @@ begin
     begin
         if INT_CTR0_clk_ctrl'event and INT_CTR0_clk_ctrl='1' then
             if INT_CTR24_ena_ctrl='1' then
-                INT_CTR_q(31 downto 24) <= INT_CTR_d(31 downto 24);
+                int_ctr_q(31 downto 24) <= int_ctr_d(31 downto 24);
             end if;
         end if;
     end process;
@@ -484,7 +484,7 @@ begin
     begin
         if INT_CTR0_clk_ctrl'event and INT_CTR0_clk_ctrl='1' then
             if INT_CTR16_ena_ctrl='1' then
-                INT_CTR_q(23 downto 16) <= INT_CTR_d(23 downto 16);
+                int_ctr_q(23 downto 16) <= int_ctr_d(23 downto 16);
             end if;
         end if;
     end process;
@@ -493,7 +493,7 @@ begin
     begin
         if INT_CTR0_clk_ctrl'event and INT_CTR0_clk_ctrl='1' then
             if INT_CTR8_ena_ctrl='1' then
-                INT_CTR_q(15 downto 8) <= INT_CTR_d(15 downto 8);
+                int_ctr_q(15 downto 8) <= int_ctr_d(15 downto 8);
             end if;
         end if;
     end process;
@@ -502,7 +502,7 @@ begin
     begin
         if INT_CTR0_clk_ctrl'event and INT_CTR0_clk_ctrl='1' then
             if INT_CTR0_ena_ctrl='1' then
-                INT_CTR_q(7 downto 0) <= INT_CTR_d(7 downto 0);
+                int_ctr_q(7 downto 0) <= int_ctr_d(7 downto 0);
             end if;
         end if;
     end process;
@@ -512,7 +512,7 @@ begin
         if INT_LATCH_clrn(31)='0' then
             INT_LATCH_q(31) <= '0';
         elsif INT_LATCH_clk(31)'event and INT_LATCH_clk(31)='1' then
-            INT_LATCH_q(31) <= INT_LATCH_d(31);
+            INT_LATCH_q(31) <= int_latch_d(31);
         end if;
     end process;
 
@@ -521,7 +521,7 @@ begin
         if INT_LATCH_clrn(30)='0' then
             INT_LATCH_q(30) <= '0';
         elsif INT_LATCH_clk(30)'event and INT_LATCH_clk(30)='1' then
-            INT_LATCH_q(30) <= INT_LATCH_d(30);
+            INT_LATCH_q(30) <= int_latch_d(30);
         end if;
     end process;
 
@@ -530,7 +530,7 @@ begin
       if INT_LATCH_clrn(29)='0' then
 	 INT_LATCH_q(29) <= '0';
       elsif INT_LATCH_clk(29)'event and INT_LATCH_clk(29)='1' then
-	 INT_LATCH_q(29) <= INT_LATCH_d(29);
+	 INT_LATCH_q(29) <= int_latch_d(29);
       end if;
    end process;
 
@@ -538,7 +538,7 @@ begin
       if INT_LATCH_clrn(28)='0' then
 	 INT_LATCH_q(28) <= '0';
       elsif INT_LATCH_clk(28)'event and INT_LATCH_clk(28)='1' then
-	 INT_LATCH_q(28) <= INT_LATCH_d(28);
+	 INT_LATCH_q(28) <= int_latch_d(28);
       end if;
    end process;
 
@@ -546,7 +546,7 @@ begin
       if INT_LATCH_clrn(27)='0' then
 	 INT_LATCH_q(27) <= '0';
       elsif INT_LATCH_clk(27)'event and INT_LATCH_clk(27)='1' then
-	 INT_LATCH_q(27) <= INT_LATCH_d(27);
+	 INT_LATCH_q(27) <= int_latch_d(27);
       end if;
    end process;
 
@@ -554,7 +554,7 @@ begin
       if INT_LATCH_clrn(26)='0' then
 	 INT_LATCH_q(26) <= '0';
       elsif INT_LATCH_clk(26)'event and INT_LATCH_clk(26)='1' then
-	 INT_LATCH_q(26) <= INT_LATCH_d(26);
+	 INT_LATCH_q(26) <= int_latch_d(26);
       end if;
    end process;
 
@@ -562,7 +562,7 @@ begin
       if INT_LATCH_clrn(25)='0' then
 	 INT_LATCH_q(25) <= '0';
       elsif INT_LATCH_clk(25)'event and INT_LATCH_clk(25)='1' then
-	 INT_LATCH_q(25) <= INT_LATCH_d(25);
+	 INT_LATCH_q(25) <= int_latch_d(25);
       end if;
    end process;
 
@@ -570,7 +570,7 @@ begin
       if INT_LATCH_clrn(24)='0' then
 	 INT_LATCH_q(24) <= '0';
       elsif INT_LATCH_clk(24)'event and INT_LATCH_clk(24)='1' then
-	 INT_LATCH_q(24) <= INT_LATCH_d(24);
+	 INT_LATCH_q(24) <= int_latch_d(24);
       end if;
    end process;
 
@@ -578,7 +578,7 @@ begin
       if INT_LATCH_clrn(23)='0' then
 	 INT_LATCH_q(23) <= '0';
       elsif INT_LATCH_clk(23)'event and INT_LATCH_clk(23)='1' then
-	 INT_LATCH_q(23) <= INT_LATCH_d(23);
+	 INT_LATCH_q(23) <= int_latch_d(23);
       end if;
    end process;
 
@@ -586,7 +586,7 @@ begin
       if INT_LATCH_clrn(22)='0' then
 	 INT_LATCH_q(22) <= '0';
       elsif INT_LATCH_clk(22)'event and INT_LATCH_clk(22)='1' then
-	 INT_LATCH_q(22) <= INT_LATCH_d(22);
+	 INT_LATCH_q(22) <= int_latch_d(22);
       end if;
    end process;
 
@@ -594,7 +594,7 @@ begin
       if INT_LATCH_clrn(21)='0' then
 	 INT_LATCH_q(21) <= '0';
       elsif INT_LATCH_clk(21)'event and INT_LATCH_clk(21)='1' then
-	 INT_LATCH_q(21) <= INT_LATCH_d(21);
+	 INT_LATCH_q(21) <= int_latch_d(21);
       end if;
    end process;
 
@@ -602,7 +602,7 @@ begin
       if INT_LATCH_clrn(20)='0' then
 	 INT_LATCH_q(20) <= '0';
       elsif INT_LATCH_clk(20)'event and INT_LATCH_clk(20)='1' then
-	 INT_LATCH_q(20) <= INT_LATCH_d(20);
+	 INT_LATCH_q(20) <= int_latch_d(20);
       end if;
    end process;
 
@@ -610,7 +610,7 @@ begin
       if INT_LATCH_clrn(19)='0' then
 	 INT_LATCH_q(19) <= '0';
       elsif INT_LATCH_clk(19)'event and INT_LATCH_clk(19)='1' then
-	 INT_LATCH_q(19) <= INT_LATCH_d(19);
+	 INT_LATCH_q(19) <= int_latch_d(19);
       end if;
    end process;
 
@@ -618,7 +618,7 @@ begin
       if INT_LATCH_clrn(18)='0' then
 	 INT_LATCH_q(18) <= '0';
       elsif INT_LATCH_clk(18)'event and INT_LATCH_clk(18)='1' then
-	 INT_LATCH_q(18) <= INT_LATCH_d(18);
+	 INT_LATCH_q(18) <= int_latch_d(18);
       end if;
    end process;
 
@@ -626,7 +626,7 @@ begin
       if INT_LATCH_clrn(17)='0' then
 	 INT_LATCH_q(17) <= '0';
       elsif INT_LATCH_clk(17)'event and INT_LATCH_clk(17)='1' then
-	 INT_LATCH_q(17) <= INT_LATCH_d(17);
+	 INT_LATCH_q(17) <= int_latch_d(17);
       end if;
    end process;
 
@@ -634,7 +634,7 @@ begin
       if INT_LATCH_clrn(16)='0' then
 	 INT_LATCH_q(16) <= '0';
       elsif INT_LATCH_clk(16)'event and INT_LATCH_clk(16)='1' then
-	 INT_LATCH_q(16) <= INT_LATCH_d(16);
+	 INT_LATCH_q(16) <= int_latch_d(16);
       end if;
    end process;
 
@@ -642,7 +642,7 @@ begin
       if INT_LATCH_clrn(15)='0' then
 	 INT_LATCH_q(15) <= '0';
       elsif INT_LATCH_clk(15)'event and INT_LATCH_clk(15)='1' then
-	 INT_LATCH_q(15) <= INT_LATCH_d(15);
+	 INT_LATCH_q(15) <= int_latch_d(15);
       end if;
    end process;
 
@@ -650,7 +650,7 @@ begin
       if INT_LATCH_clrn(14)='0' then
 	 INT_LATCH_q(14) <= '0';
       elsif INT_LATCH_clk(14)'event and INT_LATCH_clk(14)='1' then
-	 INT_LATCH_q(14) <= INT_LATCH_d(14);
+	 INT_LATCH_q(14) <= int_latch_d(14);
       end if;
    end process;
 
@@ -658,7 +658,7 @@ begin
       if INT_LATCH_clrn(13)='0' then
 	 INT_LATCH_q(13) <= '0';
       elsif INT_LATCH_clk(13)'event and INT_LATCH_clk(13)='1' then
-	 INT_LATCH_q(13) <= INT_LATCH_d(13);
+	 INT_LATCH_q(13) <= int_latch_d(13);
       end if;
    end process;
 
@@ -666,7 +666,7 @@ begin
       if INT_LATCH_clrn(12)='0' then
 	 INT_LATCH_q(12) <= '0';
       elsif INT_LATCH_clk(12)'event and INT_LATCH_clk(12)='1' then
-	 INT_LATCH_q(12) <= INT_LATCH_d(12);
+	 INT_LATCH_q(12) <= int_latch_d(12);
       end if;
    end process;
 
@@ -674,7 +674,7 @@ begin
       if INT_LATCH_clrn(11)='0' then
 	 INT_LATCH_q(11) <= '0';
       elsif INT_LATCH_clk(11)'event and INT_LATCH_clk(11)='1' then
-	 INT_LATCH_q(11) <= INT_LATCH_d(11);
+	 INT_LATCH_q(11) <= int_latch_d(11);
       end if;
    end process;
 
@@ -682,7 +682,7 @@ begin
       if INT_LATCH_clrn(10)='0' then
 	 INT_LATCH_q(10) <= '0';
       elsif INT_LATCH_clk(10)'event and INT_LATCH_clk(10)='1' then
-	 INT_LATCH_q(10) <= INT_LATCH_d(10);
+	 INT_LATCH_q(10) <= int_latch_d(10);
       end if;
    end process;
 
@@ -690,7 +690,7 @@ begin
       if INT_LATCH_clrn(9)='0' then
 	 INT_LATCH_q(9) <= '0';
       elsif INT_LATCH9_clk_1'event and INT_LATCH9_clk_1='1' then
-	 INT_LATCH_q(9) <= INT_LATCH_d(9);
+	 INT_LATCH_q(9) <= int_latch_d(9);
       end if;
    end process;
 
@@ -698,7 +698,7 @@ begin
       if INT_LATCH_clrn(8)='0' then
 	 INT_LATCH_q(8) <= '0';
       elsif INT_LATCH8_clk_1'event and INT_LATCH8_clk_1='1' then
-	 INT_LATCH_q(8) <= INT_LATCH_d(8);
+	 INT_LATCH_q(8) <= int_latch_d(8);
       end if;
    end process;
 
@@ -706,7 +706,7 @@ begin
       if INT_LATCH_clrn(7)='0' then
 	 INT_LATCH_q(7) <= '0';
       elsif INT_LATCH7_clk_1'event and INT_LATCH7_clk_1='1' then
-	 INT_LATCH_q(7) <= INT_LATCH_d(7);
+	 INT_LATCH_q(7) <= int_latch_d(7);
       end if;
    end process;
 
@@ -714,7 +714,7 @@ begin
       if INT_LATCH_clrn(6)='0' then
 	 INT_LATCH_q(6) <= '0';
       elsif INT_LATCH6_clk_1'event and INT_LATCH6_clk_1='1' then
-	 INT_LATCH_q(6) <= INT_LATCH_d(6);
+	 INT_LATCH_q(6) <= int_latch_d(6);
       end if;
    end process;
 
@@ -722,7 +722,7 @@ begin
       if INT_LATCH_clrn(5)='0' then
 	 INT_LATCH_q(5) <= '0';
       elsif INT_LATCH5_clk_1'event and INT_LATCH5_clk_1='1' then
-	 INT_LATCH_q(5) <= INT_LATCH_d(5);
+	 INT_LATCH_q(5) <= int_latch_d(5);
       end if;
    end process;
 
@@ -730,7 +730,7 @@ begin
       if INT_LATCH_clrn(4)='0' then
 	 INT_LATCH_q(4) <= '0';
       elsif INT_LATCH4_clk_1'event and INT_LATCH4_clk_1='1' then
-	 INT_LATCH_q(4) <= INT_LATCH_d(4);
+	 INT_LATCH_q(4) <= int_latch_d(4);
       end if;
    end process;
 
@@ -738,7 +738,7 @@ begin
       if INT_LATCH_clrn(3)='0' then
 	 INT_LATCH_q(3) <= '0';
       elsif INT_LATCH3_clk_1'event and INT_LATCH3_clk_1='1' then
-	 INT_LATCH_q(3) <= INT_LATCH_d(3);
+	 INT_LATCH_q(3) <= int_latch_d(3);
       end if;
    end process;
 
@@ -746,7 +746,7 @@ begin
       if INT_LATCH_clrn(2)='0' then
 	 INT_LATCH_q(2) <= '0';
       elsif INT_LATCH2_clk_1'event and INT_LATCH2_clk_1='1' then
-	 INT_LATCH_q(2) <= INT_LATCH_d(2);
+	 INT_LATCH_q(2) <= int_latch_d(2);
       end if;
    end process;
 
@@ -754,7 +754,7 @@ begin
       if INT_LATCH_clrn(1)='0' then
 	 INT_LATCH_q(1) <= '0';
       elsif INT_LATCH1_clk_1'event and INT_LATCH1_clk_1='1' then
-	 INT_LATCH_q(1) <= INT_LATCH_d(1);
+	 INT_LATCH_q(1) <= int_latch_d(1);
       end if;
    end process;
 
@@ -763,7 +763,7 @@ begin
         if INT_LATCH_clrn(0)='0' then
             INT_LATCH_q(0) <= '0';
         elsif INT_LATCH0_clk_1'event and INT_LATCH0_clk_1='1' then
-            INT_LATCH_q(0) <= INT_LATCH_d(0);
+            INT_LATCH_q(0) <= int_latch_d(0);
         end if;
     end process;
 
@@ -5030,7 +5030,7 @@ begin
 --  HWORD
 --  HHBYT
 --  LONG UND LINE
-    FB_B(0) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or
+    fb_b(0) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or
                ((not FB_SIZE1) and FB_SIZE0 and (not FB_ADR(1)) and (not FB_ADR(0))) or
                ((not FB_SIZE1) and (not FB_SIZE0)) or
                (FB_SIZE1 and FB_SIZE0);
@@ -5038,7 +5038,7 @@ begin
 --  HWORD
 --  HLBYT
 --  LONG UND LINE
-    FB_B(1) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or
+    fb_b(1) <= (FB_SIZE1 and (not FB_SIZE0) and (not FB_ADR(1))) or
                ((not FB_SIZE1) and FB_SIZE0 and (not FB_ADR(1)) and FB_ADR(0)) or
                ((not FB_SIZE1) and (not FB_SIZE0)) or
                (FB_SIZE1 and FB_SIZE0);
@@ -5046,14 +5046,14 @@ begin
 --  LWORD
 --  LHBYT
 --  LONG UND LINE
-    FB_B(2) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or
+    fb_b(2) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or
                ((not FB_SIZE1) and FB_SIZE0 and FB_ADR(1) and (not FB_ADR(0))) or
                ((not FB_SIZE1) and (not FB_SIZE0)) or (FB_SIZE1 and FB_SIZE0);
 
 --  LWORD
 --  LLBYT
 --  LONG UND LINE
-    FB_B(3) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or
+    fb_b(3) <= (FB_SIZE1 and (not FB_SIZE0) and FB_ADR(1)) or
                ((not FB_SIZE1) and FB_SIZE0 and FB_ADR(1) and FB_ADR(0)) or
                ((not FB_SIZE1) and (not FB_SIZE0)) or
                (FB_SIZE1 and FB_SIZE0);
@@ -5063,11 +5063,11 @@ begin
 
 --  $10000/4
     int_ctr_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4000" else '0';
-    INT_CTR_d <= fb_ad_in;
-    INT_CTR24_ena_ctrl <= INT_CTR_CS and FB_B(0) and (not nFB_WR);
-    INT_CTR16_ena_ctrl <= INT_CTR_CS and FB_B(1) and (not nFB_WR);
-    INT_CTR8_ena_ctrl <= INT_CTR_CS and FB_B(2) and (not nFB_WR);
-    INT_CTR0_ena_ctrl <= INT_CTR_CS and FB_B(3) and (not nFB_WR);
+    int_ctr_d <= fb_ad_in;
+    INT_CTR24_ena_ctrl <= INT_CTR_CS and fb_b(0) and (not nFB_WR);
+    INT_CTR16_ena_ctrl <= INT_CTR_CS and fb_b(1) and (not nFB_WR);
+    INT_CTR8_ena_ctrl <= INT_CTR_CS and fb_b(2) and (not nFB_WR);
+    INT_CTR0_ena_ctrl <= INT_CTR_CS and fb_b(3) and (not nFB_WR);
 
 --  INTERRUPT ENABLE REGISTER BIT31=INT7,30=INT6,29=INT5,28=INT4,27=INT3,26=INT2
     INT_ENA0_clk_ctrl <= MAIN_CLK;
@@ -5079,10 +5079,10 @@ begin
     -- INT_ENA_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) =
     -- "00000000000100000000000001");
     INT_ENA_d <= fb_ad_in;
-    INT_ENA24_ena_ctrl <= INT_ENA_CS and FB_B(0) and (not nFB_WR);
-    INT_ENA16_ena_ctrl <= INT_ENA_CS and FB_B(1) and (not nFB_WR);
-    INT_ENA8_ena_ctrl <= INT_ENA_CS and FB_B(2) and (not nFB_WR);
-    INT_ENA0_ena_ctrl <= INT_ENA_CS and FB_B(3) and (not nFB_WR);
+    INT_ENA24_ena_ctrl <= INT_ENA_CS and fb_b(0) and (not nFB_WR);
+    INT_ENA16_ena_ctrl <= INT_ENA_CS and fb_b(1) and (not nFB_WR);
+    INT_ENA8_ena_ctrl <= INT_ENA_CS and fb_b(2) and (not nFB_WR);
+    INT_ENA0_ena_ctrl <= INT_ENA_CS and fb_b(3) and (not nFB_WR);
 
 --  INTERRUPT CLEAR REGISTER WRITE ONLY 1=INTERRUPT CLEAR
     INT_CLEAR0_clk_ctrl <= MAIN_CLK;
@@ -5091,16 +5091,17 @@ begin
     int_clear_cs <= '1' when nFB_CS2 = '0' and FB_ADR(27 downto 2) = 26x"4002" else '0';
     -- INT_CLEAR_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) = "00000000000100000000000010");
 
+    
     int_clear_d(31 downto 24) <= fb_ad_in(31 downto 24) when int_clear_cs and fb_b(0) and not nfb_wr;
     int_clear_d(23 downto 16) <= fb_ad_in(23 downto 16) when int_clear_cs and fb_b(1) and not nfb_wr;
     int_clear_d(15 downto 8) <= fb_ad_in(15 downto 8) when int_clear_cs and fb_b(2) and not nfb_wr;
     int_clear_d(7 downto 0) <= fb_ad_in(7 downto 0) when int_clear_cs and fb_b(3) and not nfb_wr;
 
         
---    INT_CLEAR_d(31 downto 24) <= fb_ad_in(31 downto 24) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(0),8) and sizeIt(not nFB_WR,8);
---    INT_CLEAR_d(23 downto 16) <= fb_ad_in(23 downto 16) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(1),8) and sizeIt(not nFB_WR,8);
---    INT_CLEAR_d(15 downto 8) <= fb_ad_in(15 downto 8) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(2),8) and sizeIt(not nFB_WR,8);
---    INT_CLEAR_d(7 downto 0) <= fb_ad_in(7 downto 0) and sizeIt(INT_CLEAR_CS,8) and sizeIt(FB_B(3),8) and sizeIt(not nFB_WR,8);
+--    INT_CLEAR_d(31 downto 24) <= fb_ad_in(31 downto 24) and sizeIt(INT_CLEAR_CS,8) and sizeIt(fb_b(0),8) and sizeIt(not nFB_WR,8);
+--    INT_CLEAR_d(23 downto 16) <= fb_ad_in(23 downto 16) and sizeIt(INT_CLEAR_CS,8) and sizeIt(fb_b(1),8) and sizeIt(not nFB_WR,8);
+--    INT_CLEAR_d(15 downto 8) <= fb_ad_in(15 downto 8) and sizeIt(INT_CLEAR_CS,8) and sizeIt(fb_b(2),8) and sizeIt(not nFB_WR,8);
+--    INT_CLEAR_d(7 downto 0) <= fb_ad_in(7 downto 0) and sizeIt(INT_CLEAR_CS,8) and sizeIt(fb_b(3),8) and sizeIt(not nFB_WR,8);
 
 --  INTERRUPT LATCH REGISTER READ ONLY
 --  $1000C/4
@@ -5110,7 +5111,7 @@ begin
 
 --  INTERRUPT
     nIRQ(2) <= not (HSYNC and INT_ENA_q(26));
-    nIRQ(3) <= not (INT_CTR_q(0) and INT_ENA_q(27));
+    nIRQ(3) <= not (int_ctr_q(0) and INT_ENA_q(27));
     nIRQ(4) <= not (VSYNC and INT_ENA_q(28));
     nIRQ(5) <= not (to_std_logic(INT_LATCH_q /= "00000000000000000000000000000000") and INT_ENA_q(29));
     nIRQ(6) <= not ((not nMFP_INT) and INT_ENA_q(30));
@@ -5168,7 +5169,7 @@ begin
     INT_LA2_0_clk_ctrl <= MAIN_CLK;
     INT_LA1_0_clk_ctrl <= MAIN_CLK;
     INT_LA0_0_clk_ctrl <= MAIN_CLK;
-    INT_LATCH_d <= "11111111111111111111111111111111";
+    int_latch_d <= "11111111111111111111111111111111";
     INT_LATCH_clrn <= (not INT_CLEAR_q) and sizeIt(nRSTO,32);
     INT_LA0_0_clrn_ctrl <= INT_ENA_q(0) and nRSTO;
     INT_LA0_d <= ((std_logic_vector'(unsigned(INT_LA0_q) + unsigned'("0001"))) and sizeIt(INT_L_q(0),4) and sizeIt(to_std_logic((unsigned(INT_LA0_q)
@@ -5292,7 +5293,7 @@ begin
     INT_IN(9) <= HSYNC;
     INT_IN(25 downto 10) <= "0000000000000000";
     INT_IN(26) <= HSYNC;
-    INT_IN(27) <= INT_CTR_q(0);
+    INT_IN(27) <= int_ctr_q(0);
     INT_IN(28) <= VSYNC;
     INT_IN(29) <= to_std_logic(INT_LATCH_q /= "00000000000000000000000000000000");
     INT_IN(30) <= not nMFP_INT;
@@ -5305,10 +5306,10 @@ begin
     --  $4'0000/4
     ACP_CONF_CS <= to_std_logic(((not nFB_CS2)='1') and FB_ADR(27 downto 2) = "00000000010000000000000000");
     ACP_CONF_d <= fb_ad_in;
-    ACP_CONF24_ena_ctrl <= ACP_CONF_CS and FB_B(0) and (not nFB_WR);
-    ACP_CONF16_ena_ctrl <= ACP_CONF_CS and FB_B(1) and (not nFB_WR);
-    ACP_CONF8_ena_ctrl <= ACP_CONF_CS and FB_B(2) and (not nFB_WR);
-    ACP_CONF0_ena_ctrl <= ACP_CONF_CS and FB_B(3) and (not nFB_WR);
+    ACP_CONF24_ena_ctrl <= ACP_CONF_CS and fb_b(0) and (not nFB_WR);
+    ACP_CONF16_ena_ctrl <= ACP_CONF_CS and fb_b(1) and (not nFB_WR);
+    ACP_CONF8_ena_ctrl <= ACP_CONF_CS and fb_b(2) and (not nFB_WR);
+    ACP_CONF0_ena_ctrl <= ACP_CONF_CS and fb_b(3) and (not nFB_WR);
 
     -- ***************************************************************************************
     -- ------------------------------------------------------------
@@ -5318,10 +5319,10 @@ begin
     RTC_ADR_d <= fb_ad_in(21 downto 16);
 
     --  FFFF8961
-    UHR_AS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100010010110000") and FB_B(1);
+    UHR_AS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100010010110000") and fb_b(1);
 
     --  FFFF8963
-    UHR_DS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100010010110001") and FB_B(3);
+    UHR_DS <= to_std_logic(((not nFB_CS1)='1') and FB_ADR(19 downto 1) = "1111100010010110001") and fb_b(3);
     RTC_ADR0_ena_ctrl <= UHR_AS and (not nFB_WR);
     WERTE7_0_clk_ctrl <= MAIN_CLK;
     WERTE6_0_clk_ctrl <= MAIN_CLK;
@@ -5964,7 +5965,7 @@ begin
 	 "001001"),8) and sizeIt(UHR_DS,8) and sizeIt(not nFB_WR,8)));
 
 --  TRISTATE OUTPUT
---   u0_data <= (sizeIt(INT_CTR_CS,8) and INT_CTR_q(31 downto 24)) or
+--   u0_data <= (sizeIt(INT_CTR_CS,8) and int_ctr_q(31 downto 24)) or
 --	 (sizeIt(INT_ENA_CS,8) and INT_ENA_q(31 downto 24)) or
 --	 (sizeIt(INT_LATCH_CS,8) and INT_LATCH_q(31 downto 24)) or
 --	 (sizeIt(INT_CLEAR_CS,8) and INT_IN(31 downto 24)) or
@@ -6191,7 +6192,7 @@ begin
 	 WERTE2_q(63) & WERTE1_q(63) & WERTE0_q(63)) and
 	 sizeIt(to_std_logic(RTC_ADR_q = "111111"),8) and sizeIt(UHR_DS,8)) or
 	 (std_logic_vector'("00" & RTC_ADR_q) and sizeIt(UHR_AS,8)) or
-	 (sizeIt(INT_CTR_CS,8) and INT_CTR_q(23 downto 16)) or
+	 (sizeIt(INT_CTR_CS,8) and int_ctr_q(23 downto 16)) or
 	 (sizeIt(INT_ENA_CS,8) and INT_ENA_q(23 downto 16)) or
 	 (sizeIt(INT_LATCH_CS,8) and INT_LATCH_q(23 downto 16)) or
 	 (sizeIt(INT_CLEAR_CS,8) and INT_IN(23 downto 16)) or
@@ -6200,7 +6201,7 @@ begin
     u1_enabledt <= (UHR_DS or UHR_AS or INT_CTR_CS or INT_ENA_CS or INT_LATCH_CS or INT_CLEAR_CS or ACP_CONF_CS) and (not nFB_OE);  
     fb_ad_out(23 downto 16) <= u1_tridata;
    
---   u2_data <= (sizeIt(INT_CTR_CS,8) and INT_CTR_q(15 downto 8)) or
+--   u2_data <= (sizeIt(INT_CTR_CS,8) and int_ctr_q(15 downto 8)) or
 --	 (sizeIt(INT_ENA_CS,8) and INT_ENA_q(15 downto 8)) or
 --	 (sizeIt(INT_LATCH_CS,8) and INT_LATCH_q(15 downto 8)) or
 --	 (sizeIt(INT_CLEAR_CS,8) and INT_IN(15 downto 8)) or
@@ -6216,7 +6217,7 @@ begin
                               acp_conf_q(15 downto 8) when acp_conf_cs and not nfb_oe else
                               (others => 'Z');
                               
---   u3_data <= (sizeIt(INT_CTR_CS,8) and INT_CTR_q(7 downto 0)) or
+--   u3_data <= (sizeIt(INT_CTR_CS,8) and int_ctr_q(7 downto 0)) or
 --	 (sizeIt(INT_ENA_CS,8) and INT_ENA_q(7 downto 0)) or
 --	 (sizeIt(INT_LATCH_CS,8) and INT_LATCH_q(7 downto 0)) or
 --	 (sizeIt(INT_CLEAR_CS,8) and INT_IN(7 downto 0)) or

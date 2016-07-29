@@ -195,8 +195,11 @@ set_clock_groups -asynchronous -group [get_clocks {MAIN_CLK}] \
 #**************************************************************
 
 if { [string equal "quartus_fit" $::TimeQuestInfo(nameofexecutable)] } {
-    post_message -type info "Over constraining hold"
+    post_message -type info "Over constraining hold for MAIN_CLK"
     set_clock_uncertainty -add -enable_same_physical_edge -from { MAIN_CLK } -to { MAIN_CLK } -hold 0.2
 }
 
- 
+if { [string equal "quartus_fit" $::TimeQuestInfo(nameofexecutable)] } {
+    post_message -type info "Over constraining setup for i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]"
+    set_clock_uncertainty -add -enable_same_physical_edge -from { i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0] } -to { i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0] } -setup 0.2
+} 

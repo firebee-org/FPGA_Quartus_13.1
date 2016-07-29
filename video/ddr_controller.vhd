@@ -277,7 +277,7 @@ architecture rtl of ddr_ctr is
     signal LINE                         : std_logic;
 
     signal v_basx                       : std_logic_vector(1 downto 0);
-    signal v_basx_cs                    : std_logic;
+    signal v_basx_ta                    : std_logic;
 
     signal v_bash                       : std_logic_vector(7 downto 0);
     signal v_bash_cs                    : std_logic;
@@ -562,26 +562,27 @@ begin
         end if;
     end process;
 
---    i_vbasx : work.flexbus_register
---        generic map
---        (
---            reg_width => 2,
---            match_address => x"ffff8603",
---            match_mask => x"0000ffff",      -- byte register
---            match_fbcs => 1
---        )
---        port map
---        (
---            clk => clk33m,
---            fb_addr => fb_adr,
---            fb_data => fb_ad,
---            fb_cs => ('0', '0', nfb_cs3, nfb_cs2, nfb_cs1),
---            fb_ta_n => reg_ta,
---            fb_wr_n => nfb_wr,
---            reg_value => v_basx,
---            cs => v_basx_cs
---        );
---
+    i_vbasx : work.flexbus_register
+        generic map
+        (
+            reg_width => 8,
+            match_address => x"ffff8603",
+            num_ignore => 4,
+            match_fbcs => 1
+        )
+        port map
+        (
+            clk => clk33m,
+            fb_addr => fb_adr,
+            fb_ad_in => fb_ad_in,
+            fb_ad_out => fb_ad_out,
+            fb_cs_n => ('1', '1', nfb_cs3, nfb_cs2, nfb_cs1),
+            fb_wr_n => nfb_wr,
+            fb_oe_n => nfb_oe,
+            fb_size => (fb_size1, fb_size0),
+            register_ta => v_basx_ta
+        );
+
 --    i_vbash : work.flexbus_register
 --        generic map
 --        (

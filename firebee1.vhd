@@ -35,7 +35,7 @@ entity firebee1 is
 		SD_DATA0        : in std_logic;
 		SD_DATA1        : in std_logic;
 		SD_DATA2        : in std_logic;
-		SD_CARD_DEDECT  : in std_logic;
+		sd_card_detect  : in std_logic;
 		nSCSI_DRQ       : in std_logic;
 		SD_WP           : in std_logic;
 		nRD_DATA        : in std_logic;
@@ -331,7 +331,7 @@ begin
             SD_DATA0 => SD_DATA0,
             SD_DATA1 => SD_DATA1,
             SD_DATA2 => SD_DATA2,
-            SD_CARD_DEDECT => SD_CARD_DEDECT,
+            sd_card_dedect => sd_card_detect,
             SD_WP => SD_WP,
             nDACK0 => nDACK0,
             nFB_WR => nFB_WR,
