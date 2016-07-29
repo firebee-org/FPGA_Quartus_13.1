@@ -446,16 +446,16 @@ set_global_assignment -name ASSIGNMENT_GROUP_MEMBER DDRCLK[0] -section_id fast
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER DDRCLK[1] -section_id fast
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER DDRCLK[2] -section_id fast
 set_global_assignment -name ASSIGNMENT_GROUP_MEMBER DDRCLK[3] -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDRCLK" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDRCLK[0]" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDRCLK[1]" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDRCLK[2]" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDRCLK[3]" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[0]" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[1]" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[2]" -section_id fast
-set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[3]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDRCLK" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDRCLK[0]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDRCLK[1]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDRCLK[2]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDRCLK[3]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[0]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[1]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[2]" -section_id fast
+set_global_assignment -name ASSIGNMENT_GROUP_MEMBER "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[3]" -section_id fast
 
 # end ASSIGNMENT_GROUP(fast)
 # --------------------------
@@ -470,16 +470,16 @@ set_instance_assignment -name CLOCK_SETTINGS fast -to DDRCLK[0]
 set_instance_assignment -name CLOCK_SETTINGS fast -to DDRCLK[1]
 set_instance_assignment -name CLOCK_SETTINGS fast -to DDRCLK[2]
 set_instance_assignment -name CLOCK_SETTINGS fast -to DDRCLK[3]
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDRCLK"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDRCLK[0]"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDRCLK[1]"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDRCLK[2]"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDRCLK[3]"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[0]"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[1]"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[2]"
-set_instance_assignment -name CLOCK_SETTINGS fast -to "Video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[3]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDRCLK"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDRCLK[0]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDRCLK[1]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDRCLK[2]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDRCLK[3]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[0]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[1]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[2]"
+set_instance_assignment -name CLOCK_SETTINGS fast -to "video:Fredi_Aschwanden|DDR_CTR_BLITTER:DDR_CTR_BLITTER|DDRCLK[3]"
 set_instance_assignment -name INPUT_MAX_DELAY "4 ns" -from * -to FB_ALE
 set_instance_assignment -name MAX_DELAY "5 ns" -from VD -to FB_AD
 set_instance_assignment -name MAX_DELAY "5 ns" -from FB_AD -to VA
@@ -677,126 +677,126 @@ set_global_assignment -name AUTO_DELAY_CHAINS_FOR_HIGH_FANOUT_INPUT_PINS OFF
 set_global_assignment -name OPTIMIZE_FOR_METASTABILITY OFF
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK13M_q
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to i_video|i_video_mod_mux_clutctr|CLK17M_q
+set_global_assignment -name VHDL_FILE video/video.vhd
 set_global_assignment -name VHDL_FILE firebee_utils_pkg.vhd
 set_global_assignment -name AHDL_FILE altpll_reconfig1_pllrcfg_t4q.tdf
 set_global_assignment -name AHDL_FILE altpll_reconfig1.tdf
 set_global_assignment -name AHDL_FILE altpll4.tdf
 set_global_assignment -name SDC_FILE firebee_groups.sdc
-set_global_assignment -name VHDL_FILE Video/video.vhd
-set_global_assignment -name VHDL_FILE Video/video_mod_mux_clutctr.vhd
-set_global_assignment -name VHDL_FILE Video/DDR_CTR.vhd
+set_global_assignment -name VHDL_FILE video/video_mod_mux_clutctr.vhd
+set_global_assignment -name VHDL_FILE video/ddr_controller.vhd
 set_global_assignment -name SOURCE_FILE altpll_reconfig1.cmp
 set_global_assignment -name VHDL_FILE Interrupt_Handler/interrupt_handler.vhd
 set_global_assignment -name SOURCE_FILE altpll4.cmp
 set_global_assignment -name VHDL_FILE firebee1.vhd
-set_global_assignment -name VHDL_FILE Video/mux41.vhd
-set_global_assignment -name VHDL_FILE Video/mux41_5.vhd
-set_global_assignment -name VHDL_FILE Video/mux41_4.vhd
-set_global_assignment -name VHDL_FILE Video/mux41_3.vhd
-set_global_assignment -name VHDL_FILE Video/mux41_2.vhd
-set_global_assignment -name VHDL_FILE Video/mux41_1.vhd
-set_global_assignment -name VHDL_FILE Video/mux41_0.vhd
-set_global_assignment -name VHDL_FILE Video/BLITTER/BLITTER.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri7.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_bustri7.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_ff4.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_fifoDZ.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_compare1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_constant3.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_ff6.cmp
-set_global_assignment -name SOURCE_FILE Video/altddio_out0.cmp
-set_global_assignment -name SOURCE_FILE Video/altddio_out1.cmp
-set_global_assignment -name SOURCE_FILE Video/altddio_bidir0.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_constant2.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri0.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_bustri0.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_constant4.cmp
-set_global_assignment -name SOURCE_FILE Video/altdpram2.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_fifoDZ.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_latch1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_mux0.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_shiftreg4.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri3.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_shiftreg5.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_bustri3.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_shiftreg6.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri4.cmp
-set_global_assignment -name SOURCE_FILE Video/altddio_out2.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_constant0.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_mux1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_constant1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_mux2.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri5.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_ff0.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_ff1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_shiftreg0.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_ff1.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_ff2.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_ff3.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_ff3.vhd
-set_global_assignment -name VHDL_FILE Video/lpm_ff2.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_fifo_dc0.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_mux3.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_mux4.cmp
-set_global_assignment -name SOURCE_FILE Video/altdpram0.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_mux5.cmp
-set_global_assignment -name VHDL_FILE Video/altdpram0.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_mux6.cmp
-set_global_assignment -name SOURCE_FILE Video/altdpram1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_muxDZ2.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_muxDZ2.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_muxDZ.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_muxDZ.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_ff5.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_shiftreg1.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_ff0.cmp
-set_global_assignment -name QIP_FILE Video/lpm_shiftreg0.qip
-set_global_assignment -name QIP_FILE Video/altdpram0.qip
-set_global_assignment -name QIP_FILE Video/lpm_bustri1.qip
-set_global_assignment -name QIP_FILE Video/altdpram1.qip
-set_global_assignment -name QIP_FILE Video/lpm_bustri2.qip
-set_global_assignment -name QIP_FILE Video/lpm_bustri4.qip
-set_global_assignment -name QIP_FILE Video/lpm_constant0.qip
-set_global_assignment -name QIP_FILE Video/lpm_constant1.qip
-set_global_assignment -name QIP_FILE Video/lpm_mux0.qip
-set_global_assignment -name QIP_FILE Video/lpm_mux1.qip
-set_global_assignment -name QIP_FILE Video/lpm_mux2.qip
-set_global_assignment -name QIP_FILE Video/lpm_constant2.qip
-set_global_assignment -name QIP_FILE Video/altdpram2.qip
-set_global_assignment -name QIP_FILE Video/lpm_shiftreg3.qip
-set_global_assignment -name QIP_FILE Video/altddio_bidir0.qip
-set_global_assignment -name QIP_FILE Video/altddio_out0.qip
-set_global_assignment -name QIP_FILE Video/lpm_mux5.qip
-set_global_assignment -name QIP_FILE Video/lpm_shiftreg5.qip
-set_global_assignment -name QIP_FILE Video/lpm_shiftreg6.qip
-set_global_assignment -name QIP_FILE Video/lpm_shiftreg4.qip
-set_global_assignment -name QIP_FILE Video/altddio_out1.qip
-set_global_assignment -name QIP_FILE Video/altddio_out2.qip
-set_global_assignment -name QIP_FILE Video/lpm_bustri6.qip
-set_global_assignment -name QIP_FILE Video/lpm_mux6.qip
-set_global_assignment -name QIP_FILE Video/lpm_mux3.qip
-set_global_assignment -name QIP_FILE Video/lpm_mux4.qip
-set_global_assignment -name QIP_FILE Video/lpm_constant3.qip
-set_global_assignment -name QIP_FILE Video/lpm_muxDZ.qip
-set_global_assignment -name QIP_FILE Video/lpm_muxVDM.qip
-set_global_assignment -name QIP_FILE Video/lpm_shiftreg1.qip
-set_global_assignment -name QIP_FILE Video/lpm_latch1.qip
-set_global_assignment -name QIP_FILE Video/lpm_constant4.qip
-set_global_assignment -name QIP_FILE Video/lpm_shiftreg2.qip
-set_global_assignment -name QIP_FILE Video/BLITTER/lpm_clshift0.qip
-set_global_assignment -name SOURCE_FILE Video/BLITTER/blitter.tdf.ALT
-set_global_assignment -name QIP_FILE Video/lpm_compare1.qip
-set_global_assignment -name SOURCE_FILE Video/lpm_shiftreg2.cmp
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri2.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_fifo_dc0.vhd
-set_global_assignment -name SOURCE_FILE Video/lpm_shiftreg3.cmp
-set_global_assignment -name VHDL_FILE Video/lpm_bustri5.vhd
-set_global_assignment -name QIP_FILE Video/lpm_ff4.qip
-set_global_assignment -name QIP_FILE Video/lpm_ff5.qip
-set_global_assignment -name QIP_FILE Video/lpm_ff6.qip
-set_global_assignment -name SOURCE_FILE Video/lpm_bustri6.cmp
-set_global_assignment -name QIP_FILE Video/BLITTER/altsyncram0.qip
+set_global_assignment -name VHDL_FILE video/mux41.vhd
+set_global_assignment -name VHDL_FILE video/mux41_5.vhd
+set_global_assignment -name VHDL_FILE video/mux41_4.vhd
+set_global_assignment -name VHDL_FILE video/mux41_3.vhd
+set_global_assignment -name VHDL_FILE video/mux41_2.vhd
+set_global_assignment -name VHDL_FILE video/mux41_1.vhd
+set_global_assignment -name VHDL_FILE video/mux41_0.vhd
+set_global_assignment -name VHDL_FILE video/BLITTER/BLITTER.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_bustri7.cmp
+set_global_assignment -name VHDL_FILE video/lpm_bustri7.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_ff4.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_fifoDZ.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_compare1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_constant3.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_ff6.cmp
+set_global_assignment -name SOURCE_FILE video/altddio_out0.cmp
+set_global_assignment -name SOURCE_FILE video/altddio_out1.cmp
+set_global_assignment -name SOURCE_FILE video/altddio_bidir0.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_constant2.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_bustri0.cmp
+set_global_assignment -name VHDL_FILE video/lpm_bustri0.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_constant4.cmp
+set_global_assignment -name SOURCE_FILE video/altdpram2.cmp
+set_global_assignment -name VHDL_FILE video/lpm_fifoDZ.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_latch1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_mux0.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_shiftreg4.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_bustri3.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_shiftreg5.cmp
+set_global_assignment -name VHDL_FILE video/lpm_bustri3.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_shiftreg6.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_bustri4.cmp
+set_global_assignment -name SOURCE_FILE video/altddio_out2.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_constant0.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_mux1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_constant1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_mux2.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_bustri5.cmp
+set_global_assignment -name VHDL_FILE video/lpm_ff0.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_ff1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_shiftreg0.cmp
+set_global_assignment -name VHDL_FILE video/lpm_ff1.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_ff2.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_ff3.cmp
+set_global_assignment -name VHDL_FILE video/lpm_ff3.vhd
+set_global_assignment -name VHDL_FILE video/lpm_ff2.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_fifo_dc0.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_mux3.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_mux4.cmp
+set_global_assignment -name SOURCE_FILE video/altdpram0.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_mux5.cmp
+set_global_assignment -name VHDL_FILE video/altdpram0.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_mux6.cmp
+set_global_assignment -name SOURCE_FILE video/altdpram1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_muxDZ2.cmp
+set_global_assignment -name VHDL_FILE video/lpm_muxDZ2.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_muxDZ.cmp
+set_global_assignment -name VHDL_FILE video/lpm_muxDZ.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_ff5.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_bustri1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_shiftreg1.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_ff0.cmp
+set_global_assignment -name QIP_FILE video/lpm_shiftreg0.qip
+set_global_assignment -name QIP_FILE video/altdpram0.qip
+set_global_assignment -name QIP_FILE video/lpm_bustri1.qip
+set_global_assignment -name QIP_FILE video/altdpram1.qip
+set_global_assignment -name QIP_FILE video/lpm_bustri2.qip
+set_global_assignment -name QIP_FILE video/lpm_bustri4.qip
+set_global_assignment -name QIP_FILE video/lpm_constant0.qip
+set_global_assignment -name QIP_FILE video/lpm_constant1.qip
+set_global_assignment -name QIP_FILE video/lpm_mux0.qip
+set_global_assignment -name QIP_FILE video/lpm_mux1.qip
+set_global_assignment -name QIP_FILE video/lpm_mux2.qip
+set_global_assignment -name QIP_FILE video/lpm_constant2.qip
+set_global_assignment -name QIP_FILE video/altdpram2.qip
+set_global_assignment -name QIP_FILE video/lpm_shiftreg3.qip
+set_global_assignment -name QIP_FILE video/altddio_bidir0.qip
+set_global_assignment -name QIP_FILE video/altddio_out0.qip
+set_global_assignment -name QIP_FILE video/lpm_mux5.qip
+set_global_assignment -name QIP_FILE video/lpm_shiftreg5.qip
+set_global_assignment -name QIP_FILE video/lpm_shiftreg6.qip
+set_global_assignment -name QIP_FILE video/lpm_shiftreg4.qip
+set_global_assignment -name QIP_FILE video/altddio_out1.qip
+set_global_assignment -name QIP_FILE video/altddio_out2.qip
+set_global_assignment -name QIP_FILE video/lpm_bustri6.qip
+set_global_assignment -name QIP_FILE video/lpm_mux6.qip
+set_global_assignment -name QIP_FILE video/lpm_mux3.qip
+set_global_assignment -name QIP_FILE video/lpm_mux4.qip
+set_global_assignment -name QIP_FILE video/lpm_constant3.qip
+set_global_assignment -name QIP_FILE video/lpm_muxDZ.qip
+set_global_assignment -name QIP_FILE video/lpm_muxVDM.qip
+set_global_assignment -name QIP_FILE video/lpm_shiftreg1.qip
+set_global_assignment -name QIP_FILE video/lpm_latch1.qip
+set_global_assignment -name QIP_FILE video/lpm_constant4.qip
+set_global_assignment -name QIP_FILE video/lpm_shiftreg2.qip
+set_global_assignment -name QIP_FILE video/BLITTER/lpm_clshift0.qip
+set_global_assignment -name SOURCE_FILE video/BLITTER/blitter.tdf.ALT
+set_global_assignment -name QIP_FILE video/lpm_compare1.qip
+set_global_assignment -name SOURCE_FILE video/lpm_shiftreg2.cmp
+set_global_assignment -name SOURCE_FILE video/lpm_bustri2.cmp
+set_global_assignment -name VHDL_FILE video/lpm_fifo_dc0.vhd
+set_global_assignment -name SOURCE_FILE video/lpm_shiftreg3.cmp
+set_global_assignment -name VHDL_FILE video/lpm_bustri5.vhd
+set_global_assignment -name QIP_FILE video/lpm_ff4.qip
+set_global_assignment -name QIP_FILE video/lpm_ff5.qip
+set_global_assignment -name QIP_FILE video/lpm_ff6.qip
+set_global_assignment -name SOURCE_FILE video/lpm_bustri6.cmp
+set_global_assignment -name QIP_FILE video/BLITTER/altsyncram0.qip
 set_global_assignment -name VHDL_FILE DSP/DSP.vhd
 set_global_assignment -name VHDL_FILE FalconIO_SDCard_IDE_CF/FalconIO_SDCard_IDE_CF.vhd
 set_global_assignment -name VHDL_FILE FalconIO_SDCard_IDE_CF/WF5380/wf5380_control.vhd
@@ -864,4 +864,6 @@ set_global_assignment -name QIP_FILE lpm_shiftreg0.qip
 set_global_assignment -name QIP_FILE lpm_counter1.qip
 set_global_assignment -name QIP_FILE altiobuf_bidir0.qip
 set_global_assignment -name VHDL_FILE flexbus_register.vhd
+
+
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
