@@ -201,5 +201,5 @@ if { [string equal "quartus_fit" $::TimeQuestInfo(nameofexecutable)] } {
 
 if { [string equal "quartus_fit" $::TimeQuestInfo(nameofexecutable)] } {
     post_message -type info "Over constraining setup for i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0]"
-    set_clock_uncertainty -add -enable_same_physical_edge -from { i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0] } -to { i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0] } -setup 0.2
+    set_clock_uncertainty -add -enable_same_physical_edge -from { i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0] } -to { i_video_clk_pll|altpll_component|auto_generated|pll1|clk[0] } -setup 0.25
 } 
