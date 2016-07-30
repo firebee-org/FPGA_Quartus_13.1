@@ -9,23 +9,45 @@ library work;
 entity firebee1 is
 	port
 	(
+		MAIN_CLK        : in std_logic;
+		nRSTO_MCF       : in std_logic;
+		CLK33MDIR       : in std_logic;
+
+        -- the ColdFire FlexBus signals
 		FB_ALE          : in std_logic;
+		FB_AD           : inout std_logic_vector(31 downto 0);
+		nFB_OE          : in std_logic;
 		nFB_WR          : in std_logic;
+		nFB_TA          : out std_logic;
 		nFB_CS1         : in std_logic;
 		nFB_CS2         : in std_logic;
 		nFB_CS3         : in std_logic;
 		FB_SIZE0        : in std_logic;
 		FB_SIZE1        : in std_logic;
-		nFB_BURST       : in std_logic; 
+		nFB_BURST       : in std_logic;
+        
 		LP_BUSY         : in std_logic;
+        
 		nACSI_DRQ       : in std_logic;
 		nACSI_INT       : in std_logic;
+        
+        -- serial port pins
 		RxD             : in std_logic;
 		CTS             : in std_logic;
 		RI              : in std_logic;
 		DCD             : in std_logic;
+		TxD             : out std_logic;
+		RTS             : out std_logic;
+		DTR             : out std_logic;
+        
+        -- parallel port
+		LP_D            : inout std_logic_vector(7 downto 0);
+		LP_STR          : out std_logic;
+		LPDIR           : out std_logic;
+
 		AMKB_RX         : in std_logic;
 		PIC_AMKB_RX     : in std_logic;
+
 		IDE_RDY         : in std_logic;
 		IDE_INT         : in std_logic;
 		WP_CF_CARD      : in std_logic;
@@ -39,55 +61,57 @@ entity firebee1 is
 		nSCSI_DRQ       : in std_logic;
 		SD_WP           : in std_logic;
 		nRD_DATA        : in std_logic;
+        
 		nSCSI_C_D       : in std_logic;
 		nSCSI_I_O       : in std_logic;
 		nSCSI_MSG       : in std_logic;
 		nDACK0          : in std_logic;
+        
 		PIC_INT         : in std_logic;
-		nFB_OE          : in std_logic;
 		TOUT0           : in std_logic;
 		nMASTER         : in std_logic;
 		DVI_INT         : in std_logic;
 		nDACK1          : in std_logic;
+        
 		nPCI_INTD       : in std_logic;
 		nPCI_INTC       : in std_logic;
 		nPCI_INTB       : in std_logic;
 		nPCI_INTA       : in std_logic;
+        
 		E0_INT          : in std_logic;
+        
 		nINDEX          : in std_logic;
 		HD_DD           : in std_logic;
-		MAIN_CLK        : in std_logic;
-		nRSTO_MCF       : in std_logic;
-		CLK33MDIR       : in std_logic;
+
 		SCSI_PAR        : inout std_logic;
 		nSCSI_RST       : inout std_logic;
 		nSCSI_SEL       : inout std_logic;
 		nSCSI_BUSY      : inout std_logic;
+		SCSI_D          : inout std_logic_vector(7 downto 0);
+		nSCSI_ACK       : out std_logic;
+		nSCSI_ATN       : out std_logic;
+		SCSI_DIR        : out std_logic;
+
 		SD_CD_DATA3     : inout std_logic;
 		SD_CMD_D1       : inout std_logic;
 		MIDI_IN_PIN     : inout std_logic;
+
 		ACSI_D          : inout std_logic_vector(7 downto 0);
-		FB_AD           : inout std_logic_vector(31 downto 0);
+
 		IO              : inout std_logic_vector(17 downto 0);
-		LP_D            : inout std_logic_vector(7 downto 0);
-		SCSI_D          : inout std_logic_vector(7 downto 0);
+
 		SRD             : inout std_logic_vector(15 downto 0);
 		VD              : inout std_logic_vector(31 downto 0);
 		VDQS            : inout std_logic_vector(3 downto 0);
-		LP_STR          : out std_logic;
+
 		nACSI_ACK       : out std_logic;
 		nACSI_RESET     : out std_logic;
 		nACSI_CS        : out std_logic;
 		ACSI_DIR        : out std_logic;
 		ACSI_A1         : out std_logic;
-		nSCSI_ACK       : out std_logic;
-		nSCSI_ATN       : out std_logic;
-		SCSI_DIR        : out std_logic;
 		MIDI_TLR        : out std_logic;
-		TxD             : out std_logic;
-		RTS             : out std_logic;
-		DTR             : out std_logic;
 		AMKB_TX         : out std_logic;
+
 		IDE_RES         : out std_logic;
 		nIDE_CS0        : out std_logic;
 		nIDE_CS1        : out std_logic;
@@ -118,10 +142,10 @@ entity firebee1 is
 		nSRBHE          : out std_logic;
 		nSRWE           : out std_logic;
 		nDREQ1          : out std_logic;
+
 		LED_FPGA_OK     : out std_logic;
 		nSROE           : out std_logic;
 		VCKE            : out std_logic;
-		nFB_TA          : out std_logic;
 		nDDR_CLK        : out std_logic;
 		DDR_CLK         : out std_logic;
 		VSYNC_PAD       : out std_logic;
@@ -132,14 +156,13 @@ entity firebee1 is
 		nMOT_ON         : out std_logic;
 		nSTEP_DIR       : out std_logic;
 		nSTEP           : out std_logic;
-		LPDIR           : out std_logic;
 		MIDI_OLR        : out std_logic;
 		CLK25M          : out std_logic;
 		CLKUSB          : out std_logic;
 		CLK24M576       : out std_logic;
 		BA              : out std_logic_vector(1 downto 0);
 		nIRQ            : out std_logic_vector(7 downto 2);
-		VA              : out  std_logic_vector(12 downto 0);
+		VA              : out std_logic_vector(12 downto 0);
 		VB              : out std_logic_vector(7 downto 0);
 		VDM             : out std_logic_vector(3 downto 0);
 		VG              : out std_logic_vector(7 downto 0);
@@ -298,7 +321,7 @@ begin
             dsp_ta => dsp_ta
         );
 
-    i_falconio_sdcard_ide_cf : work.falconio_sdcard_ide_cf
+    i_falconio_sdcard_ide_cf : entity work.falconio_sdcard_ide_cf
         port map
         (
             clk33m => main_clk,
@@ -407,7 +430,7 @@ begin
         );
 
     
-    i_interrupt_handler : work.interrupt_handler
+    i_interrupt_handler : entity work.interrupt_handler
         port map
         (
             MAIN_CLK => MAIN_CLK,
@@ -439,7 +462,7 @@ begin
             nIRQ => nIRQ
         );    
         
-    i_mfp_acia_clk_pll : work.altpll1
+    i_mfp_acia_clk_pll : entity work.altpll1
         port map
         (
             inclk0 => MAIN_CLK,
@@ -537,7 +560,7 @@ begin
         );
     
     
-    inst1 : work.lpm_ff0
+    i_fb_adr_latch : entity work.lpm_ff0
         port map
         (
             clock => ddr_sync_66m,
@@ -551,7 +574,7 @@ begin
     nSTEP <= not(step);
     nWR <= not(wr_data);
     
-    inst18 : work.lpm_counter0
+    inst18 : entity work.lpm_counter0
         port map
         (
             clock => clk500k,
@@ -562,8 +585,8 @@ begin
     nWR_GATE <= not(wr_gate);
 
     nFB_TA <= not(video_ta or int_handler_ta or dsp_ta or falcon_io_ta);
-    fb_ad_in <= fb_ad;
-    fb_ad <= fb_ad_out when (video_ta or int_handler_ta or dsp_ta or falcon_io_ta) else (others => 'Z');
+    fb_ad_in <= FB_AD;
+    FB_AD <= fb_ad_out when (video_ta or int_handler_ta or dsp_ta or falcon_io_ta) else (others => 'Z');
     
     clk33m <= MAIN_CLK;
 
@@ -579,11 +602,11 @@ begin
             o => midi_in
         );
     
-    LED_FPGA_OK <= timebase(17);
+    led_fpga_ok <= timebase(17);
     
     nDDR_CLK <= not(ddrclk(0));
     
-    inst5 : work.altddio_out3
+    inst5 : entity work.altddio_out3
         port map
         (
             datain_h => vsync,
@@ -593,7 +616,7 @@ begin
         );
     
     
-    inst6 : work.altddio_out3
+    inst6 : entity work.altddio_out3
         port map
         (
             datain_h => hsync,
@@ -603,7 +626,7 @@ begin
         );
     
     
-    inst8 : work.altddio_out3
+    inst8 : entity work.altddio_out3
         port map
         (
             datain_h => blank_n,
@@ -612,7 +635,7 @@ begin
             dataout => nBLANK_PAD
         );
     
-    inst9 : work.altddio_out3
+    inst9 : entity work.altddio_out3
         port map
         (
             datain_h => '0',
