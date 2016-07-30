@@ -26,10 +26,6 @@ entity firebee1 is
 		FB_SIZE1        : in std_logic;
 		nFB_BURST       : in std_logic;
         
-		LP_BUSY         : in std_logic;
-        
-		nACSI_DRQ       : in std_logic;
-		nACSI_INT       : in std_logic;
         
         -- serial port pins
 		RxD             : in std_logic;
@@ -44,6 +40,7 @@ entity firebee1 is
 		LP_D            : inout std_logic_vector(7 downto 0);
 		LP_STR          : out std_logic;
 		LPDIR           : out std_logic;
+		LP_BUSY         : in std_logic;
 
 		AMKB_RX         : in std_logic;
 		PIC_AMKB_RX     : in std_logic;
@@ -96,7 +93,6 @@ entity firebee1 is
 		SD_CMD_D1       : inout std_logic;
 		MIDI_IN_PIN     : inout std_logic;
 
-		ACSI_D          : inout std_logic_vector(7 downto 0);
 
 		IO              : inout std_logic_vector(17 downto 0);
 
@@ -104,11 +100,15 @@ entity firebee1 is
 		VD              : inout std_logic_vector(31 downto 0);
 		VDQS            : inout std_logic_vector(3 downto 0);
 
+		nACSI_DRQ       : in std_logic;
+		nACSI_INT       : in std_logic;
 		nACSI_ACK       : out std_logic;
 		nACSI_RESET     : out std_logic;
 		nACSI_CS        : out std_logic;
 		ACSI_DIR        : out std_logic;
 		ACSI_A1         : out std_logic;
+		ACSI_D          : inout std_logic_vector(7 downto 0);
+
 		MIDI_TLR        : out std_logic;
 		AMKB_TX         : out std_logic;
 
@@ -126,15 +126,13 @@ entity firebee1 is
 		nSDSEL          : out std_logic;
 		nWR_GATE        : out std_logic;
 		nWR             : out std_logic;
-		YM_QA           : out std_logic;
+		
+        YM_QA           : out std_logic;
 		YM_QB           : out std_logic;
 		YM_QC           : out std_logic;
+        
 		SD_CLK          : out std_logic;
 		DSA_D           : out std_logic;
-		nVWE            : out std_logic;
-		nVCAS           : out std_logic;
-		nVRAS           : out std_logic;
-		nVCS            : out std_logic;
 		nPD_VGA         : out std_logic;
 		TIN0            : out std_logic;
 		nSRCS           : out std_logic;
@@ -144,29 +142,40 @@ entity firebee1 is
 		nDREQ1          : out std_logic;
 
 		LED_FPGA_OK     : out std_logic;
+
 		nSROE           : out std_logic;
-		VCKE            : out std_logic;
-		nDDR_CLK        : out std_logic;
-		DDR_CLK         : out std_logic;
-		VSYNC_PAD       : out std_logic;
-		HSYNC_PAD       : out std_logic;
-		nBLANK_PAD      : out std_logic;
-		PIXEL_CLK_PAD   : out std_logic;
 		nSYNC           : out std_logic;
 		nMOT_ON         : out std_logic;
 		nSTEP_DIR       : out std_logic;
 		nSTEP           : out std_logic;
+
 		MIDI_OLR        : out std_logic;
 		CLK25M          : out std_logic;
 		CLKUSB          : out std_logic;
 		CLK24M576       : out std_logic;
-		BA              : out std_logic_vector(1 downto 0);
+
 		nIRQ            : out std_logic_vector(7 downto 2);
+
+        -- DDR memory signals
+		BA              : out std_logic_vector(1 downto 0);
 		VA              : out std_logic_vector(12 downto 0);
-		VB              : out std_logic_vector(7 downto 0);
 		VDM             : out std_logic_vector(3 downto 0);
-		VG              : out std_logic_vector(7 downto 0);
+		VCKE            : out std_logic;
+		nDDR_CLK        : out std_logic;
+		DDR_CLK         : out std_logic;
+		nVWE            : out std_logic;
+		nVCAS           : out std_logic;
+		nVRAS           : out std_logic;
+		nVCS            : out std_logic;
+        
+        -- video signals
 		VR              : out std_logic_vector(7 downto 0)
+		VG              : out std_logic_vector(7 downto 0);
+		VB              : out std_logic_vector(7 downto 0);
+		VSYNC_PAD       : out std_logic;
+		HSYNC_PAD       : out std_logic;
+		nBLANK_PAD      : out std_logic;
+		PIXEL_CLK_PAD   : out std_logic;
 	);
 end firebee1;
 
