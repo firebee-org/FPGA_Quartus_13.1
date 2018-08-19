@@ -169,13 +169,13 @@ entity firebee1 is
 		nVCS            : out std_logic;
         
         -- video signals
-		VR              : out std_logic_vector(7 downto 0)
+		VR              : out std_logic_vector(7 downto 0);
 		VG              : out std_logic_vector(7 downto 0);
 		VB              : out std_logic_vector(7 downto 0);
 		VSYNC_PAD       : out std_logic;
 		HSYNC_PAD       : out std_logic;
 		nBLANK_PAD      : out std_logic;
-		PIXEL_CLK_PAD   : out std_logic;
+		PIXEL_CLK_PAD   : out std_logic
 	);
 end firebee1;
 
