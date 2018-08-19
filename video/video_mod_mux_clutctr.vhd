@@ -54,11 +54,11 @@
 --  {{ALTERA_PARAMETERS_end}} DO NOT REMOVE THIS LINE!
 
 library ieee;
-    use ieee.std_logic_1164.all;
-    use ieee.numeric_std.all;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
     
 library work;
-    use work.firebee_utils_pkg.all;
+use work.firebee_utils_pkg.all;
 
 entity video_mod_mux_clutctr is
     port
